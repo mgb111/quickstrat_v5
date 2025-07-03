@@ -5,7 +5,8 @@ import {
   ContentOutline,
   PdfContent,
   LandingPageCopy,
-  SocialPosts
+  SocialPosts,
+  CampaignOutput
 } from '../types';
 
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
@@ -41,8 +42,7 @@ Return JSON in this exact format:
       "title": "A [Tool Type] for [Specific Problem]",
       "description": "Brief description of what this tool accomplishes (15-25 words)"
     }
-  ]
-}`;
+  ]}`;
 
   try {
     const res = await openai.chat.completions.create({
@@ -231,4 +231,19 @@ Return JSON in this exact format:
     console.error('OpenAI error:', err?.message || err);
     throw new Error('Failed to generate social posts.');
   }
+}
+
+export async function generateFinalCampaign(input: CampaignInput, concept: LeadMagnetConcept): Promise<CampaignOutput> {
+  const outline = await generateContentOutline(input, concept);
+  const [pdf_content, landing_page, social_posts] = await Promise.all([
+    generatePdfContent(input, outline),
+    generateLandingPageCopy(input, outline),
+    generateSocialPosts(input, outline)
+  ]);
+
+  return {
+    pdf_content,
+    landing_page,
+    social_posts
+  };
 }
