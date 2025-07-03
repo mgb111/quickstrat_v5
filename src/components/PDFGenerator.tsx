@@ -48,13 +48,6 @@ const styles = StyleSheet.create({
     color: '#374151',
     marginBottom: 10
   },
-  bulletPoint: {
-    fontSize: 12,
-    lineHeight: 1.6,
-    color: '#374151',
-    marginLeft: 20,
-    marginBottom: 5
-  },
   footer: {
     position: 'absolute',
     bottom: 30,
@@ -84,15 +77,15 @@ const PDFDocument: React.FC<{ content: PDFContent; brandName: string }> = ({ con
       <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
     </Page>
     
-    <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Key Solutions</Text>
-        <Text style={styles.bulletPoint}>• {content.key_solutions.solution1}</Text>
-        <Text style={styles.bulletPoint}>• {content.key_solutions.solution2}</Text>
-        <Text style={styles.bulletPoint}>• {content.key_solutions.solution3}</Text>
-      </View>
-      <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
-    </Page>
+    {content.sections.map((section, index) => (
+      <Page key={index} size="A4" style={styles.page}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{section.title}</Text>
+          <Text style={styles.paragraph}>{section.content}</Text>
+        </View>
+        <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
+      </Page>
+    ))}
     
     <Page size="A4" style={styles.page}>
       <View style={styles.section}>
@@ -135,14 +128,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
           <p className="text-sm text-gray-700">{content.introduction}</p>
         </div>
         
-        <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">Key Solutions</h4>
-          <ul className="text-sm text-gray-700 space-y-1">
-            <li>• {content.key_solutions.solution1}</li>
-            <li>• {content.key_solutions.solution2}</li>
-            <li>• {content.key_solutions.solution3}</li>
-          </ul>
-        </div>
+        {content.sections.map((section, index) => (
+          <div key={index} className="p-4 bg-gray-50 rounded-lg">
+            <h4 className="font-semibold text-gray-900 mb-2">{section.title}</h4>
+            <p className="text-sm text-gray-700">{section.content}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

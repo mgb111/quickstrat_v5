@@ -7,17 +7,39 @@ export interface CampaignInput {
   target_audience: string;
 }
 
+export interface ContentBlock {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  selected: boolean;
+  userNote?: string;
+  expandedContent?: string;
+  approved?: boolean;
+}
+
+export interface ContentCategory {
+  id: string;
+  title: string;
+  description: string;
+  maxSelections?: number;
+  blocks: ContentBlock[];
+}
+
+export interface IdeaBank {
+  categories: ContentCategory[];
+}
+
 export interface PDFContent {
   title_page: {
     title: string;
     subtitle: string;
   };
   introduction: string;
-  key_solutions: {
-    solution1: string;
-    solution2: string;
-    solution3: string;
-  };
+  sections: {
+    title: string;
+    content: string;
+  }[];
   actionable_takeaways: string;
   cta: string;
 }
@@ -39,6 +61,14 @@ export interface CampaignOutput {
   pdf_content: PDFContent;
   landing_page: LandingPageContent;
   social_posts: SocialPosts;
+}
+
+export interface WizardState {
+  stage: 'input' | 'curation' | 'review' | 'complete';
+  input: CampaignInput | null;
+  ideaBank: IdeaBank | null;
+  selectedBlocks: ContentBlock[];
+  finalOutput: CampaignOutput | null;
 }
 
 export interface Campaign {
