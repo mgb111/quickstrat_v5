@@ -188,66 +188,51 @@ export async function generatePdfContent(
     }
 
 const prompt = `
-You are a B2B lead magnet writer creating a high-conversion toolkit PDF.
+You are a B2B lead magnet writer. Expand the approved outline into detailed PDF content.
 
-Context:
+User Context:
 - Title: ${outline.title}
 - Introduction: ${outline.introduction}
 - Core Points: ${JSON.stringify(outline.core_points)}
 - CTA: ${outline.cta}
 - Target Audience: ${input.target_audience}
 - Niche: ${input.niche}
-- Brand Name: ${input.brand_name}
+- Brand: ${input.brand_name}
 
-Write the content for a 4-page lead magnet PDF in this exact format:
+Instructions:
+1. The PDF will have a clear title and 4 educational sections based on the core points.
+2. For each core point, write a section with a title and a clear, structured paragraph (80–100 words).
+   - Use bullet points, numbered lists, or examples **inside the paragraph**, but do not change the JSON structure.
+3. Maintain this exact JSON format:
 
 {
-  "title": "Mastering VR Vendor Negotiation",
-  "introduction": "40–60 word hook that introduces the pain point and sets up the value of the toolkit.",
+  "title": "Same as input title",
+  "introduction": "60-word intro from outline",
   "sections": [
     {
-      "title": "Section 1: [Section Title Based on First Core Point]",
-      "format": "table",
-      "columns": ["Term/Concept", "What It Means (Plain English)", "Question to Ask Vendor"],
-      "rows": [
-        ["Term A", "Definition of Term A", "Question to ask for Term A"],
-        ["Term B", "Definition of Term B", "Question to ask for Term B"]
-      ]
+      "title": "Section Title 1 (Based on Core Point 1)",
+      "content": "Expanded, detailed content (~80–100 words)"
     },
     {
-      "title": "Section 2: [Section Title Based on Second Core Point]",
-      "format": "checklist",
-      "items": [
-        "Checkbox item 1",
-        "Checkbox item 2",
-        "Checkbox item 3"
-      ]
+      "title": "Section Title 2 (Based on Core Point 2)",
+      "content": "..."
     },
     {
-      "title": "Section 3: [Section Title Based on Third Core Point]",
-      "format": "scripts",
-      "scripts": [
-        {
-          "scenario": "When vendor pushes a bundle...",
-          "script": "You: 'Thanks for the bundle... Can we get an itemized breakdown?'"
-        },
-        {
-          "scenario": "When price is too high...",
-          "script": "You: 'Vendor B quoted 15% less... Can we close that gap?'"
-        }
-      ]
+      "title": "Section Title 3 (Based on Core Point 3)",
+      "content": "..."
     },
     {
-      "title": "Section 4: [Section Title Based on Fourth Core Point]",
-      "format": "clause",
-      "clause_title": "Sample Contract Clause",
-      "clause_text": "Full legal clause...",
-      "explanation": "Plain English explanation of the clause"
+      "title": "Section Title 4 (Based on Core Point 4)",
+      "content": "..."
     }
   ],
-  "cta": "Final motivating paragraph + soft next step to engage brand (40–60 words)"
+  "cta": "40–60 word closing CTA from outline"
 }
-Return only valid JSON.
+
+Important:
+- Output must be valid JSON.
+- DO NOT nest additional fields like 'format', 'scripts', 'items', etc.
+- Keep 'sections' as a flat array of { title, content }.
 `;
 
     try {
