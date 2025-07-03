@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { CampaignInput, LeadMagnetConcept, ContentOutline, PdfContent, LandingPageCopy, SocialPosts, CampaignOutput } from '../types';
+import { CampaignInput, ToolkitConcept, ToolkitOutline, ToolkitContent, LandingPageCopy, SocialPosts, CampaignOutput } from '../types';
 
 // Check if API key is available
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
@@ -14,15 +14,15 @@ const openai = apiKey && apiKey !== 'your_openai_api_key' ? new OpenAI({
 }) : null;
 
 /**
- * PHASE 1: Generate a list of focused, tool-based lead magnet concepts for the user to choose from.
+ * PHASE 1: Generate a list of focused, professional toolkit concepts for the user to choose from.
  */
-export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<LeadMagnetConcept[]> {
+export async function generateToolkitConcepts(input: CampaignInput): Promise<ToolkitConcept[]> {
   if (!openai) {
     throw new Error('OpenAI API key not configured. Please set VITE_OPENAI_API_KEY in your .env file with your actual API key.');
   }
 
   const prompt = `
-You are a lead generation expert. Based on the user's inputs, generate 6 unique lead magnet concepts.
+You are a business strategy expert. Based on the user's inputs, generate 6 unique professional toolkit concepts.
 
 User Context:
 - Niche: ${input.niche}
@@ -30,21 +30,22 @@ User Context:
 - Desired Outcome: ${input.desired_outcome}
 - Target Audience: ${input.target_audience}
 
-Each concept must be framed as a practical TOOL (checklist, template, cheat sheet, guide, action plan, etc.).
+Each concept must be framed as a comprehensive business toolkit that helps professionals master a specific challenge.
 
 Requirements:
-- Each concept should solve ONE specific problem related to their pain point.
-- Frame as actionable tools, not general guides.
-- Make them specific to their niche and audience.
-- Ensure each is distinct and valuable.
+- Each concept should be titled "Mastering [Specific Challenge]"
+- Focus on business optimization, cost reduction, or competitive advantage
+- Frame as professional toolkits with multiple components (checklists, templates, scripts, contract clauses)
+- Make them specific to their niche and audience
+- Ensure each is distinct and valuable for business professionals
 
 Return JSON in this exact format:
 {
   "concepts": [
     {
       "id": "concept-1",
-      "title": "A [Tool Type] for [Specific Problem]",
-      "description": "Brief description of what this tool accomplishes (15-25 words)"
+      "title": "Mastering [Specific Challenge in Their Niche]",
+      "description": "A 4-Part Toolkit to [Primary Benefit] and [Secondary Benefit] (20-30 words)"
     }
   ]
 }
@@ -56,7 +57,7 @@ Return JSON in this exact format:
       messages: [
         {
           role: 'system',
-          content: 'You are a content strategist. Output strictly valid JSON as defined.'
+          content: 'You are a business strategy expert. Output strictly valid JSON as defined.'
         },
         {
           role: 'user',
@@ -74,23 +75,23 @@ Return JSON in this exact format:
     return parsed.concepts;
   } catch (error: any) {
     console.error('OpenAI error:', error?.message || error);
-    throw new Error('Failed to generate lead magnet concepts. Please try again.');
+    throw new Error('Failed to generate toolkit concepts. Please try again.');
   }
 }
 
 /**
  * PHASE 2: Generate a reviewable content outline based on the user's single selected concept.
  */
-export async function generateContentOutline(
+export async function generateToolkitOutline(
   input: CampaignInput,
-  selectedConcept: LeadMagnetConcept
-): Promise<ContentOutline> {
+  selectedConcept: ToolkitConcept
+): Promise<ToolkitOutline> {
   if (!openai) {
     throw new Error('OpenAI API key not configured.');
   }
 
   const prompt = `
-You are a content strategist. Based on the user's inputs and selected concept, create a structured outline for a lead magnet.
+You are a business consultant. Based on the user's inputs and selected concept, create a structured outline for a professional business toolkit.
 
 User Context:
 - Niche: ${input.niche}
@@ -99,22 +100,36 @@ User Context:
 - Target Audience: ${input.target_audience}
 - Selected Concept: ${selectedConcept.title}
 
-Create an outline with:
-1. A compelling title
-2. A brief introduction (2-3 sentences)
-3. 3-5 core points that address the pain point
-4. A call-to-action
+Create an outline following this exact 4-part structure:
+1. Problem Statement (2-3 sentences about the business challenge)
+2. Technical Reference Table (4 key terms/concepts with definitions)
+3. Action Checklist (4-5 preparation steps)
+4. Communication Scripts (3 scenario-based scripts)
+5. Contract Template (sample clause or agreement language)
 
 Return JSON in this exact format:
 {
-  "title": "Compelling title for the lead magnet",
-  "introduction": "Brief introduction explaining the value",
-  "core_points": [
-    "First main point to cover",
-    "Second main point to cover",
-    "Third main point to cover"
+  "title": "${selectedConcept.title}",
+  "subtitle": "A 4-Part Toolkit to [Primary Benefit] and [Secondary Benefit]",
+  "problem_statement": "2-3 sentences identifying the core business challenge",
+  "technical_terms": [
+    {
+      "term": "Technical Term 1",
+      "definition": "Plain English explanation",
+      "key_question": "The right question to ask vendors/partners"
+    }
   ],
-  "cta": "Call-to-action text"
+  "checklist_items": [
+    "First preparation step with specific action",
+    "Second preparation step with specific action"
+  ],
+  "script_scenarios": [
+    {
+      "scenario": "When dealing with [specific situation]",
+      "script": "Exact words to use in quotes"
+    }
+  ],
+  "contract_focus": "Type of contract clause or agreement needed"
 }
 `;
 
@@ -124,7 +139,7 @@ Return JSON in this exact format:
       messages: [
         {
           role: 'system',
-          content: 'You are a content strategist. Output strictly valid JSON as defined.'
+          content: 'You are a business consultant. Output strictly valid JSON as defined.'
         },
         {
           role: 'user',
@@ -132,7 +147,7 @@ Return JSON in this exact format:
         }
       ],
       temperature: 0.7,
-      max_tokens: 800
+      max_tokens: 1200
     });
 
     const content = response.choices?.[0]?.message?.content;
@@ -141,7 +156,7 @@ Return JSON in this exact format:
     return JSON.parse(content);
   } catch (error: any) {
     console.error('OpenAI error:', error?.message || error);
-    throw new Error('Failed to generate content outline. Please try again.');
+    throw new Error('Failed to generate toolkit outline. Please try again.');
   }
 }
 
@@ -150,19 +165,19 @@ Return JSON in this exact format:
  */
 export async function generateFinalCampaign(
   input: CampaignInput,
-  outline: ContentOutline
+  outline: ToolkitOutline
 ): Promise<CampaignOutput> {
   try {
     // Run all three specialist functions concurrently
-    const [pdfContent, landingPageCopy, socialPosts] = await Promise.all([
-      generatePdfContent(input, outline),
+    const [toolkitContent, landingPageCopy, socialPosts] = await Promise.all([
+      generateToolkitContent(input, outline),
       generateLandingPageCopy(input, outline),
       generateSocialPosts(input, outline)
     ]);
 
     // Combine results into final campaign output
     return {
-      pdf_content: pdfContent,
+      toolkit_content: toolkitContent,
       landing_page: landingPageCopy,
       social_posts: socialPosts
     };
@@ -173,45 +188,84 @@ export async function generateFinalCampaign(
 }
 
 /**
- * PHASE 3, SPECIALIST 1: The Writer - Expands the outline into final PDF content.
+ * PHASE 3, SPECIALIST 1: The Professional Writer - Creates the complete toolkit document.
  */
-export async function generatePdfContent(
-    input: CampaignInput, // Pass input for full context if needed later
-    outline: ContentOutline
-): Promise<PdfContent> {
+export async function generateToolkitContent(
+    input: CampaignInput,
+    outline: ToolkitOutline
+): Promise<ToolkitContent> {
     if (!openai) {
         throw new Error('OpenAI API key not configured.');
     }
 
     const prompt = `
-You are a clear and concise educational writer. Your task is to expand the approved outline into the final content for a lead magnet PDF.
+You are a professional business toolkit creator. Your task is to create a complete, professional business toolkit document following the exact format and structure.
 
 Approved Outline:
 - Title: ${outline.title}
-- Introduction: ${outline.introduction}
-- Core Points: ${JSON.stringify(outline.core_points)}
-- CTA: ${outline.cta}
+- Subtitle: ${outline.subtitle}
+- Problem Statement: ${outline.problem_statement}
+- Technical Terms: ${JSON.stringify(outline.technical_terms)}
+- Checklist Items: ${JSON.stringify(outline.checklist_items)}
+- Script Scenarios: ${JSON.stringify(outline.script_scenarios)}
+- Contract Focus: ${outline.contract_focus}
+
+User Context:
+- Niche: ${input.niche}
+- Target Audience: ${input.target_audience}
 
 CRITICAL INSTRUCTIONS:
-1. For EACH core point provided, expand it into its own detailed, educational paragraph.
-2. Each paragraph must be 60-80 words.
-3. The content must be purely educational with NO promotional language.
+You must create a professional business toolkit with exactly this structure:
+
+Page 1: Title page with toolkit title, subtitle, and "2025 Quickstrat"
+Page 2: Introduction with "Your Strongest Position is a Prepared One" hook
+Page 3: Technical reference table with 4 key terms
+Page 4: Pre-action checklist with 4-5 items
+Page 5: Communication scripts with 3 scenarios
+Page 6: Contract template with sample clause
+
+Each section must be substantial, professional, and immediately actionable.
 
 Return JSON in this exact format:
 {
   "title": "${outline.title}",
-  "introduction": "${outline.introduction}",
-  "sections": [
-    {
-      "title": "The first core point from the outline",
-      "content": "The 60-80 word expanded paragraph for the first core point."
-    },
-    {
-      "title": "The second core point from the outline",
-      "content": "The 60-80 word expanded paragraph for the second core point."
-    }
-  ],
-  "cta": "${outline.cta}"
+  "subtitle": "${outline.subtitle}",
+  "introduction": {
+    "hook": "Your Strongest Position is a Prepared One",
+    "problem": "2-3 sentences about the business challenge",
+    "solution": "How this toolkit solves the problem",
+    "promise": "What users will achieve"
+  },
+  "technical_reference": {
+    "section_title": "The [Topic] 'Decoder Ring' — Key Terms That Impact [Primary Concern]",
+    "terms": [
+      {
+        "term": "Technical Term",
+        "definition": "Plain English explanation",
+        "key_question": "The right question to ask"
+      }
+    ]
+  },
+  "action_checklist": {
+    "section_title": "Your Pre-[Action] Checklist",
+    "items": [
+      "Detailed checklist item with specific action"
+    ]
+  },
+  "communication_scripts": {
+    "section_title": "[Context] Scripts You Can Use Today",
+    "scenarios": [
+      {
+        "scenario": "When dealing with specific situation",
+        "script": "Exact professional script in quotes"
+      }
+    ]
+  },
+  "contract_template": {
+    "section_title": "A Sample '[Document Type]' Clause",
+    "template": "Professional contract language with specific terms",
+    "next_step": "Clear guidance on implementation"
+  }
 }
 `;
 
@@ -221,7 +275,7 @@ Return JSON in this exact format:
             messages: [
                 {
                     role: 'system',
-                    content: 'You are a clear and concise educational writer. Output strictly valid JSON as defined.'
+                    content: 'You are a professional business toolkit creator. Output strictly valid JSON as defined.'
                 },
                 {
                     role: 'user',
@@ -229,7 +283,7 @@ Return JSON in this exact format:
                 }
             ],
             temperature: 0.7,
-            max_tokens: 1500
+            max_tokens: 3000
         });
 
         const content = response.choices?.[0]?.message?.content;
@@ -238,47 +292,51 @@ Return JSON in this exact format:
         return JSON.parse(content);
     } catch (error: any) {
         console.error('OpenAI error:', error?.message || error);
-        throw new Error('Failed to generate PDF content. Please try again.');
+        throw new Error('Failed to generate toolkit content. Please try again.');
     }
 }
 
 /**
- * PHASE 3, SPECIALIST 2: The Marketer - Creates landing page copy.
+ * PHASE 3, SPECIALIST 2: The Marketer - Creates landing page copy for the toolkit.
  */
 export async function generateLandingPageCopy(
     input: CampaignInput,
-    outline: ContentOutline
+    outline: ToolkitOutline
 ): Promise<LandingPageCopy> {
     if (!openai) {
         throw new Error('OpenAI API key not configured.');
     }
 
     const prompt = `
-You are a direct-response copywriter. Your task is to create high-converting copy for a landing page to promote a lead magnet.
+You are a direct-response copywriter. Your task is to create high-converting copy for a landing page to promote a professional business toolkit.
 
-Lead Magnet Outline:
+Toolkit Details:
 - Title: ${outline.title}
-- Core Points: ${JSON.stringify(outline.core_points)}
+- Subtitle: ${outline.subtitle}
 - Target Audience: ${input.target_audience}
+- Niche: ${input.niche}
 
 INSTRUCTIONS:
-1. Write a compelling headline that focuses on the ultimate benefit for the target audience.
-2. Write a subheadline that clarifies the offer.
-3. Convert the 'core_points' (which are features) into 3-4 powerful 'benefit_bullets'.
-4. Write a strong, action-oriented CTA button text.
+1. Write a compelling headline that focuses on the business benefits and cost savings
+2. Write a subheadline that emphasizes the professional toolkit nature
+3. Create 3-4 powerful benefit bullets that focus on business outcomes
+4. Write a strong, professional CTA button text
+
+The copy should appeal to business professionals and decision-makers.
 
 Return JSON in this exact format:
 {
-  "headline": "Compelling headline for landing page",
-  "subheadline": "Supporting subheadline that builds desire",
+  "headline": "Professional headline focusing on business benefits and cost savings",
+  "subheadline": "Supporting subheadline emphasizing the comprehensive toolkit",
   "benefit_bullets": [
-    "Benefit-driven bullet point 1",
-    "Benefit-driven bullet point 2",
-    "Benefit-driven bullet point 3"
+    "Business outcome-focused bullet point 1",
+    "Business outcome-focused bullet point 2",
+    "Business outcome-focused bullet point 3"
   ],
-  "cta_button_text": "Download The Toolkit Now"
+  "cta_button_text": "Download The Professional Toolkit"
 }
 `;
+
     try {
         const response = await openai.chat.completions.create({
             model: 'gpt-4',
@@ -307,50 +365,55 @@ Return JSON in this exact format:
 }
 
 /**
- * PHASE 3, SPECIALIST 3: The Social Media Manager - Creates promotional social posts.
+ * PHASE 3, SPECIALIST 3: The Social Media Manager - Creates promotional social posts for the toolkit.
  */
 export async function generateSocialPosts(
     input: CampaignInput,
-    outline: ContentOutline
+    outline: ToolkitOutline
 ): Promise<SocialPosts> {
     if (!openai) {
         throw new Error('OpenAI API key not configured.');
     }
 
     const prompt = `
-You are a social media manager. Your task is to create promotional posts for a new lead magnet.
+You are a B2B social media manager. Your task is to create promotional posts for a professional business toolkit.
 
-Lead Magnet Title: ${outline.title}
-Target Audience: ${input.target_audience}
-Brand Name: ${input.brand_name}
+Toolkit Details:
+- Title: ${outline.title}
+- Target Audience: ${input.target_audience}
+- Brand Name: ${input.brand_name}
+- Niche: ${input.niche}
 
 INSTRUCTIONS:
-Create three distinct social media posts to drive downloads.
-1. LinkedIn: Professional, highlights a key problem and solution for the target audience.
-2. Twitter: Punchy, direct, and uses a strong hook (under 280 characters).
-3. Instagram: Engaging, asks a question to drive comments and interaction.
+Create three distinct professional social media posts to drive toolkit downloads.
+1. LinkedIn: Professional, highlights business problems and ROI benefits
+2. Twitter: Punchy, focuses on cost savings and efficiency (under 280 characters)
+3. Instagram: Engaging, asks about business challenges and promotes the toolkit
+
+Tone should be professional and business-focused throughout.
 
 Return JSON in this exact format:
 {
-  "linkedin": "A professional LinkedIn post with a hook, value proposition, and a clear call-to-action.",
-  "twitter": "A short, punchy Twitter post (under 280 chars) designed to grab attention quickly.",
-  "instagram": "An engaging Instagram caption that asks a question related to the audience's pain point."
+  "linkedin": "A professional LinkedIn post highlighting business problems, ROI benefits, and clear call-to-action for the toolkit.",
+  "twitter": "A short, punchy Twitter post (under 280 chars) focusing on cost savings and efficiency gains.",
+  "instagram": "An engaging Instagram caption that asks about business challenges and promotes the professional toolkit."
 }
 `;
+
     try {
         const response = await openai.chat.completions.create({
             model: 'gpt-4',
             messages: [
                 {
                     role: 'system',
-                    content: 'You are a social media manager. Output strictly valid JSON as defined.'
+                    content: 'You are a B2B social media manager. Output strictly valid JSON as defined.'
                 },
                 {
                     role: 'user',
                     content: prompt
                 }
             ],
-            temperature: 0.8, // Slightly higher for creative social posts
+            temperature: 0.8,
             max_tokens: 1200
         });
 
