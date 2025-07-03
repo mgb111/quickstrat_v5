@@ -150,33 +150,6 @@ Return JSON in this exact format:
 }
 
 /**
- * PHASE 3: Generate the complete campaign by orchestrating all three specialists.
- */
-export async function generateFinalCampaign(
-  input: CampaignInput,
-  outline: ContentOutline
-): Promise<CampaignOutput> {
-  try {
-    // Run all three specialist functions concurrently
-    const [pdfContent, landingPageCopy, socialPosts] = await Promise.all([
-      generatePdfContent(input, outline),
-      generateLandingPageCopy(input, outline),
-      generateSocialPosts(input, outline)
-    ]);
-
-    // Combine results into final campaign output
-    return {
-      pdf_content: pdfContent,
-      landing_page_copy: landingPageCopy,
-      social_posts: socialPosts
-    };
-  } catch (error: any) {
-    console.error('Error generating final campaign:', error?.message || error);
-    throw new Error('Failed to generate final campaign. Please try again.');
-  }
-}
-
-/**
  * PHASE 3, SPECIALIST 1: The Writer - Expands the outline into final PDF content.
  */
 export async function generatePdfContent(
@@ -187,52 +160,36 @@ export async function generatePdfContent(
         throw new Error('OpenAI API key not configured.');
     }
 
-const prompt = `
-You are a B2B lead magnet writer. Expand the approved outline into detailed PDF content.
+    const prompt = `
+You are a clear and concise educational writer. Your task is to expand the approved outline into the final content for a lead magnet PDF.
 
-User Context:
+Approved Outline:
 - Title: ${outline.title}
 - Introduction: ${outline.introduction}
 - Core Points: ${JSON.stringify(outline.core_points)}
 - CTA: ${outline.cta}
-- Target Audience: ${input.target_audience}
-- Niche: ${input.niche}
-- Brand: ${input.brand_name}
 
-Instructions:
-1. The PDF will have a clear title and 4 educational sections based on the core points.
-2. For each core point, write a section with a title and a clear, structured paragraph (80–100 words).
-   - Use bullet points, numbered lists, or examples **inside the paragraph**, but do not change the JSON structure.
-3. Maintain this exact JSON format:
+CRITICAL INSTRUCTIONS:
+1. For EACH core point provided, expand it into its own detailed, educational paragraph.
+2. Each paragraph must be 60-80 words.
+3. The content must be purely educational with NO promotional language.
 
+Return JSON in this exact format:
 {
-  "title": "Same as input title",
-  "introduction": "60-word intro from outline",
+  "title": "${outline.title}",
+  "introduction": "${outline.introduction}",
   "sections": [
     {
-      "title": "Section Title 1 (Based on Core Point 1)",
-      "content": "Expanded, detailed content (~80–100 words)"
+      "title": "The first core point from the outline",
+      "content": "The 60-80 word expanded paragraph for the first core point."
     },
     {
-      "title": "Section Title 2 (Based on Core Point 2)",
-      "content": "..."
-    },
-    {
-      "title": "Section Title 3 (Based on Core Point 3)",
-      "content": "..."
-    },
-    {
-      "title": "Section Title 4 (Based on Core Point 4)",
-      "content": "..."
+      "title": "The second core point from the outline",
+      "content": "The 60-80 word expanded paragraph for the second core point."
     }
   ],
-  "cta": "40–60 word closing CTA from outline"
+  "cta": "${outline.cta}"
 }
-
-Important:
-- Output must be valid JSON.
-- DO NOT nest additional fields like 'format', 'scripts', 'items', etc.
-- Keep 'sections' as a flat array of { title, content }.
 `;
 
     try {
@@ -273,30 +230,30 @@ export async function generateLandingPageCopy(
         throw new Error('OpenAI API key not configured.');
     }
 
-const prompt = `
-You are a direct-response copywriter.
+    const prompt = `
+You are a direct-response copywriter. Your task is to create high-converting copy for a landing page to promote a lead magnet.
 
-Your job is to write high-converting landing page copy for a downloadable B2B lead magnet.
-
-User Context:
-- Lead Magnet Title: ${outline.title}
+Lead Magnet Outline:
+- Title: ${outline.title}
 - Core Points: ${JSON.stringify(outline.core_points)}
 - Target Audience: ${input.target_audience}
-- Brand Name: ${input.brand_name}
 
-Instructions:
-Return ONLY valid JSON in the format below.
-Do not include any explanation or extra text.
+INSTRUCTIONS:
+1. Write a compelling headline that focuses on the ultimate benefit for the target audience.
+2. Write a subheadline that clarifies the offer.
+3. Convert the 'core_points' (which are features) into 3-4 powerful 'benefit_bullets'.
+4. Write a strong, action-oriented CTA button text.
 
+Return JSON in this exact format:
 {
-  "headline": "Strong, benefit-driven headline that highlights the outcome the audience will get",
-  "subheadline": "Clarifying subheadline that builds urgency and expands on the headline",
+  "headline": "Compelling headline for landing page",
+  "subheadline": "Supporting subheadline that builds desire",
   "benefit_bullets": [
-    "Benefit 1: Short, punchy, outcome-focused",
-    "Benefit 2: Short, punchy, outcome-focused",
-    "Benefit 3: Short, punchy, outcome-focused"
+    "Benefit-driven bullet point 1",
+    "Benefit-driven bullet point 2",
+    "Benefit-driven bullet point 3"
   ],
-  "cta_button_text": "Download the Toolkit"
+  "cta_button_text": "Download The Toolkit Now"
 }
 `;
     try {
