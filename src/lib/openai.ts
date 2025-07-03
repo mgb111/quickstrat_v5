@@ -107,14 +107,39 @@ Create an outline with:
 
 Return JSON in this exact format:
 {
-  "title": "Lead Magnet Title",
-  "introduction": "Brief introduction text",
-  "core_points": [
-    "First core point",
-    "Second core point",
-    "Third core point"
+  "title": "The Ultimate VR Training Implementation Checklist",
+  "subtitle": "A step-by-step guide for L&D Leaders to cut costs and increase training effectiveness.",
+  "introduction": "Struggling to launch a successful VR training program? This checklist removes the guesswork. Follow these proven steps to guide your process from initial planning to measuring ROI, ensuring a smooth, cost-effective, and high-impact implementation.",
+  "checklist_phases": [
+    {
+      "phase_title": "Phase 1: Strategy & Planning",
+      "items": [
+        "Define specific, measurable skill gaps that VR training will address.",
+        "Audit current training programs to identify high-cost areas suitable for VR replacement.",
+        "Vet potential VR platforms based on content relevance, scalability, and support.",
+        "Establish key metrics (KPIs) to measure success and ROI before implementation."
+      ]
+    },
+    {
+      "phase_title": "Phase 2: Implementation & Rollout",
+      "items": [
+        "Procure and test all necessary VR hardware for compatibility and ease of use.",
+        "Develop or select specific VR content modules that align with your objectives.",
+        "Provide comprehensive training for all staff and trainers on using the new system.",
+        "Integrate the VR platform's data reporting with your existing L&D workflows."
+      ]
+    },
+    {
+      "phase_title": "Phase 3: Measurement & Optimization",
+      "items": [
+        "Implement a formal process for collecting and analyzing direct feedback from trainees.",
+        "Track your pre-defined KPIs to measure performance improvements and cost savings.",
+        "Conduct regular reviews of the program to identify and address any user pitfalls.",
+        "Refine and update VR content based on performance data and user feedback."
+      ]
+    }
   ],
-  "cta": "Call to action text"
+  "cta": "You now have the exact implementation plan used by top L&D departments. To see how a platform is designed to streamline this process, schedule a free consultation with our experts to discuss your specific needs."
 }
 `;
 
