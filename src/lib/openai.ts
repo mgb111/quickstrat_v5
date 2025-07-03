@@ -187,36 +187,67 @@ export async function generatePdfContent(
         throw new Error('OpenAI API key not configured.');
     }
 
-    const prompt = `
-You are a clear and concise educational writer. Your task is to expand the approved outline into the final content for a lead magnet PDF.
+const prompt = `
+You are a B2B lead magnet writer creating a high-conversion toolkit PDF.
 
-Approved Outline:
+Context:
 - Title: ${outline.title}
 - Introduction: ${outline.introduction}
 - Core Points: ${JSON.stringify(outline.core_points)}
 - CTA: ${outline.cta}
+- Target Audience: ${input.target_audience}
+- Niche: ${input.niche}
+- Brand Name: ${input.brand_name}
 
-CRITICAL INSTRUCTIONS:
-1. For EACH core point provided, expand it into its own detailed, educational paragraph.
-2. Each paragraph must be 60-80 words.
-3. The content must be purely educational with NO promotional language.
+Write the content for a 4-page lead magnet PDF in this exact format:
 
-Return JSON in this exact format:
 {
-  "title": "${outline.title}",
-  "introduction": "${outline.introduction}",
+  "title": "Mastering VR Vendor Negotiation",
+  "introduction": "40–60 word hook that introduces the pain point and sets up the value of the toolkit.",
   "sections": [
     {
-      "title": "The first core point from the outline",
-      "content": "The 60-80 word expanded paragraph for the first core point."
+      "title": "Section 1: [Section Title Based on First Core Point]",
+      "format": "table",
+      "columns": ["Term/Concept", "What It Means (Plain English)", "Question to Ask Vendor"],
+      "rows": [
+        ["Term A", "Definition of Term A", "Question to ask for Term A"],
+        ["Term B", "Definition of Term B", "Question to ask for Term B"]
+      ]
     },
     {
-      "title": "The second core point from the outline",
-      "content": "The 60-80 word expanded paragraph for the second core point."
+      "title": "Section 2: [Section Title Based on Second Core Point]",
+      "format": "checklist",
+      "items": [
+        "Checkbox item 1",
+        "Checkbox item 2",
+        "Checkbox item 3"
+      ]
+    },
+    {
+      "title": "Section 3: [Section Title Based on Third Core Point]",
+      "format": "scripts",
+      "scripts": [
+        {
+          "scenario": "When vendor pushes a bundle...",
+          "script": "You: 'Thanks for the bundle... Can we get an itemized breakdown?'"
+        },
+        {
+          "scenario": "When price is too high...",
+          "script": "You: 'Vendor B quoted 15% less... Can we close that gap?'"
+        }
+      ]
+    },
+    {
+      "title": "Section 4: [Section Title Based on Fourth Core Point]",
+      "format": "clause",
+      "clause_title": "Sample Contract Clause",
+      "clause_text": "Full legal clause...",
+      "explanation": "Plain English explanation of the clause"
     }
   ],
-  "cta": "${outline.cta}"
+  "cta": "Final motivating paragraph + soft next step to engage brand (40–60 words)"
 }
+Return only valid JSON.
 `;
 
     try {
