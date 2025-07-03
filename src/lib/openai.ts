@@ -33,10 +33,10 @@ User Context:
 
 Generate content block suggestions organized into these categories:
 
-1. "Core Solutions & Strategies" (user can select up to 5)
-2. "Expert Insights & Contrarian Views" (user can select up to 2)
-3. "Tools & Templates" (user can select up to 3)
-4. "Quick Wins & Immediate Actions" (user can select up to 4)
+1. "Core Solutions & Strategies" (user can select up to 3) - Generate exactly 4 blocks
+2. "Expert Insights & Contrarian Views" (user can select up to 2) - Generate exactly 3 blocks
+3. "Tools & Templates" (user can select up to 2) - Generate exactly 3 blocks
+4. "Quick Wins & Immediate Actions" (user can select up to 2) - Generate exactly 3 blocks
 
 For each content block, provide:
 - A clear, specific title (8-12 words)
@@ -55,7 +55,7 @@ Return JSON in this exact format:
       "id": "core-solutions",
       "title": "Core Solutions & Strategies",
       "description": "Fundamental approaches and methodologies to solve the core problem",
-      "maxSelections": 5,
+      "maxSelections": 3,
       "blocks": [
         {
           "id": "solution-1",
@@ -68,7 +68,7 @@ Return JSON in this exact format:
   ]
 }
 
-Generate 6-8 blocks per category. Make them highly relevant and specific to the user's inputs.
+Generate exactly 4 blocks for "Core Solutions", and exactly 3 blocks each for the other categories. Focus on quality over quantity - make each option genuinely valuable and distinct.
 `;
 
   try {
@@ -77,7 +77,7 @@ Generate 6-8 blocks per category. Make them highly relevant and specific to the 
       messages: [
         {
           role: 'system',
-          content: 'You are a content strategist. Output strictly valid JSON as defined.'
+          content: 'You are a content strategist. Output strictly valid JSON as defined. Generate exactly the specified number of blocks per category.'
         },
         {
           role: 'user',
