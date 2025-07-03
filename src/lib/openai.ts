@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { CampaignInput, IdeaBank, ContentBlock, CampaignOutput } from '../types';
+import { CampaignInput, LeadMagnetConcept, ContentOutline, CampaignOutput } from '../types';
 
 // Check if API key is available
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
@@ -13,62 +13,40 @@ const openai = apiKey && apiKey !== 'your_openai_api_key' ? new OpenAI({
   dangerouslyAllowBrowser: true
 }) : null;
 
-export async function generateIdeaBank(input: CampaignInput): Promise<IdeaBank> {
+export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<LeadMagnetConcept[]> {
   if (!openai) {
     throw new Error('OpenAI API key not configured. Please set VITE_OPENAI_API_KEY in your .env file with your actual API key.');
   }
 
   const prompt = `
-You are an expert content strategist and lead generation specialist.
-
-Your task is to generate an "Idea Bank" - a curated collection of potential content blocks that an expert can choose from to build their lead magnet.
+You are a lead generation expert. Based on the user's inputs, generate 5-7 unique lead magnet concepts.
 
 User Context:
 - Niche: ${input.niche}
 - Customer Pain Point: ${input.pain_point}
 - Desired Outcome: ${input.desired_outcome}
-- Brand Name: ${input.brand_name}
-- Tone: ${input.tone}
 - Target Audience: ${input.target_audience}
 
-Generate content block suggestions organized into these categories:
+Each concept must be framed as a practical TOOL (checklist, template, cheat sheet, guide, action plan, etc.).
 
-1. "Core Solutions & Strategies" (user can select up to 3) - Generate exactly 4 blocks
-2. "Expert Insights & Contrarian Views" (user can select up to 2) - Generate exactly 3 blocks
-3. "Tools & Templates" (user can select up to 2) - Generate exactly 3 blocks
-4. "Quick Wins & Immediate Actions" (user can select up to 2) - Generate exactly 3 blocks
-
-For each content block, provide:
-- A clear, specific title (8-12 words)
-- A brief description explaining what this block would cover (20-30 words)
-
-Make each suggestion:
-- Highly specific to their niche and pain point
-- Actionable and practical
-- Something an expert would want to elaborate on
-- Valuable enough to include in a premium lead magnet
+Requirements:
+- Each concept should solve ONE specific problem related to their pain point
+- Frame as actionable tools, not general guides
+- Make them specific to their niche and audience
+- Ensure each is distinct and valuable
 
 Return JSON in this exact format:
 {
-  "categories": [
+  "concepts": [
     {
-      "id": "core-solutions",
-      "title": "Core Solutions & Strategies",
-      "description": "Fundamental approaches and methodologies to solve the core problem",
-      "maxSelections": 3,
-      "blocks": [
-        {
-          "id": "solution-1",
-          "title": "Specific solution title here",
-          "description": "Brief description of what this solution covers",
-          "category": "core-solutions"
-        }
-      ]
+      "id": "concept-1",
+      "title": "A [Tool Type] for [Specific Problem]",
+      "description": "Brief description of what this tool accomplishes (15-25 words)"
     }
   ]
 }
 
-Generate exactly 4 blocks for "Core Solutions", and exactly 3 blocks each for the other categories. Focus on quality over quantity - make each option genuinely valuable and distinct.
+Generate exactly 6 concepts.
 `;
 
   try {
@@ -77,7 +55,7 @@ Generate exactly 4 blocks for "Core Solutions", and exactly 3 blocks each for th
       messages: [
         {
           role: 'system',
-          content: 'You are a content strategist. Output strictly valid JSON as defined. Generate exactly the specified number of blocks per category.'
+          content: 'You are a content strategist. Output strictly valid JSON as defined.'
         },
         {
           role: 'user',
@@ -85,61 +63,59 @@ Generate exactly 4 blocks for "Core Solutions", and exactly 3 blocks each for th
         }
       ],
       temperature: 0.7,
-      max_tokens: 2500
+      max_tokens: 1500
     });
 
     const content = response.choices?.[0]?.message?.content;
     if (!content) throw new Error('Empty response from OpenAI');
 
     const parsed = JSON.parse(content);
-    
-    // Add missing properties to each block
-    parsed.categories.forEach((category: any) => {
-      category.blocks.forEach((block: any) => {
-        block.selected = false;
-        block.userNote = '';
-        block.expandedContent = '';
-        block.approved = false;
-      });
-    });
-
-    return parsed;
+    return parsed.concepts;
   } catch (error: any) {
     console.error('OpenAI error:', error?.message || error);
-    throw new Error('Failed to generate idea bank. Please try again.');
+    throw new Error('Failed to generate lead magnet concepts. Please try again.');
   }
 }
 
-export async function expandContentBlock(
-  block: ContentBlock, 
-  input: CampaignInput, 
-  userNote?: string
-): Promise<string> {
+export async function generateContentOutline(
+  input: CampaignInput,
+  selectedConcept: LeadMagnetConcept
+): Promise<ContentOutline> {
   if (!openai) {
     throw new Error('OpenAI API key not configured.');
   }
 
   const prompt = `
-You are writing a section for a professional lead magnet PDF.
+You are creating a content outline for a lead magnet.
 
-Context:
+User Context:
 - Niche: ${input.niche}
 - Target Audience: ${input.target_audience}
 - Tone: ${input.tone}
 - Brand: ${input.brand_name}
 
-Selected Topic: "${block.title}"
-Topic Description: "${block.description}"
-${userNote ? `User's Additional Context: "${userNote}"` : ''}
+Selected Concept: "${selectedConcept.title}"
+Concept Description: "${selectedConcept.description}"
 
-Write a detailed, actionable section of 150-200 words that:
-- Provides specific, implementable advice
-- Includes concrete examples or steps where relevant
-- Maintains the specified tone
-- Feels valuable and expert-level
-- Is ready for inclusion in a professional PDF
+Generate a content outline with these components:
 
-Do not include section headers or titles - just the content paragraph(s).
+1. Title: A sharp, specific headline (8-12 words)
+2. Introduction: A concise hook that states the problem this tool solves (40-60 words)
+3. Core Points: 4-6 bullet points outlining key steps/points (10-15 words each)
+4. CTA: A brief call-to-action offering next steps (25-40 words)
+
+Return JSON in this exact format:
+{
+  "title": "The [Tool Name]: [Specific Benefit]",
+  "introduction": "40-60 word introduction that hooks and states the problem",
+  "core_points": [
+    "First key point or step (10-15 words)",
+    "Second key point or step (10-15 words)",
+    "Third key point or step (10-15 words)",
+    "Fourth key point or step (10-15 words)"
+  ],
+  "cta": "25-40 word call-to-action with logical next step"
+}
 `;
 
   try {
@@ -148,7 +124,7 @@ Do not include section headers or titles - just the content paragraph(s).
       messages: [
         {
           role: 'system',
-          content: 'You are an expert content writer. Write clear, actionable content.'
+          content: 'You are a content strategist. Output strictly valid JSON as defined.'
         },
         {
           role: 'user',
@@ -156,68 +132,64 @@ Do not include section headers or titles - just the content paragraph(s).
         }
       ],
       temperature: 0.7,
-      max_tokens: 400
+      max_tokens: 800
     });
 
     const content = response.choices?.[0]?.message?.content;
     if (!content) throw new Error('Empty response from OpenAI');
 
-    return content.trim();
+    return JSON.parse(content);
   } catch (error: any) {
     console.error('OpenAI error:', error?.message || error);
-    throw new Error('Failed to expand content block. Please try again.');
+    throw new Error('Failed to generate content outline. Please try again.');
   }
 }
 
 export async function generateFinalCampaign(
   input: CampaignInput,
-  selectedBlocks: ContentBlock[]
+  outline: ContentOutline
 ): Promise<CampaignOutput> {
   if (!openai) {
     throw new Error('OpenAI API key not configured.');
   }
 
-  // Create sections from approved blocks
-  const sections = selectedBlocks
-    .filter(block => block.approved && block.expandedContent)
-    .map(block => ({
-      title: block.title,
-      content: block.expandedContent!
-    }));
-
   const prompt = `
-You are a lead generation expert creating the final components for a lead magnet campaign.
+You are creating the final lead magnet campaign.
 
-Context:
+User Context:
 - Niche: ${input.niche}
-- Customer Pain Point: ${input.pain_point}
-- Desired Outcome: ${input.desired_outcome}
-- Brand Name: ${input.brand_name}
-- Tone: ${input.tone}
 - Target Audience: ${input.target_audience}
+- Tone: ${input.tone}
+- Brand: ${input.brand_name}
 
-The user has already created and approved the main content sections. Now generate:
+Approved Outline:
+- Title: ${outline.title}
+- Introduction: ${outline.introduction}
+- Core Points: ${outline.core_points.join('; ')}
+- CTA: ${outline.cta}
 
-1. PDF Title Page (title + subtitle)
-2. PDF Introduction (2-3 paragraphs)
-3. Actionable Takeaways section
-4. Call-to-Action section
-5. Landing page copy
-6. Social media posts
+Tasks:
+1. Expand each core point into a detailed paragraph (60-80 words each)
+2. Create landing page copy
+3. Create social media posts
+
+CRITICAL: Content must be purely educational with NO promotional language for any specific brand.
 
 Return JSON in this exact format:
 {
   "pdf_content": {
-    "title_page": {
-      "title": "Compelling, specific title for the lead magnet",
-      "subtitle": "Subtitle that clarifies the value and audience"
-    },
-    "introduction": "2-3 paragraph introduction that hooks the reader and sets up the content",
-    "actionable_takeaways": "A practical action plan or next steps section",
-    "cta": "Call-to-action that bridges the value provided to a sales conversation"
+    "title": "${outline.title}",
+    "introduction": "${outline.introduction}",
+    "sections": [
+      {
+        "title": "First core point as section title",
+        "content": "60-80 word expanded paragraph"
+      }
+    ],
+    "cta": "${outline.cta}"
   },
   "landing_page": {
-    "headline": "Compelling headline for the landing page",
+    "headline": "Compelling headline for landing page",
     "subheadline": "Supporting subheadline",
     "benefit_bullets": ["Benefit 1", "Benefit 2", "Benefit 3"],
     "cta_button_text": "Download button text"
@@ -225,7 +197,7 @@ Return JSON in this exact format:
   "social_posts": {
     "linkedin": "LinkedIn post with hook, value, and CTA",
     "twitter": "Twitter post - punchy and direct",
-    "instagram": "Instagram carousel-style post"
+    "instagram": "Instagram post with engagement"
   }
 }
 `;
@@ -244,18 +216,13 @@ Return JSON in this exact format:
         }
       ],
       temperature: 0.7,
-      max_tokens: 2000
+      max_tokens: 2500
     });
 
     const content = response.choices?.[0]?.message?.content;
     if (!content) throw new Error('Empty response from OpenAI');
 
-    const parsed = JSON.parse(content);
-    
-    // Add the user-created sections to the PDF content
-    parsed.pdf_content.sections = sections;
-
-    return parsed;
+    return JSON.parse(content);
   } catch (error: any) {
     console.error('OpenAI error:', error?.message || error);
     throw new Error('Failed to generate final campaign. Please try again.');

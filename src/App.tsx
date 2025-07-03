@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { Zap, ArrowLeft } from 'lucide-react';
 import CampaignForm from './components/CampaignForm';
-import IdeaBankCuration from './components/IdeaBankCuration';
-import ContentReview from './components/ContentReview';
+import ConceptSelection from './components/ConceptSelection';
+import OutlineReview from './components/OutlineReview';
 import ResultsDisplay from './components/ResultsDisplay';
-import { WizardState, CampaignInput, ContentBlock, CampaignOutput } from './types';
-import { generateIdeaBank, expandContentBlock, generateFinalCampaign } from './lib/openai';
+import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, CampaignOutput } from './types';
+import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
 
 function App() {
   const [wizardState, setWizardState] = useState<WizardState>({
     stage: 'input',
     input: null,
-    ideaBank: null,
-    selectedBlocks: [],
+    concepts: null,
+    selectedConcept: null,
+    outline: null,
     finalOutput: null
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [isRegenerating, setIsRegenerating] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleInputSubmit = async (input: CampaignInput) => {
@@ -24,86 +24,53 @@ function App() {
     setError(null);
 
     try {
-      const ideaBank = await generateIdeaBank(input);
+      const concepts = await generateLeadMagnetConcepts(input);
       setWizardState({
-        stage: 'curation',
+        stage: 'concept-selection',
         input,
-        ideaBank,
-        selectedBlocks: [],
+        concepts,
+        selectedConcept: null,
+        outline: null,
         finalOutput: null
       });
     } catch (err) {
-      console.error('Error generating idea bank:', err);
-      setError('Failed to generate ideas. Please check your API keys and try again.');
+      console.error('Error generating concepts:', err);
+      setError('Failed to generate lead magnet concepts. Please check your API keys and try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSelectionComplete = async (selectedBlocks: ContentBlock[]) => {
+  const handleConceptSelected = async (selectedConcept: LeadMagnetConcept) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // Expand all selected blocks
-      const expandedBlocks = await Promise.all(
-        selectedBlocks.map(async (block) => {
-          const expandedContent = await expandContentBlock(
-            block, 
-            wizardState.input!, 
-            block.userNote
-          );
-          return { ...block, expandedContent };
-        })
-      );
-
+      const outline = await generateContentOutline(wizardState.input!, selectedConcept);
       setWizardState(prev => ({
         ...prev,
-        stage: 'review',
-        selectedBlocks: expandedBlocks
+        stage: 'outline-review',
+        selectedConcept,
+        outline
       }));
     } catch (err) {
-      console.error('Error expanding content:', err);
-      setError('Failed to expand content blocks. Please try again.');
+      console.error('Error generating outline:', err);
+      setError('Failed to generate content outline. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRegenerateBlock = async (block: ContentBlock) => {
-    setIsRegenerating(block.id);
-    setError(null);
-
-    try {
-      const newContent = await expandContentBlock(
-        block,
-        wizardState.input!,
-        block.userNote
-      );
-
-      setWizardState(prev => ({
-        ...prev,
-        selectedBlocks: prev.selectedBlocks.map(b =>
-          b.id === block.id ? { ...b, expandedContent: newContent, approved: false } : b
-        )
-      }));
-    } catch (err) {
-      console.error('Error regenerating block:', err);
-      setError('Failed to regenerate content. Please try again.');
-    } finally {
-      setIsRegenerating(null);
-    }
-  };
-
-  const handleApprovalComplete = async (approvedBlocks: ContentBlock[]) => {
+  const handleOutlineApproved = async (finalOutline: ContentOutline) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const finalOutput = await generateFinalCampaign(wizardState.input!, approvedBlocks);
+      const finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
       setWizardState(prev => ({
         ...prev,
         stage: 'complete',
+        outline: finalOutline,
         finalOutput
       }));
     } catch (err) {
@@ -118,8 +85,9 @@ function App() {
     setWizardState({
       stage: 'input',
       input: null,
-      ideaBank: null,
-      selectedBlocks: [],
+      concepts: null,
+      selectedConcept: null,
+      outline: null,
       finalOutput: null
     });
     setError(null);
@@ -128,8 +96,8 @@ function App() {
   const renderStageIndicator = () => {
     const stages = [
       { id: 'input', label: 'Input', number: 1 },
-      { id: 'curation', label: 'Curate', number: 2 },
-      { id: 'review', label: 'Review', number: 3 },
+      { id: 'concept-selection', label: 'Focus', number: 2 },
+      { id: 'outline-review', label: 'Review', number: 3 },
       { id: 'complete', label: 'Complete', number: 4 }
     ];
 
@@ -182,7 +150,7 @@ function App() {
             LeadGen <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Machine</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Interactive Content Wizard - AI assists, you direct, experts approve
+            Transform customer problems into focused, high-value lead magnets with AI assistance
           </p>
         </header>
 
@@ -198,7 +166,7 @@ function App() {
           <CampaignForm onSubmit={handleInputSubmit} isLoading={isLoading} />
         )}
 
-        {wizardState.stage === 'curation' && wizardState.ideaBank && (
+        {wizardState.stage === 'concept-selection' && wizardState.concepts && (
           <div className="space-y-8">
             <div className="text-center">
               <button
@@ -209,15 +177,15 @@ function App() {
                 Start Over
               </button>
             </div>
-            <IdeaBankCuration 
-              ideaBank={wizardState.ideaBank}
-              onSelectionComplete={handleSelectionComplete}
+            <ConceptSelection 
+              concepts={wizardState.concepts}
+              onConceptSelected={handleConceptSelected}
               isLoading={isLoading}
             />
           </div>
         )}
 
-        {wizardState.stage === 'review' && wizardState.selectedBlocks.length > 0 && (
+        {wizardState.stage === 'outline-review' && wizardState.outline && (
           <div className="space-y-8">
             <div className="text-center">
               <button
@@ -228,11 +196,9 @@ function App() {
                 Start Over
               </button>
             </div>
-            <ContentReview 
-              expandedBlocks={wizardState.selectedBlocks}
-              onApprovalComplete={handleApprovalComplete}
-              onRegenerateBlock={handleRegenerateBlock}
-              isRegenerating={isRegenerating}
+            <OutlineReview 
+              outline={wizardState.outline}
+              onOutlineApproved={handleOutlineApproved}
               isLoading={isLoading}
             />
           </div>

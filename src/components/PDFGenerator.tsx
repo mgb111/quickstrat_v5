@@ -63,8 +63,7 @@ const PDFDocument: React.FC<{ content: PDFContent; brandName: string }> = ({ con
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.titlePage}>
-        <Text style={styles.title}>{content.title_page.title}</Text>
-        <Text style={styles.subtitle}>{content.title_page.subtitle}</Text>
+        <Text style={styles.title}>{content.title}</Text>
       </View>
       <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
     </Page>
@@ -89,10 +88,6 @@ const PDFDocument: React.FC<{ content: PDFContent; brandName: string }> = ({ con
     
     <Page size="A4" style={styles.page}>
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Actionable Takeaways</Text>
-        <Text style={styles.paragraph}>{content.actionable_takeaways}</Text>
-      </View>
-      <View style={styles.section}>
         <Text style={styles.sectionTitle}>Next Steps</Text>
         <Text style={styles.paragraph}>{content.cta}</Text>
       </View>
@@ -105,7 +100,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold text-gray-900">Lead Magnet PDF</h3>
+        <h3 className="text-xl font-bold text-gray-900">Your Lead Magnet PDF</h3>
         <PDFDownloadLink
           document={<PDFDocument content={content} brandName={brandName} />}
           fileName={`${brandName.replace(/\s+/g, '-').toLowerCase()}-lead-magnet.pdf`}
@@ -118,9 +113,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
       
       <div className="space-y-4">
         <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">Title Page</h4>
-          <p className="text-sm text-gray-700"><strong>{content.title_page.title}</strong></p>
-          <p className="text-sm text-gray-600 mt-1">{content.title_page.subtitle}</p>
+          <h4 className="font-semibold text-gray-900 mb-2">Title</h4>
+          <p className="text-sm text-gray-700">{content.title}</p>
         </div>
         
         <div className="p-4 bg-gray-50 rounded-lg">
@@ -134,6 +128,11 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
             <p className="text-sm text-gray-700">{section.content}</p>
           </div>
         ))}
+        
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <h4 className="font-semibold text-gray-900 mb-2">Call to Action</h4>
+          <p className="text-sm text-gray-700">{content.cta}</p>
+        </div>
       </div>
     </div>
   );
