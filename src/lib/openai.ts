@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { CampaignInput, ToolkitConcept, ToolkitOutline, ToolkitContent, LandingPageCopy, SocialPosts, CampaignOutput } from '../types';
+import { CampaignInput, LeadMagnetConcept, ContentOutline, PdfContent, LandingPageCopy, SocialPosts, CampaignOutput } from '../types';
 
 // Check if API key is available
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
@@ -82,10 +82,10 @@ Return JSON in this exact format:
 /**
  * PHASE 2: Generate a reviewable content outline based on the user's single selected concept.
  */
-export async function generateToolkitOutline(
+export async function generateContentOutline(
   input: CampaignInput,
-  selectedConcept: ToolkitConcept
-): Promise<ToolkitOutline> {
+  selectedConcept: LeadMagnetConcept
+): Promise<ContentOutline> {
   if (!openai) {
     throw new Error('OpenAI API key not configured.');
   }
@@ -169,15 +169,15 @@ export async function generateFinalCampaign(
 ): Promise<CampaignOutput> {
   try {
     // Run all three specialist functions concurrently
-    const [toolkitContent, landingPageCopy, socialPosts] = await Promise.all([
-      generateToolkitContent(input, outline),
+    const [pdfContent, landingPageCopy, socialPosts] = await Promise.all([
+      generatePdfContent(input, outline),
       generateLandingPageCopy(input, outline),
       generateSocialPosts(input, outline)
     ]);
 
     // Combine results into final campaign output
     return {
-      toolkit_content: toolkitContent,
+      pdf_content: pdfContent,
       landing_page: landingPageCopy,
       social_posts: socialPosts
     };
@@ -190,10 +190,10 @@ export async function generateFinalCampaign(
 /**
  * PHASE 3, SPECIALIST 1: The Professional Writer - Creates the complete toolkit document.
  */
-export async function generateToolkitContent(
+export async function generatePdfContent(
     input: CampaignInput,
-    outline: ToolkitOutline
-): Promise<ToolkitContent> {
+    outline: ContentOutline
+): Promise<PdfContent> {
     if (!openai) {
         throw new Error('OpenAI API key not configured.');
     }
@@ -301,7 +301,7 @@ Return JSON in this exact format:
  */
 export async function generateLandingPageCopy(
     input: CampaignInput,
-    outline: ToolkitOutline
+    outline: ContentOutline
 ): Promise<LandingPageCopy> {
     if (!openai) {
         throw new Error('OpenAI API key not configured.');
@@ -369,7 +369,7 @@ Return JSON in this exact format:
  */
 export async function generateSocialPosts(
     input: CampaignInput,
-    outline: ToolkitOutline
+    outline: ContentOutline
 ): Promise<SocialPosts> {
     if (!openai) {
         throw new Error('OpenAI API key not configured.');
