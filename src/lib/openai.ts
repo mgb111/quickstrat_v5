@@ -1,12 +1,23 @@
 import OpenAI from 'openai';
 import { CampaignInput, CampaignOutput } from '../types';
 
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+// Check if API key is available
+const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+
+if (!apiKey || apiKey === 'your_openai_api_key') {
+  console.warn('OpenAI API key not configured. Please set VITE_OPENAI_API_KEY in your .env file.');
+}
+
+const openai = apiKey && apiKey !== 'your_openai_api_key' ? new OpenAI({
+  apiKey: apiKey,
   dangerouslyAllowBrowser: true
-});
+}) : null;
 
 export async function generateCampaign(input: CampaignInput): Promise<CampaignOutput> {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured. Please set VITE_OPENAI_API_KEY in your .env file with your actual API key.');
+  }
+
 const prompt = `
 You are a senior direct response copywriter and lead generation strategist.
 
