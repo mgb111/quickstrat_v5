@@ -273,30 +273,30 @@ export async function generateLandingPageCopy(
         throw new Error('OpenAI API key not configured.');
     }
 
-    const prompt = `
-You are a direct-response copywriter. Your task is to create high-converting copy for a landing page to promote a lead magnet.
+const prompt = `
+You are a direct-response copywriter.
 
-Lead Magnet Outline:
-- Title: ${outline.title}
+Your job is to write high-converting landing page copy for a downloadable B2B lead magnet.
+
+User Context:
+- Lead Magnet Title: ${outline.title}
 - Core Points: ${JSON.stringify(outline.core_points)}
 - Target Audience: ${input.target_audience}
+- Brand Name: ${input.brand_name}
 
-INSTRUCTIONS:
-1. Write a compelling headline that focuses on the ultimate benefit for the target audience.
-2. Write a subheadline that clarifies the offer.
-3. Convert the 'core_points' (which are features) into 3-4 powerful 'benefit_bullets'.
-4. Write a strong, action-oriented CTA button text.
+Instructions:
+Return ONLY valid JSON in the format below.
+Do not include any explanation or extra text.
 
-Return JSON in this exact format:
 {
-  "headline": "Compelling headline for landing page",
-  "subheadline": "Supporting subheadline that builds desire",
+  "headline": "Strong, benefit-driven headline that highlights the outcome the audience will get",
+  "subheadline": "Clarifying subheadline that builds urgency and expands on the headline",
   "benefit_bullets": [
-    "Benefit-driven bullet point 1",
-    "Benefit-driven bullet point 2",
-    "Benefit-driven bullet point 3"
+    "Benefit 1: Short, punchy, outcome-focused",
+    "Benefit 2: Short, punchy, outcome-focused",
+    "Benefit 3: Short, punchy, outcome-focused"
   ],
-  "cta_button_text": "Download The Toolkit Now"
+  "cta_button_text": "Download the Toolkit"
 }
 `;
     try {
