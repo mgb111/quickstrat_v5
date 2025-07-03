@@ -90,35 +90,39 @@ export async function generateContentOutline(
   }
 
   const prompt = `
-You are creating a content outline for a lead magnet.
+You are an expert instructional designer creating a high-value content outline for a lead magnet.
 
 User Context:
 - Niche: ${input.niche}
 - Target Audience: ${input.target_audience}
 - Tone: ${input.tone}
-- Brand: ${input.brand_name}
 
 Selected Concept: "${selectedConcept.title}"
 Concept Description: "${selectedConcept.description}"
 
-Generate a content outline with these components:
+Generate a content outline.
 
-1. Title: A sharp, specific headline (8-12 words)
-2. Introduction: A concise hook that states the problem this tool solves (40-60 words)
-3. Core Points: 4-6 bullet points outlining key steps/points (10-15 words each)
-4. CTA: A brief call-to-action offering next steps (25-40 words)
+CRITICAL INSTRUCTIONS FOR 'core_points':
+Each core point MUST be a specific, actionable step, a non-obvious tip, or a concrete recommendation. Do NOT use vague, high-level statements. Each point must provide real value on its own.
+
+- BAD EXAMPLE: "Create engaging content."
+- GOOD EXAMPLE: "Apply the 'Hook, Interact, Reward' model to structure VR scenarios for maximum engagement."
+
+- BAD EXAMPLE: "Choose the right software."
+- GOOD EXAMPLE: "Evaluate free software on 3 criteria: community support, export formats, and documentation quality."
+
 
 Return JSON in this exact format:
 {
-  "title": "The [Tool Name]: [Specific Benefit]",
-  "introduction": "40-60 word introduction that hooks and states the problem",
+  "title": "A sharp, specific headline (8-12 words)",
+  "introduction": "A concise hook that states the problem this tool solves (40-60 words)",
   "core_points": [
-    "First key point or step (10-15 words)",
-    "Second key point or step (10-15 words)",
-    "Third key point or step (10-15 words)",
-    "Fourth key point or step (10-15 words)"
+    "First specific, actionable point (10-20 words)",
+    "Second specific, actionable point (10-20 words)",
+    "Third specific, actionable point (10-20 words)",
+    "Fourth specific, actionable point (10-20 words)"
   ],
-  "cta": "25-40 word call-to-action with logical next step"
+  "cta": "A brief call-to-action offering a logical next step (25-40 words)"
 }
 `;
 
