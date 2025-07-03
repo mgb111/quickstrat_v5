@@ -90,146 +90,37 @@ export async function generateContentOutline(
   }
 
   const prompt = `
-import OpenAI from 'openai';
-import { CampaignInput, LeadMagnetConcept, AplusToolkit } from '../types'; // Assuming AplusToolkit is a new type for the final output
+You are creating a content outline for a lead magnet.
 
-// Check if API key is available
-const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-
-if (!apiKey || apiKey === 'your_openai_api_key') {
-  console.warn('OpenAI API key not configured. Please set VITE_OPENAI_API_KEY in your .env file.');
-}
-
-const openai = apiKey && apiKey !== 'your_openai_api_key' ? new OpenAI({
-  apiKey: apiKey,
-  dangerouslyAllowBrowser: true
-}) : null;
-
-
-/**
- * The "A+ Toolkit" Generator.
- * This single function takes the user's context and selected concept,
- * and generates the complete, final, tool-rich PDF content in one step.
- * This replaces the previous outline-and-expand workflow.
- */
-export async function generateAplusToolkitContent(
-  input: CampaignInput,
-  selectedConcept: LeadMagnetConcept
-): Promise<AplusToolkit> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured.');
-  }
-
-  const prompt = `
-You are an expert Instructional Designer and a world-class Conversion Copywriter. Your one and only task is to generate the COMPLETE AND FINAL content for an A+ grade, high-value lead magnet based on the user's selected concept.
-
-USER CONTEXT:
+User Context:
 - Niche: ${input.niche}
 - Target Audience: ${input.target_audience}
 - Tone: ${input.tone}
-- Selected Concept: A lead magnet about "${selectedConcept.title}"
+- Brand: ${input.brand_name}
 
-CORE PRINCIPLES (NON-NEGOTIABLE):
-1.  EXTREME VALUE: Every section must be a tangible, practical tool. Do not just state what to do; provide the specific checklist, template, script, or framework to show HOW to do it.
-2.  NO GENERIC ADVICE: Avoid high-level, obvious statements. Every sentence must provide unique value.
-3.  NO SELLING: The content must be 100% educational. Do not mention any brands.
-4.  DENSE & STRUCTURED: The output must be structured for professional design, using a variety of content formats (tables, lists, blockquotes, etc.).
+Selected Concept: "${selectedConcept.title}"
+Concept Description: "${selectedConcept.description}"
 
-THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS
+Generate a content outline with these components:
 
-1.  **Title & Subtitle:**
-    -   Title: A sharp, specific headline for the selected concept (8-12 words).
-    -   Subtitle: A powerful subtitle that makes a quantifiable promise or clarifies the tool's function (10-15 words).
+1. Title: A sharp, specific headline (8-12 words)
+2. Introduction: A concise hook that states the problem this tool solves (40-60 words)
+3. Core Points: 4-6 bullet points outlining key steps/points (10-15 words each)
+4. CTA: A brief call-to-action offering next steps (25-40 words)
 
-2.  **Introduction:**
-    -   A concise, hard-hitting introduction (50-70 words) that starts with a sharp pain point and clearly states what tangible tool the reader will possess by the end of the document.
-
-3.  **The Toolkit Sections:**
-    -   You MUST generate at least THREE distinct sections. Each section must be a different TYPE of tool from the list below. Choose the types most relevant to the selected concept.
-
-    -   **Tool Type Option 1: A "Decoder Ring" Table**
-        -   A 3-column table explaining technical terms or concepts. Headers: ["Term/Concept", "What It Means (Simple Terms)", "Why It Matters To You"]
-
-    -   **Tool Type Option 2: An "Action Checklist"**
-        -   A practical, bulleted checklist of specific, actionable items. Each item must start with a strong verb (e.g., "Verify," "Calculate," "Draft").
-
-    -   **Tool Type Option 3: "Copy-Paste Scripts"**
-        -   A section with 2-3 blockquotes containing actual phrases, email sentences, or conversation snippets the user can use immediately.
-
-    -   **Tool Type Option 4: A "Fill-in-the-Blank Template"**
-        -   A structural template for an email, project brief, or proposal section. Use [Brackets] for fields the user needs to fill in.
-
-    -   **Tool Type Option 5: "Common Mistakes to Avoid"**
-        -   A numbered list of the 3 most common and costly mistakes people make regarding the topic, with a brief sentence explaining how to avoid each one.
-
-4.  **Call to Action (CTA):**
-    -   A brief (25-40 words), logical CTA that offers a clear next step toward a sales conversation.
-
-RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+Return JSON in this exact format:
 {
-  "title": "The Generated Title",
-  "subtitle": "The Generated Subtitle",
-  "introduction": "The 50-70 word introduction.",
-  "toolkit_sections": [
-    {
-      "type": "table",
-      "title": "Example Section Title for a Table",
-      "content": {
-        "headers": ["Header 1", "Header 2", "Header 3"],
-        "rows": [
-          ["Row 1 Cell 1", "Row 1 Cell 2", "Row 1 Cell 3"],
-          ["Row 2 Cell 1", "Row 2 Cell 2", "Row 2 Cell 3"]
-        ]
-      }
-    },
-    {
-      "type": "checklist",
-      "title": "Example Section Title for a Checklist",
-      "items": [
-        "First actionable checklist item.",
-        "Second actionable checklist item.",
-        "Third actionable checklist item."
-      ]
-    },
-    {
-      "type": "scripts",
-      "title": "Example Section Title for Scripts",
-      "scripts": [
-        "Script Snippet 1: 'When they say X, you should respond with Y...'",
-        "Script Snippet 2: 'Here is a sample sentence to use in your email...'"
-      ]
-    }
+  "title": "The [Tool Name]: [Specific Benefit]",
+  "introduction": "40-60 word introduction that hooks and states the problem",
+  "core_points": [
+    "First key point or step (10-15 words)",
+    "Second key point or step (10-15 words)",
+    "Third key point or step (10-15 words)",
+    "Fourth key point or step (10-15 words)"
   ],
-  "cta": "The generated 25-40 word call-to-action."
+  "cta": "25-40 word call-to-action with logical next step"
 }
 `;
-
-  try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert Instructional Designer and world-class Conversion Copywriter. Your task is to generate the complete and final content for an A+ grade lead magnet. Output strictly valid JSON as defined.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 3000 // Increased token limit for a complete, detailed document
-    });
-
-    const content = response.choices?.[0]?.message?.content;
-    if (!content) throw new Error('Empty response from OpenAI');
-
-    return JSON.parse(content);
-  } catch (error: any) {
-    console.error('OpenAI error:', error?.message || error);
-    throw new Error('Failed to generate A+ toolkit content. Please try again.');
-  }
-}
 
   try {
     const response = await openai.chat.completions.create({
@@ -276,7 +167,7 @@ export async function generateFinalCampaign(
     // Combine results into final campaign output
     return {
       pdf_content: pdfContent,
-      landing_page: landingPageCopy,
+      landing_page_copy: landingPageCopy,
       social_posts: socialPosts
     };
   } catch (error: any) {
