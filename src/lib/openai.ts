@@ -150,6 +150,33 @@ Return JSON in this exact format:
 }
 
 /**
+ * PHASE 3: Generate the complete campaign by orchestrating all three specialists.
+ */
+export async function generateFinalCampaign(
+  input: CampaignInput,
+  outline: ContentOutline
+): Promise<CampaignOutput> {
+  try {
+    // Run all three specialist functions concurrently
+    const [pdfContent, landingPageCopy, socialPosts] = await Promise.all([
+      generatePdfContent(input, outline),
+      generateLandingPageCopy(input, outline),
+      generateSocialPosts(input, outline)
+    ]);
+
+    // Combine results into final campaign output
+    return {
+      pdf_content: pdfContent,
+      landing_page_copy: landingPageCopy,
+      social_posts: socialPosts
+    };
+  } catch (error: any) {
+    console.error('Error generating final campaign:', error?.message || error);
+    throw new Error('Failed to generate final campaign. Please try again.');
+  }
+}
+
+/**
  * PHASE 3, SPECIALIST 1: The Writer - Expands the outline into final PDF content.
  */
 export async function generatePdfContent(
