@@ -167,7 +167,7 @@ export async function generateFinalCampaign(
     // Combine results into final campaign output
     return {
       pdf_content: pdfContent,
-      landing_page_copy: landingPageCopy,
+      landing_page: landingPageCopy,
       social_posts: socialPosts
     };
   } catch (error: any) {
