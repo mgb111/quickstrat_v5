@@ -100,46 +100,21 @@ User Context:
 - Selected Concept: ${selectedConcept.title}
 
 Create an outline with:
-1. A compelling title for the lead magnet
+1. A compelling title
 2. A brief introduction (2-3 sentences)
-3. 3-5 core points that address the pain point and lead to the desired outcome
+3. 3-5 core points that address the pain point
 4. A call-to-action
 
 Return JSON in this exact format:
 {
-  "title": "The Ultimate VR Training Implementation Checklist",
-  "subtitle": "A step-by-step guide for L&D Leaders to cut costs and increase training effectiveness.",
-  "introduction": "Struggling to launch a successful VR training program? This checklist removes the guesswork. Follow these proven steps to guide your process from initial planning to measuring ROI, ensuring a smooth, cost-effective, and high-impact implementation.",
-  "checklist_phases": [
-    {
-      "phase_title": "Phase 1: Strategy & Planning",
-      "items": [
-        "Define specific, measurable skill gaps that VR training will address.",
-        "Audit current training programs to identify high-cost areas suitable for VR replacement.",
-        "Vet potential VR platforms based on content relevance, scalability, and support.",
-        "Establish key metrics (KPIs) to measure success and ROI before implementation."
-      ]
-    },
-    {
-      "phase_title": "Phase 2: Implementation & Rollout",
-      "items": [
-        "Procure and test all necessary VR hardware for compatibility and ease of use.",
-        "Develop or select specific VR content modules that align with your objectives.",
-        "Provide comprehensive training for all staff and trainers on using the new system.",
-        "Integrate the VR platform's data reporting with your existing L&D workflows."
-      ]
-    },
-    {
-      "phase_title": "Phase 3: Measurement & Optimization",
-      "items": [
-        "Implement a formal process for collecting and analyzing direct feedback from trainees.",
-        "Track your pre-defined KPIs to measure performance improvements and cost savings.",
-        "Conduct regular reviews of the program to identify and address any user pitfalls.",
-        "Refine and update VR content based on performance data and user feedback."
-      ]
-    }
+  "title": "Compelling title for the lead magnet",
+  "introduction": "Brief introduction explaining the value",
+  "core_points": [
+    "First main point to cover",
+    "Second main point to cover",
+    "Third main point to cover"
   ],
-  "cta": "You now have the exact implementation plan used by top L&D departments. To see how a platform is designed to streamline this process, schedule a free consultation with our experts to discuss your specific needs."
+  "cta": "Call-to-action text"
 }
 `;
 
