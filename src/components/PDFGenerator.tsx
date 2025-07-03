@@ -48,13 +48,6 @@ const styles = StyleSheet.create({
     color: '#374151',
     marginBottom: 10
   },
-  bulletPoint: {
-    fontSize: 12,
-    lineHeight: 1.6,
-    color: '#374151',
-    marginLeft: 20,
-    marginBottom: 5
-  },
   footer: {
     position: 'absolute',
     bottom: 30,
@@ -70,8 +63,7 @@ const PDFDocument: React.FC<{ content: PDFContent; brandName: string }> = ({ con
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.titlePage}>
-        <Text style={styles.title}>{content.title_page.title}</Text>
-        <Text style={styles.subtitle}>{content.title_page.subtitle}</Text>
+        <Text style={styles.title}>{content.title}</Text>
       </View>
       <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
     </Page>
@@ -84,21 +76,17 @@ const PDFDocument: React.FC<{ content: PDFContent; brandName: string }> = ({ con
       <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
     </Page>
     
-    <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Key Solutions</Text>
-        <Text style={styles.bulletPoint}>• {content.key_solutions.solution1}</Text>
-        <Text style={styles.bulletPoint}>• {content.key_solutions.solution2}</Text>
-        <Text style={styles.bulletPoint}>• {content.key_solutions.solution3}</Text>
-      </View>
-      <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
-    </Page>
+    {content.sections.map((section, index) => (
+      <Page key={index} size="A4" style={styles.page}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{section.title}</Text>
+          <Text style={styles.paragraph}>{section.content}</Text>
+        </View>
+        <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
+      </Page>
+    ))}
     
     <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Actionable Takeaways</Text>
-        <Text style={styles.paragraph}>{content.actionable_takeaways}</Text>
-      </View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Next Steps</Text>
         <Text style={styles.paragraph}>{content.cta}</Text>
@@ -112,7 +100,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold text-gray-900">Lead Magnet PDF</h3>
+        <h3 className="text-xl font-bold text-gray-900">Your Lead Magnet PDF</h3>
         <PDFDownloadLink
           document={<PDFDocument content={content} brandName={brandName} />}
           fileName={`${brandName.replace(/\s+/g, '-').toLowerCase()}-lead-magnet.pdf`}
@@ -125,9 +113,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
       
       <div className="space-y-4">
         <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">Title Page</h4>
-          <p className="text-sm text-gray-700"><strong>{content.title_page.title}</strong></p>
-          <p className="text-sm text-gray-600 mt-1">{content.title_page.subtitle}</p>
+          <h4 className="font-semibold text-gray-900 mb-2">Title</h4>
+          <p className="text-sm text-gray-700">{content.title}</p>
         </div>
         
         <div className="p-4 bg-gray-50 rounded-lg">
@@ -135,13 +122,16 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
           <p className="text-sm text-gray-700">{content.introduction}</p>
         </div>
         
+        {content.sections.map((section, index) => (
+          <div key={index} className="p-4 bg-gray-50 rounded-lg">
+            <h4 className="font-semibold text-gray-900 mb-2">{section.title}</h4>
+            <p className="text-sm text-gray-700">{section.content}</p>
+          </div>
+        ))}
+        
         <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">Key Solutions</h4>
-          <ul className="text-sm text-gray-700 space-y-1">
-            <li>• {content.key_solutions.solution1}</li>
-            <li>• {content.key_solutions.solution2}</li>
-            <li>• {content.key_solutions.solution3}</li>
-          </ul>
+          <h4 className="font-semibold text-gray-900 mb-2">Call to Action</h4>
+          <p className="text-sm text-gray-700">{content.cta}</p>
         </div>
       </div>
     </div>

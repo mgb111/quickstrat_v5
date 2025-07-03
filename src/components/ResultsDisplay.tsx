@@ -40,12 +40,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName }) =
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Landing Page Copy */}
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-bold text-gray-900">Landing Page Copy</h3>
             <button
               onClick={() => copyToClipboard(
-                `${results.landing_page.headline}\n\n${results.landing_page.subheadline}\n\n${results.landing_page.benefit_bullets.join('\n')}\n\nCTA: ${results.landing_page.cta_button_text}`
+                `${results.landing_page_copy.headline}\n\n${results.landing_page_copy.subheadline}\n\n${results.landing_page_copy.benefit_bullets.join('\n')}\n\nCTA: ${results.landing_page_copy.cta_button_text}`
               )}
               className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
             >
@@ -53,38 +54,40 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName }) =
               Copy
             </button>
           </div>
-          
+
           <div className="space-y-4">
             <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
               <h4 className="font-semibold text-blue-900 mb-2">Headline</h4>
-              <p className="text-blue-800">{results.landing_page.headline}</p>
+              <p className="text-blue-800">{results.landing_page_copy.headline}</p>
             </div>
-            
+
             <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
               <h4 className="font-semibold text-purple-900 mb-2">Subheadline</h4>
-              <p className="text-purple-800">{results.landing_page.subheadline}</p>
+              <p className="text-purple-800">{results.landing_page_copy.subheadline}</p>
             </div>
-            
+
             <div className="p-4 bg-green-50 rounded-lg border border-green-200">
               <h4 className="font-semibold text-green-900 mb-2">Benefit Bullets</h4>
               <ul className="text-green-800 space-y-1">
-                {results.landing_page.benefit_bullets.map((bullet, index) => (
+                {results.landing_page_copy.benefit_bullets.map((bullet, index) => (
                   <li key={index}>• {bullet}</li>
                 ))}
               </ul>
             </div>
-            
+
             <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
               <h4 className="font-semibold text-orange-900 mb-2">CTA Button</h4>
-              <p className="text-orange-800">{results.landing_page.cta_button_text}</p>
+              <p className="text-orange-800">{results.landing_page_copy.cta_button_text}</p>
             </div>
           </div>
         </div>
 
+        {/* Social Media Posts */}
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
           <h3 className="text-xl font-bold text-gray-900 mb-6">Social Media Posts</h3>
-          
+
           <div className="space-y-6">
+            {/* LinkedIn */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
@@ -105,7 +108,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName }) =
                 <p className="text-sm text-gray-700 whitespace-pre-wrap">{results.social_posts.linkedin}</p>
               </div>
             </div>
-            
+
+            {/* Twitter */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
@@ -126,7 +130,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName }) =
                 <p className="text-sm text-gray-700 whitespace-pre-wrap">{results.social_posts.twitter}</p>
               </div>
             </div>
-            
+
+            {/* Instagram */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
