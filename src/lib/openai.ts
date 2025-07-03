@@ -277,7 +277,8 @@ Return JSON in this exact format:
         if (!content) throw new Error('Empty response from OpenAI');
 
         return JSON.parse(content);
-    } catch (error: any).message || error);
+    } catch (error: any) {
+        console.error('OpenAI error:', error?.message || error);
         throw new Error('Failed to generate landing page copy. Please try again.');
     }
 }
