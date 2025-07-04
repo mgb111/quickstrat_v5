@@ -622,10 +622,18 @@ Return JSON in this exact format:
       throw new Error('Invalid response format from OpenAI API');
     }
 
-    // Validate benefit bullets
-    if (parsed.benefit_bullets.length === 0 || parsed.benefit_bullets.length > 4) {
-      throw new Error('Invalid number of benefit bullets received');
-    }
+    // Ensure benefit_bullets is a usable array, even if the AI messes up.
+if (!parsed.benefit_bullets || !Array.isArray(parsed.benefit_bullets) || parsed.benefit_bullets.length === 0) {
+    // If the AI failed to provide bullets, create some safe defaults. This is better than crashing.
+    parsed.benefit_bullets = [
+        `Unlock ${input.desired_outcome}`,
+        `Solve ${input.pain_point} Instantly`,
+        `Get Actionable Insights Today`
+    ];
+}
+
+// If the AI was overeager and gave too many bullets, just take the first 4.
+parsed.benefit_bullets = parsed.benefit_bullets.slice(0, 4);
 
     return parsed;
   } catch (err: any) {
