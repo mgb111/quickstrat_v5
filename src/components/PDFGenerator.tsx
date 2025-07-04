@@ -152,11 +152,22 @@ const renderPdfSection = (section: ToolkitSection, index: number, brandName: str
         );
 
       case 'table':
-        if (!('headers' in safeContent) || !Array.isArray(safeContent.headers) || safeContent.headers.length === 0) {
+        // Ensure headers exist and is a non-empty array, otherwise provide default headers
+        const headers = Array.isArray(safeContent?.headers) && safeContent.headers.length > 0 
+          ? safeContent.headers 
+          : ['Column 1', 'Column 2'];
+        
+        // Ensure rows is an array, default to empty array if not
+        const rows = Array.isArray(safeContent?.rows) ? safeContent.rows : [];
+        
+        // If no rows, provide a helpful message
+        if (rows.length === 0) {
           return (
-            <Text style={{...styles.paragraph, color: 'red'}}>
-              Error: Table section is missing required headers
-            </Text>
+            <View style={{ marginVertical: 15, padding: 10, backgroundColor: '#F9FAFB', borderRadius: 4 }}>
+              <Text style={{...styles.paragraph, textAlign: 'center', fontStyle: 'italic'}}>
+                No table data available
+              </Text>
+            </View>
           );
         }
         
@@ -164,29 +175,30 @@ const renderPdfSection = (section: ToolkitSection, index: number, brandName: str
           <View style={{ marginTop: 10, marginBottom: 15 }}>
             {/* Table Header */}
             <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#E5E7EB' }}>
-              {safeContent.headers.map((header: string, hIndex: number) => (
-                <View key={hIndex} style={{ flex: 1, padding: 8, backgroundColor: '#F3F4F6' }}>
-                  <Text style={{ fontWeight: 'bold', fontSize: 10 }}>{header}</Text>
+              {headers.map((header: string, hIndex: number) => (
+                <View key={`header-${hIndex}`} style={{ flex: 1, padding: 8, backgroundColor: '#F3F4F6' }}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 10 }}>{header || `Column ${hIndex + 1}`}</Text>
                 </View>
               ))}
             </View>
             
             {/* Table Rows */}
-            {safeContent.rows && Array.isArray(safeContent.rows) ? (
-              safeContent.rows.map((row: string[], rIndex: number) => (
-                <View key={rIndex} style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F3F4F6' }}>
-                  {row.map((cell, cIndex) => (
-                    <View key={cIndex} style={{ flex: 1, padding: 8 }}>
-                      <Text style={{ fontSize: 10 }}>{cell}</Text>
-                    </View>
-                  ))}
-                </View>
+            {rows.map((row: any, rIndex: number) => (
+                <View key={`row-${rIndex}`} style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F3F4F6' }}>
+                  {Array.isArray(row) 
+                    ? row.map((cell, cIndex) => (
+                        <View key={`cell-${rIndex}-${cIndex}`} style={{ flex: 1, padding: 8 }}>
+                          <Text style={{ fontSize: 10 }}>{String(cell || '').trim() || '-'}</Text>
+                        </View>
+                      ))
+                    : // Handle case where row is not an array
+                      <View style={{ flex: 1, padding: 8 }}>
+                        <Text style={{ fontSize: 10, color: '#6B7280', fontStyle: 'italic' }}>
+                          Invalid row data
+                        </Text>
+                      </View>
+                  }
               ))
-            ) : (
-              <View style={{ padding: 8 }}>
-                <Text style={{ fontStyle: 'italic', fontSize: 10 }}>No data available</Text>
-              </View>
-            )}
           </View>
         );
       
