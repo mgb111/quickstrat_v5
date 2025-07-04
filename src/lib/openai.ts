@@ -255,9 +255,9 @@ CRITICAL: For type: "table": The table MUST have exactly 5-6 rows of detailed en
 
 For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items.
 
-For type: "scripts": Provide at least 3-4 script scenarios, each with a "When they say this..." and a "You say this..." component, along with a brief explanation of the strategy behind the script.
+For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), and "explanation" (strategy behind the script).
 
-For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "The Mistake" description and a "The Solution" paragraph of 40-50 words.
+For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words.
 
 4. Call to Action Page (layout: "centered"):
 Title: A clear, action-oriented title (e.g., "Your Next Step").
@@ -316,6 +316,30 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
           }
         ]
       }
+    },
+    {
+      "layout": "filled",
+      "type": "scripts",
+      "title": "Section 3: Negotiation Scripts That Work",
+      "content": {
+        "scenarios": [
+          {
+            "trigger": "We can offer you a 20% discount if you sign today.",
+            "response": "I appreciate the offer, but I need time to review all terms with my team. Can you put that discount in writing with a 30-day validity period?",
+            "explanation": "This deflects pressure tactics while securing the discount for proper evaluation time."
+          },
+          {
+            "trigger": "This is our standard contract - we don't typically make changes.",
+            "response": "I understand you have standard terms. Which specific clauses have you modified for other enterprise clients in similar situations?",
+            "explanation": "This acknowledges their position while implying flexibility exists and you're aware of industry norms."
+          },
+          {
+            "trigger": "The implementation timeline is fixed at 6 months.",
+            "response": "Help me understand what drives that timeline. Are there specific milestones we could adjust to accelerate delivery?",
+            "explanation": "This uncovers the real constraints and opens discussion about flexible scheduling options."
+          }
+        ]
+      }
     }
   ],
   "cta_page": {
@@ -331,12 +355,13 @@ CRITICAL REQUIREMENTS:
 3. Ensure all toolkit sections provide immediate, actionable value
 4. Make the content 100% educational with no promotional language
 5. Structure the content for professional PDF layout and design
-6. MANDATORY: All tables must have exactly 5-6 rows with 3 columns for proper validation`;
+6. MANDATORY: All tables must have exactly 5-6 rows with 3 columns for proper validation
+7. MANDATORY: All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields`;
 
     const res = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: All tables must have exactly 5-6 rows with 3 columns.' },
+        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: All tables must have exactly 5-6 rows with 3 columns. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields.' },
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
@@ -370,13 +395,13 @@ CRITICAL REQUIREMENTS:
       throw new Error('Must have 3-4 toolkit sections');
     }
 
-    // Validate each toolkit section with more flexible validation
+    // Validate each toolkit section with improved validation
     for (const section of parsed.toolkit_sections) {
       if (!section.title || !section.type || section.layout !== 'filled') {
         throw new Error('Each toolkit section must have title, type, and filled layout');
       }
       
-      // More flexible validation based on type
+      // Improved validation based on type
       switch (section.type) {
         case 'table':
           if (!section.content?.headers || !Array.isArray(section.content?.headers)) {
@@ -408,11 +433,30 @@ CRITICAL REQUIREMENTS:
           }
           break;
         case 'scripts':
-          if (!section.content?.scenarios || !Array.isArray(section.content?.scenarios)) {
+          // Handle both old and new format for scripts
+          if (section.content?.scenarios && Array.isArray(section.content.scenarios)) {
+            // New format with scenarios array
+            if (section.content.scenarios.length < 2) {
+              throw new Error('Scripts section must have at least 2 scenarios');
+            }
+            // Validate each scenario has required fields
+            for (const scenario of section.content.scenarios) {
+              if (!scenario.trigger || !scenario.response || !scenario.explanation) {
+                throw new Error('Each script scenario must have trigger, response, and explanation fields');
+              }
+            }
+          } else if (Array.isArray(section.content)) {
+            // Old format - convert to new format
+            console.warn('Converting old scripts format to new format');
+            section.content = {
+              scenarios: section.content.map((script: any, index: number) => ({
+                trigger: script.trigger || `Scenario ${index + 1} trigger`,
+                response: script.response || `Scenario ${index + 1} response`,
+                explanation: script.explanation || `Strategy for scenario ${index + 1}`
+              }))
+            };
+          } else {
             throw new Error('Scripts section must have scenarios array');
-          }
-          if (section.content.scenarios.length < 2) {
-            throw new Error('Scripts section must have at least 2 scenarios');
           }
           break;
         case 'mistakes_to_avoid':
