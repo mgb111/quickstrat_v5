@@ -9,15 +9,60 @@ import {
   CampaignOutput
 } from '../types';
 
+// Get API key from environment variables
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
+// Debug log environment variables (without exposing sensitive data)
+console.log('Environment Variables:', {
+  VITE_OPENAI_API_KEY: apiKey ? '***' : 'Not set',
+  VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not set',
+  NODE_ENV: import.meta.env.MODE
+});
+
 if (!apiKey || apiKey === 'your_openai_api_key') {
-  console.warn('OpenAI API key not configured. Please set VITE_OPENAI_API_KEY in your .env file.');
+  const errorMsg = 'OpenAI API key not configured. Please set VITE_OPENAI_API_KEY in your .env file.';
+  console.error(errorMsg);
+  throw new Error(errorMsg);
 }
 
-const openai = apiKey && apiKey !== 'your_openai_api_key'
-  ? new OpenAI({ apiKey, dangerouslyAllowBrowser: true })
-  : null;
+// Initialize OpenAI client
+let openai: OpenAI;
+try {
+  openai = new OpenAI({ 
+    apiKey,
+    dangerouslyAllowBrowser: true,
+    // Add default headers for better debugging
+    defaultHeaders: {
+      'x-request-source': 'browser',
+      'x-app-name': 'quickstrat-v5'
+    }
+  });
+  
+  // Test the API key by making a simple request
+  console.log('Initializing OpenAI client...');
+  
+  // Log successful initialization
+  console.log('OpenAI client initialized successfully');
+  
+} catch (error: unknown) {
+  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+  console.error('Failed to initialize OpenAI client:', {
+    message: errorMessage,
+    error: error,
+    apiKeyPresent: !!apiKey,
+    apiKeyLength: apiKey?.length,
+    apiKeyStartsWith: apiKey?.substring(0, 3) + '...' + apiKey?.substring(apiKey.length - 3)
+  });
+  
+  // Provide more specific error messages for common issues
+  if (errorMessage.includes('Incorrect API key provided')) {
+    throw new Error('Invalid OpenAI API key. Please check your .env file and ensure the key is correct.');
+  } else if (errorMessage.includes('rate limit')) {
+    throw new Error('Rate limit exceeded. Please try again later.');
+  } else {
+    throw new Error(`Failed to initialize OpenAI client: ${errorMessage}`);
+  }
+}
 
 export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<LeadMagnetConcept[]> {
   if (!openai) {
