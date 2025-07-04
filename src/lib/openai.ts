@@ -156,7 +156,7 @@ Selected Concept: "${selected.title}"
 Concept Description: "${selected.description}"
 
 Generate a content outline with these components:
-1. Title: A sharp, specific headline (8-12 words)
+1. Title: A sharp, specific headline for the selected concept (8-12 words)
 2. Introduction: A concise hook that states the problem this tool solves (40-60 words)
 3. Core Points: 4-6 bullet points outlining key steps/points (10-15 words each)
 4. CTA: A brief call-to-action offering next steps (25-40 words)
@@ -220,40 +220,100 @@ export async function generatePdfContent(input: CampaignInput, outline: ContentO
   }
 
   try {
-    const prompt = `You are a clear and concise educational writer. Your task is to expand the approved outline into the final content for a lead magnet PDF.
+    const prompt = `ROLE & GOAL:
+You are an expert Instructional Designer and a world-class Conversion Copywriter. Your one and only task is to generate the complete and final content for an A+ grade, high-value lead magnet. This is not an outline; it is the finished, written product. The document must be a practical toolkit.
 
-Approved Outline:
-- Title: ${outline.title}
-- Introduction: ${outline.introduction}
-- Core Points: ${JSON.stringify(outline.core_points, null, 2)}
-- CTA: ${outline.cta}
+USER CONTEXT:
+Niche: ${input.niche}
+Target Audience: ${input.target_audience}
+Tone: ${input.tone}
+Selected Concept: A lead magnet about ${outline.title}.
 
-CRITICAL INSTRUCTIONS:
-1. For EACH core point provided, expand it into its own detailed, educational paragraph.
-2. Each paragraph must be 60-80 words.
-3. The content must be purely educational with NO promotional language.
-4. Maintain a consistent tone throughout the document.
-5. Ensure the content flows logically from one section to the next.
+CORE PRINCIPLES (NON-NEGOTIABLE):
+EXTREME VALUE: Every section must be a tangible, practical tool. Do not just state a principle; provide the specific checklist, template, script, or framework to implement it.
 
-Return JSON in this exact format:
+THE "HOW," NOT THE "WHAT": Do not say "Analyze your needs." Instead, provide a checklist titled "The 3-Point Needs Analysis Checklist." Do not say "Negotiate effectively." Instead, provide a section titled "3 Negotiation Scripts You Can Steal."
+
+NO SELLING: The content must be 100% educational. Absolutely no promotional language or brand mentions.
+
+DENSE & STRUCTURED: The output must be structured for professional design. Use a variety of content formats (tables, lists, blockquotes) to create a visually engaging and high-value document.
+
+THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS
+
+1. Title & Subtitle:
+Title: A sharp, specific headline for the selected concept (8-12 words).
+Subtitle: A powerful subtitle that makes a quantifiable promise or clarifies the tool's function (10-15 words).
+
+2. Introduction:
+A concise, hard-hitting introduction (50-70 words) that starts with a sharp pain point and clearly states what tangible tool the reader will possess by the end of the document.
+
+3. The Toolkit Sections:
+You MUST generate at least THREE distinct sections. Each section must be a different type of tool from the list below. Choose the types most relevant to the selected concept to provide maximum value.
+
+Tool Type Option 1: A "Decoder Ring" Table
+A 3-column table explaining technical terms, concepts, or specifications in plain English.
+Headers: ["Term/Concept", "What It Means (Simple Terms)", "Why It Matters To You"]
+
+Tool Type Option 2: An "Action Checklist"
+A practical, bulleted checklist of specific, actionable items the user must perform. Each item must start with a strong verb (e.g., "Verify," "Calculate," "Draft").
+
+Tool Type Option 3: "Copy-Paste Scripts"
+A section with 2-3 blockquotes containing actual phrases, email sentences, or conversation snippets the user can use immediately.
+
+Tool Type Option 4: A "Fill-in-the-Blank Template" or "Sample Clause"
+A structural template for an email, project brief, or a sample legal clause. Use [Brackets] for fields the user needs to fill in.
+
+Tool Type Option 5: "Common Mistakes to Avoid"
+A numbered list of the 3 most common (and costly) mistakes people make regarding the topic, with a brief sentence explaining how to avoid each one.
+
+4. Call to Action (CTA):
+A brief (25-40 words), logical CTA that is not self-defeating. It must offer a clear next step that logically follows the value provided in the toolkit, moving the user towards a sales conversation.
+
+RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 {
-  "title": "${outline.title.replace(/"/g, '\\"')}",
-  "introduction": "${outline.introduction.replace(/"/g, '\\"')}",
-  "sections": [
-    { "title": "The first core point from the outline", "content": "Expanded content here..." },
-    { "title": "The second core point from the outline", "content": "Expanded content here..." }
+  "title": "The Generated Title",
+  "subtitle": "The Generated Subtitle", 
+  "introduction": "The 50-70 word introduction.",
+  "toolkit_sections": [
+    {
+      "type": "table",
+      "title": "Section Title Here",
+      "content": {
+        "headers": ["Column 1", "Column 2", "Column 3"],
+        "rows": [
+          ["Row 1 Col 1", "Row 1 Col 2", "Row 1 Col 3"],
+          ["Row 2 Col 1", "Row 2 Col 2", "Row 2 Col 3"]
+        ]
+      }
+    },
+    {
+      "type": "checklist", 
+      "title": "Section Title Here",
+      "items": [
+        "Action item 1 starting with strong verb",
+        "Action item 2 starting with strong verb"
+      ]
+    },
+    {
+      "type": "scripts",
+      "title": "Section Title Here", 
+      "scripts": [
+        "Script or phrase 1 that can be copied and used",
+        "Script or phrase 2 that can be copied and used"
+      ]
+    }
   ],
-  "cta": "${outline.cta.replace(/"/g, '\\"')}"
+  "cta": "Brief call to action that offers logical next step (25-40 words)."
 }`;
 
     const res = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are a clear and concise educational writer. Output strictly valid JSON as defined.' },
+        { role: 'system', content: 'You are an expert Instructional Designer and Conversion Copywriter. Output strictly valid JSON as defined.' },
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
-      max_tokens: 2000
+      max_tokens: 3000
     });
 
     if (!res.choices?.[0]?.message?.content) {
@@ -264,18 +324,22 @@ Return JSON in this exact format:
     const parsed = JSON.parse(content);
 
     // Validate the response structure
-    if (!parsed.title || !parsed.introduction || !Array.isArray(parsed.sections) || !parsed.cta) {
+    if (!parsed.title || !parsed.subtitle || !parsed.introduction || !Array.isArray(parsed.toolkit_sections) || !parsed.cta) {
       throw new Error('Invalid response format from OpenAI API');
     }
 
-    // Validate each section
-    for (const section of parsed.sections) {
-      if (!section.title || !section.content) {
-        throw new Error('Invalid section format in PDF content');
-      }
-    }
+    // Convert the new toolkit format to the existing PDFContent format
+    const sections = parsed.toolkit_sections.map((section: any, index: number) => ({
+      title: section.title,
+      content: formatSectionContent(section)
+    }));
 
-    return parsed;
+    return {
+      title: parsed.title,
+      introduction: parsed.introduction,
+      sections: sections,
+      cta: parsed.cta
+    };
   } catch (err: any) {
     console.error('OpenAI API Error:', {
       message: err.message,
@@ -295,6 +359,36 @@ Return JSON in this exact format:
     }
 
     throw new Error(`Failed to generate PDF content: ${err.message}`);
+  }
+}
+
+// Helper function to format different section types into readable content
+function formatSectionContent(section: any): string {
+  switch (section.type) {
+    case 'table':
+      let tableContent = `${section.content.headers.join(' | ')}\n`;
+      tableContent += section.content.headers.map(() => '---').join(' | ') + '\n';
+      section.content.rows.forEach((row: string[]) => {
+        tableContent += row.join(' | ') + '\n';
+      });
+      return tableContent;
+    
+    case 'checklist':
+      return section.items.map((item: string, index: number) => `${index + 1}. ${item}`).join('\n');
+    
+    case 'scripts':
+      return section.scripts.map((script: string) => `"${script}"`).join('\n\n');
+    
+    case 'template':
+      return section.template || section.content;
+    
+    case 'mistakes':
+      return section.mistakes ? 
+        section.mistakes.map((mistake: string, index: number) => `${index + 1}. ${mistake}`).join('\n') :
+        section.items.map((item: string, index: number) => `${index + 1}. ${item}`).join('\n');
+    
+    default:
+      return section.content || 'Content not available';
   }
 }
 
@@ -484,16 +578,13 @@ Return JSON in this exact format:
   }
 }
 
-export async function generateFinalCampaign(input: CampaignInput, concept: LeadMagnetConcept): Promise<CampaignOutput> {
+export async function generateFinalCampaign(input: CampaignInput, outline: ContentOutline): Promise<CampaignOutput> {
   if (!openai) {
     throw new Error('OpenAI API key not configured. Please check your .env file.');
   }
 
   try {
-    // Step 1: Generate the content outline
-    const outline = await generateContentOutline(input, concept);
-    
-    // Step 2: Generate all content in parallel
+    // Generate all content in parallel
     const [pdf_content, landing_page, social_posts] = await Promise.all([
       generatePdfContent(input, outline).catch(err => {
         console.error('Error generating PDF content:', err);
