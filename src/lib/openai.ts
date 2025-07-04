@@ -220,48 +220,49 @@ export async function generatePdfContent(input: CampaignInput, outline: ContentO
   }
 
   try {
-    const prompt = `You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
+const prompt = `
+You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
 
 USER CONTEXT:
-Niche: ${input.niche}
-Target Audience: ${input.target_audience}
-Tone: ${input.tone}
-Brand Name: ${input.brand_name}
-Selected Concept: A lead magnet about ${outline.title}.
+- Niche: ${input.niche}
+- Target Audience: ${input.target_audience}
+- Tone: ${input.tone}
+- Selected Concept: A lead magnet about "${selectedConcept.title}".
 
 CORE PRINCIPLES (NON-NEGOTIABLE):
-VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or tables) to fill a standard document page. Sparse pages with single paragraphs are forbidden.
-
-STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, tables, and blockquotes—to enhance readability and ensure pages are full.
-
-EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what."
-
-NO SELLING: The content must be 100% educational and brand-agnostic.
+- VISUAL DENSITY: Every content page must be "completely filled." Generate enough detailed content to fill a standard document page. Sparse pages are a failure.
+- STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, and structured "tool" sections—to enhance readability and ensure pages are full.
+- EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what."
+- NO SELLING: The content must be 100% educational and brand-agnostic.
 
 THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
 
-1. Title Page (layout: "centered"):
-Title: A sharp, specific headline (8-12 words).
-Subtitle: A powerful subtitle that makes a quantifiable promise (10-15 words).
+1.  **Title Page (layout: "centered"):**
+    -   Title: A sharp, specific headline (8-12 words).
+    -   Subtitle: A powerful subtitle that makes a quantifiable promise (10-15 words).
 
-2. Introduction Page (layout: "filled"):
-Title: A clear, engaging title for the introduction (e.g., "Why This Toolkit Will Change Your Approach").
-Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what tangible tools they will receive. This length is required to properly fill the page.
+2.  **Introduction Page (layout: "filled"):**
+    -   Title: A clear, engaging title for the introduction.
+    -   Content: A powerful introduction of **exactly 80-120 words** that hooks the reader with a sharp pain point and clearly states the tangible tools they will receive.
 
-3. The Toolkit Sections (layout: "filled"):
-Generate 3-4 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. The content for each tool must be detailed and expanded.
+3.  **The Toolkit Sections (layout: "filled"):**
+    -   Generate 3-4 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. Choose from the tool types below.
 
-CRITICAL: For type: "table": The table MUST have exactly 5-6 rows of detailed entries with 3 columns each. This is mandatory for visual density and validation requirements.
+    -   **MANDATORY INSTRUCTION for type: "detailed_list":** Use this for explaining key concepts or metrics. Generate a list of **4-5 items**. Each item MUST have a "term" and a detailed "definition" of **30-50 words** that explains what it is and why it matters to the user.
+    -   **MANDATORY INSTRUCTION for type: "checklist":** The checklist MUST be broken into **2-3 phases** and contain a total of **8-12 detailed, actionable items.** Each item must start with a strong verb.
+    -   **MANDATORY INSTRUCTION for type: "scripts":** The "trigger" field MUST be a clean, direct quote. Provide **exactly 3-4 scenarios,** each with a "trigger", "response", and detailed "explanation" field.
+    -   **MANDatory INSTRUCTION for type: "mistakes_to_avoid":** List **exactly 4-5 common mistakes.** Each mistake MUST have a "mistake" description and a "solution" paragraph of **exactly 40-50 words.**
 
-For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items.
+4.  **Call to Action Page (layout: "centered"):**
+    -   Title: "Your Next Step"
+    -   Content: A brief (25-40 words), logical CTA that offers a clear next step toward a sales conversation. The CTA must directly connect the value provided to a low-friction action (e.g., booking a free consultation, scheduling a strategy call).
 
-For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), and "explanation" (strategy behind the script).
-
-For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words.
-
-4. Call to Action Page (layout: "centered"):
-Title: A clear, action-oriented title (e.g., "Your Next Step").
-Content: A brief (25-40 words), logical CTA that offers a clear next step toward a sales conversation.
+FINAL GUARDRAIL AND SELF-CORRECTION: Before generating the JSON, you MUST verify your own output against the mandatory instructions.
+1.  Is the content for each page dense enough?
+2.  Does the checklist contain 8-12 items?
+3.  Are the scripts and mistakes sections fully detailed as specified?
+4.  Does the CTA lead directly to a sales conversation?
+If any answer is no, you MUST rewrite that section to fully comply before providing the final output.
 
 RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 {
