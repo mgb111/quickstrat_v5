@@ -96,6 +96,26 @@ const PDFDocument: React.FC<{ content: PDFContent; brandName: string }> = ({ con
   </Document>
 );
 
+case 'pros_and_cons_list':
+  return (
+    <div key={section.title} className="page-section">
+      <h3>{section.title}</h3>
+      {section.content.items.map((item, itemIndex) => (
+        <div key={itemIndex} className="method-item" style={{ marginBottom: '15px' }}>
+          <h4>{item.method_name}</h4>
+          <p style={{ fontWeight: 'bold', marginTop: '5px' }}>Pros:</p>
+          <ul>
+            {item.pros.map((pro, proIndex) => <li key={proIndex}>{pro}</li>)}
+          </ul>
+          <p style={{ fontWeight: 'bold', marginTop: '5px' }}>Cons:</p>
+          <ul>
+            {item.cons.map((con, conIndex) => <li key={conIndex}>{con}</li>)}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
