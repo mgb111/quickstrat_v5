@@ -220,7 +220,7 @@ export async function generatePdfContent(input: CampaignInput, outline: ContentO
   }
 
   try {
-  const prompt = You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
+    const prompt = `You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
 
 USER CONTEXT:
 Niche: ${input.niche}
@@ -255,26 +255,9 @@ CRITICAL: For type: "table": The table MUST have exactly 5-6 rows of detailed en
 
 For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items.
 
-For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger", "response", and "explanation" component. The content must be structured as:
-{
-  "scenarios": [
-    {
-      "trigger": "When they say this...",
-      "response": "You say this...",
-      "explanation": "Strategy behind the script..."
-    }
-  ]
-}
+For type: "scripts": Provide at least 3-4 script scenarios, each with a "When they say this..." and a "You say this..." component, along with a brief explanation of the strategy behind the script.
 
-For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words. The content must be structured as:
-{
-  "mistakes": [
-    {
-      "mistake": "The mistake description...",
-      "solution": "The solution explanation..."
-    }
-  ]
-}
+For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "The Mistake" description and a "The Solution" paragraph of 40-50 words.
 
 4. Call to Action Page (layout: "centered"):
 Title: A clear, action-oriented title (e.g., "Your Next Step").
@@ -333,30 +316,6 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
           }
         ]
       }
-    },
-    {
-      "layout": "filled",
-      "type": "scripts",
-      "title": "Section 3: Negotiation Scripts That Work",
-      "content": {
-        "scenarios": [
-          {
-            "trigger": "When they say: 'This is our standard pricing package'",
-            "response": "I understand you have standard packages, but I'm looking for a solution that fits our specific needs. Can we discuss which features are essential for our use case and adjust accordingly?",
-            "explanation": "This response acknowledges their position while steering toward customization and value-based pricing."
-          },
-          {
-            "trigger": "When they say: 'We need to close this deal by end of month'",
-            "response": "I appreciate the timeline, but I need to ensure this investment delivers long-term value. What additional support or guarantees can you offer to make this timeline work for both of us?",
-            "explanation": "Turns their urgency into leverage for better terms while showing you're serious about moving forward."
-          },
-          {
-            "trigger": "When they say: 'Our platform includes everything you need'",
-            "response": "That's great to hear. Can you walk me through exactly how each feature addresses our specific challenges with [mention your key pain point]?",
-            "explanation": "Forces them to demonstrate real value rather than relying on generic feature lists."
-          }
-        ]
-      }
     }
   ],
   "cta_page": {
@@ -372,14 +331,12 @@ CRITICAL REQUIREMENTS:
 3. Ensure all toolkit sections provide immediate, actionable value
 4. Make the content 100% educational with no promotional language
 5. Structure the content for professional PDF layout and design
-6. MANDATORY: All tables must have exactly 5-6 rows with 3 columns for proper validation
-7. MANDATORY: All scripts sections must have a "scenarios" array with "trigger", "response", and "explanation" fields
-8. MANDATORY: All mistakes sections must have a "mistakes" array with "mistake" and "solution" fields;
+6. MANDATORY: All tables must have exactly 5-6 rows with 3 columns for proper validation`;
 
     const res = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: All tables must have exactly 5-6 rows with 3 columns. All scripts sections must have scenarios array. All mistakes sections must have mistakes array.' },
+        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: All tables must have exactly 5-6 rows with 3 columns.' },
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
@@ -457,12 +414,6 @@ CRITICAL REQUIREMENTS:
           if (section.content.scenarios.length < 2) {
             throw new Error('Scripts section must have at least 2 scenarios');
           }
-          // Validate each scenario has required fields
-          for (const scenario of section.content.scenarios) {
-            if (!scenario.trigger || !scenario.response || !scenario.explanation) {
-              throw new Error('Each script scenario must have trigger, response, and explanation fields');
-            }
-          }
           break;
         case 'mistakes_to_avoid':
           if (!section.content?.mistakes || !Array.isArray(section.content?.mistakes)) {
@@ -470,12 +421,6 @@ CRITICAL REQUIREMENTS:
           }
           if (section.content.mistakes.length < 3) {
             throw new Error('Mistakes section must have at least 3 mistakes');
-          }
-          // Validate each mistake has required fields
-          for (const mistake of section.content.mistakes) {
-            if (!mistake.mistake || !mistake.solution) {
-              throw new Error('Each mistake must have mistake and solution fields');
-            }
           }
           break;
       }
