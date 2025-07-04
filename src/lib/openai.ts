@@ -220,8 +220,7 @@ export async function generatePdfContent(input: CampaignInput, outline: ContentO
   }
 
   try {
-    const prompt = `ROLE & GOAL:
-You are an expert Instructional Designer and a world-class Conversion Copywriter. Your one and only task is to generate the complete and final content for an A+ grade, high-value lead magnet. This is not an outline; it is the finished, written product. The document must be a practical toolkit.
+    const prompt = `You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
 
 USER CONTEXT:
 Niche: ${input.niche}
@@ -231,114 +230,115 @@ Brand Name: ${input.brand_name}
 Selected Concept: A lead magnet about ${outline.title}.
 
 CORE PRINCIPLES (NON-NEGOTIABLE):
-EXTREME VALUE: Every section must be a tangible, practical tool. Do not just state a principle; provide the specific checklist, template, script, or framework to implement it.
+VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or tables) to fill a standard document page. Sparse pages with single paragraphs are forbidden.
 
-THE "HOW," NOT THE "WHAT": Do not say "Analyze your needs." Instead, provide a checklist titled "The 3-Point Needs Analysis Checklist." Do not say "Negotiate effectively." Instead, provide a section titled "3 Negotiation Scripts You Can Steal."
+STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, tables, and blockquotes—to enhance readability and ensure pages are full.
 
-NO SELLING: The content must be 100% educational. Absolutely no promotional language or brand mentions.
+EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what."
 
-DENSE & STRUCTURED: The output must be structured for professional design. Use a variety of content formats (tables, lists, blockquotes) to create a visually engaging and high-value document.
+NO SELLING: The content must be 100% educational and brand-agnostic.
 
-CRITICAL REQUIREMENT: You MUST generate complete content for ALL sections. No section can be left incomplete or empty.
+THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
 
-THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS
+1. Title Page (layout: "centered"):
+Title: A sharp, specific headline (8-12 words).
+Subtitle: A powerful subtitle that makes a quantifiable promise (10-15 words).
 
-1. Title & Subtitle:
-Title: A sharp, specific headline for the selected concept (8-12 words).
-Subtitle: A powerful subtitle that makes a quantifiable promise or clarifies the tool's function (10-15 words).
+2. Introduction Page (layout: "filled"):
+Title: A clear, engaging title for the introduction (e.g., "Why This Toolkit Will Change Your Approach").
+Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what tangible tools they will receive. This length is required to properly fill the page.
 
-2. Introduction:
-A concise, hard-hitting introduction (50-70 words) that starts with a sharp pain point and clearly states what tangible tool the reader will possess by the end of the document.
+3. The Toolkit Sections (layout: "filled"):
+Generate 3-4 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. The content for each tool must be detailed and expanded.
 
-3. The Toolkit Sections:
-You MUST generate EXACTLY FOUR distinct sections. Each section must be a different type of tool from the list below. Choose the types most relevant to the selected concept to provide maximum value.
+For type: "table": The table must have at least 4-6 rows of detailed entries to ensure it fills space effectively.
 
-MANDATORY: One of the four sections MUST be "Common Mistakes to Avoid" with 3-4 specific, costly mistakes and how to avoid them.
+For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items.
 
-Tool Type Option 1: A "Decoder Ring" Table
-A 3-column table explaining technical terms, concepts, or specifications in plain English.
-Headers: ["Term/Concept", "What It Means (Simple Terms)", "Why It Matters To You"]
-Minimum 4 rows of content.
+For type: "scripts": Provide at least 3-4 script scenarios, each with a "When they say this..." and a "You say this..." component, along with a brief explanation of the strategy behind the script.
 
-Tool Type Option 2: An "Action Checklist"
-A practical, bulleted checklist of specific, actionable items the user must perform. Each item must start with a strong verb (e.g., "Verify," "Calculate," "Draft").
-Minimum 5 action items.
+For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "The Mistake" description and a "The Solution" paragraph of 40-50 words.
 
-Tool Type Option 3: "Copy-Paste Scripts"
-A section with 3-4 blockquotes containing actual phrases, email sentences, or conversation snippets the user can use immediately.
-
-Tool Type Option 4: A "Fill-in-the-Blank Template"
-A structural template for an email, project brief, or proposal. Use [Brackets] for fields the user needs to fill in.
-
-Tool Type Option 5: "Common Mistakes to Avoid" (MANDATORY - MUST BE INCLUDED)
-A numbered list of 3-4 specific, costly mistakes people make regarding the topic, with detailed explanations of how to avoid each one. Each mistake should be 2-3 sentences explaining the problem and solution.
-
-4. Call to Action (CTA):
-A brief (25-40 words), compelling CTA that bridges the value provided to a business conversation. It should reference the tools provided and offer a logical next step that leads to a sales conversation.
-
-EXAMPLE OF STRONG CTA: "You now have the tools to [specific benefit from the toolkit]. To see how [your solution] can [specific outcome], schedule a free 15-minute consultation with our experts."
+4. Call to Action Page (layout: "centered"):
+Title: A clear, action-oriented title (e.g., "Your Next Step").
+Content: A brief (25-40 words), logical CTA that offers a clear next step toward a sales conversation.
 
 RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 {
-  "title": "The Generated Title",
-  "subtitle": "The Generated Subtitle", 
-  "introduction": "The 50-70 word introduction.",
+  "title_page": {
+    "layout": "centered",
+    "title": "The VR Vendor Negotiation Toolkit",
+    "subtitle": "A 4-Part Guide to Cut Costs and Secure a Future-Proof Contract."
+  },
+  "introduction_page": {
+    "layout": "filled",
+    "title": "Your Strongest Position is a Prepared One",
+    "content": "That complex VR vendor contract is likely hiding thousands in unnecessary costs. Many L&D leaders overpay for bloated feature sets they'll never use and enter into inflexible agreements they later regret. This toolkit provides the specific, actionable resources—a tech glossary, an action checklist, negotiation scripts, and sample contract clauses—to help you negotiate from a position of power, cut costs, and secure a flexible, future-proof partnership. Use these tools to prepare for your next vendor call and ensure you get maximum value for your investment."
+  },
   "toolkit_sections": [
     {
+      "layout": "filled",
       "type": "table",
-      "title": "Section Title Here",
+      "title": "Section 1: The Tech Spec Decoder Ring",
       "content": {
-        "headers": ["Column 1", "Column 2", "Column 3"],
+        "headers": ["Term", "What It Means (Plain English)", "The Right Question to Ask"],
         "rows": [
-          ["Row 1 Col 1", "Row 1 Col 2", "Row 1 Col 3"],
-          ["Row 2 Col 1", "Row 2 Col 2", "Row 2 Col 3"],
-          ["Row 3 Col 1", "Row 3 Col 2", "Row 3 Col 3"],
-          ["Row 4 Col 1", "Row 4 Col 2", "Row 4 Col 3"]
+          ["Resolution (PPD)", "Image sharpness. Critical for reading text.", "What is the PPD? Can I see a demo of text rendering?"],
+          ["Refresh Rate (Hz)", "How smooth the image is. Prevents motion sickness.", "Is a 120Hz model essential for our use case, or is 90Hz sufficient?"],
+          ["Field of View (FOV)", "How much you can see at once. Wider is more immersive.", "What is the horizontal FOV and what is the cost trade-off?"],
+          ["IPD Range (mm)", "Adjustable lens distance to match user's eyes.", "What is the supported IPD range to ensure user comfort?"],
+          ["6DoF Tracking", "Freedom of movement in 3D space (forward/back, up/down, left/right).", "Is your tracking inside-out or outside-in, and what are the limitations?"]
         ]
       }
     },
     {
-      "type": "checklist", 
-      "title": "Section Title Here",
-      "items": [
-        "Action item 1 starting with strong verb",
-        "Action item 2 starting with strong verb",
-        "Action item 3 starting with strong verb",
-        "Action item 4 starting with strong verb",
-        "Action item 5 starting with strong verb"
-      ]
-    },
-    {
-      "type": "scripts",
-      "title": "Section Title Here", 
-      "scripts": [
-        "Script or phrase 1 that can be copied and used immediately",
-        "Script or phrase 2 that can be copied and used immediately",
-        "Script or phrase 3 that can be copied and used immediately"
-      ]
-    },
-    {
-      "type": "mistakes",
-      "title": "Common [Topic] Mistakes to Avoid",
-      "mistakes": [
-        "Mistake 1: [Problem description]. [2-3 sentences explaining the issue and how to avoid it]",
-        "Mistake 2: [Problem description]. [2-3 sentences explaining the issue and how to avoid it]",
-        "Mistake 3: [Problem description]. [2-3 sentences explaining the issue and how to avoid it]",
-        "Mistake 4: [Problem description]. [2-3 sentences explaining the issue and how to avoid it]"
-      ]
+      "layout": "filled",
+      "type": "checklist",
+      "title": "Section 2: The Pre-Negotiation Action Checklist",
+      "content": {
+        "phases": [
+          {
+            "phase_title": "Phase A: Financial Groundwork",
+            "items": [
+              "Audit your last 12 months of traditional training costs to establish a clear budget baseline.",
+              "Get itemized quotes from at least three different vendors (never accept a single 'package price').",
+              "Add a 15% contingency line item in your budget for hidden costs like facilitator training and IT support."
+            ]
+          },
+          {
+            "phase_title": "Phase B: Feature & Requirement Definition",
+            "items": [
+              "Define your 'Must-Have' vs. 'Nice-to-Have' features using a simple matrix.",
+              "Prepare a list of 3-5 pointed technical questions based on the Decoder Ring.",
+              "Draft your ideal service terms regarding content ownership and platform flexibility."
+            ]
+          }
+        ]
+      }
     }
   ],
-  "cta": "You now have the tools to [specific benefit]. To see how [solution] can [outcome], schedule a free 15-minute consultation with our experts."
-}`;
+  "cta_page": {
+    "layout": "centered",
+    "title": "Your Next Step",
+    "content": "You now have the tools to negotiate a smarter contract. To see how a modular platform with transparent pricing aligns with these principles, schedule a free 15-minute consultation with our experts."
+  }
+}
+
+CRITICAL REQUIREMENTS:
+1. Generate content that is dense enough to fill each page completely
+2. Use varied formatting (tables, lists, phases, etc.) for visual interest
+3. Ensure all toolkit sections provide immediate, actionable value
+4. Make the content 100% educational with no promotional language
+5. Structure the content for professional PDF layout and design`;
 
     const res = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are an expert Instructional Designer and Conversion Copywriter. Output strictly valid JSON as defined. CRITICAL: Generate complete content for ALL sections - no section can be empty or incomplete.' },
+        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page.' },
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
-      max_tokens: 4000
+      max_tokens: 4500
     });
 
     if (!res.choices?.[0]?.message?.content) {
@@ -349,61 +349,78 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
     const parsed = JSON.parse(content);
 
     // Validate the response structure
-    if (!parsed.title || !parsed.subtitle || !parsed.introduction || !Array.isArray(parsed.toolkit_sections) || !parsed.cta) {
-      throw new Error('Invalid response format from OpenAI API');
+    if (!parsed.title_page || !parsed.introduction_page || !Array.isArray(parsed.toolkit_sections) || !parsed.cta_page) {
+      throw new Error('Invalid response format from OpenAI API - missing required pages');
     }
 
-    // Validate that we have exactly 4 sections and one is "mistakes"
-    if (parsed.toolkit_sections.length !== 4) {
-      throw new Error('Must have exactly 4 toolkit sections');
+    // Validate title page
+    if (!parsed.title_page.title || !parsed.title_page.subtitle || parsed.title_page.layout !== 'centered') {
+      throw new Error('Invalid title page format');
     }
 
-    const hasMistakesSection = parsed.toolkit_sections.some((section: any) => section.type === 'mistakes');
-    if (!hasMistakesSection) {
-      throw new Error('Must include a "Common Mistakes to Avoid" section');
+    // Validate introduction page
+    if (!parsed.introduction_page.title || !parsed.introduction_page.content || parsed.introduction_page.layout !== 'filled') {
+      throw new Error('Invalid introduction page format');
     }
 
-    // Validate each section has complete content
+    // Validate toolkit sections (3-4 sections required)
+    if (parsed.toolkit_sections.length < 3 || parsed.toolkit_sections.length > 4) {
+      throw new Error('Must have 3-4 toolkit sections');
+    }
+
+    // Validate each toolkit section
     for (const section of parsed.toolkit_sections) {
-      if (!section.title || !section.type) {
-        throw new Error('Each section must have a title and type');
+      if (!section.title || !section.type || section.layout !== 'filled') {
+        throw new Error('Each toolkit section must have title, type, and filled layout');
       }
       
+      // Validate content based on type
       switch (section.type) {
         case 'table':
           if (!section.content?.headers || !section.content?.rows || section.content.rows.length < 4) {
-            throw new Error('Table section must have headers and at least 4 rows');
+            throw new Error('Table section must have headers and at least 4 rows for visual density');
           }
           break;
         case 'checklist':
-          if (!section.items || section.items.length < 5) {
-            throw new Error('Checklist section must have at least 5 items');
+          if (!section.content?.phases || section.content.phases.length < 2) {
+            throw new Error('Checklist section must have at least 2 phases for proper page filling');
           }
           break;
         case 'scripts':
-          if (!section.scripts || section.scripts.length < 3) {
-            throw new Error('Scripts section must have at least 3 scripts');
+          if (!section.content?.scenarios || section.content.scenarios.length < 3) {
+            throw new Error('Scripts section must have at least 3 scenarios for visual density');
           }
           break;
-        case 'mistakes':
-          if (!section.mistakes || section.mistakes.length < 3) {
-            throw new Error('Mistakes section must have at least 3 mistakes');
+        case 'mistakes_to_avoid':
+          if (!section.content?.mistakes || section.content.mistakes.length < 4) {
+            throw new Error('Mistakes section must have at least 4 mistakes for page density');
           }
           break;
       }
     }
 
-    // Convert the new toolkit format to the existing PDFContent format
-    const sections = parsed.toolkit_sections.map((section: any, index: number) => ({
-      title: section.title,
-      content: formatSectionContent(section)
-    }));
+    // Validate CTA page
+    if (!parsed.cta_page.title || !parsed.cta_page.content || parsed.cta_page.layout !== 'centered') {
+      throw new Error('Invalid CTA page format');
+    }
+
+    // Convert the new layout-focused format to the existing PDFContent format
+    const sections = [
+      {
+        title: parsed.introduction_page.title,
+        content: parsed.introduction_page.content
+      },
+      ...parsed.toolkit_sections.map((section: any) => ({
+        title: section.title,
+        content: formatLayoutSectionContent(section)
+      }))
+    ];
 
     return {
-      title: parsed.title,
-      introduction: parsed.introduction,
+      title: parsed.title_page.title,
+      introduction: parsed.title_page.subtitle,
       sections: sections,
-      cta: parsed.cta
+      cta: parsed.cta_page.content
     };
   } catch (err: any) {
     console.error('OpenAI API Error:', {
@@ -427,8 +444,8 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   }
 }
 
-// Helper function to format different section types into readable content
-function formatSectionContent(section: any): string {
+// Helper function to format layout-focused section content into readable format
+function formatLayoutSectionContent(section: any): string {
   switch (section.type) {
     case 'table':
       let tableContent = `${section.content.headers.join(' | ')}\n`;
@@ -439,16 +456,27 @@ function formatSectionContent(section: any): string {
       return tableContent;
     
     case 'checklist':
-      return section.items.map((item: string, index: number) => `${index + 1}. ${item}`).join('\n');
+      let checklistContent = '';
+      section.content.phases.forEach((phase: any, phaseIndex: number) => {
+        checklistContent += `\n${phase.phase_title}\n`;
+        phase.items.forEach((item: string, itemIndex: number) => {
+          checklistContent += `${phaseIndex + 1}.${itemIndex + 1} ${item}\n`;
+        });
+      });
+      return checklistContent;
     
     case 'scripts':
-      return section.scripts.map((script: string) => `"${script}"`).join('\n\n');
+      return section.content.scenarios.map((scenario: any, index: number) => {
+        return `Scenario ${index + 1}:\nWhen they say: "${scenario.trigger}"\nYou say: "${scenario.response}"\nStrategy: ${scenario.explanation}`;
+      }).join('\n\n');
+    
+    case 'mistakes_to_avoid':
+      return section.content.mistakes.map((mistake: any, index: number) => {
+        return `${index + 1}. The Mistake: ${mistake.mistake}\nThe Solution: ${mistake.solution}`;
+      }).join('\n\n');
     
     case 'template':
-      return section.template || section.content;
-    
-    case 'mistakes':
-      return section.mistakes.map((mistake: string, index: number) => `${index + 1}. ${mistake}`).join('\n\n');
+      return section.content.template || section.content;
     
     default:
       return section.content || 'Content not available';
