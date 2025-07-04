@@ -227,6 +227,7 @@ USER CONTEXT:
 Niche: ${input.niche}
 Target Audience: ${input.target_audience}
 Tone: ${input.tone}
+Brand Name: ${input.brand_name}
 Selected Concept: A lead magnet about ${outline.title}.
 
 CORE PRINCIPLES (NON-NEGOTIABLE):
@@ -238,6 +239,8 @@ NO SELLING: The content must be 100% educational. Absolutely no promotional lang
 
 DENSE & STRUCTURED: The output must be structured for professional design. Use a variety of content formats (tables, lists, blockquotes) to create a visually engaging and high-value document.
 
+CRITICAL REQUIREMENT: You MUST generate complete content for ALL sections. No section can be left incomplete or empty.
+
 THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS
 
 1. Title & Subtitle:
@@ -248,26 +251,32 @@ Subtitle: A powerful subtitle that makes a quantifiable promise or clarifies the
 A concise, hard-hitting introduction (50-70 words) that starts with a sharp pain point and clearly states what tangible tool the reader will possess by the end of the document.
 
 3. The Toolkit Sections:
-You MUST generate at least THREE distinct sections. Each section must be a different type of tool from the list below. Choose the types most relevant to the selected concept to provide maximum value.
+You MUST generate EXACTLY FOUR distinct sections. Each section must be a different type of tool from the list below. Choose the types most relevant to the selected concept to provide maximum value.
+
+MANDATORY: One of the four sections MUST be "Common Mistakes to Avoid" with 3-4 specific, costly mistakes and how to avoid them.
 
 Tool Type Option 1: A "Decoder Ring" Table
 A 3-column table explaining technical terms, concepts, or specifications in plain English.
 Headers: ["Term/Concept", "What It Means (Simple Terms)", "Why It Matters To You"]
+Minimum 4 rows of content.
 
 Tool Type Option 2: An "Action Checklist"
 A practical, bulleted checklist of specific, actionable items the user must perform. Each item must start with a strong verb (e.g., "Verify," "Calculate," "Draft").
+Minimum 5 action items.
 
 Tool Type Option 3: "Copy-Paste Scripts"
-A section with 2-3 blockquotes containing actual phrases, email sentences, or conversation snippets the user can use immediately.
+A section with 3-4 blockquotes containing actual phrases, email sentences, or conversation snippets the user can use immediately.
 
-Tool Type Option 4: A "Fill-in-the-Blank Template" or "Sample Clause"
-A structural template for an email, project brief, or a sample legal clause. Use [Brackets] for fields the user needs to fill in.
+Tool Type Option 4: A "Fill-in-the-Blank Template"
+A structural template for an email, project brief, or proposal. Use [Brackets] for fields the user needs to fill in.
 
-Tool Type Option 5: "Common Mistakes to Avoid"
-A numbered list of the 3 most common (and costly) mistakes people make regarding the topic, with a brief sentence explaining how to avoid each one.
+Tool Type Option 5: "Common Mistakes to Avoid" (MANDATORY - MUST BE INCLUDED)
+A numbered list of 3-4 specific, costly mistakes people make regarding the topic, with detailed explanations of how to avoid each one. Each mistake should be 2-3 sentences explaining the problem and solution.
 
 4. Call to Action (CTA):
-A brief (25-40 words), logical CTA that is not self-defeating. It must offer a clear next step that logically follows the value provided in the toolkit, moving the user towards a sales conversation.
+A brief (25-40 words), compelling CTA that bridges the value provided to a business conversation. It should reference the tools provided and offer a logical next step that leads to a sales conversation.
+
+EXAMPLE OF STRONG CTA: "You now have the tools to [specific benefit from the toolkit]. To see how [your solution] can [specific outcome], schedule a free 15-minute consultation with our experts."
 
 RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 {
@@ -282,7 +291,9 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
         "headers": ["Column 1", "Column 2", "Column 3"],
         "rows": [
           ["Row 1 Col 1", "Row 1 Col 2", "Row 1 Col 3"],
-          ["Row 2 Col 1", "Row 2 Col 2", "Row 2 Col 3"]
+          ["Row 2 Col 1", "Row 2 Col 2", "Row 2 Col 3"],
+          ["Row 3 Col 1", "Row 3 Col 2", "Row 3 Col 3"],
+          ["Row 4 Col 1", "Row 4 Col 2", "Row 4 Col 3"]
         ]
       }
     },
@@ -291,29 +302,43 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
       "title": "Section Title Here",
       "items": [
         "Action item 1 starting with strong verb",
-        "Action item 2 starting with strong verb"
+        "Action item 2 starting with strong verb",
+        "Action item 3 starting with strong verb",
+        "Action item 4 starting with strong verb",
+        "Action item 5 starting with strong verb"
       ]
     },
     {
       "type": "scripts",
       "title": "Section Title Here", 
       "scripts": [
-        "Script or phrase 1 that can be copied and used",
-        "Script or phrase 2 that can be copied and used"
+        "Script or phrase 1 that can be copied and used immediately",
+        "Script or phrase 2 that can be copied and used immediately",
+        "Script or phrase 3 that can be copied and used immediately"
+      ]
+    },
+    {
+      "type": "mistakes",
+      "title": "Common [Topic] Mistakes to Avoid",
+      "mistakes": [
+        "Mistake 1: [Problem description]. [2-3 sentences explaining the issue and how to avoid it]",
+        "Mistake 2: [Problem description]. [2-3 sentences explaining the issue and how to avoid it]",
+        "Mistake 3: [Problem description]. [2-3 sentences explaining the issue and how to avoid it]",
+        "Mistake 4: [Problem description]. [2-3 sentences explaining the issue and how to avoid it]"
       ]
     }
   ],
-  "cta": "Brief call to action that offers logical next step (25-40 words)."
+  "cta": "You now have the tools to [specific benefit]. To see how [solution] can [outcome], schedule a free 15-minute consultation with our experts."
 }`;
 
     const res = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are an expert Instructional Designer and Conversion Copywriter. Output strictly valid JSON as defined.' },
+        { role: 'system', content: 'You are an expert Instructional Designer and Conversion Copywriter. Output strictly valid JSON as defined. CRITICAL: Generate complete content for ALL sections - no section can be empty or incomplete.' },
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
-      max_tokens: 3000
+      max_tokens: 4000
     });
 
     if (!res.choices?.[0]?.message?.content) {
@@ -326,6 +351,46 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
     // Validate the response structure
     if (!parsed.title || !parsed.subtitle || !parsed.introduction || !Array.isArray(parsed.toolkit_sections) || !parsed.cta) {
       throw new Error('Invalid response format from OpenAI API');
+    }
+
+    // Validate that we have exactly 4 sections and one is "mistakes"
+    if (parsed.toolkit_sections.length !== 4) {
+      throw new Error('Must have exactly 4 toolkit sections');
+    }
+
+    const hasMistakesSection = parsed.toolkit_sections.some((section: any) => section.type === 'mistakes');
+    if (!hasMistakesSection) {
+      throw new Error('Must include a "Common Mistakes to Avoid" section');
+    }
+
+    // Validate each section has complete content
+    for (const section of parsed.toolkit_sections) {
+      if (!section.title || !section.type) {
+        throw new Error('Each section must have a title and type');
+      }
+      
+      switch (section.type) {
+        case 'table':
+          if (!section.content?.headers || !section.content?.rows || section.content.rows.length < 4) {
+            throw new Error('Table section must have headers and at least 4 rows');
+          }
+          break;
+        case 'checklist':
+          if (!section.items || section.items.length < 5) {
+            throw new Error('Checklist section must have at least 5 items');
+          }
+          break;
+        case 'scripts':
+          if (!section.scripts || section.scripts.length < 3) {
+            throw new Error('Scripts section must have at least 3 scripts');
+          }
+          break;
+        case 'mistakes':
+          if (!section.mistakes || section.mistakes.length < 3) {
+            throw new Error('Mistakes section must have at least 3 mistakes');
+          }
+          break;
+      }
     }
 
     // Convert the new toolkit format to the existing PDFContent format
@@ -383,9 +448,7 @@ function formatSectionContent(section: any): string {
       return section.template || section.content;
     
     case 'mistakes':
-      return section.mistakes ? 
-        section.mistakes.map((mistake: string, index: number) => `${index + 1}. ${mistake}`).join('\n') :
-        section.items.map((item: string, index: number) => `${index + 1}. ${item}`).join('\n');
+      return section.mistakes.map((mistake: string, index: number) => `${index + 1}. ${mistake}`).join('\n\n');
     
     default:
       return section.content || 'Content not available';
