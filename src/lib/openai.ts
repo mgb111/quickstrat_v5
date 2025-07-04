@@ -230,99 +230,152 @@ Brand Name: \${input.brand_name}
 Selected Concept: A lead magnet about \${outline.title}.
 
 CORE PRINCIPLES (NON-NEGOTIABLE):
-VISUAL DENSITY: Every content page must be fully and thoughtfully packed with actionable, relevant content. Avoid filler or broad summaries. Each page should feel like a premium resource, not a blog post. Use tactical content, not generic insights. Strive for layout balance without leaving large white spaces.
+VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or tables) to fill a standard document page. Sparse pages with single paragraphs are forbidden. Every section must look complete, rich, and intentionally formatted for value and engagement.
 
-STRUCTURED FORMATTING: You MUST use a variety of formatting styles—including paragraphs, bullet points, numbered steps, tables, blockquotes, and callouts. This is essential to create scannable, high-retention content. Formatting choices should serve content clarity, not just visual appeal.
+STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, tables, and blockquotes—to enhance readability and ensure pages are full. Don't rely on just one content format. Use formatting intentionally to break visual monotony and elevate clarity.
 
-EXTREME VALUE: Every page must offer immediate, actionable value. Go beyond concepts—give readers the exact frameworks, examples, and checklists they can use right now. Prioritize practical detail over theory. Do not summarize or suggest—they must walk away with ready-to-use tools and expert-level clarity.
+EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what." Assume your reader wants to take action immediately and needs complete, usable frameworks—not vague tips. Make it feel like something they'd pay for.
 
-NO SELLING: The lead magnet must be 100% educational and non-promotional. Do not mention, imply, or suggest any product, service, brand advantage, or consultation unless explicitly instructed. Keep the tone helpful, neutral, and insight-driven.
+NO SELLING: The content must be 100% educational and brand-agnostic. Do not include offers, brand advantages, or sales pitches. The tone must remain neutral, instructional, and focused purely on helping the reader succeed.
 
 THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
 
 1. Title Page (layout: "centered"):
-Title: Write a sharp, benefit-driven headline (8–12 words). It must clearly state the outcome the reader will achieve.
-Subtitle: Write a single-sentence subtitle that adds urgency, specificity, or a clever twist (10–15 words). It should answer: Why now? Why this? Why you?
+Title: A sharp, specific headline (8–12 words).
+Subtitle: A powerful subtitle that makes a quantifiable promise (10–15 words).
 
 2. Introduction Page (layout: "filled"):
-Title: Write a powerful headline (e.g., "Why This Toolkit Changes the Game").
-Content: Write an 80–120 word introduction. Use the first sentence to identify a pressing pain point your audience is facing. Follow it with a high-impact promise of what tools they’ll gain and how these tools will deliver measurable improvement. It must be concise, punchy, and compelling.
+Title: A clear, engaging title for the introduction (e.g., "Why This Toolkit Will Change Your Approach").
+Content: A concise but powerful introduction (80–120 words) that hooks the reader with a sharp pain point and clearly states what tangible tools they will receive. This length is required to properly fill the page.
 
 3. The Toolkit Sections (layout: "filled"):
-Create 3–4 standalone sections. Each must feel like a complete, standalone tool or framework. Avoid theoretical advice—prioritize detailed, real-world tactics. The content must follow one of the following formats exactly:
+Generate 3–4 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. The content for each tool must be detailed and expanded.
 
-For type: "table":
-- Title: Write a specific section title.
-- Content: Provide a table with 3 clear column headers and exactly 5–6 rows.
-- Each row must contain rich, specific content. Avoid single-word answers. Focus on educating the reader in a compact but dense format.
+CRITICAL: For type: "table": The table MUST have exactly 5–6 rows of detailed entries with 3 columns each. This is mandatory for visual density and validation requirements.
 
-For type: "checklist":
-- Title: Write a specific section title.
-- Content: Provide a checklist broken into 2–3 logical phases or subheadings.
-- Include 8–12 total action items. Each item must be clear, tactical, and non-obvious. Help the reader avoid ambiguity and take real steps.
+For type: "checklist": The checklist must be broken into 2–3 sub-headings or phases and contain a total of 8–12 detailed, actionable items. Each item must be unique and written clearly. The output must include a \`phases\` array.
 
-For type: "scripts":
-- Title: Write a specific section title.
-- Content: Provide at least 3–4 detailed conversation scripts.
-- Each script must follow this format:
-  {
-    "trigger": "When they say this...",
-    "response": "You say this...",
-    "explanation": "Here's why this works and how to adapt it..."
-  }
-- Scripts should reflect real objections, questions, or scenarios that your audience is likely to face.
+For type: "scripts": Provide at least 3–4 script scenarios, each with a "trigger", "response", and "explanation" component. The content must be structured as:
+{
+  "scenarios": [
+    {
+      "trigger": "When they say this...",
+      "response": "You say this...",
+      "explanation": "Strategy behind the script..."
+    }
+  ]
+}
 
-For type: "mistakes_to_avoid":
-- Title: Write a specific section title.
-- Content: Provide 4–5 common, critical mistakes.
-- Each must follow this format:
-  {
-    "mistake": "Describe the false assumption or bad practice...",
-    "solution": "Write a 40–50 word paragraph with the corrective action or mindset shift..."
-  }
-- Ensure these mistakes are real and impactful—not minor or surface-level.
+For type: "mistakes_to_avoid": List 4–5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40–50 words. The content must be structured as:
+{
+  "mistakes": [
+    {
+      "mistake": "The mistake description...",
+      "solution": "The solution explanation..."
+    }
+  ]
+}
 
 4. Call to Action Page (layout: "centered"):
-Title: Write a bold, actionable heading (e.g., “Your Next Move Starts Here”).
-Content: Write a short (25–40 words), brand-agnostic CTA. It must offer a logical next step related to deeper learning, implementation, or planning. Avoid language that pushes toward a service or sales conversation.
+Title: A clear, action-oriented title (e.g., "Your Next Step").
+Content: A brief (25–40 words), logical CTA that offers a clear next step toward a sales conversation.
 
 RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 {
   "title_page": {
     "layout": "centered",
-    "title": "",
-    "subtitle": ""
+    "title": "The VR Vendor Negotiation Toolkit",
+    "subtitle": "A 4-Part Guide to Cut Costs and Secure a Future-Proof Contract."
   },
   "introduction_page": {
     "layout": "filled",
-    "title": "",
-    "content": ""
+    "title": "Your Strongest Position is a Prepared One",
+    "content": "That complex VR vendor contract is likely hiding thousands in unnecessary costs. Many L&D leaders overpay for bloated feature sets they'll never use and enter into inflexible agreements they later regret. This toolkit provides the specific, actionable resources—a tech glossary, an action checklist, negotiation scripts, and sample contract clauses—to help you negotiate from a position of power, cut costs, and secure a flexible, future-proof partnership. Use these tools to prepare for your next vendor call and ensure you get maximum value for your investment."
   },
   "toolkit_sections": [
     {
       "layout": "filled",
-      "type": "table" | "checklist" | "scripts" | "mistakes_to_avoid",
-      "title": "",
-      "content": { ... } // follows formatting based on the selected type
+      "type": "table",
+      "title": "Section 1: The Tech Spec Decoder Ring",
+      "content": {
+        "headers": ["Term", "What It Means (Plain English)", "The Right Question to Ask"],
+        "rows": [
+          ["Resolution (PPD)", "Image sharpness. Critical for reading text.", "What is the PPD? Can I see a demo of text rendering?"],
+          ["Refresh Rate (Hz)", "How smooth the image is. Prevents motion sickness.", "Is a 120Hz model essential for our use case, or is 90Hz sufficient?"],
+          ["Field of View (FOV)", "How much you can see at once. Wider is more immersive.", "What is the horizontal FOV and what is the cost trade-off?"],
+          ["IPD Range (mm)", "Adjustable lens distance to match user's eyes.", "What is the supported IPD range to ensure user comfort?"],
+          ["6DoF Tracking", "Freedom of movement in 3D space (forward/back, up/down, left/right).", "Is your tracking inside-out or outside-in, and what are the limitations?"],
+          ["Hand Tracking", "Ability to use hands without controllers for natural interaction.", "Does hand tracking work reliably for our specific use cases and environments?"]
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "checklist",
+      "title": "Section 2: The Pre-Negotiation Action Checklist",
+      "content": {
+        "phases": [
+          {
+            "phase_title": "Phase A: Financial Groundwork",
+            "items": [
+              "Audit your last 12 months of traditional training costs to establish a clear budget baseline.",
+              "Get itemized quotes from at least three different vendors (never accept a single 'package price').",
+              "Add a 15% contingency line item in your budget for hidden costs like facilitator training and IT support."
+            ]
+          },
+          {
+            "phase_title": "Phase B: Feature & Requirement Definition",
+            "items": [
+              "Define your 'Must-Have' vs. 'Nice-to-Have' features using a simple matrix.",
+              "Prepare a list of 3-5 pointed technical questions based on the Decoder Ring.",
+              "Draft your ideal service terms regarding content ownership and platform flexibility."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "scripts",
+      "title": "Section 3: Negotiation Scripts That Work",
+      "content": {
+        "scenarios": [
+          {
+            "trigger": "When they say: 'This is our standard pricing package'",
+            "response": "I understand you have standard packages, but I'm looking for a solution that fits our specific needs. Can we discuss which features are essential for our use case and adjust accordingly?",
+            "explanation": "This response acknowledges their position while steering toward customization and value-based pricing."
+          },
+          {
+            "trigger": "When they say: 'We need to close this deal by end of month'",
+            "response": "I appreciate the timeline, but I need to ensure this investment delivers long-term value. What additional support or guarantees can you offer to make this timeline work for both of us?",
+            "explanation": "Turns their urgency into leverage for better terms while showing you're serious about moving forward."
+          },
+          {
+            "trigger": "When they say: 'Our platform includes everything you need'",
+            "response": "That's great to hear. Can you walk me through exactly how each feature addresses our specific challenges with [mention your key pain point]?",
+            "explanation": "Forces them to demonstrate real value rather than relying on generic feature lists."
+          }
+        ]
+      }
     }
   ],
   "cta_page": {
     "layout": "centered",
-    "title": "",
-    "content": ""
+    "title": "Your Next Step",
+    "content": "You now have the tools to negotiate a smarter contract. To see how a modular platform with transparent pricing aligns with these principles, schedule a free 15-minute consultation with our experts."
   }
 }
 
 CRITICAL REQUIREMENTS:
-1. Every content section must be rich, tactical, and complete enough to be valuable on its own.
-2. Absolutely no vague statements, empty tips, or filler phrases.
-3. Use advanced, domain-specific language and insight appropriate for professionals.
-4. Use varied formatting to maintain high reader engagement.
-5. Structure the content for clean visual layout in a designed PDF format.
-6. MANDATORY: All tables must have exactly 5–6 rows and 3 columns.
-7. MANDATORY: All scripts sections must contain a “scenarios” array with “trigger”, “response”, and “explanation”.
-8. MANDATORY: All mistakes sections must contain a “mistakes” array with “mistake” and “solution”.
-`;
+1. Generate content that is dense enough to fill each page completely
+2. Use varied formatting (tables, lists, phases, etc.) for visual interest
+3. Ensure all toolkit sections provide immediate, actionable value
+4. Make the content 100% educational with no promotional language
+5. Structure the content for professional PDF layout and design
+6. MANDATORY: All tables must have exactly 5-6 rows with 3 columns for proper validation
+7. MANDATORY: All scripts sections must have a "scenarios" array with "trigger", "response", and "explanation" fields
+8. MANDATORY: All mistakes sections must have a "mistakes" array with "mistake" and "solution" fields`;
+
 
 
     const res = await openai.chat.completions.create({
