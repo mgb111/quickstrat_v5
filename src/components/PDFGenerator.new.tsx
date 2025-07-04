@@ -9,12 +9,6 @@ interface PDFGeneratorProps {
   onDownload?: () => void;
 }
 
-interface PDFGeneratorProps {
-  content: PDFContent;
-  brandName: string;
-  onDownload?: () => void;
-}
-
 // --- STYLES ---
 const styles = StyleSheet.create({
   page: {
@@ -222,82 +216,66 @@ const renderPdfSection = (section: ToolkitSection, index: number, brandName: str
 
 // --- PDF DOCUMENT DEFINITION ---
 const PDFDocument: React.FC<{ content: PDFContent; brandName: string }> = ({ content, brandName }) => {
-        );
-      case 'pros_and_cons_list':
-         return (
-          <div>
-            {section.content.items.map((item, iIndex) => (
-              <div key={iIndex} className="mb-4">
-                <h5 className="font-semibold text-gray-800">{item.method_name}</h5>
-                <p className="text-sm font-bold mt-2">Pros:</p>
-                <ul className="list-disc list-inside text-sm">
-                   {item.pros.map((pro, pIndex) => <li key={pIndex}>{pro}</li>)}
-                </ul>
-                <p className="text-sm font-bold mt-2">Cons:</p>
-                 <ul className="list-disc list-inside text-sm">
-                   {item.cons.map((con, cIndex) => <li key={cIndex}>{con}</li>)}
-                </ul>
-              </div>
-            ))}
-          </div>
-        );
-       case 'scripts':
-         return (
-            <div>
-                {section.content.scenarios.map((scenario, sIndex) => (
-                    <div key={sIndex} className="mb-4">
-                        <h5 className="font-semibold text-gray-800">Scenario: {scenario.trigger}</h5>
-                        <p className="text-sm mt-1"><span className="font-bold">Your Response:</span> {scenario.response}</p>
-                        <p className="text-xs italic text-gray-600 mt-1"><span className="font-bold">Strategy:</span> {scenario.explanation}</p>
-                    </div>
-                ))}
-            </div>
-         );
-      default:
-        // Fallback for simple text content
-        return <p className="text-sm text-gray-700">{section.content}</p>;
-    }
-  };
-
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold text-gray-900">Your Lead Magnet PDF</h3>
-        <PDFDownloadLink
-          document={<PDFDocument content={content} brandName={brandName} />}
-          fileName={`${brandName.replace(/\s+/g, '-').toLowerCase()}-lead-magnet.pdf`}
-          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105"
-        >
-          <Download className="h-4 w-4 mr-2" />
-          Download PDF
-        </PDFDownloadLink>
-      </div>
+    <Document>
+      {/* Title Page */}
+      <Page size="A4" style={[styles.page, { justifyContent: 'center', alignItems: 'center' }]}>
+        <View style={{ textAlign: 'center' }}>
+          <Text style={styles.header}>{content.title_page.title}</Text>
+          <Text style={styles.subheader}>{content.title_page.subtitle}</Text>
+        </View>
+        <Text style={styles.footer}>{new Date().getFullYear()} {brandName}</Text>
+      </Page>
+
+      {/* Introduction Page */}
+      <Page size="A4" style={styles.page}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{content.introduction_page.title}</Text>
+          <Text style={styles.paragraph}>{content.introduction_page.content}</Text>
+        </View>
+        <Text style={styles.footer}>{new Date().getFullYear()} {brandName}</Text>
+      </Page>
       
-      {/* HTML Preview Section */}
-      <div className="space-y-4">
-        <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">{content.title_page.title}</h4>
-          <p className="text-sm text-gray-700">{content.title_page.subtitle}</p>
-        </div>
-        
-        <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">{content.introduction_page.title}</h4>
-          <p className="text-sm text-gray-700">{content.introduction_page.content}</p>
-        </div>
-        
-        {content.toolkit_sections.map((section, index) => (
-          <div key={index} className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-semibold text-gray-900 mb-2">{section.title}</h4>
-            {/* Use the new HTML renderer here */}
-            {renderHtmlSection(section)}
-          </div>
-        ))}
-        
-        <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">{content.cta_page.title}</h4>
-          <p className="text-sm text-gray-700">{content.cta_page.content}</p>
-        </div>
-      </div>
+      {/* Toolkit Sections */}
+      {content.toolkit_sections.map((section, index) => (
+        <React.Fragment key={`section-${index}`}>
+          {renderPdfSection(section, index, brandName)}
+        </React.Fragment>
+      ))}
+      
+      {/* CTA Page */}
+      <Page size="A4" style={styles.page}>
+        <View style={[styles.section, { flex: 1, justifyContent: 'center' }]}>
+          <Text style={[styles.header, { textAlign: 'center', marginBottom: 20 }]}>
+            {content.cta_page.title}
+          </Text>
+          <Text style={[styles.paragraph, { textAlign: 'center' }]}>
+            {content.cta_page.content}
+          </Text>
+        </View>
+        <Text style={styles.footer}>{new Date().getFullYear()} {brandName}</Text>
+      </Page>
+    </Document>
+  );
+};
+
+// --- MAIN COMPONENT ---
+const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName, onDownload }) => {
+  return (
+    <div className="flex flex-col items-center">
+      <PDFDownloadLink
+        document={<PDFDocument content={content} brandName={brandName} />}
+        fileName={`${brandName.replace(/\s+/g, '-').toLowerCase()}-strategy.pdf`}
+        className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+        onClick={onDownload}
+      >
+        {({ loading }) => (
+          <>
+            <Download className="w-4 h-4 mr-2" />
+            {loading ? 'Generating PDF...' : 'Download PDF'}
+          </>
+        )}
+      </PDFDownloadLink>
     </div>
   );
 };

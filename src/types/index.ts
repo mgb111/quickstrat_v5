@@ -20,14 +20,70 @@ export interface ContentOutline {
   cta: string;
 }
 
+// Base section interface
+export interface BaseSection {
+  type: string;
+  title?: string;
+  content?: any; // Fallback for any content structure
+}
+
+// Section types
+export interface ChecklistSection extends BaseSection {
+  type: 'checklist';
+  content: {
+    phases: Array<{
+      phase_title: string;
+      items: string[];
+    }>;
+  };
+}
+
+export interface ProsAndConsSection extends BaseSection {
+  type: 'pros_and_cons_list';
+  content: {
+    items: Array<{
+      method_name: string;
+      pros: string[];
+      cons: string[];
+    }>;
+  };
+}
+
+export interface ScriptsSection extends BaseSection {
+  type: 'scripts';
+  content: {
+    scenarios: Array<{
+      trigger: string;
+      response: string;
+      explanation: string;
+    }>;
+  };
+}
+
+export interface TableSection extends BaseSection {
+  type: 'table';
+  content: {
+    headers: string[];
+    rows: string[][];
+  };
+}
+
+export type ToolkitSection = ChecklistSection | ProsAndConsSection | ScriptsSection | TableSection;
+
 export interface PDFContent {
-  title: string;
-  introduction: string;
-  sections: {
+  title_page: {
+    title: string;
+    subtitle: string;
+  };
+  introduction_page: {
     title: string;
     content: string;
-  }[];
-  cta: string;
+  };
+  toolkit_sections: ToolkitSection[];
+  cta_page: {
+    title: string;
+    content: string;
+  };
 }
 
 export interface CampaignOutput {
