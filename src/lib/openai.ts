@@ -227,7 +227,7 @@ USER CONTEXT:
 - Niche: ${input.niche}
 - Target Audience: ${input.target_audience}
 - Tone: ${input.tone}
-- Selected Concept: A lead magnet about "${selectedConcept.title}".
+- Selected Concept: A lead magnet about "${outline.title}".
 
 CORE PRINCIPLES (NON-NEGOTIABLE):
 - VISUAL DENSITY: Every content page must be "completely filled." Generate enough detailed content to fill a standard document page. Sparse pages are a failure.
