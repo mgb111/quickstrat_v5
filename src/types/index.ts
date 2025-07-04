@@ -86,6 +86,21 @@ export interface PDFContent {
   };
 }
 
+export interface SocialPosts {
+  linkedin: string;
+  twitter: string;
+  instagram: string;
+}
+
+export interface LandingPageCopy {
+  headline: string;
+  subheadline: string;
+  benefits: string[];
+  cta: string;
+  seo_meta_description: string;
+}
+
+
 export interface CampaignOutput {
   pdf_content: PDFContent;
   landing_page: {
@@ -94,11 +109,7 @@ export interface CampaignOutput {
     benefit_bullets: string[];
     cta_button_text: string;
   };
-  social_posts: {
-    linkedin: string;
-    twitter: string;
-    instagram: string;
-  };
+  social_posts: SocialPosts;
 }
 
 export interface WizardState {
