@@ -260,7 +260,7 @@ For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provi
 
 4. Call to Action Page (layout: "centered"):
 Title: A clear, action-oriented title (e.g., "Your Next Step").
-Content: A brief (25-40 words), logical CTA that offers a clear next step toward a sales conversation.
+Content: A brief (25-40 words), logical CTA that offers a clear next step toward a sales conversation. The CTA must directly connect the value provided to a low-friction action (e.g., booking a free consultation, scheduling a strategy call).
 
 RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 {
