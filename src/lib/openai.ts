@@ -220,42 +220,42 @@ export async function generatePdfContent(input: CampaignInput, outline: ContentO
   }
 
   try {
-const prompt = `You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
+  const prompt = You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
 
 USER CONTEXT:
-Niche: \${input.niche}
-Target Audience: \${input.target_audience}
-Tone: \${input.tone}
-Brand Name: \${input.brand_name}
-Selected Concept: A lead magnet about \${outline.title}.
+Niche: ${input.niche}
+Target Audience: ${input.target_audience}
+Tone: ${input.tone}
+Brand Name: ${input.brand_name}
+Selected Concept: A lead magnet about ${outline.title}.
 
 CORE PRINCIPLES (NON-NEGOTIABLE):
-VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or tables) to fill a standard document page. Sparse pages with single paragraphs are forbidden. Every section must look complete, rich, and intentionally formatted for value and engagement.
+VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or tables) to fill a standard document page. Sparse pages with single paragraphs are forbidden.
 
-STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, tables, and blockquotes—to enhance readability and ensure pages are full. Don't rely on just one content format. Use formatting intentionally to break visual monotony and elevate clarity.
+STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, tables, and blockquotes—to enhance readability and ensure pages are full.
 
-EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what." Assume your reader wants to take action immediately and needs complete, usable frameworks—not vague tips. Make it feel like something they'd pay for.
+EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what."
 
-NO SELLING: The content must be 100% educational and brand-agnostic. Do not include offers, brand advantages, or sales pitches. The tone must remain neutral, instructional, and focused purely on helping the reader succeed.
+NO SELLING: The content must be 100% educational and brand-agnostic.
 
 THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
 
 1. Title Page (layout: "centered"):
-Title: A sharp, specific headline (8–12 words).
-Subtitle: A powerful subtitle that makes a quantifiable promise (10–15 words).
+Title: A sharp, specific headline (8-12 words).
+Subtitle: A powerful subtitle that makes a quantifiable promise (10-15 words).
 
 2. Introduction Page (layout: "filled"):
 Title: A clear, engaging title for the introduction (e.g., "Why This Toolkit Will Change Your Approach").
-Content: A concise but powerful introduction (80–120 words) that hooks the reader with a sharp pain point and clearly states what tangible tools they will receive. This length is required to properly fill the page.
+Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what tangible tools they will receive. This length is required to properly fill the page.
 
 3. The Toolkit Sections (layout: "filled"):
-Generate 3–4 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. The content for each tool must be detailed and expanded.
+Generate 3-4 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. The content for each tool must be detailed and expanded.
 
-CRITICAL: For type: "table": The table MUST have exactly 5–6 rows of detailed entries with 3 columns each. This is mandatory for visual density and validation requirements.
+CRITICAL: For type: "table": The table MUST have exactly 5-6 rows of detailed entries with 3 columns each. This is mandatory for visual density and validation requirements.
 
-For type: "checklist": The checklist must be broken into 2–3 sub-headings or phases and contain a total of 8–12 detailed, actionable items. Each item must be unique and written clearly. The output must include a \`phases\` array.
+For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items.
 
-For type: "scripts": Provide at least 3–4 script scenarios, each with a "trigger", "response", and "explanation" component. The content must be structured as:
+For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger", "response", and "explanation" component. The content must be structured as:
 {
   "scenarios": [
     {
@@ -266,7 +266,7 @@ For type: "scripts": Provide at least 3–4 script scenarios, each with a "trigg
   ]
 }
 
-For type: "mistakes_to_avoid": List 4–5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40–50 words. The content must be structured as:
+For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words. The content must be structured as:
 {
   "mistakes": [
     {
@@ -278,7 +278,7 @@ For type: "mistakes_to_avoid": List 4–5 common mistakes. For each mistake, pro
 
 4. Call to Action Page (layout: "centered"):
 Title: A clear, action-oriented title (e.g., "Your Next Step").
-Content: A brief (25–40 words), logical CTA that offers a clear next step toward a sales conversation.
+Content: A brief (25-40 words), logical CTA that offers a clear next step toward a sales conversation.
 
 RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 {
@@ -374,9 +374,7 @@ CRITICAL REQUIREMENTS:
 5. Structure the content for professional PDF layout and design
 6. MANDATORY: All tables must have exactly 5-6 rows with 3 columns for proper validation
 7. MANDATORY: All scripts sections must have a "scenarios" array with "trigger", "response", and "explanation" fields
-8. MANDATORY: All mistakes sections must have a "mistakes" array with "mistake" and "solution" fields`;
-
-
+8. MANDATORY: All mistakes sections must have a "mistakes" array with "mistake" and "solution" fields;
 
     const res = await openai.chat.completions.create({
       model: 'gpt-4',
