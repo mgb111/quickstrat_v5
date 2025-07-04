@@ -258,6 +258,8 @@ For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger
 
 For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words.
 
+- For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of 4-6 items. Each item MUST have a "method_name", a list of "pros" (1-3 bullet points), and a list of "cons" (1-3 bullet points).
+
 4. Call to Action Page (layout: "centered"):
 Title: A clear, action-oriented title (e.g., "Your Next Step").
 Content: A brief (25-40 words), logical CTA that offers a clear next step toward a sales conversation. The CTA must directly connect the value provided to a low-friction action (e.g., booking a free consultation, scheduling a strategy call).
@@ -283,19 +285,37 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   },
   "toolkit_sections": [
     {
-      "layout": "filled",
-      "type": "table",
-      "title": "Section 1: The Tech Spec Decoder Ring",
-      "content": {
-        "headers": ["Term", "What It Means (Plain English)", "The Right Question to Ask"],
-        "rows": [
-          ["Resolution (PPD)", "Image sharpness. Critical for reading text.", "What is the PPD? Can I see a demo of text rendering?"],
-          ["Refresh Rate (Hz)", "How smooth the image is. Prevents motion sickness.", "Is a 120Hz model essential for our use case, or is 90Hz sufficient?"],
-          ["Field of View (FOV)", "How much you can see at once. Wider is more immersive.", "What is the horizontal FOV and what is the cost trade-off?"],
-          ["IPD Range (mm)", "Adjustable lens distance to match user's eyes.", "What is the supported IPD range to ensure user comfort?"],
-          ["6DoF Tracking", "Freedom of movement in 3D space (forward/back, up/down, left/right).", "Is your tracking inside-out or outside-in, and what are the limitations?"],
-          ["Hand Tracking", "Ability to use hands without controllers for natural interaction.", "Does hand tracking work reliably for our specific use cases and environments?"]
-        ]
+    "layout": "filled",
+    "type": "pros_and_cons_list",
+    "title": "Section 1: The Lead Generation Matrix: A Strategic Overview",
+    "content": {
+        "items": [
+            {
+                "method_name": "Social Media Marketing",
+                "pros": [
+                    "Offers wide reach and the ability to form a personal connection with prospects."
+                ],
+                "cons": [
+                    "It is time-consuming and requires the regular creation of new content to stay relevant."
+                ]
+            },
+            {
+                "method_name": "Email Marketing",
+                "pros": [
+                    "Highly cost-effective with a proven potential for a high return on investment (ROI)."
+                ],
+                "cons": [
+                    "Risks being perceived as spam and is heavily dependent on having a high-quality mailing list."
+                ]
+            },
+            {
+                "method_name": "Search Engine Optimization (SEO)",
+                "pros": [
+                    "Delivers long-term effectiveness and builds high credibility with your audience."
+                ],
+                "cons": [
+                    "Results are typically slow to materialize and it requires a degree of technical knowledge."
+                ]
       }
     },
     {
