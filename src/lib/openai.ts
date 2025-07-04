@@ -31,6 +31,7 @@ try {
   openai = new OpenAI({ 
     apiKey,
     dangerouslyAllowBrowser: true,
+    timeout: 60000, // Configure timeout at client level (60 seconds)
     // Add default headers for better debugging
     defaultHeaders: {
       'x-request-source': 'browser',
@@ -103,8 +104,7 @@ Return JSON in this exact format:
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
-      max_tokens: 1500,
-      timeout: 30000 // 30 seconds timeout
+      max_tokens: 1500
     });
 
     if (!res.choices?.[0]?.message?.content) {
@@ -176,8 +176,7 @@ Return JSON in this exact format:
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
-      max_tokens: 1000,
-      timeout: 30000 // 30 seconds timeout
+      max_tokens: 1000
     });
 
     if (!res.choices?.[0]?.message?.content) {
@@ -254,8 +253,7 @@ Return JSON in this exact format:
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
-      max_tokens: 2000,
-      timeout: 45000 // 45 seconds timeout
+      max_tokens: 2000
     });
 
     if (!res.choices?.[0]?.message?.content) {
@@ -347,8 +345,7 @@ Return JSON in this exact format:
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
-      max_tokens: 1200,
-      timeout: 30000 // 30 seconds timeout
+      max_tokens: 1200
     });
 
     if (!res.choices?.[0]?.message?.content) {
@@ -444,8 +441,7 @@ Return JSON in this exact format:
         { role: 'user', content: prompt }
       ],
       temperature: 0.8,
-      max_tokens: 1500,
-      timeout: 30000 // 30 seconds timeout
+      max_tokens: 1500
     });
 
     if (!res.choices?.[0]?.message?.content) {
