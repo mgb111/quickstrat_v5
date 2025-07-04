@@ -1,141 +1,233 @@
-import React from 'react';
-import { Document, Page, Text, View, StyleSheet, PDFDownloadLink } from '@react-pdf/renderer';
-import { Download } from 'lucide-react';
-import { PDFContent } from '../types';
+import React, { useState } from 'react';
+import { Zap, ArrowLeft } from 'lucide-react';
+import CampaignForm from './components/CampaignForm';
+import ConceptSelection from './components/ConceptSelection';
+import OutlineReview from './components/OutlineReview';
+import ResultsDisplay from './components/ResultsDisplay';
+import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, CampaignOutput } from './types';
+import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
 
-interface PDFGeneratorProps {
-  content: PDFContent;
-  brandName: string;
-}
+function App() {
+  const [wizardState, setWizardState] = useState<WizardState>({
+    stage: 'input',
+    input: null,
+    concepts: null,
+    selectedConcept: null,
+    outline: null,
+    finalOutput: null
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: 'column',
-    backgroundColor: '#ffffff',
-    padding: 40,
-    fontFamily: 'Helvetica'
-  },
-  titlePage: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#1f2937'
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#6b7280',
-    lineHeight: 1.5
-  },
-  section: {
-    marginBottom: 20
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#3b82f6'
-  },
-  paragraph: {
-    fontSize: 12,
-    lineHeight: 1.6,
-    color: '#374151',
-    marginBottom: 10
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 30,
-    left: 40,
-    right: 40,
-    textAlign: 'center',
-    color: '#9ca3af',
-    fontSize: 10
-  }
-});
+  const handleInputSubmit = async (input: CampaignInput) => {
+    setIsLoading(true);
+    setError(null);
 
-const PDFDocument: React.FC<{ content: PDFContent; brandName: string }> = ({ content, brandName }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.titlePage}>
-        <Text style={styles.title}>{content.title}</Text>
-      </View>
-      <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
-    </Page>
-    
-    <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Introduction</Text>
-        <Text style={styles.paragraph}>{content.introduction}</Text>
-      </View>
-      <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
-    </Page>
-    
-    {content.sections.map((section, index) => (
-      <Page key={index} size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{section.title}</Text>
-          <Text style={styles.paragraph}>{section.content}</Text>
-        </View>
-        <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
-      </Page>
-    ))}
-    
-    <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Next Steps</Text>
-        <Text style={styles.paragraph}>{content.cta}</Text>
-      </View>
-      <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
-    </Page>
-  </Document>
-);
+    try {
+      const concepts = await generateLeadMagnetConcepts(input);
+      setWizardState({
+        stage: 'concept-selection',
+        input,
+        concepts,
+        selectedConcept: null,
+        outline: null,
+        finalOutput: null
+      });
+    } catch (err) {
+      console.error('Error generating concepts:', err);
+      setError('Failed to generate lead magnet concepts. Please check your API keys and try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
-  return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold text-gray-900">Your Lead Magnet PDF</h3>
-        <PDFDownloadLink
-          document={<PDFDocument content={content} brandName={brandName} />}
-          fileName={`${brandName.replace(/\s+/g, '-').toLowerCase()}-lead-magnet.pdf`}
-          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105"
-        >
-          <Download className="h-4 w-4 mr-2" />
-          Download PDF
-        </PDFDownloadLink>
+  const handleConceptSelected = async (selectedConcept: LeadMagnetConcept) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const outline = await generateContentOutline(wizardState.input!, selectedConcept);
+      setWizardState(prev => ({
+        ...prev,
+        stage: 'outline-review',
+        selectedConcept,
+        outline
+      }));
+    } catch (err) {
+      console.error('Error generating outline:', err);
+      setError('Failed to generate content outline. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOutlineApproved = async (finalOutline: ContentOutline) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
+      setWizardState(prev => ({
+        ...prev,
+        stage: 'complete',
+        outline: finalOutline,
+        finalOutput
+      }));
+    } catch (err) {
+      console.error('Error generating final campaign:', err);
+      setError('Failed to generate final campaign. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleStartOver = () => {
+    setWizardState({
+      stage: 'input',
+      input: null,
+      concepts: null,
+      selectedConcept: null,
+      outline: null,
+      finalOutput: null
+    });
+    setError(null);
+  };
+
+  const renderStageIndicator = () => {
+    const stages = [
+      { id: 'input', label: 'Input', number: 1 },
+      { id: 'concept-selection', label: 'Focus', number: 2 },
+      { id: 'outline-review', label: 'Review', number: 3 },
+      { id: 'complete', label: 'Complete', number: 4 }
+    ];
+
+    return (
+      <div className="flex justify-center mb-8">
+        <div className="flex items-center space-x-4">
+          {stages.map((stage, index) => {
+            const isActive = wizardState.stage === stage.id;
+            const isCompleted = stages.findIndex(s => s.id === wizardState.stage) > index;
+            
+            return (
+              <React.Fragment key={stage.id}>
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full font-semibold text-sm transition-colors ${
+                  isActive 
+                    ? 'bg-blue-500 text-white' 
+                    : isCompleted 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-gray-200 text-gray-600'
+                }`}>
+                  {stage.number}
+                </div>
+                <span className={`text-sm font-medium ${
+                  isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'
+                }`}>
+                  {stage.label}
+                </span>
+                {index < stages.length - 1 && (
+                  <div className={`w-8 h-0.5 ${
+                    isCompleted ? 'bg-green-500' : 'bg-gray-200'
+                  }`} />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
       </div>
-      
-      <div className="space-y-4">
-        <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">Title</h4>
-          <p className="text-sm text-gray-700">{content.title}</p>
-        </div>
-        
-        <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">Introduction</h4>
-          <p className="text-sm text-gray-700">{content.introduction}</p>
-        </div>
-        
-        {content.sections.map((section, index) => (
-          <div key={index} className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-semibold text-gray-900 mb-2">{section.title}</h4>
-            <p className="text-sm text-gray-700">{section.content}</p>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="container mx-auto px-4 py-8">
+        <header className="text-center mb-12">
+          <div className="flex justify-center mb-4">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 rounded-2xl">
+              <Zap className="h-8 w-8 text-white" />
+            </div>
           </div>
-        ))}
-        
-        <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">Call to Action</h4>
-          <p className="text-sm text-gray-700">{content.cta}</p>
-        </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+            LeadGen <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Machine</span>
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Transform customer problems into focused, high-value lead magnets with AI assistance
+          </p>
+        </header>
+
+        {wizardState.stage !== 'input' && renderStageIndicator()}
+
+        {error && (
+          <div className="max-w-2xl mx-auto mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-800 text-center">{error}</p>
+          </div>
+        )}
+
+        {wizardState.stage === 'input' && (
+          <CampaignForm onSubmit={handleInputSubmit} isLoading={isLoading} />
+        )}
+
+        {wizardState.stage === 'concept-selection' && wizardState.concepts && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <button
+                onClick={handleStartOver}
+                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Start Over
+              </button>
+            </div>
+            <ConceptSelection 
+              concepts={wizardState.concepts}
+              onConceptSelected={handleConceptSelected}
+              isLoading={isLoading}
+            />
+          </div>
+        )}
+
+        {wizardState.stage === 'outline-review' && wizardState.outline && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <button
+                onClick={handleStartOver}
+                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Start Over
+              </button>
+            </div>
+            <OutlineReview 
+              outline={wizardState.outline}
+              onOutlineApproved={handleOutlineApproved}
+              isLoading={isLoading}
+            />
+          </div>
+        )}
+
+        {wizardState.stage === 'complete' && wizardState.finalOutput && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <button
+                onClick={handleStartOver}
+                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Generate Another Campaign
+              </button>
+            </div>
+            <ResultsDisplay 
+              results={wizardState.finalOutput} 
+              brandName={wizardState.input?.brand_name || 'Your Brand'} 
+            />
+          </div>
+        )}
+
+        <footer className="mt-16 text-center text-gray-500">
+          <p>© 2025 LeadGen Machine. AI assists, experts direct, humans approve.</p>
+        </footer>
       </div>
     </div>
   );
-};
+}
 
-export default PDFGenerator;
+export default App;
