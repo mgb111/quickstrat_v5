@@ -285,43 +285,61 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   },
   "toolkit_sections": [
     {
-    "layout": "filled",
-    "type": "pros_and_cons_list",
-    "title": "Section 1: The Lead Generation Matrix: A Strategic Overview",
-    "content": {
+      "layout": "filled",
+      "type": "table",
+      "title": "Section 1: Essential Comparison Matrix",
+      "content": {
+        "headers": ["Feature", "Standard Package", "What You Actually Need"],
+        "rows": [
+          ["User Licenses", "Unlimited users included", "Start with 50-100 active users maximum"],
+          ["Content Library", "10,000+ pre-built scenarios", "Focus on 20-30 scenarios specific to your industry"],
+          ["Analytics Dashboard", "Advanced reporting suite", "Basic completion rates and time-spent metrics"],
+          ["Integration Options", "50+ software integrations", "Priority: LMS, HRIS, and video conferencing only"],
+          ["Support Level", "24/7 premium support", "Business hours support with 4-hour response time"],
+          ["Training & Onboarding", "Comprehensive 6-week program", "2-week focused implementation with key stakeholders"]
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "pros_and_cons_list",
+      "title": "Section 2: The Lead Generation Matrix: A Strategic Overview",
+      "content": {
         "items": [
-            {
-                "method_name": "Social Media Marketing",
-                "pros": [
-                    "Offers wide reach and the ability to form a personal connection with prospects."
-                ],
-                "cons": [
-                    "It is time-consuming and requires the regular creation of new content to stay relevant."
-                ]
-            },
-            {
-                "method_name": "Email Marketing",
-                "pros": [
-                    "Highly cost-effective with a proven potential for a high return on investment (ROI)."
-                ],
-                "cons": [
-                    "Risks being perceived as spam and is heavily dependent on having a high-quality mailing list."
-                ]
-            },
-            {
-                "method_name": "Search Engine Optimization (SEO)",
-                "pros": [
-                    "Delivers long-term effectiveness and builds high credibility with your audience."
-                ],
-                "cons": [
-                    "Results are typically slow to materialize and it requires a degree of technical knowledge."
-                ]
+          {
+            "method_name": "Social Media Marketing",
+            "pros": [
+              "Offers wide reach and the ability to form a personal connection with prospects."
+            ],
+            "cons": [
+              "It is time-consuming and requires the regular creation of new content to stay relevant."
+            ]
+          },
+          {
+            "method_name": "Email Marketing",
+            "pros": [
+              "Highly cost-effective with a proven potential for a high return on investment (ROI)."
+            ],
+            "cons": [
+              "Risks being perceived as spam and is heavily dependent on having a high-quality mailing list."
+            ]
+          },
+          {
+            "method_name": "Search Engine Optimization (SEO)",
+            "pros": [
+              "Delivers long-term effectiveness and builds high credibility with your audience."
+            ],
+            "cons": [
+              "Results are typically slow to materialize and it requires a degree of technical knowledge."
+            ]
+          }
+        ]
       }
     },
     {
       "layout": "filled",
       "type": "checklist",
-      "title": "Section 2: The Pre-Negotiation Action Checklist",
+      "title": "Section 3: The Pre-Negotiation Action Checklist",
       "content": {
         "phases": [
           {
@@ -346,7 +364,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
     {
       "layout": "filled",
       "type": "scripts",
-      "title": "Section 3: Negotiation Scripts That Work",
+      "title": "Section 4: Negotiation Scripts That Work",
       "content": {
         "scenarios": [
           {
@@ -493,6 +511,20 @@ CRITICAL REQUIREMENTS:
             throw new Error('Mistakes section must have at least 3 mistakes');
           }
           break;
+        case 'pros_and_cons_list':
+          if (!section.content?.items || !Array.isArray(section.content?.items)) {
+            throw new Error('Pros and cons section must have items array');
+          }
+          if (section.content.items.length < 3) {
+            throw new Error('Pros and cons section must have at least 3 items');
+          }
+          // Validate each item has required structure
+          for (const item of section.content.items) {
+            if (!item.method_name || !Array.isArray(item.pros) || !Array.isArray(item.cons)) {
+              throw new Error('Each pros and cons item must have method_name, pros array, and cons array');
+            }
+          }
+          break;
       }
     }
 
@@ -570,6 +602,13 @@ function formatLayoutSectionContent(section: any): string {
     case 'mistakes_to_avoid':
       return section.content.mistakes.map((mistake: any, index: number) => {
         return `${index + 1}. The Mistake: ${mistake.mistake}\nThe Solution: ${mistake.solution}`;
+      }).join('\n\n');
+    
+    case 'pros_and_cons_list':
+      return section.content.items.map((item: any, index: number) => {
+        const prosText = item.pros.map((pro: string) => `+ ${pro}`).join('\n');
+        const consText = item.cons.map((con: string) => `- ${con}`).join('\n');
+        return `${index + 1}. ${item.method_name}\nPros:\n${prosText}\nCons:\n${consText}`;
       }).join('\n\n');
     
     case 'template':
