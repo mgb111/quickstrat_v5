@@ -4,10 +4,15 @@ import { supabase } from '../lib/supabase';
 
 interface EmailCaptureProps {
   onEmailSubmitted: () => void;
-  campaignId?: string;
+  campaignData?: {
+    brandName: string;
+    pdfContent: any;
+    landingPage: any;
+    socialPosts: any;
+  };
 }
 
-const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignId }) => {
+const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignData }) => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -24,21 +29,45 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
         .from('emails')
         .insert({
           email,
-          campaign_id: campaignId || null,
+          campaign_id: null, // You can add campaign tracking later
           pdf_downloaded: false
         });
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        console.error('Database error:', insertError);
+        throw new Error('Failed to save email to database');
+      }
+
+      // Send email via Supabase Edge Function
+      if (campaignData) {
+        try {
+          const { data, error: functionError } = await supabase.functions.invoke('send-email', {
+            body: {
+              email,
+              campaignData
+            }
+          });
+
+          if (functionError) {
+            console.error('Email function error:', functionError);
+            // Don't throw here - we still want to show success since email was saved
+            console.warn('Email sending failed, but email was saved to database');
+          } else {
+            console.log('Email sent successfully:', data);
+          }
+        } catch (emailError) {
+          console.error('Email sending error:', emailError);
+          // Don't throw here - we still want to show success since email was saved
+          console.warn('Email sending failed, but email was saved to database');
+        }
+      }
 
       setIsSubmitted(true);
       onEmailSubmitted();
       
-      // Optional: Here you could integrate with Resend or another email service
-      // await sendEmailWithAssets(email, campaignData);
-      
     } catch (err: any) {
       console.error('Email capture error:', err);
-      setError('Failed to save email. Please try again.');
+      setError('Failed to process your request. Please try again or download the PDF directly below.');
     } finally {
       setIsLoading(false);
     }
@@ -52,9 +81,13 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
             <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
         </div>
-        <h3 className="text-xl font-bold text-green-900 mb-2">Your campaign was sent to your inbox!</h3>
-        <p className="text-green-800 mb-4">Check your email for the complete lead magnet package.</p>
-        <p className="text-sm text-green-700">Don't see it? Check your spam folder or try downloading below.</p>
+        <h3 className="text-xl font-bold text-green-900 mb-2">Email Submitted Successfully!</h3>
+        <p className="text-green-800 mb-4">
+          Your email has been saved and we're working on sending your campaign materials.
+        </p>
+        <p className="text-sm text-green-700">
+          You can also download your PDF directly below while we process your email.
+        </p>
       </div>
     );
   }
@@ -67,13 +100,13 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
             <Mail className="h-6 w-6 text-white" />
           </div>
         </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2">Want to download your full PDF?</h3>
-        <p className="text-gray-600">Get it via email along with bonus templates and resources.</p>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Get Your Complete Campaign Package</h3>
+        <p className="text-gray-600">Enter your email to receive your lead magnet and bonus resources.</p>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-800 text-sm text-center">{error}</p>
+        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-yellow-800 text-sm text-center">{error}</p>
         </div>
       )}
 
@@ -98,19 +131,19 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
           {isLoading ? (
             <>
               <Loader2 className="animate-spin h-5 w-5 mr-2" />
-              Sending Assets...
+              Processing...
             </>
           ) : (
             <>
               <Send className="h-5 w-5 mr-2" />
-              Send My Assets
+              Send My Campaign
             </>
           )}
         </button>
       </form>
 
       <p className="text-xs text-gray-500 text-center mt-3">
-        We'll never spam you. Unsubscribe at any time.
+        We respect your privacy. No spam, unsubscribe anytime.
       </p>
     </div>
   );
