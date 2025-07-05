@@ -229,9 +229,9 @@ Brand Name: ${input.brand_name}
 Selected Concept: A lead magnet about ${outline.title}.
 
 CORE PRINCIPLES (NON-NEGOTIABLE):
-VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or tables) to fill a standard document page. Sparse pages with single paragraphs are forbidden.
+VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or structured content) to fill a standard document page. Sparse pages with single paragraphs are forbidden.
 
-STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, tables, and blockquotes—to enhance readability and ensure pages are full.
+STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, and structured content—to enhance readability and ensure pages are full.
 
 EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what."
 
@@ -250,7 +250,7 @@ Content: A concise but powerful introduction (80-120 words) that hooks the reade
 3. The Toolkit Sections (layout: "filled"):
 Generate 3-4 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. The content for each tool must be detailed and expanded.
 
-CRITICAL: For type: "table": The table MUST have exactly 5-6 rows of detailed entries with 3 columns each. This is mandatory for visual density and validation requirements.
+SECTION TYPES TO USE (NO TABLES):
 
 - For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of 4-6 items. Each item MUST have a "method_name", a single "pros" string (not an array), and a single "cons" string (not an array). Format exactly like this example:
 
@@ -296,6 +296,8 @@ EXAMPLE CHECKLIST FORMAT:
 For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), and "explanation" (strategy behind the script).
 
 For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words.
+
+For type: "step_by_step_guide": Provide a detailed guide with 5-8 numbered steps, each step having a "step_title" and "description" (30-50 words each).
 
 4. Call to Action Page (layout: "centered"):
 Title: A clear, action-oriented title (e.g., "Your Next Step").
@@ -377,7 +379,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
             "items": [
               "3.1 Implement a pilot project to test the effectiveness of the chosen platform",
               "3.2 Measure the ROI of the VR training program",
-              "3.3 Iterate and adjust the program based on feedback and results"
+              "3.3 Iterate and adjust the program based of feedback and results"
             ]
           }
         ]
@@ -385,17 +387,30 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
     },
     {
       "layout": "filled",
-      "type": "table",
-      "title": "Section 3: Essential Comparison Matrix",
+      "type": "step_by_step_guide",
+      "title": "Section 3: Implementation Roadmap",
       "content": {
-        "headers": ["Feature", "Standard Package", "What You Actually Need"],
-        "rows": [
-          ["User Licenses", "Unlimited users included", "Start with 50-100 active users maximum"],
-          ["Content Library", "10,000+ pre-built scenarios", "Focus on 20-30 scenarios specific to your industry"],
-          ["Analytics Dashboard", "Advanced reporting suite", "Basic completion rates and time-spent metrics"],
-          ["Integration Options", "50+ software integrations", "Priority: LMS, HRIS, and video conferencing only"],
-          ["Support Level", "24/7 premium support", "Business hours support with 4-hour response time"],
-          ["Training & Onboarding", "Comprehensive 6-week program", "2-week focused implementation with key stakeholders"]
+        "steps": [
+          {
+            "step_title": "Step 1: Define Your Requirements",
+            "description": "Create a detailed list of your specific needs, including user count, content types, and integration requirements. This foundation will guide all subsequent decisions."
+          },
+          {
+            "step_title": "Step 2: Research and Shortlist Vendors",
+            "description": "Identify 3-5 potential vendors that align with your requirements. Focus on those with proven track records in your industry and positive customer reviews."
+          },
+          {
+            "step_title": "Step 3: Request Detailed Proposals",
+            "description": "Ask for comprehensive proposals including pricing, implementation timelines, support options, and customization capabilities. Ensure all vendors provide comparable information."
+          },
+          {
+            "step_title": "Step 4: Conduct Pilot Testing",
+            "description": "Run small-scale tests with your top 2-3 vendors. This hands-on experience will reveal practical considerations that aren't apparent in proposals."
+          },
+          {
+            "step_title": "Step 5: Negotiate Terms and Pricing",
+            "description": "Use insights from your testing phase to negotiate better terms. Focus on flexibility, scalability, and long-term value rather than just initial costs."
+          }
         ]
       }
     },
@@ -433,19 +448,19 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 
 CRITICAL REQUIREMENTS:
 1. Generate content that is dense enough to fill each page completely
-2. Use varied formatting (tables, lists, phases, etc.) for visual interest
+2. Use varied formatting (lists, phases, step-by-step guides, etc.) for visual interest
 3. Ensure all toolkit sections provide immediate, actionable value
 4. Make the content 100% educational with no promotional language
 5. Structure the content for professional PDF layout and design
-6. MANDATORY: All tables must have exactly 5-6 rows with 3 columns for proper validation
-7. MANDATORY: All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields
-8. MANDATORY: For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays
-9. MANDATORY: For checklist, use phases with numbered items like "1.1", "2.1", etc.`;
+6. MANDATORY: All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields
+7. MANDATORY: For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays
+8. MANDATORY: For checklist, use phases with numbered items like "1.1", "2.1", etc.
+9. DO NOT USE TABLE FORMAT - it's difficult to understand and should be replaced with step-by-step guides or other readable formats`;
 
     const res = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: All tables must have exactly 5-6 rows with 3 columns. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc.' },
+        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc. DO NOT USE TABLE FORMAT.' },
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
@@ -485,29 +500,8 @@ CRITICAL REQUIREMENTS:
         throw new Error('Each toolkit section must have title, type, and filled layout');
       }
       
-      // Improved validation based on type
+      // Improved validation based on type - NO TABLE VALIDATION
       switch (section.type) {
-        case 'table':
-          if (!section.content?.headers || !Array.isArray(section.content?.headers)) {
-            throw new Error('Table section must have headers array');
-          }
-          if (!section.content?.rows || !Array.isArray(section.content?.rows)) {
-            throw new Error('Table section must have rows array');
-          }
-          // More flexible row count - accept 3+ rows instead of strict 4+
-          if (section.content.rows.length < 3) {
-            console.warn(`Table section has ${section.content.rows.length} rows, adding padding rows for visual density`);
-            // Add padding rows if needed to meet minimum requirements
-            while (section.content.rows.length < 5) {
-              const lastRow = section.content.rows[section.content.rows.length - 1];
-              const paddingRow = lastRow.map((cell: string, index: number) => {
-                if (index === 0) return `Additional Item ${section.content.rows.length + 1}`;
-                return `Additional detail for enhanced understanding and practical application.`;
-              });
-              section.content.rows.push(paddingRow);
-            }
-          }
-          break;
         case 'checklist':
           if (!section.content?.phases || !Array.isArray(section.content?.phases)) {
             throw new Error('Checklist section must have phases array');
@@ -565,6 +559,14 @@ CRITICAL REQUIREMENTS:
             }
           }
           break;
+        case 'step_by_step_guide':
+          if (!section.content?.steps || !Array.isArray(section.content?.steps)) {
+            throw new Error('Step by step guide section must have steps array');
+          }
+          if (section.content.steps.length < 3) {
+            throw new Error('Step by step guide section must have at least 3 steps');
+          }
+          break;
       }
     }
 
@@ -616,14 +618,6 @@ CRITICAL REQUIREMENTS:
 // Helper function to format layout-focused section content into readable format
 function formatLayoutSectionContent(section: any): string {
   switch (section.type) {
-    case 'table':
-      let tableContent = `${section.content.headers.join(' | ')}\n`;
-      tableContent += section.content.headers.map(() => '---').join(' | ') + '\n';
-      section.content.rows.forEach((row: string[]) => {
-        tableContent += row.join(' | ') + '\n';
-      });
-      return tableContent;
-    
     case 'checklist':
       let checklistContent = '';
       section.content.phases.forEach((phase: any) => {
@@ -647,6 +641,11 @@ function formatLayoutSectionContent(section: any): string {
     case 'pros_and_cons_list':
       return section.content.items.map((item: any, index: number) => {
         return `${index + 1}. ${item.method_name}\n\nPros: ${item.pros}\n\nCons: ${item.cons}`;
+      }).join('\n\n');
+    
+    case 'step_by_step_guide':
+      return section.content.steps.map((step: any, index: number) => {
+        return `${step.step_title}\n${step.description}`;
       }).join('\n\n');
     
     case 'template':
