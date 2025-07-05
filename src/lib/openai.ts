@@ -258,7 +258,14 @@ For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger
 
 For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words.
 
-- For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of 4-6 items. Each item MUST have a "method_name", a list of "pros" (1-3 bullet points), and a list of "cons" (1-3 bullet points).
+- For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of 4-6 items. Each item MUST have a "method_name", a single "pros" string (not an array), and a single "cons" string (not an array). Format exactly like this example:
+
+EXAMPLE PROS AND CONS FORMAT:
+{
+  "method_name": "Social Media Marketing",
+  "pros": "Offers wide reach and the ability to form a personal connection with prospects.",
+  "cons": "It is time-consuming and requires the regular creation of new content to stay relevant."
+}
 
 4. Call to Action Page (layout: "centered"):
 Title: A clear, action-oriented title (e.g., "Your Next Step").
@@ -308,30 +315,33 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
         "items": [
           {
             "method_name": "Social Media Marketing",
-            "pros": [
-              "Offers wide reach and the ability to form a personal connection with prospects."
-            ],
-            "cons": [
-              "It is time-consuming and requires the regular creation of new content to stay relevant."
-            ]
+            "pros": "Offers wide reach and the ability to form a personal connection with prospects.",
+            "cons": "It is time-consuming and requires the regular creation of new content to stay relevant."
           },
           {
             "method_name": "Email Marketing",
-            "pros": [
-              "Highly cost-effective with a proven potential for a high return on investment (ROI)."
-            ],
-            "cons": [
-              "Risks being perceived as spam and is heavily dependent on having a high-quality mailing list."
-            ]
+            "pros": "Highly cost-effective with a proven potential for a high return on investment (ROI).",
+            "cons": "Risks being perceived as spam and is heavily dependent on having a high-quality, clean mailing list."
           },
           {
             "method_name": "Search Engine Optimization (SEO)",
-            "pros": [
-              "Delivers long-term effectiveness and builds high credibility with your audience."
-            ],
-            "cons": [
-              "Results are typically slow to materialize and it requires a degree of technical knowledge."
-            ]
+            "pros": "Delivers long-term effectiveness and builds high credibility with your audience.",
+            "cons": "Results are typically slow to materialize and it requires a degree of technical knowledge to implement correctly."
+          },
+          {
+            "method_name": "Content Marketing",
+            "pros": "Establishes you as an authority in your field and attracts valuable organic traffic over time.",
+            "cons": "It is a time-consuming strategy that requires the consistent and regular creation of high-quality content."
+          },
+          {
+            "method_name": "Networking Events",
+            "pros": "Creates an immediate personal connection and often results in high-quality leads.",
+            "cons": "The strategy is time-consuming by nature and has a limited reach compared to digital methods."
+          },
+          {
+            "method_name": "Paid Ads",
+            "pros": "Can deliver immediate results and allows for precise targeting of your ideal audience.",
+            "cons": "Can be very costly if not managed properly and requires constant monitoring and optimization to be effective."
           }
         ]
       }
@@ -400,12 +410,13 @@ CRITICAL REQUIREMENTS:
 4. Make the content 100% educational with no promotional language
 5. Structure the content for professional PDF layout and design
 6. MANDATORY: All tables must have exactly 5-6 rows with 3 columns for proper validation
-7. MANDATORY: All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields`;
+7. MANDATORY: All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields
+8. MANDATORY: For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays`;
 
     const res = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: All tables must have exactly 5-6 rows with 3 columns. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields.' },
+        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: All tables must have exactly 5-6 rows with 3 columns. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays.' },
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
@@ -518,10 +529,10 @@ CRITICAL REQUIREMENTS:
           if (section.content.items.length < 3) {
             throw new Error('Pros and cons section must have at least 3 items');
           }
-          // Validate each item has required structure
+          // Validate each item has required structure with single strings (not arrays)
           for (const item of section.content.items) {
-            if (!item.method_name || !Array.isArray(item.pros) || !Array.isArray(item.cons)) {
-              throw new Error('Each pros and cons item must have method_name, pros array, and cons array');
+            if (!item.method_name || typeof item.pros !== 'string' || typeof item.cons !== 'string') {
+              throw new Error('Each pros and cons item must have method_name, pros (single string), and cons (single string)');
             }
           }
           break;
@@ -606,9 +617,7 @@ function formatLayoutSectionContent(section: any): string {
     
     case 'pros_and_cons_list':
       return section.content.items.map((item: any, index: number) => {
-        const prosText = item.pros.map((pro: string) => `+ ${pro}`).join('\n');
-        const consText = item.cons.map((con: string) => `- ${con}`).join('\n');
-        return `${index + 1}. ${item.method_name}\nPros:\n${prosText}\nCons:\n${consText}`;
+        return `${index + 1}. ${item.method_name}\n\nPros: ${item.pros}\n\nCons: ${item.cons}`;
       }).join('\n\n');
     
     case 'template':
