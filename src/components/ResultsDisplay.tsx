@@ -20,14 +20,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName }) =
     setShowPDFDownload(true);
   };
 
-  // Prepare campaign data for email
-  const campaignData = {
-    brandName,
-    pdfContent: results.pdf_content,
-    landingPage: results.landing_page,
-    socialPosts: results.social_posts
-  };
-
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       <div className="text-center">
@@ -37,18 +29,15 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName }) =
 
       {/* Email Capture Section */}
       <div className="max-w-2xl mx-auto">
-        <EmailCapture 
-          onEmailSubmitted={handleEmailSubmitted} 
-          campaignData={campaignData}
-        />
+        <EmailCapture onEmailSubmitted={handleEmailSubmitted} />
       </div>
 
-      {/* PDF Download - Always show, but highlight after email submission */}
-      <div className="max-w-2xl mx-auto">
-        <div className={`transition-all duration-500 ${showPDFDownload ? 'ring-2 ring-green-500 ring-opacity-50' : ''}`}>
+      {/* PDF Download - Only show after email is submitted */}
+      {showPDFDownload && (
+        <div className="max-w-2xl mx-auto">
           <PDFGenerator content={results.pdf_content} brandName={brandName} />
         </div>
-      </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Landing Page Copy */}
