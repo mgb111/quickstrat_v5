@@ -237,6 +237,8 @@ EXTREME VALUE: Every section must be a tangible tool that provides the "how," no
 
 NO SELLING: The content must be 100% educational and brand-agnostic.
 
+CRITICAL REDUNDANCY RULE: If you include a checklist section, DO NOT create a separate "step-by-step guide" section. The checklist is the superior implementation tool and should be the sole guide. Avoid redundancy at all costs.
+
 THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
 
 1. Title Page (layout: "centered"):
@@ -248,9 +250,9 @@ Title: A clear, engaging title for the introduction (e.g., "Why This Toolkit Wil
 Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what tangible tools they will receive. This length is required to properly fill the page.
 
 3. The Toolkit Sections (layout: "filled"):
-Generate 3-4 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. The content for each tool must be detailed and expanded.
+Generate EXACTLY 3 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. The content for each tool must be detailed and expanded.
 
-SECTION TYPES TO USE (NO TABLES):
+SECTION TYPES TO USE (NO TABLES, NO REDUNDANT STEP-BY-STEP GUIDES):
 
 - For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of 4-6 items. Each item MUST have a "method_name", a single "pros" string (not an array), and a single "cons" string (not an array). Format exactly like this example:
 
@@ -297,17 +299,18 @@ For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger
 
 For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words.
 
-For type: "step_by_step_guide": Provide a detailed guide with 5-8 numbered steps, each step having a "step_title" and "description" (30-50 words each).
+IMPORTANT: DO NOT USE "step_by_step_guide" type if you already have a checklist. The checklist serves as the implementation guide and creating both would be redundant.
 
 4. Call to Action Page (layout: "centered"):
 Title: A clear, action-oriented title (e.g., "Your Next Step").
-Content: A brief (25-40 words), logical CTA that offers a clear next step toward a sales conversation. The CTA must directly connect the value provided to a low-friction action (e.g., booking a free consultation, scheduling a strategy call).
+Content: Use this EXACT CTA text: "You now have the complete blueprint for implementing a VR training program. To get a personalized assessment of how this blueprint can be applied to your specific training needs and budget, schedule a free 15-minute strategy session with our experts."
 
 FINAL GUARDRAIL AND SELF-CORRECTION: Before generating the JSON, you MUST verify your own output against the mandatory instructions.
-1.  Is the content for each page dense enough?
-2.  Does the checklist contain 8-12 items across 2-3 phases?
-3.  Are the scripts and mistakes sections fully detailed as specified?
-4.  Does the CTA lead directly to a sales conversation?
+1. Is the content for each page dense enough?
+2. Does the checklist contain 8-12 items across 2-3 phases?
+3. Are there exactly 3 toolkit sections with no redundancy?
+4. Does the CTA use the exact text provided?
+5. Have you avoided creating both a checklist AND a step-by-step guide?
 If any answer is no, you MUST rewrite that section to fully comply before providing the final output.
 
 RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
@@ -315,7 +318,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   "title_page": {
     "layout": "centered",
     "title": "The VR Vendor Negotiation Toolkit",
-    "subtitle": "A 4-Part Guide to Cut Costs and Secure a Future-Proof Contract."
+    "subtitle": "A 3-Part Guide to Cut Costs and Secure a Future-Proof Contract."
   },
   "introduction_page": {
     "layout": "filled",
@@ -387,37 +390,8 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
     },
     {
       "layout": "filled",
-      "type": "step_by_step_guide",
-      "title": "Section 3: Implementation Roadmap",
-      "content": {
-        "steps": [
-          {
-            "step_title": "Step 1: Define Your Requirements",
-            "description": "Create a detailed list of your specific needs, including user count, content types, and integration requirements. This foundation will guide all subsequent decisions."
-          },
-          {
-            "step_title": "Step 2: Research and Shortlist Vendors",
-            "description": "Identify 3-5 potential vendors that align with your requirements. Focus on those with proven track records in your industry and positive customer reviews."
-          },
-          {
-            "step_title": "Step 3: Request Detailed Proposals",
-            "description": "Ask for comprehensive proposals including pricing, implementation timelines, support options, and customization capabilities. Ensure all vendors provide comparable information."
-          },
-          {
-            "step_title": "Step 4: Conduct Pilot Testing",
-            "description": "Run small-scale tests with your top 2-3 vendors. This hands-on experience will reveal practical considerations that aren't apparent in proposals."
-          },
-          {
-            "step_title": "Step 5: Negotiate Terms and Pricing",
-            "description": "Use insights from your testing phase to negotiate better terms. Focus on flexibility, scalability, and long-term value rather than just initial costs."
-          }
-        ]
-      }
-    },
-    {
-      "layout": "filled",
       "type": "scripts",
-      "title": "Section 4: Negotiation Scripts That Work",
+      "title": "Section 3: Negotiation Scripts That Work",
       "content": {
         "scenarios": [
           {
@@ -442,25 +416,27 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   "cta_page": {
     "layout": "centered",
     "title": "Your Next Step",
-    "content": "You now have the tools to negotiate a smarter contract. To see how a modular platform with transparent pricing aligns with these principles, schedule a free 15-minute consultation with our experts."
+    "content": "You now have the complete blueprint for implementing a VR training program. To get a personalized assessment of how this blueprint can be applied to your specific training needs and budget, schedule a free 15-minute strategy session with our experts."
   }
 }
 
 CRITICAL REQUIREMENTS:
 1. Generate content that is dense enough to fill each page completely
-2. Use varied formatting (lists, phases, step-by-step guides, etc.) for visual interest
+2. Use varied formatting (lists, phases, scripts, etc.) for visual interest
 3. Ensure all toolkit sections provide immediate, actionable value
 4. Make the content 100% educational with no promotional language
 5. Structure the content for professional PDF layout and design
 6. MANDATORY: All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields
 7. MANDATORY: For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays
 8. MANDATORY: For checklist, use phases with numbered items like "1.1", "2.1", etc.
-9. DO NOT USE TABLE FORMAT - it's difficult to understand and should be replaced with step-by-step guides or other readable formats`;
+9. MANDATORY: Generate EXACTLY 3 toolkit sections, no more, no less
+10. MANDATORY: DO NOT create both checklist and step-by-step guide - choose one or the other to avoid redundancy
+11. MANDATORY: Use the exact CTA text provided in the prompt`;
 
     const res = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc. DO NOT USE TABLE FORMAT.' },
+        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: Generate EXACTLY 3 toolkit sections. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc. DO NOT create both checklist and step-by-step guide to avoid redundancy. Use the exact CTA text provided.' },
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
@@ -489,9 +465,17 @@ CRITICAL REQUIREMENTS:
       throw new Error('Invalid introduction page format');
     }
 
-    // Validate toolkit sections (3-4 sections required)
-    if (parsed.toolkit_sections.length < 3 || parsed.toolkit_sections.length > 4) {
-      throw new Error('Must have 3-4 toolkit sections');
+    // Validate toolkit sections (EXACTLY 3 sections required for A+ document)
+    if (parsed.toolkit_sections.length !== 3) {
+      throw new Error('Must have exactly 3 toolkit sections for A+ document quality');
+    }
+
+    // Check for redundancy - ensure no step-by-step guide if checklist exists
+    const hasChecklist = parsed.toolkit_sections.some((section: any) => section.type === 'checklist');
+    const hasStepByStep = parsed.toolkit_sections.some((section: any) => section.type === 'step_by_step_guide');
+    
+    if (hasChecklist && hasStepByStep) {
+      throw new Error('Document contains redundant sections: both checklist and step-by-step guide. Remove redundancy for A+ quality.');
     }
 
     // Validate each toolkit section with improved validation
