@@ -1,72 +1,52 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, PDFDownloadLink } from '@react-pdf/renderer';
 import { Download } from 'lucide-react';
-import { 
-  PDFContent, 
-  ToolkitSection, 
-  ChecklistSection, 
-  ProsAndConsSection, 
-  ScriptsSection, 
-  TableSection 
-} from '../types';
+import { PDFContent } from '../types';
 
 interface PDFGeneratorProps {
   content: PDFContent;
   brandName: string;
-  onDownload?: () => void;
 }
 
 const styles = StyleSheet.create({
   page: {
+    flexDirection: 'column',
+    backgroundColor: '#ffffff',
     padding: 40,
-    backgroundColor: '#FFFFFF',
-    position: 'relative',
-    paddingBottom: 80,
+    fontFamily: 'Helvetica'
+  },
+  titlePage: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#1f2937'
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#6b7280',
+    lineHeight: 1.5
   },
   section: {
-    marginBottom: 30,
-  },
-  header: {
-    fontSize: 24,
-    marginBottom: 20,
-    fontWeight: 'bold',
-    color: '#1F2937',
-  },
-  subheader: {
-    fontSize: 18,
-    marginBottom: 15,
-    fontWeight: 'bold',
-    color: '#374151',
+    marginBottom: 20
   },
   sectionTitle: {
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#111827',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-    paddingBottom: 5,
+    marginBottom: 10,
+    color: '#3b82f6'
   },
   paragraph: {
     fontSize: 12,
-    marginBottom: 10,
-    lineHeight: 1.5,
-    color: '#4B5563',
-  },
-  ul: {
-    marginLeft: 20,
-    marginBottom: 10,
-  },
-  li: {
-    fontSize: 12,
-    marginBottom: 5,
-    color: '#4B5563',
-  },
-  h4: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#111827',
+    lineHeight: 1.6,
+    color: '#374151',
+    marginBottom: 10
   },
   footer: {
     position: 'absolute',
@@ -74,258 +54,85 @@ const styles = StyleSheet.create({
     left: 40,
     right: 40,
     textAlign: 'center',
-    fontSize: 10,
-    color: '#6B7280',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
-    paddingTop: 10,
-  },
+    color: '#9ca3af',
+    fontSize: 10
+  }
 });
 
-const PDFDocument: React.FC<{ content: PDFContent; brandName: string }> = ({ content, brandName }) => {
-  // Type guard functions
-  const isChecklistSection = (section: ToolkitSection): section is ChecklistSection => 
-    section.type === 'checklist' && 'phases' in (section.content || {});
+const PDFDocument: React.FC<{ content: PDFContent; brandName: string }> = ({ content, brandName }) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      <View style={styles.titlePage}>
+        <Text style={styles.title}>{content.title}</Text>
+      </View>
+      <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
+    </Page>
     
-  const isProsAndConsSection = (section: ToolkitSection): section is ProsAndConsSection =>
-    section.type === 'pros_and_cons_list' && 'items' in (section.content || {});
+    <Page size="A4" style={styles.page}>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Introduction</Text>
+        <Text style={styles.paragraph}>{content.introduction}</Text>
+      </View>
+      <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
+    </Page>
     
-  const isScriptsSection = (section: ToolkitSection): section is ScriptsSection =>
-    section.type === 'scripts' && 'scenarios' in (section.content || {});
-    
-  const isTableSection = (section: ToolkitSection): section is TableSection =>
-    section.type === 'table' && 'headers' in (section.content || {});
-
-  const renderPdfSection = (section: ToolkitSection, index: number) => {
-    const { type } = section;
-    const safeContent = section.content;
-
-    const renderContent = () => {
-      if (!safeContent) {
-        return <Text style={styles.paragraph}>No content available</Text>;
-      }
-
-      switch (type) {
-        case 'checklist':
-          if (!isChecklistSection(section)) {
-            return <Text style={styles.paragraph}>Invalid checklist format</Text>;
-          }
-          const checklistContent = section.content;
-          return (
-            <View>
-              {checklistContent.phases.map((phase, pIndex) => (
-                <View key={pIndex} style={{ marginBottom: 10 }}>
-                  <Text style={styles.h4}>{phase.phase_title}</Text>
-                  <View style={styles.ul}>
-                    {Array.isArray(phase.items) && phase.items.map((item: string, i: number) => (
-                      <Text key={i} style={styles.li}>• {item}</Text>
-                    ))}
-                  </View>
-                </View>
-              ))}
-            </View>
-          );
-
-        case 'pros_and_cons_list':
-          if (!isProsAndConsSection(section)) {
-            return <Text style={styles.paragraph}>Invalid pros and cons format</Text>;
-          }
-          const prosAndConsContent = section.content;
-          return (
-            <View>
-              {prosAndConsContent.items.map((item, iIndex) => (
-                <View key={iIndex} style={{ marginBottom: 10 }}>
-                  <Text style={styles.h4}>{item.method_name || 'Method'}</Text>
-                  <Text style={{...styles.paragraph, fontWeight: 'bold'}}>Pros:</Text>
-                  <View style={styles.ul}>
-                    {Array.isArray(item.pros) && item.pros.map((pro: string, pIndex: number) => (
-                      <Text key={`pro-${pIndex}`} style={styles.li}>• {pro}</Text>
-                    ))}
-                  </View>
-                  <Text style={{...styles.paragraph, fontWeight: 'bold'}}>Cons:</Text>
-                  <View style={styles.ul}>
-                    {Array.isArray(item.cons) && item.cons.map((con: string, cIndex: number) => (
-                      <Text key={`con-${cIndex}`} style={styles.li}>• {con}</Text>
-                    ))}
-                  </View>
-                </View>
-              ))}
-            </View>
-          );
-
-        case 'scripts':
-          if (!isScriptsSection(section)) {
-            return <Text style={styles.paragraph}>Invalid scripts format</Text>;
-          }
-          const scriptsContent = section.content;
-          return (
-            <View>
-              {scriptsContent.scenarios.map((scenario, sIndex) => (
-                <View key={sIndex} style={{ marginBottom: 15 }}>
-                  <Text style={styles.h4}>Scenario: {scenario.trigger || 'Untitled Scenario'}</Text>
-                  <Text style={styles.paragraph}>
-                    <Text style={{fontWeight: 'bold'}}>Your Response:</Text> {scenario.response || 'No response provided'}
-                  </Text>
-                  <Text style={{...styles.paragraph, fontStyle: 'italic'}}>
-                    Why this works: {scenario.explanation || 'No explanation provided'}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          );
-
-        case 'table':
-          if (!isTableSection(section)) {
-            return <Text style={styles.paragraph}>Invalid table format</Text>;
-          }
-          const tableContent = section.content;
-          
-          const headers = Array.isArray(tableContent.headers) && tableContent.headers.length > 0 
-            ? tableContent.headers 
-            : ['Column 1', 'Column 2'];
-          
-          const rows = Array.isArray(tableContent.rows) ? tableContent.rows : [];
-          
-          if (rows.length === 0) {
-            return (
-              <View style={{ marginVertical: 15, padding: 10, backgroundColor: '#F9FAFB', borderRadius: 4 }}>
-                <Text style={{...styles.paragraph, textAlign: 'center', fontStyle: 'italic'}}>
-                  No table data available
-                </Text>
-              </View>
-            );
-          }
-          
-          return (
-            <View style={{ marginTop: 10, marginBottom: 15 }}>
-              {/* Table Header */}
-              <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#E5E7EB' }}>
-                {headers.map((header: string, hIndex: number) => (
-                  <View key={`header-${hIndex}`} style={{ flex: 1, padding: 8, backgroundColor: '#F3F4F6' }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 10 }}>{header || `Column ${hIndex + 1}`}</Text>
-                  </View>
-                ))}
-              </View>
-              
-              {/* Table Rows */}
-              {rows.map((row: any, rIndex: number) => (
-                <View key={`row-${rIndex}`} style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F3F4F6' }}>
-                  {Array.isArray(row) 
-                    ? row.map((cell, cIndex) => (
-                        <View key={`cell-${rIndex}-${cIndex}`} style={{ flex: 1, padding: 8 }}>
-                          <Text style={{ fontSize: 10 }}>{String(cell || '').trim() || '-'}</Text>
-                        </View>
-                      ))
-                    : <View style={{ flex: 1, padding: 8 }}>
-                        <Text style={{ fontSize: 10, color: '#6B7280', fontStyle: 'italic' }}>
-                          Invalid row data
-                        </Text>
-                      </View>
-                  }
-                </View>
-              ))}
-            </View>
-          );
-        
-        default:
-          return (
-            <Text style={styles.paragraph}>
-              {typeof safeContent === 'string' 
-                ? safeContent 
-                : JSON.stringify(safeContent, null, 2)}
-            </Text>
-          );
-      }
-    };
-
-    return (
+    {content.sections.map((section, index) => (
       <Page key={index} size="A4" style={styles.page}>
         <View style={styles.section}>
-          {section.title && (
-            <Text style={styles.sectionTitle}>{section.title}</Text>
-          )}
-          {renderContent()}
+          <Text style={styles.sectionTitle}>{section.title}</Text>
+          <Text style={styles.paragraph}>{section.content}</Text>
         </View>
-        <Text style={styles.footer}>{new Date().getFullYear()} {brandName}</Text>
+        <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
       </Page>
-    );
-  };
+    ))}
+    
+    <Page size="A4" style={styles.page}>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Next Steps</Text>
+        <Text style={styles.paragraph}>{content.cta}</Text>
+      </View>
+      <Text style={styles.footer}>© {new Date().getFullYear()} {brandName}</Text>
+    </Page>
+  </Document>
+);
 
+const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
   return (
-    <Document>
-      {/* Title Page */}
-      <Page size="A4" style={[styles.page, { justifyContent: 'center', alignItems: 'center' }]}>
-        <View style={{ textAlign: 'center' }}>
-          <Text style={styles.header}>{content.title_page.title}</Text>
-          <Text style={styles.subheader}>{content.title_page.subtitle}</Text>
-        </View>
-        <Text style={styles.footer}>{new Date().getFullYear()} {brandName}</Text>
-      </Page>
-
-      {/* Introduction Page */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{content.introduction_page.title}</Text>
-          <Text style={styles.paragraph}>{content.introduction_page.content}</Text>
-        </View>
-        <Text style={styles.footer}>{new Date().getFullYear()} {brandName}</Text>
-      </Page>
-      
-      {/* Toolkit Sections */}
-      {content.toolkit_sections.map((section, index) => (
-        <React.Fragment key={`section-${index}`}>
-          {renderPdfSection(section, index)}
-        </React.Fragment>
-      ))}
-      
-      {/* CTA Page */}
-      <Page size="A4" style={styles.page}>
-        <View style={[styles.section, { flex: 1, justifyContent: 'center' }]}>
-          <Text style={[styles.header, { textAlign: 'center', marginBottom: 20 }]}>
-            {content.cta_page.title}
-          </Text>
-          <Text style={[styles.paragraph, { textAlign: 'center' }]}>
-            {content.cta_page.content}
-          </Text>
-        </View>
-        <Text style={styles.footer}>{new Date().getFullYear()} {brandName}</Text>
-      </Page>
-    </Document>
-  );
-};
-
-const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName, onDownload }) => {
-  const [isGenerating, setIsGenerating] = React.useState(false);
-
-  const handleClick = async () => {
-    try {
-      setIsGenerating(true);
-      onDownload?.();
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  return (
-    <div className="flex flex-col items-center">
-      <div className="relative">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xl font-bold text-gray-900">Your Lead Magnet PDF</h3>
         <PDFDownloadLink
           document={<PDFDocument content={content} brandName={brandName} />}
-          fileName={`${brandName.replace(/\s+/g, '-').toLowerCase()}-strategy.pdf`}
-          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          fileName={`${brandName.replace(/\s+/g, '-').toLowerCase()}-lead-magnet.pdf`}
+          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105"
         >
-          {null}
+          <Download className="h-4 w-4 mr-2" />
+          Download PDF
         </PDFDownloadLink>
-        <button
-          onClick={handleClick}
-          disabled={isGenerating}
-          className={`absolute inset-0 w-full h-full flex items-center justify-center px-4 py-2 rounded-md ${
-            isGenerating ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-          }`}
-        >
-          <Download className={`w-4 h-4 mr-2 ${isGenerating ? 'animate-spin' : ''}`} />
-          {isGenerating ? 'Generating PDF...' : 'Download PDF'}
-        </button>
+      </div>
+      
+      <div className="space-y-4">
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <h4 className="font-semibold text-gray-900 mb-2">Title</h4>
+          <p className="text-sm text-gray-700">{content.title}</p>
+        </div>
+        
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <h4 className="font-semibold text-gray-900 mb-2">Introduction</h4>
+          <p className="text-sm text-gray-700">{content.introduction}</p>
+        </div>
+        
+        {content.sections.map((section, index) => (
+          <div key={index} className="p-4 bg-gray-50 rounded-lg">
+            <h4 className="font-semibold text-gray-900 mb-2">{section.title}</h4>
+            <p className="text-sm text-gray-700">{section.content}</p>
+          </div>
+        ))}
+        
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <h4 className="font-semibold text-gray-900 mb-2">Call to Action</h4>
+          <p className="text-sm text-gray-700">{content.cta}</p>
+        </div>
       </div>
     </div>
   );
