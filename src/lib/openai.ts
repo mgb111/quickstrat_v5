@@ -252,12 +252,6 @@ Generate 3-4 distinct toolkit sections. Each section must be comprehensive enoug
 
 CRITICAL: For type: "table": The table MUST have exactly 5-6 rows of detailed entries with 3 columns each. This is mandatory for visual density and validation requirements.
 
-For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items.
-
-For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), and "explanation" (strategy behind the script).
-
-For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words.
-
 - For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of 4-6 items. Each item MUST have a "method_name", a single "pros" string (not an array), and a single "cons" string (not an array). Format exactly like this example:
 
 EXAMPLE PROS AND CONS FORMAT:
@@ -267,13 +261,49 @@ EXAMPLE PROS AND CONS FORMAT:
   "cons": "It is time-consuming and requires the regular creation of new content to stay relevant."
 }
 
+For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items. Format exactly like this example:
+
+EXAMPLE CHECKLIST FORMAT:
+{
+  "phases": [
+    {
+      "phase_title": "Phase A: Initial Assessment",
+      "items": [
+        "1.1 Identify the training needs that can be addressed using VR",
+        "1.2 Estimate the number of users who will need access to VR training",
+        "1.3 Calculate the budget available for VR training implementation"
+      ]
+    },
+    {
+      "phase_title": "Phase B: Vendor Evaluation", 
+      "items": [
+        "2.1 Compare various VR training platforms based on features and cost",
+        "2.2 Evaluate the scalability and flexibility of each platform",
+        "2.3 Consider the support and training provided by the vendor"
+      ]
+    },
+    {
+      "phase_title": "Phase C: Implementation and Monitoring",
+      "items": [
+        "3.1 Implement a pilot project to test the effectiveness of the chosen platform",
+        "3.2 Measure the ROI of the VR training program", 
+        "3.3 Iterate and adjust the program based on feedback and results"
+      ]
+    }
+  ]
+}
+
+For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), and "explanation" (strategy behind the script).
+
+For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words.
+
 4. Call to Action Page (layout: "centered"):
 Title: A clear, action-oriented title (e.g., "Your Next Step").
 Content: A brief (25-40 words), logical CTA that offers a clear next step toward a sales conversation. The CTA must directly connect the value provided to a low-friction action (e.g., booking a free consultation, scheduling a strategy call).
 
 FINAL GUARDRAIL AND SELF-CORRECTION: Before generating the JSON, you MUST verify your own output against the mandatory instructions.
 1.  Is the content for each page dense enough?
-2.  Does the checklist contain 8-12 items?
+2.  Does the checklist contain 8-12 items across 2-3 phases?
 3.  Are the scripts and mistakes sections fully detailed as specified?
 4.  Does the CTA lead directly to a sales conversation?
 If any answer is no, you MUST rewrite that section to fully comply before providing the final output.
@@ -293,8 +323,70 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   "toolkit_sections": [
     {
       "layout": "filled",
+      "type": "pros_and_cons_list",
+      "title": "Section 1: Social Media Marketing Strategies Overview",
+      "content": {
+        "items": [
+          {
+            "method_name": "Paid Advertising",
+            "pros": "Quick results, precise targeting, scalable.",
+            "cons": "Can be expensive, requires constant monitoring and adjustment."
+          },
+          {
+            "method_name": "Organic Growth",
+            "pros": "Cost-effective, builds trust and credibility.",
+            "cons": "Slower results, requires consistent high-quality content."
+          },
+          {
+            "method_name": "Influencer Marketing",
+            "pros": "Access to established audiences, high trust factor.",
+            "cons": "Can be expensive, success heavily dependent on influencer."
+          },
+          {
+            "method_name": "Community Building",
+            "pros": "Encourages engagement, fosters loyalty.",
+            "cons": "Time-consuming, requires active moderation."
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "checklist",
+      "title": "Section 2: Cost-Effectiveness Checklist",
+      "content": {
+        "phases": [
+          {
+            "phase_title": "Phase A: Initial Assessment",
+            "items": [
+              "1.1 Identify the training needs that can be addressed using VR",
+              "1.2 Estimate the number of users who will need access to VR training",
+              "1.3 Calculate the budget available for VR training implementation"
+            ]
+          },
+          {
+            "phase_title": "Phase B: Vendor Evaluation",
+            "items": [
+              "2.1 Compare various VR training platforms based on features and cost",
+              "2.2 Evaluate the scalability and flexibility of each platform",
+              "2.3 Consider the support and training provided by the vendor"
+            ]
+          },
+          {
+            "phase_title": "Phase C: Implementation and Monitoring",
+            "items": [
+              "3.1 Implement a pilot project to test the effectiveness of the chosen platform",
+              "3.2 Measure the ROI of the VR training program",
+              "3.3 Iterate and adjust the program based on feedback and results"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
       "type": "table",
-      "title": "Section 1: Essential Comparison Matrix",
+      "title": "Section 3: Essential Comparison Matrix",
       "content": {
         "headers": ["Feature", "Standard Package", "What You Actually Need"],
         "rows": [
@@ -304,70 +396,6 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
           ["Integration Options", "50+ software integrations", "Priority: LMS, HRIS, and video conferencing only"],
           ["Support Level", "24/7 premium support", "Business hours support with 4-hour response time"],
           ["Training & Onboarding", "Comprehensive 6-week program", "2-week focused implementation with key stakeholders"]
-        ]
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "pros_and_cons_list",
-      "title": "Section 2: The Lead Generation Matrix: A Strategic Overview",
-      "content": {
-        "items": [
-          {
-            "method_name": "Social Media Marketing",
-            "pros": "Offers wide reach and the ability to form a personal connection with prospects.",
-            "cons": "It is time-consuming and requires the regular creation of new content to stay relevant."
-          },
-          {
-            "method_name": "Email Marketing",
-            "pros": "Highly cost-effective with a proven potential for a high return on investment (ROI).",
-            "cons": "Risks being perceived as spam and is heavily dependent on having a high-quality, clean mailing list."
-          },
-          {
-            "method_name": "Search Engine Optimization (SEO)",
-            "pros": "Delivers long-term effectiveness and builds high credibility with your audience.",
-            "cons": "Results are typically slow to materialize and it requires a degree of technical knowledge to implement correctly."
-          },
-          {
-            "method_name": "Content Marketing",
-            "pros": "Establishes you as an authority in your field and attracts valuable organic traffic over time.",
-            "cons": "It is a time-consuming strategy that requires the consistent and regular creation of high-quality content."
-          },
-          {
-            "method_name": "Networking Events",
-            "pros": "Creates an immediate personal connection and often results in high-quality leads.",
-            "cons": "The strategy is time-consuming by nature and has a limited reach compared to digital methods."
-          },
-          {
-            "method_name": "Paid Ads",
-            "pros": "Can deliver immediate results and allows for precise targeting of your ideal audience.",
-            "cons": "Can be very costly if not managed properly and requires constant monitoring and optimization to be effective."
-          }
-        ]
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "checklist",
-      "title": "Section 3: The Pre-Negotiation Action Checklist",
-      "content": {
-        "phases": [
-          {
-            "phase_title": "Phase A: Financial Groundwork",
-            "items": [
-              "Audit your last 12 months of traditional training costs to establish a clear budget baseline.",
-              "Get itemized quotes from at least three different vendors (never accept a single 'package price').",
-              "Add a 15% contingency line item in your budget for hidden costs like facilitator training and IT support."
-            ]
-          },
-          {
-            "phase_title": "Phase B: Feature & Requirement Definition",
-            "items": [
-              "Define your 'Must-Have' vs. 'Nice-to-Have' features using a simple matrix.",
-              "Prepare a list of 3-5 pointed technical questions based on the Decoder Ring.",
-              "Draft your ideal service terms regarding content ownership and platform flexibility."
-            ]
-          }
         ]
       }
     },
@@ -411,12 +439,13 @@ CRITICAL REQUIREMENTS:
 5. Structure the content for professional PDF layout and design
 6. MANDATORY: All tables must have exactly 5-6 rows with 3 columns for proper validation
 7. MANDATORY: All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields
-8. MANDATORY: For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays`;
+8. MANDATORY: For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays
+9. MANDATORY: For checklist, use phases with numbered items like "1.1", "2.1", etc.`;
 
     const res = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: All tables must have exactly 5-6 rows with 3 columns. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays.' },
+        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: All tables must have exactly 5-6 rows with 3 columns. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc.' },
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
@@ -597,10 +626,10 @@ function formatLayoutSectionContent(section: any): string {
     
     case 'checklist':
       let checklistContent = '';
-      section.content.phases.forEach((phase: any, phaseIndex: number) => {
+      section.content.phases.forEach((phase: any) => {
         checklistContent += `\n${phase.phase_title}\n`;
-        phase.items.forEach((item: string, itemIndex: number) => {
-          checklistContent += `${phaseIndex + 1}.${itemIndex + 1} ${item}\n`;
+        phase.items.forEach((item: string) => {
+          checklistContent += `${item}\n`;
         });
       });
       return checklistContent;
