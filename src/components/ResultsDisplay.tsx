@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Copy, ExternalLink, MessageCircle } from 'lucide-react';
-import { CampaignOutput } from '../types';
+import { CampaignOutput } from '../types/index';
 import PDFGenerator from './PDFGenerator';
 import EmailCapture from './EmailCapture';
 
 interface ResultsDisplayProps {
   results: CampaignOutput;
   brandName: string;
+  onCampaignCreated?: () => void;
 }
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName }) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onCampaignCreated }) => {
   const [showPDFDownload, setShowPDFDownload] = useState(false);
 
   const copyToClipboard = (text: string) => {
@@ -25,6 +26,20 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName }) =
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Your Campaign is Ready!</h2>
         <p className="text-gray-600">Here's your complete lead magnet campaign</p>
+        
+        {onCampaignCreated && (
+          <div className="mt-6">
+            <button
+              onClick={onCampaignCreated}
+              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
+            >
+              Create Campaign & Go to Dashboard
+            </button>
+            <p className="text-sm text-gray-500 mt-2">
+              This will create your landing page and set up lead capture
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Email Capture Section */}

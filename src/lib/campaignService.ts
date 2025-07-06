@@ -1,0 +1,266 @@
+import { supabase } from './supabase';
+import { Campaign, Lead, CampaignInput, CampaignOutput } from '../types';
+
+export class CampaignService {
+  // Create a new campaign
+  static async createCampaign(input: CampaignInput, output: CampaignOutput): Promise<Campaign> {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
+    // Generate unique slug
+    const { data: slugData } = await supabase.rpc('generate_unique_slug');
+    const slug = slugData || `campaign-${Date.now()}`;
+
+    const campaignData = {
+      user_id: user.id,
+      name: `${input.brand_name} - ${input.customer_profile}`,
+      customer_profile: input.customer_profile,
+      problem_statement: input.problem_statement,
+      desired_outcome: input.desired_outcome,
+      landing_page_slug: slug,
+      lead_magnet_title: output.landing_page.headline,
+      lead_magnet_content: output.pdf_content,
+      landing_page_copy: output.landing_page,
+      social_posts: [
+        output.social_posts.linkedin,
+        output.social_posts.twitter,
+        output.social_posts.instagram
+      ]
+    };
+
+    const { data, error } = await supabase
+      .from('campaigns')
+      .insert(campaignData)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to create campaign: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  // Get all campaigns for the current user
+  static async getCampaigns(): Promise<Campaign[]> {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
+    const { data, error } = await supabase
+      .from('campaigns')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      throw new Error(`Failed to fetch campaigns: ${error.message}`);
+    }
+
+    return data || [];
+  }
+
+  // Get a specific campaign by ID
+  static async getCampaign(id: string): Promise<Campaign> {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
+    const { data, error } = await supabase
+      .from('campaigns')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to fetch campaign: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  // Get a campaign by slug (for public landing pages)
+  static async getCampaignBySlug(slug: string): Promise<Campaign> {
+    const { data, error } = await supabase
+      .from('campaigns')
+      .select('*')
+      .eq('landing_page_slug', slug)
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to fetch campaign: ${error.message}`);
+    }
+
+    return data;
+  }
+
+  // Capture a lead
+  static async captureLead(campaignId: string, email: string): Promise<Lead> {
+    // First, check if the campaign exists
+    const { data: campaign, error: campaignError } = await supabase
+      .from('campaigns')
+      .select('id')
+      .eq('id', campaignId)
+      .single();
+
+    if (campaignError || !campaign) {
+      throw new Error('Campaign not found');
+    }
+
+    // Insert the lead
+    const { data, error } = await supabase
+      .from('leads')
+      .insert({
+        campaign_id: campaignId,
+        email: email
+      })
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to capture lead: ${error.message}`);
+    }
+
+    // Also insert into emails table for automation
+    await supabase
+      .from('emails')
+      .insert({
+        email: email,
+        campaign_id: campaignId
+      });
+
+    return data;
+  }
+
+  // Get leads for a campaign
+  static async getLeads(campaignId: string): Promise<Lead[]> {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
+    // Verify the campaign belongs to the user
+    const { data: campaign } = await supabase
+      .from('campaigns')
+      .select('id')
+      .eq('id', campaignId)
+      .eq('user_id', user.id)
+      .single();
+
+    if (!campaign) {
+      throw new Error('Campaign not found or access denied');
+    }
+
+    const { data, error } = await supabase
+      .from('leads')
+      .select('*')
+      .eq('campaign_id', campaignId)
+      .order('captured_at', { ascending: false });
+
+    if (error) {
+      throw new Error(`Failed to fetch leads: ${error.message}`);
+    }
+
+    return data || [];
+  }
+
+  // Export leads as CSV
+  static async exportLeadsCSV(campaignId: string): Promise<string> {
+    const leads = await this.getLeads(campaignId);
+    
+    const csvHeader = 'Email,Captured At\n';
+    const csvRows = leads.map(lead => 
+      `"${lead.email}","${new Date(lead.captured_at).toISOString()}"`
+    ).join('\n');
+    
+    return csvHeader + csvRows;
+  }
+
+  // Mark email as sent
+  static async markEmailSent(email: string, campaignId: string): Promise<void> {
+    const { error } = await supabase
+      .from('emails')
+      .update({ email_sent: true })
+      .eq('email', email)
+      .eq('campaign_id', campaignId);
+
+    if (error) {
+      throw new Error(`Failed to mark email as sent: ${error.message}`);
+    }
+  }
+
+  // Mark PDF as downloaded
+  static async markPDFDownloaded(email: string, campaignId: string): Promise<void> {
+    const { error } = await supabase
+      .from('emails')
+      .update({ pdf_downloaded: true })
+      .eq('email', email)
+      .eq('campaign_id', campaignId);
+
+    if (error) {
+      throw new Error(`Failed to mark PDF as downloaded: ${error.message}`);
+    }
+  }
+
+  // Get campaign statistics
+  static async getCampaignStats(campaignId: string) {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
+    // Verify the campaign belongs to the user
+    const { data: campaign } = await supabase
+      .from('campaigns')
+      .select('id')
+      .eq('id', campaignId)
+      .eq('user_id', user.id)
+      .single();
+
+    if (!campaign) {
+      throw new Error('Campaign not found or access denied');
+    }
+
+    // Get lead count
+    const { count: leadCount } = await supabase
+      .from('leads')
+      .select('*', { count: 'exact', head: true })
+      .eq('campaign_id', campaignId);
+
+    // Get email stats
+    const { count: emailCount } = await supabase
+      .from('emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('campaign_id', campaignId);
+
+    const { count: sentEmailCount } = await supabase
+      .from('emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('campaign_id', campaignId)
+      .eq('email_sent', true);
+
+    const { count: pdfDownloadCount } = await supabase
+      .from('emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('campaign_id', campaignId)
+      .eq('pdf_downloaded', true);
+
+    return {
+      totalLeads: leadCount || 0,
+      totalEmails: emailCount || 0,
+      emailsSent: sentEmailCount || 0,
+      pdfsDownloaded: pdfDownloadCount || 0,
+      conversionRate: emailCount ? ((pdfDownloadCount || 0) / emailCount * 100).toFixed(1) : '0'
+    };
+  }
+} 

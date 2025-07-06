@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
-import { Zap, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Zap, ArrowLeft, BarChart3, Plus } from 'lucide-react';
 import CampaignForm from './components/CampaignForm';
 import ConceptSelection from './components/ConceptSelection';
 import OutlineReview from './components/OutlineReview';
 import ResultsDisplay from './components/ResultsDisplay';
-import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, CampaignOutput } from './types';
+import Dashboard from './components/Dashboard';
+import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, CampaignOutput } from './types/index';
 import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
+import { CampaignService } from './lib/campaignService';
+import { EmailService } from './lib/emailService';
+
+type AppMode = 'wizard' | 'dashboard' | 'landing';
 
 function App() {
+  const [mode, setMode] = useState<AppMode>('wizard');
   const [wizardState, setWizardState] = useState<WizardState>({
     stage: 'input',
     input: null,
@@ -18,6 +24,7 @@ function App() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
 
   const handleInputSubmit = async (input: CampaignInput) => {
     setIsLoading(true);
@@ -81,6 +88,41 @@ function App() {
     }
   };
 
+  const handleCampaignCreated = async () => {
+    try {
+      // Create campaign in database
+      const campaign = await CampaignService.createCampaign(
+        wizardState.input!,
+        wizardState.finalOutput!
+      );
+
+      // Send welcome email to any existing leads
+      if (campaign.lead_magnet_content) {
+        // In a real implementation, you would send emails to leads
+        await EmailService.sendWelcomeEmail(
+          'example@email.com', // This would be the actual lead email
+          campaign.id,
+          campaign.lead_magnet_content,
+          campaign.name
+        );
+      }
+
+      // Switch to dashboard
+      setMode('dashboard');
+      setWizardState({
+        stage: 'input',
+        input: null,
+        concepts: null,
+        selectedConcept: null,
+        outline: null,
+        finalOutput: null
+      });
+    } catch (err) {
+      console.error('Error creating campaign:', err);
+      setError('Failed to create campaign. Please try again.');
+    }
+  };
+
   const handleStartOver = () => {
     setWizardState({
       stage: 'input',
@@ -91,6 +133,11 @@ function App() {
       finalOutput: null
     });
     setError(null);
+  };
+
+  const handleNewCampaign = () => {
+    setMode('wizard');
+    handleStartOver();
   };
 
   const renderStageIndicator = () => {
@@ -137,6 +184,39 @@ function App() {
     );
   };
 
+
+
+  // Render dashboard
+  if (mode === 'dashboard') {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <span className="ml-3 text-xl font-bold text-gray-900">LeadGen Machine</span>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => setMode('wizard')}
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Campaign
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+        <Dashboard onNewCampaign={handleNewCampaign} />
+      </div>
+    );
+  }
+
+  // Render wizard
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="container mx-auto px-4 py-8">
@@ -152,6 +232,17 @@ function App() {
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Transform customer problems into focused, high-value lead magnets with AI assistance
           </p>
+          
+          {/* Navigation */}
+          <div className="mt-8 flex justify-center space-x-4">
+            <button
+              onClick={() => setMode('dashboard')}
+              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Dashboard
+            </button>
+          </div>
         </header>
 
         {wizardState.stage !== 'input' && renderStageIndicator()}
@@ -217,7 +308,8 @@ function App() {
             </div>
             <ResultsDisplay 
               results={wizardState.finalOutput} 
-              brandName={wizardState.input?.brand_name || 'Your Brand'} 
+              brandName={wizardState.input?.brand_name || 'Your Brand'}
+              onCampaignCreated={handleCampaignCreated}
             />
           </div>
         )}

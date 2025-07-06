@@ -8,6 +8,29 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export type Database = {
   public: {
     Tables: {
+      users: {
+        Row: {
+          id: string;
+          email: string;
+          plan: string;
+          campaign_count: number;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          plan?: string;
+          campaign_count?: number;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          plan?: string;
+          campaign_count?: number;
+          created_at?: string | null;
+        };
+      };
       campaigns: {
         Row: {
           id: string;
@@ -55,29 +78,6 @@ export type Database = {
           created_at?: string | null;
         };
       };
-      users: {
-        Row: {
-          id: string;
-          email: string;
-          plan: string;
-          campaign_count: number;
-          created_at: string | null;
-        };
-        Insert: {
-          id: string;
-          email: string;
-          plan?: string;
-          campaign_count?: number;
-          created_at?: string | null;
-        };
-        Update: {
-          id?: string;
-          email?: string;
-          plan?: string;
-          campaign_count?: number;
-          created_at?: string | null;
-        };
-      };
       leads: {
         Row: {
           id: string;
@@ -104,6 +104,7 @@ export type Database = {
           email: string;
           campaign_id: string | null;
           pdf_downloaded: boolean;
+          email_sent: boolean;
           created_at: string | null;
         };
         Insert: {
@@ -111,6 +112,7 @@ export type Database = {
           email: string;
           campaign_id?: string | null;
           pdf_downloaded?: boolean;
+          email_sent?: boolean;
           created_at?: string | null;
         };
         Update: {
@@ -118,8 +120,15 @@ export type Database = {
           email?: string;
           campaign_id?: string | null;
           pdf_downloaded?: boolean;
+          email_sent?: boolean;
           created_at?: string | null;
         };
+      };
+    };
+    Functions: {
+      generate_unique_slug: {
+        Args: Record<string, never>;
+        Returns: string;
       };
     };
   };
