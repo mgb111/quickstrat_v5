@@ -5,6 +5,8 @@ import ConceptSelection from './components/ConceptSelection';
 import OutlineReview from './components/OutlineReview';
 import ResultsDisplay from './components/ResultsDisplay';
 import Dashboard from './components/Dashboard';
+import LandingPage from './components/LandingPage';
+import Router from './components/Router';
 import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, CampaignOutput } from './types/index';
 import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
 import { CampaignService } from './lib/campaignService';
@@ -25,6 +27,22 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Check for landing page route on mount
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path.startsWith('/landing/')) {
+      setMode('landing');
+    }
+  }, []);
+
+  // Extract campaign slug from URL
+  const getCampaignSlug = () => {
+    const path = window.location.pathname;
+    if (path.startsWith('/landing/')) {
+      return path.replace('/landing/', '');
+    }
+    return '';
+  };
 
   const handleInputSubmit = async (input: CampaignInput) => {
     setIsLoading(true);
@@ -184,7 +202,10 @@ function App() {
     );
   };
 
-
+  // Render landing page
+  if (mode === 'landing') {
+    return <LandingPage campaignSlug={getCampaignSlug()} />;
+  }
 
   // Render dashboard
   if (mode === 'dashboard') {

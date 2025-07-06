@@ -1,8 +1,8 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import Router from './components/Router';
-import ErrorBoundary from './components/ErrorBoundary';
-import './index.css';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import './index.css'
+import ErrorBoundary from './components/ErrorBoundary.tsx'
 
 // Debug environment
 console.log('Application starting...', {
@@ -17,14 +17,14 @@ if (!rootElement) {
 }
 
 try {
-  const root = createRoot(rootElement);
+  const root = ReactDOM.createRoot(rootElement);
   
   root.render(
-    <StrictMode>
+    <React.StrictMode>
       <ErrorBoundary>
-        <Router />
+        <App />
       </ErrorBoundary>
-    </StrictMode>
+    </React.StrictMode>
   );
 } catch (error) {
   console.error('Failed to render application:', error);

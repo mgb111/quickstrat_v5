@@ -2,15 +2,25 @@ import { supabase } from './supabase';
 import { Campaign, Lead, CampaignInput, CampaignOutput } from '../types';
 
 export class CampaignService {
+  // Get or create a demo session ID for anonymous users
+  private static getDemoSessionId(): string {
+    let sessionId = localStorage.getItem('demo_session_id');
+    if (!sessionId) {
+      sessionId = `demo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      localStorage.setItem('demo_session_id', sessionId);
+    }
+    return sessionId;
+  }
+
   // Create a new campaign
   static async createCampaign(input: CampaignInput, output: CampaignOutput): Promise<Campaign> {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      // For demo purposes, create a temporary user or use anonymous access
+      // For demo purposes, create a campaign with a demo session ID
       console.log('No authenticated user, creating demo campaign');
       
-      // Generate unique slug
+      const demoSessionId = this.getDemoSessionId();
       const slug = `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
       const campaignData = {
@@ -27,7 +37,9 @@ export class CampaignService {
           output.social_posts.linkedin,
           output.social_posts.twitter,
           output.social_posts.instagram
-        ]
+        ],
+        // Add demo session metadata
+        demo_session_id: demoSessionId
       };
 
       const { data, error } = await supabase
@@ -84,12 +96,15 @@ export class CampaignService {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      // For demo purposes, get all campaigns (no user filtering)
-      console.log('No authenticated user, fetching all campaigns for demo');
+      // For demo purposes, get only campaigns from the current demo session
+      console.log('No authenticated user, fetching demo session campaigns');
+      
+      const demoSessionId = this.getDemoSessionId();
       
       const { data, error } = await supabase
         .from('campaigns')
         .select('*')
+        .eq('demo_session_id', demoSessionId)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -119,11 +134,14 @@ export class CampaignService {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      // For demo purposes, get campaign without user filtering
+      // For demo purposes, verify the campaign belongs to the current demo session
+      const demoSessionId = this.getDemoSessionId();
+      
       const { data, error } = await supabase
         .from('campaigns')
         .select('*')
         .eq('id', id)
+        .eq('demo_session_id', demoSessionId)
         .single();
 
       if (error) {
@@ -167,15 +185,27 @@ export class CampaignService {
 
   // Capture a lead
   static async captureLead(campaignId: string, email: string): Promise<Lead> {
-    // First, check if the campaign exists
-    const { data: campaign, error: campaignError } = await supabase
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    // First, check if the campaign exists and user has access
+    let campaignQuery = supabase
       .from('campaigns')
       .select('id')
-      .eq('id', campaignId)
-      .single();
+      .eq('id', campaignId);
+    
+    if (!user) {
+      // For demo users, verify campaign belongs to their session
+      const demoSessionId = this.getDemoSessionId();
+      campaignQuery = campaignQuery.eq('demo_session_id', demoSessionId);
+    } else {
+      // For authenticated users, verify campaign belongs to them
+      campaignQuery = campaignQuery.eq('user_id', user.id);
+    }
+    
+    const { data: campaign, error: campaignError } = await campaignQuery.single();
 
     if (campaignError || !campaign) {
-      throw new Error('Campaign not found');
+      throw new Error('Campaign not found or access denied');
     }
 
     // Insert the lead
@@ -209,7 +239,20 @@ export class CampaignService {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      // For demo purposes, get leads without user verification
+      // For demo purposes, verify the campaign belongs to the current demo session
+      const demoSessionId = this.getDemoSessionId();
+      
+      const { data: campaign } = await supabase
+        .from('campaigns')
+        .select('id')
+        .eq('id', campaignId)
+        .eq('demo_session_id', demoSessionId)
+        .single();
+
+      if (!campaign) {
+        throw new Error('Campaign not found or access denied');
+      }
+
       const { data, error } = await supabase
         .from('leads')
         .select('*')

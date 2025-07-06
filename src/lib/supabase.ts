@@ -34,7 +34,8 @@ export type Database = {
       campaigns: {
         Row: {
           id: string;
-          user_id: string;
+          user_id: string | null;
+          demo_session_id: string | null;
           name: string;
           customer_profile: string;
           problem_statement: string;
@@ -49,7 +50,8 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          user_id?: string;
+          user_id?: string | null;
+          demo_session_id?: string | null;
           name: string;
           customer_profile: string;
           problem_statement: string;
@@ -64,7 +66,8 @@ export type Database = {
         };
         Update: {
           id?: string;
-          user_id?: string;
+          user_id?: string | null;
+          demo_session_id?: string | null;
           name?: string;
           customer_profile?: string;
           problem_statement?: string;
