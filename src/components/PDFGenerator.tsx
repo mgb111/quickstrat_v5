@@ -16,7 +16,7 @@ interface PDFGeneratorProps {
   brandName: string;
 }
 
-// Register custom fonts for better typography
+// Register custom fonts for better typography - using fallback fonts
 Font.register({
   family: 'Inter',
   src: 'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2'
@@ -28,13 +28,24 @@ Font.register({
   fontWeight: 'bold'
 });
 
+// Fallback font registration
+Font.register({
+  family: 'Helvetica',
+  src: 'Helvetica'
+});
+
+Font.register({
+  family: 'Helvetica-Bold',
+  src: 'Helvetica-Bold'
+});
+
 const styles = StyleSheet.create({
   // Page styles
   page: {
     flexDirection: 'column',
     backgroundColor: '#ffffff',
     padding: 40,
-    fontFamily: 'Inter',
+    fontFamily: 'Inter, Helvetica',
     fontSize: 12,
     lineHeight: 1.6
   },
@@ -65,7 +76,7 @@ const styles = StyleSheet.create({
   logoText: {
     color: '#ffffff',
     fontSize: 16,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-Bold, Helvetica-Bold',
     fontWeight: 'bold'
   },
   
@@ -76,7 +87,7 @@ const styles = StyleSheet.create({
   
   documentTitle: {
     fontSize: 28,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-Bold, Helvetica-Bold',
     fontWeight: 'bold',
     color: '#1f2937',
     marginBottom: 8,
@@ -105,7 +116,7 @@ const styles = StyleSheet.create({
   
   sectionTitle: {
     fontSize: 18,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-Bold, Helvetica-Bold',
     fontWeight: 'bold',
     color: '#1f2937',
     marginBottom: 12,
@@ -115,7 +126,7 @@ const styles = StyleSheet.create({
   
   sectionSubtitle: {
     fontSize: 16,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-Bold, Helvetica-Bold',
     fontWeight: 'bold',
     color: '#374151',
     marginBottom: 10,
@@ -140,7 +151,7 @@ const styles = StyleSheet.create({
   
   highlightTitle: {
     fontSize: 14,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-Bold, Helvetica-Bold',
     fontWeight: 'bold',
     color: '#0c4a6e',
     marginBottom: 8
@@ -203,7 +214,7 @@ const styles = StyleSheet.create({
   
   ctaTitle: {
     fontSize: 16,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-Bold, Helvetica-Bold',
     fontWeight: 'bold',
     color: '#065f46',
     marginBottom: 10
@@ -244,9 +255,9 @@ const styles = StyleSheet.create({
   }
 });
 
-// Improved content parsing function
-const parseContent = (content: string | any): string[] => {
-  if (!content) return ['No content available'];
+// Improved content parsing function that handles structured content better
+const parseContent = (content: string | any): any[] => {
+  if (!content) return [{ type: 'paragraph', content: 'No content available' }];
   
   let contentString = '';
   
@@ -259,6 +270,10 @@ const parseContent = (content: string | any): string[] => {
       contentString = content.text;
     } else if (content.content) {
       contentString = content.content;
+    } else if (content.structured_content) {
+      // Handle structured content from AI
+      console.log('Detected structured content from AI');
+      return parseStructuredContent(content.structured_content);
     } else {
       contentString = JSON.stringify(content);
     }
@@ -266,18 +281,122 @@ const parseContent = (content: string | any): string[] => {
     contentString = String(content);
   }
   
-  // Split content into sections
+  console.log('Parsing PDF content:', { 
+    contentLength: contentString.length, 
+    preview: contentString.substring(0, 200) 
+  });
+  
+  // Try to parse as JSON first (in case it's structured content)
+  try {
+    const jsonContent = JSON.parse(contentString);
+    if (jsonContent.title_page && jsonContent.toolkit_sections) {
+      console.log('Detected structured JSON content');
+      return parseStructuredContent(jsonContent);
+    }
+  } catch (e) {
+    console.log('Content is not JSON, treating as plain text');
+  }
+  
+  // Split content into sections for plain text
   const sections = contentString
     .split(/\n\s*\n/) // Split by double newlines
     .map(section => section.trim())
-    .filter(section => section.length > 0);
+    .filter(section => section.length > 0)
+    .map(section => ({ type: 'paragraph', content: section }));
   
   // If no sections found, create one from the whole content
   if (sections.length === 0) {
-    return [contentString || 'No content available'];
+    return [{ type: 'paragraph', content: contentString || 'No content available' }];
   }
   
   return sections;
+};
+
+// Parse structured content from AI
+const parseStructuredContent = (jsonContent: any): any[] => {
+  const sections = [];
+  
+  // Add title page
+  if (jsonContent.title_page) {
+    sections.push({
+      type: 'title',
+      title: jsonContent.title_page.title,
+      subtitle: jsonContent.title_page.subtitle
+    });
+  }
+  
+  // Add introduction
+  if (jsonContent.introduction_page) {
+    sections.push({
+      type: 'section',
+      title: jsonContent.introduction_page.title,
+      content: jsonContent.introduction_page.content
+    });
+  }
+  
+  // Add toolkit sections
+  if (jsonContent.toolkit_sections && Array.isArray(jsonContent.toolkit_sections)) {
+    jsonContent.toolkit_sections.forEach((section: any) => {
+      sections.push({
+        type: 'section',
+        title: section.title,
+        content: formatStructuredSection(section)
+      });
+    });
+  }
+  
+  // Add CTA
+  if (jsonContent.cta_page) {
+    sections.push({
+      type: 'cta',
+      title: jsonContent.cta_page.title,
+      content: jsonContent.cta_page.content
+    });
+  }
+  
+  return sections;
+};
+
+// Format structured section content
+const formatStructuredSection = (section: any): string => {
+  if (!section.content) return 'Content not available';
+  
+  switch (section.type) {
+    case 'checklist':
+      if (section.content.phases) {
+        return section.content.phases.map((phase: any) => {
+          const items = phase.items.map((item: string) => `• ${item}`).join('\n');
+          return `${phase.phase_title}\n${items}`;
+        }).join('\n\n');
+      }
+      break;
+      
+    case 'scripts':
+      if (section.content.scenarios) {
+        return section.content.scenarios.map((scenario: any, index: number) => {
+          return `Scenario ${index + 1}:\nWhen they say: "${scenario.trigger}"\nYou say: "${scenario.response}"\nStrategy: ${scenario.explanation}`;
+        }).join('\n\n');
+      }
+      break;
+      
+    case 'pros_and_cons_list':
+      if (section.content.items) {
+        return section.content.items.map((item: any, index: number) => {
+          return `${index + 1}. ${item.method_name}\n\nPros: ${item.pros}\n\nCons: ${item.cons}`;
+        }).join('\n\n');
+      }
+      break;
+      
+    case 'mistakes_to_avoid':
+      if (section.content.mistakes) {
+        return section.content.mistakes.map((mistake: any, index: number) => {
+          return `${index + 1}. The Mistake: ${mistake.mistake}\nThe Solution: ${mistake.solution}`;
+        }).join('\n\n');
+      }
+      break;
+  }
+  
+  return JSON.stringify(section.content);
 };
 
 // Improved content formatting
@@ -315,6 +434,8 @@ const PDFDocument: React.FC<{ content: string; brandName: string }> = ({ content
     day: 'numeric' 
   });
 
+  console.log('PDF Document sections:', sections.length);
+
   return (
     <Document>
       {/* Title Page */}
@@ -326,10 +447,10 @@ const PDFDocument: React.FC<{ content: string; brandName: string }> = ({ content
             </View>
             <View style={styles.headerInfo}>
               <Text style={styles.documentTitle}>
-                {sections[0] || 'Lead Magnet Guide'}
+                {sections.find(s => s.type === 'title')?.title || 'Professional Guide'}
               </Text>
               <Text style={styles.documentSubtitle}>
-                A comprehensive guide to help you succeed
+                {sections.find(s => s.type === 'title')?.subtitle || 'A comprehensive guide to help you succeed'}
               </Text>
               <Text style={styles.documentMeta}>
                 Created by {brandName} • {currentDate}
@@ -352,40 +473,18 @@ const PDFDocument: React.FC<{ content: string; brandName: string }> = ({ content
       </Page>
 
       {/* Content Pages */}
-      {sections.slice(1).map((section: string, index: number) => {
-        const formattedContent = formatContent(section);
-        
+      {sections.filter(s => s.type === 'section' || s.type === 'paragraph').map((section: any, index: number) => {
         return (
           <Page key={index} size="A4" style={styles.page}>
             <View style={styles.content}>
-              {formattedContent.type === 'heading' && (
+              {section.title && (
                 <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>{formattedContent.content}</Text>
+                  <Text style={styles.sectionTitle}>{section.title}</Text>
                 </View>
               )}
               
-              {formattedContent.type === 'quote' && (
-                <View style={styles.quoteBox}>
-                  <Text style={styles.quoteText}>"{formattedContent.content}"</Text>
-                </View>
-              )}
-              
-              {formattedContent.type === 'cta' && (
-                <View style={styles.ctaBox}>
-                  <Text style={styles.ctaTitle}>Call to Action</Text>
-                  <Text style={styles.ctaText}>{formattedContent.content}</Text>
-                </View>
-              )}
-              
-              {formattedContent.type === 'list' && (
-                <View style={styles.listItem}>
-                  <View style={styles.listBullet} />
-                  <Text style={styles.listText}>{formattedContent.content}</Text>
-                </View>
-              )}
-              
-              {formattedContent.type === 'paragraph' && (
-                <Text style={styles.paragraph}>{formattedContent.content}</Text>
+              {section.content && (
+                <Text style={styles.paragraph}>{section.content}</Text>
               )}
             </View>
             
@@ -397,39 +496,43 @@ const PDFDocument: React.FC<{ content: string; brandName: string }> = ({ content
         );
       })}
 
-      {/* Final Page */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.content}>
-          <View style={styles.ctaBox}>
-            <Text style={styles.ctaTitle}>Ready to Take Action?</Text>
-            <Text style={styles.ctaText}>
-              You now have all the tools and knowledge you need to succeed. 
-              The next step is to implement these strategies and start seeing results.
-            </Text>
+      {/* CTA Page */}
+      {sections.find(s => s.type === 'cta') && (
+        <Page size="A4" style={styles.page}>
+          <View style={styles.content}>
+            <View style={styles.ctaBox}>
+              <Text style={styles.ctaTitle}>
+                {sections.find(s => s.type === 'cta')?.title || 'Ready to Take Action?'}
+              </Text>
+              <Text style={styles.ctaText}>
+                {sections.find(s => s.type === 'cta')?.content || 'You now have all the tools and knowledge you need to succeed.'}
+              </Text>
+            </View>
+            
+            <View style={styles.highlightBox}>
+              <Text style={styles.highlightTitle}>Key Takeaways</Text>
+              <Text style={styles.highlightText}>
+                • Review this guide regularly to reinforce key concepts{'\n'}
+                • Start with small, manageable steps{'\n'}
+                • Track your progress and celebrate wins{'\n'}
+                • Don't hesitate to reach out for support
+              </Text>
+            </View>
           </View>
           
-          <View style={styles.highlightBox}>
-            <Text style={styles.highlightTitle}>Key Takeaways</Text>
-            <Text style={styles.highlightText}>
-              • Review this guide regularly to reinforce key concepts{'\n'}
-              • Start with small, manageable steps{'\n'}
-              • Track your progress and celebrate wins{'\n'}
-              • Don't hesitate to reach out for support
-            </Text>
+          <View style={styles.footer}>
+            <Text style={styles.footerLeft}>© {new Date().getFullYear()} {brandName}</Text>
+            <Text style={styles.footerRight}>Thank you for reading!</Text>
           </View>
-        </View>
-        
-        <View style={styles.footer}>
-          <Text style={styles.footerLeft}>© {new Date().getFullYear()} {brandName}</Text>
-          <Text style={styles.footerRight}>Thank you for reading!</Text>
-        </View>
-      </Page>
+        </Page>
+      )}
     </Document>
   );
 };
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
   const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<any>(null);
 
   const handleDownload = (blob: Blob | null) => {
     console.log('PDF Download triggered:', { blob, brandName, contentLength: content?.length });
@@ -460,6 +563,22 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
       setError('Failed to download PDF: ' + (err instanceof Error ? err.message : 'Unknown error'));
     }
   };
+
+  // Debug content parsing
+  React.useEffect(() => {
+    if (content) {
+      const sections = parseContent(content);
+      setDebugInfo({
+        sectionsCount: sections.length,
+        sectionTypes: sections.map(s => s.type),
+        hasTitle: sections.some(s => s.type === 'title'),
+        hasSections: sections.some(s => s.type === 'section'),
+        hasCTA: sections.some(s => s.type === 'cta'),
+        contentPreview: typeof content === 'string' ? content.substring(0, 100) : 'Object content'
+      });
+      console.log('PDF Content Debug:', debugInfo);
+    }
+  }, [content]);
 
   console.log('PDFGenerator render:', { content: typeof content, brandName, contentPreview: content?.substring(0, 100) });
 
@@ -532,6 +651,21 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
           </div>
         </div>
       )}
+
+      {/* Debug Information */}
+      {debugInfo && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <h4 className="font-semibold text-blue-900 mb-2">PDF Debug Info</h4>
+          <div className="text-sm text-blue-700 space-y-1">
+            <div>Sections: {debugInfo.sectionsCount}</div>
+            <div>Types: {debugInfo.sectionTypes.join(', ')}</div>
+            <div>Has Title: {debugInfo.hasTitle ? 'Yes' : 'No'}</div>
+            <div>Has Sections: {debugInfo.hasSections ? 'Yes' : 'No'}</div>
+            <div>Has CTA: {debugInfo.hasCTA ? 'Yes' : 'No'}</div>
+            <div>Content Type: {typeof content}</div>
+          </div>
+        </div>
+      )}
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
@@ -554,9 +688,9 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
       <div className="bg-gray-50 rounded-lg p-4">
         <h4 className="font-semibold text-gray-900 mb-3">Document Preview</h4>
         <div className="space-y-3 max-h-40 overflow-y-auto">
-          {parseContent(content).slice(0, 3).map((section: string, index: number) => (
+          {parseContent(content).slice(0, 3).map((section: any, index: number) => (
             <div key={index} className="p-3 bg-white rounded border border-gray-200">
-              <p className="text-sm text-gray-700 line-clamp-2">{section}</p>
+              <p className="text-sm text-gray-700 line-clamp-2">{section.content}</p>
             </div>
           ))}
           {parseContent(content).length > 3 && (

@@ -20,6 +20,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
   const handleEmailSubmitted = () => {
     console.log('Email submitted, showing PDF download');
     console.log('PDF content preview:', results.pdf_content?.substring(0, 200));
+    console.log('PDF content type:', typeof results.pdf_content);
+    console.log('Full results object:', results);
     setShowPDFDownload(true);
   };
 
@@ -51,7 +53,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
         )}
       </div>
 
-      {/* Email Capture Section */}
+      {/* Email Capture Section - Required for PDF access */}
       <div className="max-w-2xl mx-auto">
         <EmailCapture onEmailSubmitted={handleEmailSubmitted} />
       </div>
@@ -59,7 +61,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
       {/* PDF Download - Only show after email is submitted */}
       {showPDFDownload && (
         <div className="max-w-2xl mx-auto">
-          <PDFGenerator content={results.pdf_content} brandName={brandName} />
+          <PDFGenerator 
+            content={{
+              text: results.pdf_content,
+              structured_content: results.pdf_content
+            }} 
+            brandName={brandName} 
+          />
         </div>
       )}
 

@@ -570,11 +570,14 @@ CRITICAL REQUIREMENTS:
       }))
     ];
 
+    // Return the structured content for better PDF formatting
     return {
       title: parsed.title_page.title,
       introduction: parsed.title_page.subtitle,
       sections: sections,
-      cta: parsed.cta_page.content
+      cta: parsed.cta_page.content,
+      // Add the full structured content for advanced PDF rendering
+      structured_content: parsed
     };
   } catch (err: any) {
     console.error('OpenAI API Error:', {

@@ -19,7 +19,7 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
     setError(null);
 
     try {
-      // Store email in Supabase
+      // Store email in Supabase for future use
       const { error: insertError } = await supabase
         .from('emails')
         .insert({
@@ -33,8 +33,8 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
       setIsSubmitted(true);
       onEmailSubmitted();
       
-      // Optional: Here you could integrate with Resend or another email service
-      // await sendEmailWithAssets(email, campaignData);
+      // Note: In a real implementation, you would integrate with an email service here
+      // For now, we just store the email and provide immediate PDF access
       
     } catch (err: any) {
       console.error('Email capture error:', err);
@@ -52,9 +52,9 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
             <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
         </div>
-        <h3 className="text-xl font-bold text-green-900 mb-2">Your campaign was sent to your inbox!</h3>
-        <p className="text-green-800 mb-4">Check your email for the complete lead magnet package.</p>
-        <p className="text-sm text-green-700">Don't see it? Check your spam folder or try downloading below.</p>
+        <h3 className="text-xl font-bold text-green-900 mb-2">Email submitted successfully!</h3>
+        <p className="text-green-800 mb-4">Your PDF guide is now available for download below.</p>
+        <p className="text-sm text-green-700">We'll also send you future updates and resources.</p>
       </div>
     );
   }
@@ -67,8 +67,8 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
             <Mail className="h-6 w-6 text-white" />
           </div>
         </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2">Want to download your full PDF?</h3>
-        <p className="text-gray-600">Get it via email along with bonus templates and resources.</p>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Get Your PDF Guide</h3>
+        <p className="text-gray-600">Enter your email to download your complete lead magnet PDF guide.</p>
       </div>
 
       {error && (
@@ -98,12 +98,12 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
           {isLoading ? (
             <>
               <Loader2 className="animate-spin h-5 w-5 mr-2" />
-              Sending Assets...
+              Processing...
             </>
           ) : (
             <>
               <Send className="h-5 w-5 mr-2" />
-              Send My Assets
+              Get My PDF Guide
             </>
           )}
         </button>

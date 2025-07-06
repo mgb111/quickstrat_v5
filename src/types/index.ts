@@ -6,6 +6,7 @@ export interface CampaignInput {
   niche?: string;
   target_audience?: string;
   tone?: string;
+  pain_point?: string;
 }
 
 export interface LeadMagnetConcept {
@@ -18,6 +19,7 @@ export interface LeadMagnetConcept {
 }
 
 export interface ContentOutline {
+  title: string;
   sections: {
     title: string;
     content: string;
@@ -26,9 +28,18 @@ export interface ContentOutline {
   estimated_length: string;
   target_audience: string;
   main_value_proposition: string;
+  introduction: string;
+  core_points: string[];
 }
 
 export interface LandingPage {
+  headline: string;
+  subheadline: string;
+  benefit_bullets: string[];
+  cta_button_text: string;
+}
+
+export interface LandingPageCopy {
   headline: string;
   subheadline: string;
   benefit_bullets: string[];
@@ -39,6 +50,17 @@ export interface SocialPosts {
   linkedin: string;
   twitter: string;
   instagram: string;
+}
+
+export interface PDFContent {
+  title: string;
+  introduction: string;
+  sections: {
+    title: string;
+    content: string;
+  }[];
+  cta: string;
+  structured_content?: any;
 }
 
 export interface CampaignOutput {
