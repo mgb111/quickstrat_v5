@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Loader2, Sparkles } from 'lucide-react';
-import { CampaignInput } from '../types';
+import { CampaignInput } from '../types/index';
 
 interface CampaignFormProps {
   onSubmit: (input: CampaignInput) => void;
@@ -9,12 +9,10 @@ interface CampaignFormProps {
 
 const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
   const [formData, setFormData] = useState<CampaignInput>({
-    niche: '',
-    pain_point: '',
-    desired_outcome: '',
     brand_name: '',
-    tone: 'professional',
-    target_audience: ''
+    customer_profile: '',
+    problem_statement: '',
+    desired_outcome: ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -42,22 +40,6 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="niche" className="block text-sm font-medium text-gray-700 mb-2">
-              Niche / Industry
-            </label>
-            <input
-              type="text"
-              id="niche"
-              name="niche"
-              value={formData.niche}
-              onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-              placeholder="e.g., Digital Marketing, Health & Wellness"
-              required
-            />
-          </div>
-
-          <div>
             <label htmlFor="brand_name" className="block text-sm font-medium text-gray-700 mb-2">
               Brand Name
             </label>
@@ -72,16 +54,32 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
               required
             />
           </div>
+
+          <div>
+            <label htmlFor="customer_profile" className="block text-sm font-medium text-gray-700 mb-2">
+              Customer Profile
+            </label>
+            <input
+              type="text"
+              id="customer_profile"
+              name="customer_profile"
+              value={formData.customer_profile}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+              placeholder="e.g., Small business owners, Fitness enthusiasts"
+              required
+            />
+          </div>
         </div>
 
         <div>
-          <label htmlFor="pain_point" className="block text-sm font-medium text-gray-700 mb-2">
-            Customer Pain Point
+          <label htmlFor="problem_statement" className="block text-sm font-medium text-gray-700 mb-2">
+            Customer Problem Statement
           </label>
           <textarea
-            id="pain_point"
-            name="pain_point"
-            value={formData.pain_point}
+            id="problem_statement"
+            name="problem_statement"
+            value={formData.problem_statement}
             onChange={handleInputChange}
             rows={3}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
@@ -104,42 +102,6 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
             placeholder="What transformation or result do they want to achieve?"
             required
           />
-        </div>
-
-        <div>
-          <label htmlFor="target_audience" className="block text-sm font-medium text-gray-700 mb-2">
-            Target Audience
-          </label>
-          <input
-            type="text"
-            id="target_audience"
-            name="target_audience"
-            value={formData.target_audience}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-            placeholder="e.g., Small business owners, Fitness enthusiasts, New parents"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="tone" className="block text-sm font-medium text-gray-700 mb-2">
-            Tone of Voice
-          </label>
-          <select
-            id="tone"
-            name="tone"
-            value={formData.tone}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-            required
-          >
-            <option value="professional">Professional</option>
-            <option value="friendly">Friendly</option>
-            <option value="authoritative">Authoritative</option>
-            <option value="conversational">Conversational</option>
-            <option value="inspiring">Inspiring</option>
-          </select>
         </div>
 
         <button

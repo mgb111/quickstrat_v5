@@ -3,6 +3,9 @@ export interface CampaignInput {
   customer_profile: string;
   problem_statement: string;
   desired_outcome: string;
+  niche?: string;
+  target_audience?: string;
+  tone?: string;
 }
 
 export interface LeadMagnetConcept {

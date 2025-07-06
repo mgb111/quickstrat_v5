@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Document, 
   Page, 
@@ -9,7 +9,7 @@ import {
   Font,
   Image
 } from '@react-pdf/renderer';
-import { Download, FileText, Star, CheckCircle, ArrowRight } from 'lucide-react';
+import { Download, FileText, Star, CheckCircle, ArrowRight, AlertCircle } from 'lucide-react';
 
 interface PDFGeneratorProps {
   content: string | any;
@@ -211,106 +211,100 @@ const styles = StyleSheet.create({
   
   ctaText: {
     fontSize: 12,
-    color: '#047857',
+    color: '#065f46',
     lineHeight: 1.6
   },
   
   // Footer styles
   footer: {
-    position: 'absolute',
-    bottom: 30,
-    left: 40,
-    right: 40,
-    borderTop: '1px solid #e5e7eb',
-    paddingTop: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: 30,
+    paddingTop: 20,
+    borderTop: '1px solid #e5e7eb'
   },
   
   footerLeft: {
     fontSize: 10,
-    color: '#9ca3af'
+    color: '#6b7280'
   },
   
   footerRight: {
     fontSize: 10,
-    color: '#9ca3af'
+    color: '#6b7280'
   },
   
-  // Page number
   pageNumber: {
     position: 'absolute',
-    bottom: 20,
-    left: 0,
-    right: 0,
-    textAlign: 'center',
+    bottom: 30,
+    right: 40,
     fontSize: 10,
-    color: '#9ca3af'
+    color: '#6b7280'
   }
 });
 
-// Helper function to parse content into sections
-const parseContent = (content: string | any) => {
+// Improved content parsing function
+const parseContent = (content: string | any): string[] => {
+  if (!content) return ['No content available'];
+  
+  let contentString = '';
+  
   // Handle different content types
   if (typeof content === 'string') {
-    const sections = content.split('\n\n').filter(section => section.trim());
-    return sections.map(section => section.trim());
+    contentString = content;
+  } else if (typeof content === 'object') {
+    // If it's an object, try to extract text content
+    if (content.text) {
+      contentString = content.text;
+    } else if (content.content) {
+      contentString = content.content;
+    } else {
+      contentString = JSON.stringify(content);
+    }
+  } else {
+    contentString = String(content);
   }
   
-  // If content is an object with sections, extract them
-  if (content && typeof content === 'object') {
-    if (content.sections && Array.isArray(content.sections)) {
-      return content.sections.map((section: any) => 
-        typeof section === 'string' ? section : 
-        section.content || section.title || JSON.stringify(section)
-      );
-    }
-    
-    // If it's a PDFContent object with specific structure
-    if (content.title && content.introduction) {
-      return [
-        content.title,
-        content.introduction,
-        ...(content.sections || []).map((section: any) => 
-          typeof section === 'string' ? section : 
-          section.content || section.title || JSON.stringify(section)
-        ),
-        content.cta || 'Ready to take action?'
-      ];
-    }
-    
-    // Fallback: convert object to string
-    return [JSON.stringify(content)];
+  // Split content into sections
+  const sections = contentString
+    .split(/\n\s*\n/) // Split by double newlines
+    .map(section => section.trim())
+    .filter(section => section.length > 0);
+  
+  // If no sections found, create one from the whole content
+  if (sections.length === 0) {
+    return [contentString || 'No content available'];
   }
   
-  // Fallback for any other type
-  return [String(content || 'No content available')];
+  return sections;
 };
 
-// Helper function to detect and format different content types
+// Improved content formatting
 const formatContent = (text: string) => {
+  const trimmedText = text.trim();
+  
   // Check if it's a quote
-  if (text.startsWith('"') && text.endsWith('"')) {
-    return { type: 'quote', content: text.slice(1, -1) };
+  if (trimmedText.startsWith('"') && trimmedText.endsWith('"')) {
+    return { type: 'quote', content: trimmedText.slice(1, -1) };
   }
   
   // Check if it's a list item
-  if (text.startsWith('•') || text.startsWith('-') || text.startsWith('*')) {
-    return { type: 'list', content: text.slice(1).trim() };
+  if (trimmedText.startsWith('•') || trimmedText.startsWith('-') || trimmedText.startsWith('*')) {
+    return { type: 'list', content: trimmedText.slice(1).trim() };
   }
   
   // Check if it's a heading
-  if (text.length < 100 && text.endsWith(':')) {
-    return { type: 'heading', content: text };
+  if (trimmedText.length < 100 && trimmedText.endsWith(':')) {
+    return { type: 'heading', content: trimmedText };
   }
   
   // Check if it's a call to action
-  if (text.toLowerCase().includes('call') || text.toLowerCase().includes('action') || text.toLowerCase().includes('next step')) {
-    return { type: 'cta', content: text };
+  if (trimmedText.toLowerCase().includes('call') || trimmedText.toLowerCase().includes('action') || trimmedText.toLowerCase().includes('next step')) {
+    return { type: 'cta', content: trimmedText };
   }
   
-  return { type: 'paragraph', content: text };
+  return { type: 'paragraph', content: trimmedText };
 };
 
 const PDFDocument: React.FC<{ content: string; brandName: string }> = ({ content, brandName }) => {
@@ -357,9 +351,9 @@ const PDFDocument: React.FC<{ content: string; brandName: string }> = ({ content
         <Text style={styles.pageNumber}>1</Text>
       </Page>
 
-             {/* Content Pages */}
-       {sections.slice(1).map((section: string, index: number) => {
-         const formattedContent = formatContent(section);
+      {/* Content Pages */}
+      {sections.slice(1).map((section: string, index: number) => {
+        const formattedContent = formatContent(section);
         
         return (
           <Page key={index} size="A4" style={styles.page}>
@@ -435,6 +429,19 @@ const PDFDocument: React.FC<{ content: string; brandName: string }> = ({ content
 };
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleDownload = () => {
+    setIsGenerating(true);
+    setError(null);
+    
+    // Simulate a small delay to show loading state
+    setTimeout(() => {
+      setIsGenerating(false);
+    }, 1000);
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
       <div className="flex items-center justify-between mb-6">
@@ -451,12 +458,31 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
         <PDFDownloadLink
           document={<PDFDocument content={content} brandName={brandName} />}
           fileName={`${brandName.replace(/\s+/g, '-').toLowerCase()}-professional-guide.pdf`}
-          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer"
+          onClick={handleDownload}
         >
-          <Download className="h-4 w-4 mr-2" />
-          Download PDF
+          {isGenerating ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              Generating...
+            </>
+          ) : (
+            <>
+              <Download className="h-4 w-4 mr-2" />
+              Download PDF
+            </>
+          )}
         </PDFDownloadLink>
       </div>
+      
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-center">
+            <AlertCircle className="h-4 w-4 text-red-600 mr-2" />
+            <span className="text-sm text-red-700">{error}</span>
+          </div>
+        </div>
+      )}
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
@@ -478,12 +504,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
       
       <div className="bg-gray-50 rounded-lg p-4">
         <h4 className="font-semibold text-gray-900 mb-3">Document Preview</h4>
-                 <div className="space-y-3 max-h-40 overflow-y-auto">
-           {parseContent(content).slice(0, 3).map((section: string, index: number) => (
-             <div key={index} className="p-3 bg-white rounded border border-gray-200">
-               <p className="text-sm text-gray-700 line-clamp-2">{section}</p>
-             </div>
-           ))}
+        <div className="space-y-3 max-h-40 overflow-y-auto">
+          {parseContent(content).slice(0, 3).map((section: string, index: number) => (
+            <div key={index} className="p-3 bg-white rounded border border-gray-200">
+              <p className="text-sm text-gray-700 line-clamp-2">{section}</p>
+            </div>
+          ))}
           {parseContent(content).length > 3 && (
             <div className="text-center text-sm text-gray-500">
               +{parseContent(content).length - 3} more sections

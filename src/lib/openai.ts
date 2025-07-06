@@ -3,11 +3,10 @@ import {
   CampaignInput,
   LeadMagnetConcept,
   ContentOutline,
-  PDFContent,
-  LandingPageCopy,
+  LandingPage,
   SocialPosts,
   CampaignOutput
-} from '../types';
+} from '../types/index';
 
 // Get API key from environment variables
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
@@ -74,7 +73,7 @@ export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<
     const prompt = `You are a lead generation expert. Based on the user's inputs, generate 6 unique lead magnet concepts.
 User Context:
 - Niche: ${input.niche}
-- Customer Pain Point: ${input.pain_point}
+- Customer Problem Statement: ${input.problem_statement}
 - Desired Outcome: ${input.desired_outcome}
 - Target Audience: ${input.target_audience}
 
