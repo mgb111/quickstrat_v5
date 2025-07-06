@@ -18,8 +18,17 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
   };
 
   const handleEmailSubmitted = () => {
+    console.log('Email submitted, showing PDF download');
+    console.log('PDF content preview:', results.pdf_content?.substring(0, 200));
     setShowPDFDownload(true);
   };
+
+  console.log('ResultsDisplay render:', { 
+    showPDFDownload, 
+    hasPdfContent: !!results.pdf_content,
+    pdfContentLength: results.pdf_content?.length,
+    brandName 
+  });
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">

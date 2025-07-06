@@ -5,7 +5,7 @@ import {
   Text, 
   View, 
   StyleSheet, 
-  PDFDownloadLink,
+  BlobProvider,
   Font,
   Image
 } from '@react-pdf/renderer';
@@ -429,18 +429,39 @@ const PDFDocument: React.FC<{ content: string; brandName: string }> = ({ content
 };
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
-  const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleDownload = () => {
-    setIsGenerating(true);
-    setError(null);
+  const handleDownload = (blob: Blob | null) => {
+    console.log('PDF Download triggered:', { blob, brandName, contentLength: content?.length });
     
-    // Simulate a small delay to show loading state
-    setTimeout(() => {
-      setIsGenerating(false);
-    }, 1000);
+    if (!blob) {
+      console.error('No blob provided for download');
+      setError('Failed to generate PDF - no content available');
+      return;
+    }
+
+    try {
+      console.log('Creating download link for blob:', blob.size, 'bytes');
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${brandName.replace(/\s+/g, '-').toLowerCase()}-professional-guide.pdf`;
+      link.style.display = 'none';
+      
+      console.log('Triggering download with filename:', link.download);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      setError(null);
+      console.log('PDF download completed successfully');
+    } catch (err) {
+      console.error('PDF download error:', err);
+      setError('Failed to download PDF: ' + (err instanceof Error ? err.message : 'Unknown error'));
+    }
   };
+
+  console.log('PDFGenerator render:', { content: typeof content, brandName, contentPreview: content?.substring(0, 100) });
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
@@ -455,24 +476,52 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
           </div>
         </div>
         
-        <PDFDownloadLink
-          document={<PDFDocument content={content} brandName={brandName} />}
-          fileName={`${brandName.replace(/\s+/g, '-').toLowerCase()}-professional-guide.pdf`}
-          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer"
-          onClick={handleDownload}
-        >
-          {isGenerating ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              Generating...
-            </>
-          ) : (
-            <>
-              <Download className="h-4 w-4 mr-2" />
-              Download PDF
-            </>
-          )}
-        </PDFDownloadLink>
+        <BlobProvider document={<PDFDocument content={content} brandName={brandName} />}>
+          {({ blob, url, loading, error: pdfError }) => {
+            console.log('BlobProvider state:', { blob: !!blob, url, loading, error: pdfError });
+            
+            if (loading) {
+              return (
+                <button className="inline-flex items-center px-6 py-3 bg-gray-400 text-white rounded-lg font-semibold cursor-not-allowed">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Generating...
+                </button>
+              );
+            }
+            
+            if (pdfError) {
+              console.error('PDF generation error:', pdfError);
+              setError('Failed to generate PDF: ' + pdfError.message);
+              return (
+                <button className="inline-flex items-center px-6 py-3 bg-red-500 text-white rounded-lg font-semibold cursor-not-allowed">
+                  <AlertCircle className="h-4 w-4 mr-2" />
+                  Error
+                </button>
+              );
+            }
+            
+            if (!blob) {
+              console.warn('No blob available for download');
+              return (
+                <button className="inline-flex items-center px-6 py-3 bg-yellow-500 text-white rounded-lg font-semibold cursor-not-allowed">
+                  <AlertCircle className="h-4 w-4 mr-2" />
+                  No PDF Available
+                </button>
+              );
+            }
+            
+            return (
+              <button
+                onClick={() => handleDownload(blob)}
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg cursor-pointer"
+                title="Download PDF Guide"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download PDF
+              </button>
+            );
+          }}
+        </BlobProvider>
       </div>
       
       {error && (
