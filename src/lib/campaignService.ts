@@ -17,48 +17,12 @@ export class CampaignService {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      // For demo purposes, create a campaign with a demo session ID
-      console.log('No authenticated user, creating demo campaign');
-      
-      const demoSessionId = this.getDemoSessionId();
-      const slug = `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-      const campaignData = {
-        user_id: null, // Will be null for demo
-        name: `${input.brand_name} - ${input.customer_profile}`,
-        customer_profile: input.customer_profile,
-        problem_statement: input.problem_statement,
-        desired_outcome: input.desired_outcome,
-        landing_page_slug: slug,
-        lead_magnet_title: output.landing_page.headline,
-        lead_magnet_content: output.pdf_content,
-        landing_page_copy: output.landing_page,
-        social_posts: [
-          output.social_posts.linkedin,
-          output.social_posts.twitter,
-          output.social_posts.instagram
-        ],
-        // Add demo session metadata
-        demo_session_id: demoSessionId
-      };
-
-      const { data, error } = await supabase
-        .from('campaigns')
-        .insert(campaignData)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Campaign creation error:', error);
-        throw new Error(`Failed to create campaign: ${error.message}`);
-      }
-
-      return data;
+      throw new Error('Authentication required to create campaigns');
     }
 
     // Generate unique slug
     const { data: slugData } = await supabase.rpc('generate_unique_slug');
-    const slug = slugData || `campaign-${Date.now()}`;
+    const slug = slugData || `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
     const campaignData = {
       user_id: user.id,
@@ -96,23 +60,7 @@ export class CampaignService {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      // For demo purposes, get only campaigns from the current demo session
-      console.log('No authenticated user, fetching demo session campaigns');
-      
-      const demoSessionId = this.getDemoSessionId();
-      
-      const { data, error } = await supabase
-        .from('campaigns')
-        .select('*')
-        .eq('demo_session_id', demoSessionId)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Campaign fetch error:', error);
-        throw new Error(`Failed to fetch campaigns: ${error.message}`);
-      }
-
-      return data || [];
+      throw new Error('Authentication required to view campaigns');
     }
 
     const { data, error } = await supabase
@@ -134,22 +82,7 @@ export class CampaignService {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      // For demo purposes, verify the campaign belongs to the current demo session
-      const demoSessionId = this.getDemoSessionId();
-      
-      const { data, error } = await supabase
-        .from('campaigns')
-        .select('*')
-        .eq('id', id)
-        .eq('demo_session_id', demoSessionId)
-        .single();
-
-      if (error) {
-        console.error('Campaign fetch error:', error);
-        throw new Error(`Failed to fetch campaign: ${error.message}`);
-      }
-
-      return data;
+      throw new Error('Authentication required to view campaigns');
     }
 
     const { data, error } = await supabase
@@ -187,22 +120,17 @@ export class CampaignService {
   static async captureLead(campaignId: string, email: string): Promise<Lead> {
     const { data: { user } } = await supabase.auth.getUser();
     
+    if (!user) {
+      throw new Error('Authentication required to capture leads');
+    }
+
     // First, check if the campaign exists and user has access
-    let campaignQuery = supabase
+    const { data: campaign, error: campaignError } = await supabase
       .from('campaigns')
       .select('id')
-      .eq('id', campaignId);
-    
-    if (!user) {
-      // For demo users, verify campaign belongs to their session
-      const demoSessionId = this.getDemoSessionId();
-      campaignQuery = campaignQuery.eq('demo_session_id', demoSessionId);
-    } else {
-      // For authenticated users, verify campaign belongs to them
-      campaignQuery = campaignQuery.eq('user_id', user.id);
-    }
-    
-    const { data: campaign, error: campaignError } = await campaignQuery.single();
+      .eq('id', campaignId)
+      .eq('user_id', user.id)
+      .single();
 
     if (campaignError || !campaign) {
       throw new Error('Campaign not found or access denied');
@@ -239,32 +167,7 @@ export class CampaignService {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      // For demo purposes, verify the campaign belongs to the current demo session
-      const demoSessionId = this.getDemoSessionId();
-      
-      const { data: campaign } = await supabase
-        .from('campaigns')
-        .select('id')
-        .eq('id', campaignId)
-        .eq('demo_session_id', demoSessionId)
-        .single();
-
-      if (!campaign) {
-        throw new Error('Campaign not found or access denied');
-      }
-
-      const { data, error } = await supabase
-        .from('leads')
-        .select('*')
-        .eq('campaign_id', campaignId)
-        .order('captured_at', { ascending: false });
-
-      if (error) {
-        console.error('Leads fetch error:', error);
-        throw new Error(`Failed to fetch leads: ${error.message}`);
-      }
-
-      return data || [];
+      throw new Error('Authentication required to view leads');
     }
 
     // Verify the campaign belongs to the user

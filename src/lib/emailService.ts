@@ -20,8 +20,8 @@ interface EmailTemplate {
 export class EmailService {
   private static config: EmailConfig = {
     provider: 'mock', // Default to mock for development
-    fromEmail: process.env.VITE_FROM_EMAIL || 'noreply@yourdomain.com',
-    fromName: process.env.VITE_FROM_NAME || 'LeadGen Machine'
+    fromEmail: import.meta.env.VITE_FROM_EMAIL || 'noreply@yourdomain.com',
+    fromName: import.meta.env.VITE_FROM_NAME || 'LeadGen Machine'
   };
 
   // Initialize email service with configuration
@@ -238,7 +238,7 @@ Questions? Reply to this email or contact us at support@yourdomain.com
     formData.append('text', template.textBody);
     formData.append('html', template.htmlBody);
 
-    const response = await fetch(`https://api.mailgun.net/v3/${process.env.VITE_MAILGUN_DOMAIN}/messages`, {
+    const response = await fetch(`https://api.mailgun.net/v3/${import.meta.env.VITE_MAILGUN_DOMAIN}/messages`, {
       method: 'POST',
       headers: {
         'Authorization': `Basic ${btoa(`api:${this.config.apiKey}`)}`

@@ -10,12 +10,14 @@ import {
   Calendar,
   Eye,
   Plus,
-  Settings
+  Settings,
+  Shield
 } from 'lucide-react';
 import { Campaign, Lead } from '../types';
 import { CampaignService } from '../lib/campaignService';
 import LoadingSpinner, { ContentLoader, TableLoader } from './LoadingSpinner';
 import EmailTest from './EmailTest';
+import AuthTest from './Auth/AuthTest';
 
 interface DashboardProps {
   onNewCampaign: () => void;
@@ -31,6 +33,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const [isLoadingStats, setIsLoadingStats] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showEmailTest, setShowEmailTest] = useState(false);
+  const [showAuthTest, setShowAuthTest] = useState(false);
 
   useEffect(() => {
     loadCampaigns();
@@ -126,6 +129,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
     );
   }
 
+  if (showAuthTest) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Authentication Test</h1>
+            <p className="text-gray-600">Test authentication and user management</p>
+          </div>
+          <button
+            onClick={() => setShowAuthTest(false)}
+            className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+          >
+            ← Back to Dashboard
+          </button>
+        </div>
+        <AuthTest />
+      </div>
+    );
+  }
+
   if (isLoading) {
     return <ContentLoader text="Loading dashboard..." />;
   }
@@ -149,6 +172,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
           <p className="text-gray-600">Manage your lead generation campaigns</p>
         </div>
         <div className="flex space-x-3">
+          <button
+            onClick={() => setShowAuthTest(true)}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
+          >
+            <Shield className="h-4 w-4 mr-2" />
+            Auth Test
+          </button>
           <button
             onClick={() => setShowEmailTest(true)}
             className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center"

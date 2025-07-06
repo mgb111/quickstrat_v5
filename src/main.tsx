@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import ErrorBoundary from './components/ErrorBoundary.tsx'
+import { AuthProvider } from './contexts/AuthContext.tsx'
 
 // Debug environment
 console.log('Application starting...', {
@@ -22,7 +23,9 @@ try {
   root.render(
     <React.StrictMode>
       <ErrorBoundary>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </ErrorBoundary>
     </React.StrictMode>
   );

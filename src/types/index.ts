@@ -1,14 +1,14 @@
 export interface CampaignInput {
   brand_name: string;
   target_audience: string;
-  customer_problems: string;
-  industry?: string;
+  niche: string;
+  problem_statement: string;
+  desired_outcome: string;
   tone?: string;
-  // Keep legacy fields for backward compatibility
+  // Legacy fields for backward compatibility (optional)
   customer_profile?: string;
-  problem_statement?: string;
-  desired_outcome?: string;
-  niche?: string;
+  customer_problems?: string;
+  industry?: string;
   pain_point?: string;
 }
 

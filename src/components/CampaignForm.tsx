@@ -11,8 +11,9 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
   const [formData, setFormData] = useState<CampaignInput>({
     brand_name: '',
     target_audience: '',
-    customer_problems: '',
-    industry: '',
+    niche: '',
+    problem_statement: '',
+    desired_outcome: '',
     tone: 'professional'
   });
 
@@ -54,6 +55,23 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
               />
             </div>
 
+            {/* Niche */}
+            <div>
+              <label htmlFor="niche" className="block text-sm font-medium text-gray-700 mb-2">
+                Niche/Industry *
+              </label>
+              <input
+                type="text"
+                id="niche"
+                value={formData.niche}
+                onChange={(e) => handleInputChange('niche', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="e.g., Digital Marketing, SaaS, E-commerce, Health & Wellness"
+                required
+                disabled={isLoading}
+              />
+            </div>
+
             {/* Target Audience */}
             <div>
               <label htmlFor="target_audience" className="block text-sm font-medium text-gray-700 mb-2">
@@ -71,35 +89,36 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
               />
             </div>
 
-            {/* Customer Problems */}
+            {/* Problem Statement */}
             <div>
-              <label htmlFor="customer_problems" className="block text-sm font-medium text-gray-700 mb-2">
-                Customer Problems/Pain Points *
+              <label htmlFor="problem_statement" className="block text-sm font-medium text-gray-700 mb-2">
+                Customer Problem Statement *
               </label>
               <textarea
-                id="customer_problems"
-                value={formData.customer_problems}
-                onChange={(e) => handleInputChange('customer_problems', e.target.value)}
+                id="problem_statement"
+                value={formData.problem_statement}
+                onChange={(e) => handleInputChange('problem_statement', e.target.value)}
                 rows={4}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="List the main problems your customers face (e.g., Lack of time to manage social media, Difficulty tracking ROI, Not knowing which platforms to focus on)"
+                placeholder="Describe the main problem your customers face (e.g., Small business owners struggle to create effective social media strategies because they lack time, knowledge, and a clear system to follow)"
                 required
                 disabled={isLoading}
               />
             </div>
 
-            {/* Industry */}
+            {/* Desired Outcome */}
             <div>
-              <label htmlFor="industry" className="block text-sm font-medium text-gray-700 mb-2">
-                Industry/Sector
+              <label htmlFor="desired_outcome" className="block text-sm font-medium text-gray-700 mb-2">
+                Desired Outcome *
               </label>
-              <input
-                type="text"
-                id="industry"
-                value={formData.industry}
-                onChange={(e) => handleInputChange('industry', e.target.value)}
+              <textarea
+                id="desired_outcome"
+                value={formData.desired_outcome}
+                onChange={(e) => handleInputChange('desired_outcome', e.target.value)}
+                rows={3}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="e.g., Digital Marketing, SaaS, E-commerce"
+                placeholder="What do your customers want to achieve? (e.g., Create a consistent social media presence that generates leads and builds brand awareness)"
+                required
                 disabled={isLoading}
               />
             </div>
@@ -128,7 +147,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
           <div className="mt-8">
             <button
               type="submit"
-              disabled={isLoading || !formData.brand_name || !formData.target_audience || !formData.customer_problems}
+              disabled={isLoading || !formData.brand_name || !formData.niche || !formData.target_audience || !formData.problem_statement || !formData.desired_outcome}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isLoading ? (

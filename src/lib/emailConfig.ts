@@ -12,10 +12,10 @@ export interface EmailProviderConfig {
 // Default configuration - update these values in your .env file
 export const defaultEmailConfig: EmailProviderConfig = {
   provider: 'mock', // Change to your preferred provider
-  apiKey: process.env.VITE_EMAIL_API_KEY,
-  domain: process.env.VITE_EMAIL_DOMAIN,
-  fromEmail: process.env.VITE_FROM_EMAIL || 'noreply@yourdomain.com',
-  fromName: process.env.VITE_FROM_NAME || 'LeadGen Machine'
+  apiKey: import.meta.env.VITE_EMAIL_API_KEY,
+  domain: import.meta.env.VITE_EMAIL_DOMAIN,
+  fromEmail: import.meta.env.VITE_FROM_EMAIL || 'noreply@yourdomain.com',
+  fromName: import.meta.env.VITE_FROM_NAME || 'LeadGen Machine'
 };
 
 // Provider-specific configuration examples
@@ -78,14 +78,14 @@ VITE_FROM_NAME=Your Company Name
 
 // Helper function to get email configuration
 export const getEmailConfig = (): EmailProviderConfig => {
-  const provider = process.env.VITE_EMAIL_PROVIDER as EmailProviderConfig['provider'] || 'mock';
+  const provider = import.meta.env.VITE_EMAIL_PROVIDER as EmailProviderConfig['provider'] || 'mock';
   
   return {
     provider,
-    apiKey: process.env.VITE_EMAIL_API_KEY,
-    domain: process.env.VITE_EMAIL_DOMAIN,
-    fromEmail: process.env.VITE_FROM_EMAIL || 'noreply@yourdomain.com',
-    fromName: process.env.VITE_FROM_NAME || 'LeadGen Machine'
+    apiKey: import.meta.env.VITE_EMAIL_API_KEY,
+    domain: import.meta.env.VITE_EMAIL_DOMAIN,
+    fromEmail: import.meta.env.VITE_FROM_EMAIL || 'noreply@yourdomain.com',
+    fromName: import.meta.env.VITE_FROM_NAME || 'LeadGen Machine'
   };
 };
 
