@@ -12,7 +12,7 @@ import {
 import { Download, FileText, Star, CheckCircle, ArrowRight } from 'lucide-react';
 
 interface PDFGeneratorProps {
-  content: string;
+  content: string | any;
   brandName: string;
 }
 
@@ -251,9 +251,41 @@ const styles = StyleSheet.create({
 });
 
 // Helper function to parse content into sections
-const parseContent = (content: string) => {
-  const sections = content.split('\n\n').filter(section => section.trim());
-  return sections.map(section => section.trim());
+const parseContent = (content: string | any) => {
+  // Handle different content types
+  if (typeof content === 'string') {
+    const sections = content.split('\n\n').filter(section => section.trim());
+    return sections.map(section => section.trim());
+  }
+  
+  // If content is an object with sections, extract them
+  if (content && typeof content === 'object') {
+    if (content.sections && Array.isArray(content.sections)) {
+      return content.sections.map((section: any) => 
+        typeof section === 'string' ? section : 
+        section.content || section.title || JSON.stringify(section)
+      );
+    }
+    
+    // If it's a PDFContent object with specific structure
+    if (content.title && content.introduction) {
+      return [
+        content.title,
+        content.introduction,
+        ...(content.sections || []).map((section: any) => 
+          typeof section === 'string' ? section : 
+          section.content || section.title || JSON.stringify(section)
+        ),
+        content.cta || 'Ready to take action?'
+      ];
+    }
+    
+    // Fallback: convert object to string
+    return [JSON.stringify(content)];
+  }
+  
+  // Fallback for any other type
+  return [String(content || 'No content available')];
 };
 
 // Helper function to detect and format different content types
@@ -325,9 +357,9 @@ const PDFDocument: React.FC<{ content: string; brandName: string }> = ({ content
         <Text style={styles.pageNumber}>1</Text>
       </Page>
 
-      {/* Content Pages */}
-      {sections.slice(1).map((section, index) => {
-        const formattedContent = formatContent(section);
+             {/* Content Pages */}
+       {sections.slice(1).map((section: string, index: number) => {
+         const formattedContent = formatContent(section);
         
         return (
           <Page key={index} size="A4" style={styles.page}>
@@ -446,12 +478,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
       
       <div className="bg-gray-50 rounded-lg p-4">
         <h4 className="font-semibold text-gray-900 mb-3">Document Preview</h4>
-        <div className="space-y-3 max-h-40 overflow-y-auto">
-          {parseContent(content).slice(0, 3).map((section, index) => (
-            <div key={index} className="p-3 bg-white rounded border border-gray-200">
-              <p className="text-sm text-gray-700 line-clamp-2">{section}</p>
-            </div>
-          ))}
+                 <div className="space-y-3 max-h-40 overflow-y-auto">
+           {parseContent(content).slice(0, 3).map((section: string, index: number) => (
+             <div key={index} className="p-3 bg-white rounded border border-gray-200">
+               <p className="text-sm text-gray-700 line-clamp-2">{section}</p>
+             </div>
+           ))}
           {parseContent(content).length > 3 && (
             <div className="text-center text-sm text-gray-500">
               +{parseContent(content).length - 3} more sections
