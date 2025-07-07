@@ -20,56 +20,56 @@ console.log('Environment Variables:', {
   NODE_ENV: import.meta.env.MODE
 });
 
-if (!apiKey || apiKey === 'your_openai_api_key') {
-  const errorMsg = 'OpenAI API key not configured. Please set VITE_OPENAI_API_KEY in your .env file.';
-  console.error(errorMsg);
-  throw new Error(errorMsg);
-}
+// Initialize OpenAI client only when needed, not during module loading
+let openai: OpenAI | null = null;
 
-// Initialize OpenAI client
-let openai: OpenAI;
-try {
-  openai = new OpenAI({ 
-    apiKey,
-    dangerouslyAllowBrowser: true,
-    timeout: 60000, // Configure timeout at client level (60 seconds)
-    // Add default headers for better debugging
-    defaultHeaders: {
-      'x-request-source': 'browser',
-      'x-app-name': 'quickstrat-v5'
-    }
-  });
-  
-  // Test the API key by making a simple request
-  console.log('Initializing OpenAI client...');
-  
-  // Log successful initialization
-  console.log('OpenAI client initialized successfully');
-  
-} catch (error: unknown) {
-  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-  console.error('Failed to initialize OpenAI client:', {
-    message: errorMessage,
-    error: error,
-    apiKeyPresent: !!apiKey,
-    apiKeyLength: apiKey?.length,
-    apiKeyStartsWith: apiKey?.substring(0, 3) + '...' + apiKey?.substring(apiKey.length - 3)
-  });
-  
-  // Provide more specific error messages for common issues
-  if (errorMessage.includes('Incorrect API key provided')) {
-    throw new Error('Invalid OpenAI API key. Please check your .env file and ensure the key is correct.');
-  } else if (errorMessage.includes('rate limit')) {
-    throw new Error('Rate limit exceeded. Please try again later.');
-  } else {
-    throw new Error(`Failed to initialize OpenAI client: ${errorMessage}`);
+function getOpenAIClient(): OpenAI {
+  if (!apiKey || apiKey === 'your_openai_api_key') {
+    const errorMsg = 'OpenAI API key not configured. Please set VITE_OPENAI_API_KEY in your .env file.';
+    console.error(errorMsg);
+    throw new Error(errorMsg);
   }
+
+  if (!openai) {
+    try {
+      openai = new OpenAI({ 
+        apiKey,
+        dangerouslyAllowBrowser: true,
+        timeout: 60000, // Configure timeout at client level (60 seconds)
+        // Add default headers for better debugging
+        defaultHeaders: {
+          'x-request-source': 'browser',
+          'x-app-name': 'quickstrat-v5'
+        }
+      });
+      
+      console.log('OpenAI client initialized successfully');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Failed to initialize OpenAI client:', {
+        message: errorMessage,
+        error: error,
+        apiKeyPresent: !!apiKey,
+        apiKeyLength: apiKey?.length,
+        apiKeyStartsWith: apiKey?.substring(0, 3) + '...' + apiKey?.substring(apiKey.length - 3)
+      });
+      
+      // Provide more specific error messages for common issues
+      if (errorMessage.includes('Incorrect API key provided')) {
+        throw new Error('Invalid OpenAI API key. Please check your .env file and ensure the key is correct.');
+      } else if (errorMessage.includes('rate limit')) {
+        throw new Error('Rate limit exceeded. Please try again later.');
+      } else {
+        throw new Error(`Failed to initialize OpenAI client: ${errorMessage}`);
+      }
+    }
+  }
+
+  return openai;
 }
 
 export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<LeadMagnetConcept[]> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured. Please check your .env file.');
-  }
+  const client = getOpenAIClient();
 
   try {
     const prompt = `You are a lead generation expert. Based on the user's inputs, generate 6 unique lead magnet concepts.
@@ -98,7 +98,7 @@ Return JSON in this exact format:
   ]
 }`;
 
-    const res = await openai.chat.completions.create({
+    const res = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are a content strategist. Output strictly valid JSON as defined.' },
@@ -141,9 +141,7 @@ Return JSON in this exact format:
 }
 
 export async function generateContentOutline(input: CampaignInput, selected: LeadMagnetConcept): Promise<ContentOutline> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured. Please check your .env file.');
-  }
+  const client = getOpenAIClient();
 
   try {
     const prompt = `You are creating a content outline for a lead magnet.
@@ -170,7 +168,7 @@ Return JSON in this exact format:
   "cta": "..."
 }`;
 
-    const res = await openai.chat.completions.create({
+    const res = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are a content strategist. Output strictly valid JSON as defined.' },
@@ -216,9 +214,7 @@ Return JSON in this exact format:
 }
 
 export async function generatePdfContent(input: CampaignInput, outline: ContentOutline): Promise<PDFContent> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured. Please check your .env file.');
-  }
+  const client = getOpenAIClient();
 
   try {    const prompt = `You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
 
@@ -434,7 +430,7 @@ CRITICAL REQUIREMENTS:
 10. MANDATORY: DO NOT create both checklist and step-by-step guide - choose one or the other to avoid redundancy
 11. MANDATORY: Use the exact CTA text provided in the prompt`;
 
-    const res = await openai.chat.completions.create({
+    const res = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: Generate EXACTLY 3 toolkit sections. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc. DO NOT create both checklist and step-by-step guide to avoid redundancy. Use the exact CTA text provided.' },
@@ -645,9 +641,7 @@ function formatLayoutSectionContent(section: any): string {
 }
 
 export async function generateLandingPageCopy(input: CampaignInput, outline: ContentOutline): Promise<LandingPageCopy> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured. Please check your .env file.');
-  }
+  const client = getOpenAIClient();
 
   try {
     const prompt = `You are a direct-response copywriter. Your task is to create high-converting copy for a landing page to promote a lead magnet.
@@ -684,7 +678,7 @@ Return JSON in this exact format:
   "cta_button_text": "Get Instant Access"
 }`;
 
-    const res = await openai.chat.completions.create({
+    const res = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are a direct-response copywriter. Output strictly valid JSON as defined.' },
@@ -743,9 +737,7 @@ parsed.benefit_bullets = parsed.benefit_bullets.slice(0, 4);
 }
 
 export async function generateSocialPosts(input: CampaignInput, outline: ContentOutline): Promise<SocialPosts> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured. Please check your .env file.');
-  }
+  const client = getOpenAIClient();
 
   try {
     const prompt = `You are a social media manager. Your task is to create promotional posts for a new lead magnet.
@@ -788,7 +780,7 @@ Return JSON in this exact format:
   "instagram": "Engaging Instagram caption with 2-3 hashtags... #example #socialmedia #tips"
 }`;
 
-    const res = await openai.chat.completions.create({
+    const res = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are a social media manager. Output strictly valid JSON as defined.' },
@@ -839,9 +831,7 @@ Return JSON in this exact format:
 }
 
 export async function generateFinalCampaign(input: CampaignInput, outline: ContentOutline): Promise<CampaignOutput> {
-  if (!openai) {
-    throw new Error('OpenAI API key not configured. Please check your .env file.');
-  }
+  const client = getOpenAIClient();
 
   try {
     // Generate all content in parallel
