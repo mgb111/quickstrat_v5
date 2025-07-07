@@ -4,9 +4,10 @@ import { supabase } from '../../lib/supabase';
 
 interface SignupFormProps {
   onSwitchToLogin: () => void;
+  onSuccess?: () => void;
 }
 
-const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
+const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,25 +22,65 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
     setError(null);
 
     try {
-      const { error: signUpError } = await supabase.auth.signUp({
+      console.log('🔄 Starting signup process...');
+      
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             name: name
-          }
+          },
+          // For development: disable email confirmation
+          emailRedirectTo: `${window.location.origin}/dashboard`
         }
       });
 
+      console.log('📧 Signup response:', { data, error: signUpError });
+
       if (signUpError) {
+        console.error('❌ Signup error:', signUpError);
         throw signUpError;
       }
 
-      // Show success message or redirect
-      alert('Account created successfully! Please check your email to verify your account.');
+      console.log('✅ Account created successfully!');
+      console.log('👤 User data:', data.user);
+      
+      // For development: automatically sign in after signup
+      console.log('🔄 Attempting auto sign-in...');
+      
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (signInError) {
+        console.error('❌ Auto sign-in error:', signInError);
+        setError(`Account created but sign-in failed: ${signInError.message}. Please try signing in manually.`);
+      } else {
+        console.log('✅ Auto sign-in successful!');
+        if (onSuccess) {
+          onSuccess();
+        }
+      }
+      
     } catch (err) {
-      console.error('Signup error:', err);
-      setError('Failed to create account. Please try again.');
+      console.error('❌ Signup error:', err);
+      
+      // Provide specific error messages
+      if (err instanceof Error) {
+        if (err.message.includes('User already registered')) {
+          setError('An account with this email already exists. Please try signing in instead.');
+        } else if (err.message.includes('Password should be at least')) {
+          setError('Password must be at least 6 characters long.');
+        } else if (err.message.includes('Invalid email')) {
+          setError('Please enter a valid email address.');
+        } else {
+          setError(`Signup failed: ${err.message}`);
+        }
+      } else {
+        setError('Failed to create account. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }

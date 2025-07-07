@@ -27,13 +27,23 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
       });
 
       if (signInError) {
-        throw signInError;
+        console.error('Login error details:', signInError);
+        
+        // Handle specific error cases
+        if (signInError.message.includes('Email not confirmed')) {
+          setError('Please check your email and click the verification link to confirm your account.');
+        } else if (signInError.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password. Please try again.');
+        } else {
+          setError(`Login failed: ${signInError.message}`);
+        }
+        return;
       }
 
       onSuccess();
     } catch (err) {
       console.error('Login error:', err);
-      setError('Invalid email or password. Please try again.');
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -80,6 +90,32 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
     } catch (err) {
       console.error('Password reset error:', err);
       setError('Failed to send password reset email. Please try again.');
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email.trim()) {
+      setError('Please enter your email address first.');
+      return;
+    }
+
+    try {
+      const { error: resendError } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+
+      if (resendError) {
+        throw resendError;
+      }
+
+      alert('Verification email sent! Please check your inbox.');
+    } catch (err) {
+      console.error('Resend verification error:', err);
+      setError('Failed to send verification email. Please try again.');
     }
   };
 
@@ -150,6 +186,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
             disabled={isLoading}
           >
             Forgot your password?
+          </button>
+          <button
+            type="button"
+            onClick={handleResendVerification}
+            className="text-sm text-green-600 hover:text-green-700 font-medium"
+            disabled={isLoading}
+          >
+            Resend verification
           </button>
         </div>
 
