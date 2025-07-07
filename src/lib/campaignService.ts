@@ -20,6 +20,28 @@ export class CampaignService {
       throw new Error('Authentication required to create campaigns');
     }
 
+    // Check if user exists in public.users table
+    const { data: publicUser, error: userError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', user.id)
+      .single();
+
+    // If user doesn't exist in public.users, create them
+    if (!publicUser) {
+      const { error: insertError } = await supabase
+        .from('users')
+        .insert({
+          id: user.id,
+          email: user.email
+        });
+
+      if (insertError) {
+        console.error('Failed to create user record:', insertError);
+        throw new Error('Failed to initialize user profile. Please try logging out and back in.');
+      }
+    }
+
     // Generate unique slug
     const { data: slugData } = await supabase.rpc('generate_unique_slug');
     const slug = slugData || `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;

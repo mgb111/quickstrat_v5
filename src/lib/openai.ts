@@ -834,26 +834,29 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
   const client = getOpenAIClient();
 
   try {
-    // Generate all content in parallel
-    const [pdf_content, landing_page, social_posts] = await Promise.all([
-      generatePdfContent(input, outline).catch(err => {
-        console.error('Error generating PDF content:', err);
-        throw new Error(`Failed to generate PDF content: ${err.message}`);
-      }),
-      generateLandingPageCopy(input, outline).catch(err => {
-        console.error('Error generating landing page copy:', err);
-        throw new Error(`Failed to generate landing page: ${err.message}`);
-      }),
-      generateSocialPosts(input, outline).catch(err => {
-        console.error('Error generating social posts:', err);
-        throw new Error(`Failed to generate social media posts: ${err.message}`);
-      })
-    ]);
+    // Generate content sequentially instead of in parallel for better error handling
+    console.log('Starting PDF content generation...');
+    const pdf_content = await generatePdfContent(input, outline).catch(err => {
+      console.error('PDF Generation Error:', err);
+      throw new Error(`PDF Generation Failed: ${err.message}`);
+    });
+
+    console.log('Starting landing page generation...');
+    const landing_page = await generateLandingPageCopy(input, outline).catch(err => {
+      console.error('Landing Page Generation Error:', err);
+      throw new Error(`Landing Page Generation Failed: ${err.message}`);
+    });
+
+    console.log('Starting social posts generation...');
+    const social_posts = await generateSocialPosts(input, outline).catch(err => {
+      console.error('Social Posts Generation Error:', err);
+      throw new Error(`Social Posts Generation Failed: ${err.message}`);
+    });
 
     // Validate all required content was generated
-    if (!pdf_content || !landing_page || !social_posts) {
-      throw new Error('Incomplete content generation. Some components failed to generate.');
-    }
+    if (!pdf_content) throw new Error('PDF content generation failed');
+    if (!landing_page) throw new Error('Landing page generation failed');
+    if (!social_posts) throw new Error('Social posts generation failed');
 
     // Create structured PDF content
     const structured_pdf_content: PDFContent = {
@@ -864,6 +867,7 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
           subtitle: `A comprehensive guide for ${input.target_audience}`
         },
         introduction_page: {
+          title: 'Introduction',
           content: pdf_content.introduction
         },
         toolkit_sections: pdf_content.sections.map((section: { title: string; content: string }) => ({
@@ -871,11 +875,13 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
           content: section.content
         })),
         cta_page: {
+          title: 'Next Steps',
           content: pdf_content.cta
         }
       }
     };
 
+    console.log('Campaign generation completed successfully');
     return {
       pdf_content: structured_pdf_content,
       landing_page,
@@ -885,19 +891,30 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
     console.error('Campaign Generation Error:', {
       message: err.message,
       stack: err.stack,
-      cause: err.cause
+      cause: err.cause,
+      type: err.type,
+      code: err.code
     });
 
-    // Handle specific error cases
-    if (err.message.includes('rate_limit_exceeded')) {
-      throw new Error('Rate limit exceeded. Please wait a moment and try again.');
-    } else if (err.message.includes('invalid_api_key')) {
-      throw new Error('Invalid API key. Please check your OpenAI API key in the .env file.');
+    // Handle specific OpenAI API errors
+    if (err.code === 'insufficient_quota') {
+      throw new Error('OpenAI API quota exceeded. Please check your billing status.');
+    } else if (err.code === 'rate_limit_exceeded') {
+      throw new Error('OpenAI API rate limit exceeded. Please wait a moment and try again.');
+    } else if (err.code === 'invalid_api_key') {
+      throw new Error('Invalid OpenAI API key. Please check your API key configuration.');
     } else if (err.message.includes('timeout')) {
       throw new Error('Request timed out. The server is taking too long to respond. Please try again.');
+    } else if (err.message.includes('JSON')) {
+      throw new Error('Failed to process AI response. Please try again.');
     }
 
-    // For other errors, include the original error message for better debugging
-    throw new Error(`Failed to generate campaign: ${err.message}`);
+    // If it's a specific generation error, pass it through
+    if (err.message.includes('Generation Failed:')) {
+      throw err;
+    }
+
+    // For unknown errors, provide a generic message
+    throw new Error('Failed to generate campaign content. Please try again.');
   }
 }
