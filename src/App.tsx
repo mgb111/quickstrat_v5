@@ -281,7 +281,7 @@ function App() {
                 <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
                   <Zap className="h-6 w-6 text-white" />
                 </div>
-                <span className="ml-3 text-xl font-bold text-gray-900">LeadGen Machine</span>
+                <span className="ml-3 text-xl font-bold text-gray-900">majorbeam</span>
               </div>
               <div className="flex items-center space-x-4">
                 <button
@@ -312,7 +312,7 @@ function App() {
                 <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
                   <Zap className="h-6 w-6 text-white" />
                 </div>
-                <span className="ml-3 text-xl font-bold text-gray-900">LeadGen Machine</span>
+                <span className="ml-3 text-xl font-bold text-gray-900">majorbeam</span>
               </div>
               <div className="flex items-center space-x-4">
                 <button
@@ -447,7 +447,7 @@ function App() {
         )}
 
         <footer className="mt-16 text-center text-gray-500">
-          <p>© 2025 LeadGen Machine. AI assists, experts direct, humans approve.</p>
+          <p>© 2025 majorbeam. AI assists, experts direct, humans approve.</p>
         </footer>
       </div>
     </div>

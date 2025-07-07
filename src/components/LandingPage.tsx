@@ -86,7 +86,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
               <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
                 <Download className="h-6 w-6 text-white" />
               </div>
-              <span className="ml-3 text-xl font-bold text-gray-900">QuickStrat</span>
+              <span className="ml-3 text-xl font-bold text-gray-900">majorbeam</span>
             </div>
           </div>
         </div>
@@ -202,7 +202,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
       <footer className="bg-gray-50 border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-gray-500">
-            <p>&copy; 2025 QuickStrat. All rights reserved.</p>
+            <p>&copy; 2025 majorbeam. All rights reserved.</p>
           </div>
         </div>
       </footer>
