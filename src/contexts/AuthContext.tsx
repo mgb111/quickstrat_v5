@@ -33,44 +33,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Handle initial session
     const initializeAuth = async () => {
       try {
-        // Check if we have a hash in the URL (OAuth callback)
-        if (window.location.hash) {
-          const params = new URLSearchParams(window.location.hash.substring(1));
-          const accessToken = params.get('access_token');
-          const refreshToken = params.get('refresh_token');
-
-          if (accessToken) {
-            // Set the session directly with Supabase
-            const { data: { session: newSession }, error } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken || '',
-            });
-
-            if (error) {
-              throw error;
-            }
-
-            if (newSession) {
-              setSession(newSession);
-              setUser(newSession.user);
-              
-              // Clear the hash without triggering a reload
-              window.history.replaceState(null, '', window.location.pathname);
-              
-              // Redirect to dashboard
-              if (window.location.pathname !== '/dashboard') {
-                window.location.href = '/dashboard';
-              }
-              return;
-            }
-          }
+        // Get the current session
+        const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          throw sessionError;
         }
 
-        // If no hash or session setting failed, try to get existing session
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          setSession(session);
-          setUser(session.user);
+        if (currentSession) {
+          setSession(currentSession);
+          setUser(currentSession.user);
+          
+          // If we're on the callback URL, redirect to dashboard
+          if (window.location.hash && window.location.hash.includes('access_token')) {
+            // Clear the hash without reloading
+            window.history.replaceState(null, '', window.location.pathname);
+            window.location.href = '/dashboard';
+            return;
+          }
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
@@ -82,10 +62,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initializeAuth();
 
     // Set up auth state change listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      console.log('Auth state changed:', event);
+      
       if (event === 'SIGNED_IN') {
-        setSession(session);
-        setUser(session?.user ?? null);
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+        
+        // Only redirect if we're not already on the dashboard
         if (window.location.pathname !== '/dashboard') {
           window.location.href = '/dashboard';
         }
@@ -93,6 +77,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSession(null);
         setUser(null);
         window.location.href = '/';
+      } else if (event === 'TOKEN_REFRESHED') {
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
       }
     });
 
@@ -114,8 +101,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const refreshUser = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      const { data: { user: refreshedUser } } = await supabase.auth.getUser();
+      setUser(refreshedUser);
     } catch (error) {
       console.error('Error refreshing user:', error);
     }

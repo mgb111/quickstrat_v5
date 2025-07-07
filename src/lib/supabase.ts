@@ -16,7 +16,13 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true,
     storage: typeof window !== 'undefined' ? window.localStorage : undefined,
     storageKey: 'majorbeam-auth',
-    debug: import.meta.env.DEV
+    debug: import.meta.env.DEV,
+    flowType: 'implicit'
+  },
+  global: {
+    headers: {
+      'X-Client-Info': 'majorbeam-web'
+    }
   }
 });
 
