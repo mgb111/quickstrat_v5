@@ -85,7 +85,7 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
             {isLoading ? (
               <>
                 <Loader2 className="animate-spin h-5 w-5 mr-3" />
-                Creating Outline...
+                <span className="text-white font-semibold">Creating Outline...</span>
               </>
             ) : (
               <>
@@ -95,9 +95,15 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
             )}
           </button>
           
-          {selectedConceptId && (
+          {selectedConceptId && !isLoading && (
             <p className="text-sm text-gray-600 mt-3">
               AI will create a detailed outline for your selected concept
+            </p>
+          )}
+          
+          {isLoading && (
+            <p className="text-sm text-gray-700 mt-3 font-medium">
+              Generating your personalized content outline...
             </p>
           )}
         </div>

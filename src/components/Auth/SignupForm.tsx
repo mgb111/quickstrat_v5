@@ -15,11 +15,14 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [showResendButton, setShowResendButton] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setSuccess(null);
 
     try {
       console.log('🔄 Starting signup process...');
@@ -31,7 +34,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
           data: {
             name: name
           },
-          // For development: disable email confirmation
           emailRedirectTo: `${window.location.origin}/dashboard`
         }
       });
@@ -46,7 +48,15 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
       console.log('✅ Account created successfully!');
       console.log('👤 User data:', data.user);
       
-      // For development: automatically sign in after signup
+      // Check if email confirmation is required
+      if (data.user && !data.user.email_confirmed_at) {
+        console.log('📧 Email confirmation required');
+        setSuccess('Account created successfully! Please check your email and click the verification link to complete your signup.');
+        setShowResendButton(true);
+        return;
+      }
+      
+      // If email is already confirmed, try auto sign-in
       console.log('🔄 Attempting auto sign-in...');
       
       const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -56,7 +66,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
       
       if (signInError) {
         console.error('❌ Auto sign-in error:', signInError);
-        setError(`Account created but sign-in failed: ${signInError.message}. Please try signing in manually.`);
+        setError(`Account created successfully! Please sign in manually. Error: ${signInError.message}`);
       } else {
         console.log('✅ Auto sign-in successful!');
         if (onSuccess) {
@@ -108,6 +118,28 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
     }
   };
 
+  const handleResendVerification = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email
+      });
+      
+      if (error) {
+        setError(`Failed to resend verification email: ${error.message}`);
+      } else {
+        setSuccess('Verification email sent! Please check your inbox.');
+      }
+    } catch (err) {
+      setError('Failed to resend verification email. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
       <div className="text-center mb-8">
@@ -118,6 +150,22 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
           <p className="text-red-800 text-sm">{error}</p>
+        </div>
+      )}
+
+      {success && (
+        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-green-800 text-sm">{success}</p>
+          {showResendButton && (
+            <button
+              type="button"
+              onClick={handleResendVerification}
+              disabled={isLoading}
+              className="mt-2 text-sm text-green-600 hover:text-green-500 disabled:opacity-50"
+            >
+              Resend verification email
+            </button>
+          )}
         </div>
       )}
 

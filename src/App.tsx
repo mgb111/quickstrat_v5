@@ -134,13 +134,15 @@ function App() {
     try {
       const finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
       console.log('✅ Final campaign generated:', finalOutput);
+      // Automatically save campaign to Supabase
+      await CampaignService.createCampaign(wizardState.input!, finalOutput);
       setWizardState(prev => ({
         ...prev,
         stage: 'complete',
         outline: finalOutline,
         finalOutput
       }));
-      console.log('🎯 Moved to complete stage');
+      console.log('🎯 Moved to complete stage and campaign saved');
     } catch (err) {
       console.error('❌ Error generating final campaign:', err);
       setError('Failed to generate final campaign. Please try again.');
@@ -150,38 +152,16 @@ function App() {
   };
 
   const handleCampaignCreated = async () => {
-    try {
-      // Create campaign in database
-      const campaign = await CampaignService.createCampaign(
-        wizardState.input!,
-        wizardState.finalOutput!
-      );
-
-      // Send welcome email to any existing leads
-      if (campaign.lead_magnet_content) {
-        // In a real implementation, you would send emails to leads
-        await EmailService.sendWelcomeEmail(
-          'example@email.com', // This would be the actual lead email
-          campaign.id,
-          campaign.lead_magnet_content,
-          campaign.name
-        );
-      }
-
-      // Switch to dashboard
-      setMode('dashboard');
-      setWizardState({
-        stage: 'input',
-        input: null,
-        concepts: null,
-        selectedConcept: null,
-        outline: null,
-        finalOutput: null
-      });
-    } catch (err) {
-      console.error('Error creating campaign:', err);
-      setError('Failed to create campaign. Please try again.');
-    }
+    // Just switch to dashboard and reset wizard state
+    setMode('dashboard');
+    setWizardState({
+      stage: 'input',
+      input: null,
+      concepts: null,
+      selectedConcept: null,
+      outline: null,
+      finalOutput: null
+    });
   };
 
   const handleStartOver = () => {

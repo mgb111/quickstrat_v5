@@ -26,8 +26,8 @@ export class CampaignService {
 
     const campaignData = {
       user_id: user.id,
-      name: `${input.brand_name} - ${input.customer_profile}`,
-      customer_profile: input.customer_profile,
+      name: `${input.brand_name} - ${input.customer_profile || input.target_audience || 'General'}`,
+      customer_profile: input.customer_profile || input.target_audience || 'General',
       problem_statement: input.problem_statement,
       desired_outcome: input.desired_outcome,
       landing_page_slug: slug,

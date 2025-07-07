@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, ExternalLink, MessageCircle } from 'lucide-react';
+import { Copy, ExternalLink, MessageCircle, Download, Mail } from 'lucide-react';
 import { CampaignOutput } from '../types/index';
 import PDFGenerator from './PDFGenerator';
 import EmailCapture from './EmailCapture';
@@ -11,25 +11,22 @@ interface ResultsDisplayProps {
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onCampaignCreated }) => {
-  const [showPDFDownload, setShowPDFDownload] = useState(false);
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
 
   const handleEmailSubmitted = () => {
-    console.log('Email submitted, showing PDF download');
-    console.log('PDF content preview:', results.pdf_content?.substring(0, 200));
-    console.log('PDF content type:', typeof results.pdf_content);
-    console.log('Full results object:', results);
-    setShowPDFDownload(true);
+    console.log('Email submitted successfully');
+    setEmailSubmitted(true);
   };
 
   console.log('ResultsDisplay render:', { 
-    showPDFDownload, 
     hasPdfContent: !!results.pdf_content,
     pdfContentLength: results.pdf_content?.length,
-    brandName 
+    brandName,
+    emailSubmitted
   });
 
   return (
@@ -55,135 +52,191 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
 
       {/* Email Capture Section - Required for PDF access */}
       <div className="max-w-2xl mx-auto">
-        <EmailCapture onEmailSubmitted={handleEmailSubmitted} />
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <div className="text-center mb-4">
+            <Mail className="h-8 w-8 text-gray-600 mx-auto mb-2" />
+            <h3 className="text-lg font-semibold text-gray-900">Enter Your Email to Get Your Lead Magnet</h3>
+            <p className="text-gray-600 text-sm">
+              Please enter your email to access your personalized PDF guide
+            </p>
+          </div>
+          
+          {!emailSubmitted ? (
+            <EmailCapture onEmailSubmitted={handleEmailSubmitted} />
+          ) : (
+            <div className="text-center">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-green-700 text-sm">
+                  ✅ Email submitted! Your download is ready below.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* PDF Download - Only show after email is submitted */}
-      {showPDFDownload && (
+      {emailSubmitted && (
         <div className="max-w-2xl mx-auto">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center">
+              <Download className="h-5 w-5 text-blue-600 mr-2" />
+              <h3 className="text-lg font-semibold text-blue-900">Download Your Lead Magnet</h3>
+            </div>
+            <p className="text-blue-700 text-sm mt-1">
+              Your professional PDF guide is ready for download
+            </p>
+          </div>
           <PDFGenerator 
-            content={{
-              text: results.pdf_content,
-              structured_content: results.pdf_content
-            }} 
+            content={(() => {
+              const pdfContent: any = results.pdf_content;
+              // If results.pdf_content is already structured, use as is
+              if (pdfContent && typeof pdfContent === 'object' && (pdfContent as any).structured_content) {
+                return pdfContent;
+              }
+              // If results.pdf_content is a structured object (has title_page, etc.)
+              if (pdfContent && typeof pdfContent === 'object' && ((pdfContent as any).title_page || (pdfContent as any).sections)) {
+                return { structured_content: pdfContent };
+              }
+              // If results.pdf_content is a string, wrap as structured_content
+              if (typeof pdfContent === 'string') {
+                return {
+                  structured_content: {
+                    title_page: { title: brandName + ' Lead Magnet Guide', subtitle: 'A step-by-step blueprint to help you achieve your goals' },
+                    introduction_page: { title: 'Main Content', content: pdfContent },
+                    cta_page: { title: 'Take the Next Step', content: `Ready to put these strategies into action? Schedule a free strategy session with our team or reach out to ${brandName || 'our experts'} for personalized support. Your success starts now!` }
+                  }
+                };
+              }
+              // Fallback: pass as is
+              return pdfContent;
+            })()}
             brandName={brandName} 
           />
         </div>
       )}
 
+      {/* Campaign Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Landing Page Copy */}
+        {/* Lead Magnet Content */}
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-bold text-gray-900">Landing Page Copy</h3>
-            <button
-              onClick={() => copyToClipboard(
-                `${results.landing_page.headline}\n\n${results.landing_page.subheadline}\n\n${results.landing_page.benefit_bullets.join('\n')}\n\nCTA: ${results.landing_page.cta_button_text}`
-              )}
-              className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
-            >
-              <Copy className="h-4 w-4 mr-1" />
-              Copy
-            </button>
+          <div className="flex items-center mb-4">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg mr-3">
+              <MessageCircle className="h-5 w-5 text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">Lead Magnet Content</h3>
           </div>
-
+          
           <div className="space-y-4">
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h4 className="font-semibold text-blue-900 mb-2">Headline</h4>
-              <p className="text-blue-800">{results.landing_page.headline}</p>
-            </div>
-
-            <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-              <h4 className="font-semibold text-purple-900 mb-2">Subheadline</h4>
-              <p className="text-purple-800">{results.landing_page.subheadline}</p>
-            </div>
-
-            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-              <h4 className="font-semibold text-green-900 mb-2">Benefit Bullets</h4>
-              <ul className="text-green-800 space-y-1">
-                {results.landing_page.benefit_bullets.map((bullet, index) => (
-                  <li key={index}>• {bullet}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-              <h4 className="font-semibold text-orange-900 mb-2">CTA Button</h4>
-              <p className="text-orange-800">{results.landing_page.cta_button_text}</p>
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2">PDF Content</h4>
+              <div className="bg-gray-50 rounded-lg p-4 max-h-40 overflow-y-auto">
+                <p className="text-gray-700 text-sm whitespace-pre-wrap">
+                  {typeof results.pdf_content === 'string'
+                    ? `${results.pdf_content.substring(0, 300)}...`
+                    : results.pdf_content && typeof results.pdf_content === 'object'
+                      ? JSON.stringify(results.pdf_content).substring(0, 300) + '...'
+                      : 'PDF content is being generated...'}
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Social Media Posts */}
+        {/* Landing Page Copy */}
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">Social Media Posts</h3>
-
-          <div className="space-y-6">
-            {/* LinkedIn */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-blue-600 rounded-sm flex items-center justify-center">
-                    <ExternalLink className="h-4 w-4 text-white" />
-                  </div>
-                  <h4 className="font-semibold text-gray-900 ml-2">LinkedIn</h4>
-                </div>
+          <div className="flex items-center mb-4">
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-2 rounded-lg mr-3">
+              <ExternalLink className="h-5 w-5 text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">Landing Page Copy</h3>
+          </div>
+          
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2">Headline</h4>
+              <div className="flex items-center space-x-2">
+                <p className="text-gray-700 flex-1">{results.landing_page.headline}</p>
                 <button
-                  onClick={() => copyToClipboard(results.social_posts.linkedin)}
-                  className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200 transition-colors"
+                  onClick={() => copyToClipboard(results.landing_page.headline)}
+                  className="text-blue-600 hover:text-blue-800"
                 >
-                  <Copy className="h-3 w-3 mr-1" />
-                  Copy
+                  <Copy className="h-4 w-4" />
                 </button>
               </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{results.social_posts.linkedin}</p>
-              </div>
             </div>
-
-            {/* Twitter */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-black rounded-sm flex items-center justify-center">
-                    <MessageCircle className="h-4 w-4 text-white" />
-                  </div>
-                  <h4 className="font-semibold text-gray-900 ml-2">X (Twitter)</h4>
-                </div>
+            
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2">Subheadline</h4>
+              <div className="flex items-center space-x-2">
+                <p className="text-gray-700 flex-1">{results.landing_page.subheadline}</p>
                 <button
-                  onClick={() => copyToClipboard(results.social_posts.twitter)}
-                  className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200 transition-colors"
+                  onClick={() => copyToClipboard(results.landing_page.subheadline)}
+                  className="text-blue-600 hover:text-blue-800"
                 >
-                  <Copy className="h-3 w-3 mr-1" />
-                  Copy
+                  <Copy className="h-4 w-4" />
                 </button>
               </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{results.social_posts.twitter}</p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2">Benefit Bullets</h4>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <ul className="text-gray-700 text-sm space-y-1">
+                  {results.landing_page.benefit_bullets.map((bullet, index) => (
+                    <li key={index}>• {bullet}</li>
+                  ))}
+                </ul>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Instagram */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-sm flex items-center justify-center">
-                    <div className="w-4 h-4 bg-white rounded-sm"></div>
-                  </div>
-                  <h4 className="font-semibold text-gray-900 ml-2">Instagram</h4>
-                </div>
-                <button
-                  onClick={() => copyToClipboard(results.social_posts.instagram)}
-                  className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200 transition-colors"
-                >
-                  <Copy className="h-3 w-3 mr-1" />
-                  Copy
-                </button>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{results.social_posts.instagram}</p>
-              </div>
+      {/* Social Media Posts */}
+      <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Social Media Posts</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* LinkedIn */}
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-600">LinkedIn</span>
+              <button
+                onClick={() => copyToClipboard(results.social_posts.linkedin)}
+                className="text-blue-600 hover:text-blue-800"
+              >
+                <Copy className="h-4 w-4" />
+              </button>
             </div>
+            <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.linkedin}</p>
+          </div>
+          
+          {/* Twitter */}
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-600">Twitter</span>
+              <button
+                onClick={() => copyToClipboard(results.social_posts.twitter)}
+                className="text-blue-600 hover:text-blue-800"
+              >
+                <Copy className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.twitter}</p>
+          </div>
+          
+          {/* Instagram */}
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-600">Instagram</span>
+              <button
+                onClick={() => copyToClipboard(results.social_posts.instagram)}
+                className="text-blue-600 hover:text-blue-800"
+              >
+                <Copy className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.instagram}</p>
           </div>
         </div>
       </div>

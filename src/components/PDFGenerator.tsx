@@ -16,19 +16,8 @@ interface PDFGeneratorProps {
   brandName: string;
 }
 
-// Register custom fonts for better typography - using fallback fonts
-Font.register({
-  family: 'Inter',
-  src: 'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2'
-});
-
-Font.register({
-  family: 'Inter-Bold',
-  src: 'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2',
-  fontWeight: 'bold'
-});
-
-// Fallback font registration
+// Register fonts for better typography
+// Use built-in fonts that are guaranteed to work
 Font.register({
   family: 'Helvetica',
   src: 'Helvetica'
@@ -39,13 +28,23 @@ Font.register({
   src: 'Helvetica-Bold'
 });
 
+Font.register({
+  family: 'Times-Roman',
+  src: 'Times-Roman'
+});
+
+Font.register({
+  family: 'Times-Bold',
+  src: 'Times-Bold'
+});
+
 const styles = StyleSheet.create({
   // Page styles
   page: {
     flexDirection: 'column',
     backgroundColor: '#ffffff',
     padding: 40,
-    fontFamily: 'Inter, Helvetica',
+    fontFamily: 'Helvetica',
     fontSize: 12,
     lineHeight: 1.6
   },
@@ -76,7 +75,7 @@ const styles = StyleSheet.create({
   logoText: {
     color: '#ffffff',
     fontSize: 16,
-    fontFamily: 'Inter-Bold, Helvetica-Bold',
+    fontFamily: 'Helvetica-Bold',
     fontWeight: 'bold'
   },
   
@@ -87,7 +86,7 @@ const styles = StyleSheet.create({
   
   documentTitle: {
     fontSize: 28,
-    fontFamily: 'Inter-Bold, Helvetica-Bold',
+    fontFamily: 'Helvetica-Bold',
     fontWeight: 'bold',
     color: '#1f2937',
     marginBottom: 8,
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
   
   sectionTitle: {
     fontSize: 18,
-    fontFamily: 'Inter-Bold, Helvetica-Bold',
+    fontFamily: 'Helvetica-Bold',
     fontWeight: 'bold',
     color: '#1f2937',
     marginBottom: 12,
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
   
   sectionSubtitle: {
     fontSize: 16,
-    fontFamily: 'Inter-Bold, Helvetica-Bold',
+    fontFamily: 'Helvetica-Bold',
     fontWeight: 'bold',
     color: '#374151',
     marginBottom: 10,
@@ -151,7 +150,7 @@ const styles = StyleSheet.create({
   
   highlightTitle: {
     fontSize: 14,
-    fontFamily: 'Inter-Bold, Helvetica-Bold',
+    fontFamily: 'Helvetica-Bold',
     fontWeight: 'bold',
     color: '#0c4a6e',
     marginBottom: 8
@@ -214,7 +213,7 @@ const styles = StyleSheet.create({
   
   ctaTitle: {
     fontSize: 16,
-    fontFamily: 'Inter-Bold, Helvetica-Bold',
+    fontFamily: 'Helvetica-Bold',
     fontWeight: 'bold',
     color: '#065f46',
     marginBottom: 10
@@ -255,277 +254,218 @@ const styles = StyleSheet.create({
   }
 });
 
-// Improved content parsing function that handles structured content better
-const parseContent = (content: string | any): any[] => {
-  if (!content) return [{ type: 'paragraph', content: 'No content available' }];
-  
-  let contentString = '';
-  
-  // Handle different content types
-  if (typeof content === 'string') {
-    contentString = content;
-  } else if (typeof content === 'object') {
-    // If it's an object, try to extract text content
-    if (content.text) {
-      contentString = content.text;
-    } else if (content.content) {
-      contentString = content.content;
-    } else if (content.structured_content) {
-      // Handle structured content from AI
-      console.log('Detected structured content from AI');
-      return parseStructuredContent(content.structured_content);
-    } else {
-      contentString = JSON.stringify(content);
+// --- Bulletproof PDF Generator ---
+// Handles all section types, page numbers, branding, and robust error handling.
+
+// Helper: Render section content with uniform formatting
+const renderSectionContent = (section: any) => {
+  // String content: render as paragraph
+  if (typeof section.content === 'string') {
+    return <Text style={styles.paragraph}>{section.content}</Text>;
+  }
+  // Array content: render as list
+  if (Array.isArray(section.content)) {
+    return (
+      <View>
+        {section.content.map((item: any, idx: number) => (
+          <View key={idx} style={styles.listItem}>
+            <View style={styles.listBullet} />
+            <Text style={styles.listText}>{item}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  }
+  // Object content: flatten to list of strings for uniform rendering
+  if (section.content && typeof section.content === 'object') {
+    const items: string[] = [];
+    if (section.content.items) {
+      section.content.items.forEach((item: any) => {
+        let str = '';
+        if (item.method_name) str += `${item.method_name}\n`;
+        if (item.pros) str += `Pros: ${item.pros}\n`;
+        if (item.cons) str += `Cons: ${item.cons}`;
+        items.push(str.trim());
+      });
+    } else if (section.content.phases) {
+      section.content.phases.forEach((phase: any) => {
+        items.push(`${phase.phase_title}\n${phase.items.map((i: string) => `• ${i}`).join('\n')}`);
+      });
+    } else if (section.content.scenarios) {
+      section.content.scenarios.forEach((scenario: any, idx: number) => {
+        items.push(`Scenario ${idx + 1}:\nWhen they say: "${scenario.trigger}"\nYou say: "${scenario.response}"\nStrategy: ${scenario.explanation}`);
+      });
     }
-  } else {
-    contentString = String(content);
+    return (
+      <View>
+        {items.map((item, idx) => (
+          <View key={idx} style={styles.listItem}>
+            <View style={styles.listBullet} />
+            <Text style={styles.listText}>{item}</Text>
+          </View>
+        ))}
+      </View>
+    );
   }
-  
-  console.log('Parsing PDF content:', { 
-    contentLength: contentString.length, 
-    preview: contentString.substring(0, 200) 
-  });
-  
-  // Try to parse as JSON first (in case it's structured content)
-  try {
-    const jsonContent = JSON.parse(contentString);
-    if (jsonContent.title_page && jsonContent.toolkit_sections) {
-      console.log('Detected structured JSON content');
-      return parseStructuredContent(jsonContent);
-    }
-  } catch (e) {
-    console.log('Content is not JSON, treating as plain text');
-  }
-  
-  // Split content into sections for plain text
-  const sections = contentString
-    .split(/\n\s*\n/) // Split by double newlines
-    .map(section => section.trim())
-    .filter(section => section.length > 0)
-    .map(section => ({ type: 'paragraph', content: section }));
-  
-  // If no sections found, create one from the whole content
-  if (sections.length === 0) {
-    return [{ type: 'paragraph', content: contentString || 'No content available' }];
-  }
-  
-  return sections;
+  // Fallback
+  return <Text style={styles.paragraph}>Content not available</Text>;
 };
 
-// Parse structured content from AI
-const parseStructuredContent = (jsonContent: any): any[] => {
-  const sections = [];
-  
-  // Add title page
-  if (jsonContent.title_page) {
+// Flexible parser: handles both structured_content and flat keys, never drops data
+const parseContent = (jsonContent: any, brandName?: string): any[] => {
+  let sections: any[] = [];
+  // Always use structured_content if present
+  const data = (jsonContent && typeof jsonContent === 'object' && jsonContent.structured_content)
+    ? jsonContent.structured_content
+    : jsonContent;
+
+  // --- Structured Content Parsing ---
+  if (data && typeof data === 'object' && data.title_page) {
     sections.push({
       type: 'title',
-      title: jsonContent.title_page.title,
-      subtitle: jsonContent.title_page.subtitle
+      title: data.title_page.title || (brandName ? `${brandName} Lead Magnet Guide` : 'Your Personalized Guide'),
+      subtitle: data.title_page.subtitle || 'A step-by-step blueprint to help you achieve your goals',
     });
   }
-  
-  // Add introduction
-  if (jsonContent.introduction_page) {
+  if (data && typeof data === 'object' && data.introduction_page) {
     sections.push({
       type: 'section',
-      title: jsonContent.introduction_page.title,
-      content: jsonContent.introduction_page.content
+      title: data.introduction_page.title || 'Introduction',
+      content: data.introduction_page.content || '',
     });
   }
-  
-  // Add toolkit sections
-  if (jsonContent.toolkit_sections && Array.isArray(jsonContent.toolkit_sections)) {
-    jsonContent.toolkit_sections.forEach((section: any) => {
+  if (data && typeof data === 'object' && data.toolkit_sections && Array.isArray(data.toolkit_sections)) {
+    data.toolkit_sections.forEach((section: any) => {
       sections.push({
-        type: 'section',
+        type: section.type || 'section',
         title: section.title,
-        content: formatStructuredSection(section)
+        content: section.content,
       });
     });
   }
-  
-  // Add CTA
-  if (jsonContent.cta_page) {
+  if (data && typeof data === 'object' && data.cta_page) {
     sections.push({
       type: 'cta',
-      title: jsonContent.cta_page.title,
-      content: jsonContent.cta_page.content
+      title: data.cta_page.title || 'Take the Next Step',
+      content: data.cta_page.content,
     });
   }
-  
+
+  // --- Fallbacks if no structured_content ---
+  if (sections.length === 0) {
+    // Title Page (always add, even for string input)
+    let title = brandName ? `${brandName} Lead Magnet Guide` : 'Your Personalized Guide';
+    let subtitle = 'A step-by-step blueprint to help you achieve your goals';
+    if (data && typeof data === 'object' && data.title) {
+      title = data.title;
+      if (data.subtitle) subtitle = data.subtitle;
+    }
+    sections.push({
+      type: 'title',
+      title,
+      subtitle,
+    });
+
+    // Main Content Sections
+    if (data && typeof data === 'object' && Array.isArray(data.sections)) {
+      data.sections.forEach((section: any) => {
+        sections.push({
+          type: 'section',
+          title: section.title,
+          content: section.content,
+        });
+      });
+    } else if (data && typeof data === 'object' && data.introduction) {
+      sections.push({
+        type: 'section',
+        title: data.title || 'Main Content',
+        content: data.introduction,
+      });
+    } else if (typeof data === 'string') {
+      // Fallback: treat string as a single section
+      sections.push({
+        type: 'section',
+        title: 'Main Content',
+        content: data,
+      });
+    }
+
+    // CTA Page (always add, even for string input)
+    let ctaContent = data && typeof data === 'object' && data.cta_page && data.cta_page.content
+      ? data.cta_page.content
+      : `Ready to put these strategies into action? Schedule a free strategy session with our team or reach out to ${brandName || 'our experts'} for personalized support. Your success starts now!`;
+    sections.push({
+      type: 'cta',
+      content: ctaContent,
+    });
+  }
+
   return sections;
 };
 
-// Format structured section content
-const formatStructuredSection = (section: any): string => {
-  if (!section.content) return 'Content not available';
-  
-  switch (section.type) {
-    case 'checklist':
-      if (section.content.phases) {
-        return section.content.phases.map((phase: any) => {
-          const items = phase.items.map((item: string) => `• ${item}`).join('\n');
-          return `${phase.phase_title}\n${items}`;
-        }).join('\n\n');
-      }
-      break;
-      
-    case 'scripts':
-      if (section.content.scenarios) {
-        return section.content.scenarios.map((scenario: any, index: number) => {
-          return `Scenario ${index + 1}:\nWhen they say: "${scenario.trigger}"\nYou say: "${scenario.response}"\nStrategy: ${scenario.explanation}`;
-        }).join('\n\n');
-      }
-      break;
-      
-    case 'pros_and_cons_list':
-      if (section.content.items) {
-        return section.content.items.map((item: any, index: number) => {
-          return `${index + 1}. ${item.method_name}\n\nPros: ${item.pros}\n\nCons: ${item.cons}`;
-        }).join('\n\n');
-      }
-      break;
-      
-    case 'mistakes_to_avoid':
-      if (section.content.mistakes) {
-        return section.content.mistakes.map((mistake: any, index: number) => {
-          return `${index + 1}. The Mistake: ${mistake.mistake}\nThe Solution: ${mistake.solution}`;
-        }).join('\n\n');
-      }
-      break;
-  }
-  
-  return JSON.stringify(section.content);
-};
-
-// Improved content formatting
-const formatContent = (text: string) => {
-  const trimmedText = text.trim();
-  
-  // Check if it's a quote
-  if (trimmedText.startsWith('"') && trimmedText.endsWith('"')) {
-    return { type: 'quote', content: trimmedText.slice(1, -1) };
-  }
-  
-  // Check if it's a list item
-  if (trimmedText.startsWith('•') || trimmedText.startsWith('-') || trimmedText.startsWith('*')) {
-    return { type: 'list', content: trimmedText.slice(1).trim() };
-  }
-  
-  // Check if it's a heading
-  if (trimmedText.length < 100 && trimmedText.endsWith(':')) {
-    return { type: 'heading', content: trimmedText };
-  }
-  
-  // Check if it's a call to action
-  if (trimmedText.toLowerCase().includes('call') || trimmedText.toLowerCase().includes('action') || trimmedText.toLowerCase().includes('next step')) {
-    return { type: 'cta', content: trimmedText };
-  }
-  
-  return { type: 'paragraph', content: trimmedText };
-};
-
-const PDFDocument: React.FC<{ content: string; brandName: string }> = ({ content, brandName }) => {
-  const sections = parseContent(content);
-  const currentDate = new Date().toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
+// Main PDFDocument component
+const PDFDocument: React.FC<{ content: any; brandName: string }> = ({ content, brandName }) => {
+  const sections: any[] = parseContent(content, brandName);
+  const currentDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 
-  console.log('PDF Document sections:', sections.length);
+  // Debug: See what is being rendered
+  console.log('PDF SECTIONS:', sections);
 
-  return (
-    <Document>
-      {/* Title Page */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
+  if (sections.length === 0) {
+    // Professional error page if no valid content
+    return (
+      <Document>
+        <Page size="A4" style={styles.page}>
           <View style={styles.headerTop}>
             <View style={styles.logo}>
               <Text style={styles.logoText}>{brandName.charAt(0).toUpperCase()}</Text>
             </View>
             <View style={styles.headerInfo}>
-              <Text style={styles.documentTitle}>
-                {sections.find(s => s.type === 'title')?.title || 'Professional Guide'}
-              </Text>
-              <Text style={styles.documentSubtitle}>
-                {sections.find(s => s.type === 'title')?.subtitle || 'A comprehensive guide to help you succeed'}
-              </Text>
-              <Text style={styles.documentMeta}>
-                Created by {brandName} • {currentDate}
-              </Text>
+              <Text style={styles.documentTitle}>PDF Generation Error</Text>
+              <Text style={styles.documentSubtitle}>Content Missing or Malformed</Text>
+              <Text style={styles.documentMeta}>Created by {brandName} • {currentDate}</Text>
             </View>
           </View>
-        </View>
-        
-        <View style={styles.content}>
-          <View style={styles.highlightBox}>
-            <Text style={styles.highlightTitle}>What You'll Learn</Text>
-            <Text style={styles.highlightText}>
-              This comprehensive guide will walk you through proven strategies and actionable steps to achieve your goals. 
-              Each section is designed to provide you with practical insights you can implement immediately.
+          <View style={styles.content}>
+            <Text style={styles.paragraph}>
+              Sorry, this PDF could not be generated because the required content was missing or malformed. Please try again or contact support.
             </Text>
           </View>
-        </View>
-        
-        <Text style={styles.pageNumber}>1</Text>
-      </Page>
+        </Page>
+      </Document>
+    );
+  }
 
-      {/* Content Pages */}
-      {sections.filter(s => s.type === 'section' || s.type === 'paragraph').map((section: any, index: number) => {
-        return (
-          <Page key={index} size="A4" style={styles.page}>
-            <View style={styles.content}>
-              {section.title && (
-                <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>{section.title}</Text>
-                </View>
-              )}
-              
-              {section.content && (
-                <Text style={styles.paragraph}>{section.content}</Text>
-              )}
+  return (
+    <Document>
+      {sections.map((section: any, idx: number) => (
+        <Page key={idx} size="A4" style={styles.page}>
+          {/* Header/Branding on every page */}
+          <View style={styles.headerTop}>
+            <View style={styles.logo}>
+              <Text style={styles.logoText}>{brandName.charAt(0).toUpperCase()}</Text>
             </View>
-            
-            <View style={styles.footer}>
-              <Text style={styles.footerLeft}>© {new Date().getFullYear()} {brandName}</Text>
-              <Text style={styles.footerRight}>Page {index + 2}</Text>
-            </View>
-          </Page>
-        );
-      })}
-
-      {/* CTA Page */}
-      {sections.find(s => s.type === 'cta') && (
-        <Page size="A4" style={styles.page}>
-          <View style={styles.content}>
-            <View style={styles.ctaBox}>
-              <Text style={styles.ctaTitle}>
-                {sections.find(s => s.type === 'cta')?.title || 'Ready to Take Action?'}
-              </Text>
-              <Text style={styles.ctaText}>
-                {sections.find(s => s.type === 'cta')?.content || 'You now have all the tools and knowledge you need to succeed.'}
-              </Text>
-            </View>
-            
-            <View style={styles.highlightBox}>
-              <Text style={styles.highlightTitle}>Key Takeaways</Text>
-              <Text style={styles.highlightText}>
-                • Review this guide regularly to reinforce key concepts{'\n'}
-                • Start with small, manageable steps{'\n'}
-                • Track your progress and celebrate wins{'\n'}
-                • Don't hesitate to reach out for support
-              </Text>
+            <View style={styles.headerInfo}>
+              <Text style={styles.documentTitle}>{section.title}</Text>
+              {section.subtitle && <Text style={styles.documentSubtitle}>{section.subtitle}</Text>}
+              <Text style={styles.documentMeta}>Created by {brandName} • {currentDate}</Text>
             </View>
           </View>
-          
-          <View style={styles.footer}>
+          {/* Section Content */}
+          <View style={styles.content}>
+            {renderSectionContent(section)}
+          </View>
+          {/* Footer with page number and brand */}
+          <View style={styles.footer} fixed>
             <Text style={styles.footerLeft}>© {new Date().getFullYear()} {brandName}</Text>
-            <Text style={styles.footerRight}>Thank you for reading!</Text>
+            <Text style={styles.footerRight}>Page {idx + 1}</Text>
           </View>
         </Page>
-      )}
+      ))}
     </Document>
   );
 };
@@ -567,18 +507,18 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
   // Debug content parsing
   React.useEffect(() => {
     if (content) {
-      const sections = parseContent(content);
+      const sections: any[] = parseContent(content, brandName);
       setDebugInfo({
         sectionsCount: sections.length,
-        sectionTypes: sections.map(s => s.type),
-        hasTitle: sections.some(s => s.type === 'title'),
-        hasSections: sections.some(s => s.type === 'section'),
-        hasCTA: sections.some(s => s.type === 'cta'),
+        sectionTypes: sections.map((s: any) => s.type),
+        hasTitle: sections.some((s: any) => s.type === 'title'),
+        hasSections: sections.some((s: any) => s.type === 'section'),
+        hasCTA: sections.some((s: any) => s.type === 'cta'),
         contentPreview: typeof content === 'string' ? content.substring(0, 100) : 'Object content'
       });
       console.log('PDF Content Debug:', debugInfo);
     }
-  }, [content]);
+  }, [content, brandName]);
 
   console.log('PDFGenerator render:', { content: typeof content, brandName, contentPreview: content?.substring(0, 100) });
 
@@ -688,14 +628,14 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ content, brandName }) => {
       <div className="bg-gray-50 rounded-lg p-4">
         <h4 className="font-semibold text-gray-900 mb-3">Document Preview</h4>
         <div className="space-y-3 max-h-40 overflow-y-auto">
-          {parseContent(content).slice(0, 3).map((section: any, index: number) => (
+          {parseContent(content, brandName).slice(0, 3).map((section: any, index: number) => (
             <div key={index} className="p-3 bg-white rounded border border-gray-200">
               <p className="text-sm text-gray-700 line-clamp-2">{section.content}</p>
             </div>
           ))}
-          {parseContent(content).length > 3 && (
+          {parseContent(content, brandName).length > 3 && (
             <div className="text-center text-sm text-gray-500">
-              +{parseContent(content).length - 3} more sections
+              +{parseContent(content, brandName).length - 3} more sections
             </div>
           )}
         </div>
