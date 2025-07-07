@@ -63,11 +63,48 @@ export interface PDFContent {
     content: string;
   }[];
   cta: string;
-  structured_content?: Record<string, unknown>;
+  structured_content: {
+    title_page: {
+      layout?: 'centered' | 'filled';
+      title: string;
+      subtitle: string;
+    };
+    introduction_page: {
+      layout?: 'centered' | 'filled';
+      title: string;
+      content: string;
+    };
+    toolkit_sections: {
+      layout?: 'centered' | 'filled';
+      type?: 'pros_and_cons_list' | 'checklist' | 'scripts';
+      title: string;
+      content: string | {
+        items?: {
+          method_name: string;
+          pros: string;
+          cons: string;
+        }[];
+        phases?: {
+          phase_title: string;
+          items: string[];
+        }[];
+        scenarios?: {
+          trigger: string;
+          response: string;
+          explanation: string;
+        }[];
+      };
+    }[];
+    cta_page: {
+      layout?: 'centered' | 'filled';
+      title: string;
+      content: string;
+    };
+  };
 }
 
 export interface CampaignOutput {
-  pdf_content: string;
+  pdf_content: string | PDFContent;
   landing_page: LandingPage;
   social_posts: SocialPosts;
 }
@@ -90,8 +127,8 @@ export interface Campaign {
   landing_page_slug: string;
   lead_count: number;
   lead_magnet_title: string | null;
-  lead_magnet_content: string | null;
-  landing_page_copy: Record<string, unknown> | null;
+  lead_magnet_content: string | PDFContent | null;
+  landing_page_copy: LandingPageCopy | null;
   social_posts: string[] | null;
   created_at: string;
 }

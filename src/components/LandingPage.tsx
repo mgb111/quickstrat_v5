@@ -186,8 +186,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
               <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
                 <h3 className="text-xl font-bold text-gray-900 mb-4">Your Free Guide</h3>
                 <PDFGenerator 
-                  content={campaign.lead_magnet_content} 
-                  brandName={campaign.name}
+                  data={
+                    typeof campaign.lead_magnet_content === 'string'
+                      ? JSON.parse(campaign.lead_magnet_content)
+                      : campaign.lead_magnet_content
+                  }
                 />
               </div>
             )}

@@ -12,6 +12,7 @@ interface ResultsDisplayProps {
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onCampaignCreated }) => {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -22,9 +23,92 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
     setEmailSubmitted(true);
   };
 
+  // Process PDF content
+  const processPdfContent = () => {
+    console.log('Processing PDF content:', results);
+    
+    if (!results || !results.pdf_content) {
+      console.error('No PDF content available:', results);
+      setPdfError('PDF content is missing');
+      return null;
+    }
+
+    try {
+      // If pdf_content is already a PDFContent object with structured_content, use it directly
+      if (typeof results.pdf_content === 'object' && results.pdf_content.structured_content) {
+        return results.pdf_content;
+      }
+
+      // If pdf_content is a PDFContent object without structured_content, create it
+      if (typeof results.pdf_content === 'object') {
+        return {
+          ...results.pdf_content,
+          structured_content: {
+            title_page: {
+              title: results.pdf_content.title || `${brandName} Lead Magnet Guide`,
+              subtitle: 'A step-by-step blueprint to help you achieve your goals'
+            },
+            introduction_page: {
+              content: results.pdf_content.introduction
+            },
+            toolkit_sections: results.pdf_content.sections.map(section => ({
+              title: section.title,
+              content: section.content
+            })),
+            cta_page: {
+              content: results.pdf_content.cta
+            }
+          }
+        };
+      }
+
+      // Otherwise, create a new PDFContent object from the string content
+      const content = typeof results.pdf_content === 'string' 
+        ? results.pdf_content 
+        : JSON.stringify(results.pdf_content);
+
+      return {
+        title: `${brandName} Lead Magnet Guide`,
+        introduction: content,
+        sections: [
+          {
+            title: 'Implementation Guide',
+            content: content
+          }
+        ],
+        cta: `Ready to put these strategies into action? Schedule a free strategy session with our team or reach out to ${brandName} for personalized support. Your success starts now!`,
+        structured_content: {
+          title_page: {
+            title: `${brandName} Lead Magnet Guide`,
+            subtitle: 'A step-by-step blueprint to help you achieve your goals'
+          },
+          introduction_page: {
+            content: content
+          },
+          toolkit_sections: [
+            {
+              title: 'Implementation Guide',
+              content: content
+            }
+          ],
+          cta_page: {
+            content: `Ready to put these strategies into action? Schedule a free strategy session with our team or reach out to ${brandName} for personalized support. Your success starts now!`
+          }
+        }
+      };
+    } catch (error) {
+      console.error('Error processing PDF content:', error);
+      setPdfError('Error processing PDF content');
+      return null;
+    }
+  };
+
+  // Get the processed content
+  const pdfContent = emailSubmitted ? processPdfContent() : null;
+
   console.log('ResultsDisplay render:', { 
     hasPdfContent: !!results.pdf_content,
-    pdfContentLength: results.pdf_content?.length,
+    pdfContentType: typeof results.pdf_content,
     brandName,
     emailSubmitted
   });
@@ -50,69 +134,49 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
         )}
       </div>
 
-      {/* Email Capture Section - Required for PDF access */}
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-          <div className="text-center mb-4">
-            <Mail className="h-8 w-8 text-gray-600 mx-auto mb-2" />
-            <h3 className="text-lg font-semibold text-gray-900">Enter Your Email to Get Your Lead Magnet</h3>
-            <p className="text-gray-600 text-sm">
-              Please enter your email to access your personalized PDF guide
+      {/* Email Capture Section */}
+      {!emailSubmitted ? (
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+            <div className="text-center mb-4">
+              <Mail className="h-8 w-8 text-gray-600 mx-auto mb-2" />
+              <h3 className="text-lg font-semibold text-gray-900">Enter Your Email to Get Your Lead Magnet</h3>
+              <p className="text-gray-600 text-sm">
+                Please enter your email to access your personalized PDF guide
+              </p>
+            </div>
+            <EmailCapture onEmailSubmitted={handleEmailSubmitted} />
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-5xl mx-auto">
+          <div className={`border rounded-lg p-4 mb-6 ${pdfError ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`}>
+            <p className={`text-center ${pdfError ? 'text-red-700' : 'text-green-700'}`}>
+              {pdfError ? `⚠️ ${pdfError}` : '✅ Email submitted! Your guide is ready below.'}
             </p>
           </div>
           
-          {!emailSubmitted ? (
-            <EmailCapture onEmailSubmitted={handleEmailSubmitted} />
-          ) : (
-            <div className="text-center">
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <p className="text-green-700 text-sm">
-                  ✅ Email submitted! Your download is ready below.
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* PDF Download - Only show after email is submitted */}
-      {emailSubmitted && (
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center">
-              <Download className="h-5 w-5 text-blue-600 mr-2" />
-              <h3 className="text-lg font-semibold text-blue-900">Download Your Lead Magnet</h3>
-            </div>
-            <p className="text-blue-700 text-sm mt-1">
-              Your professional PDF guide is ready for download
-            </p>
+          {/* Debug Info */}
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 text-sm">
+            <p className="font-semibold mb-2">Debug Information:</p>
+            <pre className="whitespace-pre-wrap overflow-auto max-h-40">
+              {JSON.stringify({
+                hasResults: !!results,
+                hasPdfContent: !!results?.pdf_content,
+                pdfContentType: results?.pdf_content ? typeof results.pdf_content : 'undefined',
+                pdfContentPreview: results?.pdf_content 
+                  ? (typeof results.pdf_content === 'string' 
+                      ? results.pdf_content.split('').slice(0, 100).join('') 
+                      : JSON.stringify(results.pdf_content).split('').slice(0, 100).join('')) + '...'
+                  : 'none',
+                brandName,
+                emailSubmitted,
+                error: pdfError
+              }, null, 2)}
+            </pre>
           </div>
-          <PDFGenerator 
-            content={(() => {
-              const pdfContent: any = results.pdf_content;
-              // If results.pdf_content is already structured, use as is
-              if (pdfContent && typeof pdfContent === 'object' && (pdfContent as any).structured_content) {
-                return pdfContent;
-              }
-              // If results.pdf_content is a structured object (has title_page, etc.)
-              if (pdfContent && typeof pdfContent === 'object' && ((pdfContent as any).title_page || (pdfContent as any).sections)) {
-                return { structured_content: pdfContent };
-              }
-              // If results.pdf_content is a string, wrap as structured_content
-              if (typeof pdfContent === 'string') {
-                return {
-                  structured_content: {
-                    title_page: { title: brandName + ' Lead Magnet Guide', subtitle: 'A step-by-step blueprint to help you achieve your goals' },
-                    introduction_page: { title: 'Main Content', content: pdfContent },
-                    cta_page: { title: 'Take the Next Step', content: `Ready to put these strategies into action? Schedule a free strategy session with our team or reach out to ${brandName || 'our experts'} for personalized support. Your success starts now!` }
-                  }
-                };
-              }
-              // Fallback: pass as is
-              return pdfContent;
-            })()}
-            brandName={brandName} 
-          />
+
+          {pdfContent && <PDFGenerator data={pdfContent} />}
         </div>
       )}
 
@@ -132,11 +196,19 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
               <h4 className="font-semibold text-gray-900 mb-2">PDF Content</h4>
               <div className="bg-gray-50 rounded-lg p-4 max-h-40 overflow-y-auto">
                 <p className="text-gray-700 text-sm whitespace-pre-wrap">
-                  {typeof results.pdf_content === 'string'
-                    ? `${results.pdf_content.substring(0, 300)}...`
-                    : results.pdf_content && typeof results.pdf_content === 'object'
-                      ? JSON.stringify(results.pdf_content).substring(0, 300) + '...'
-                      : 'PDF content is being generated...'}
+                  {(() => {
+                    if (!results.pdf_content) {
+                      return 'PDF content is being generated...';
+                    }
+                    
+                    const previewContent = typeof results.pdf_content === 'string'
+                      ? results.pdf_content
+                      : JSON.stringify(results.pdf_content, null, 2);
+                      
+                    return previewContent.length > 300
+                      ? previewContent.split('').slice(0, 300).join('') + '...'
+                      : previewContent;
+                  })()}
                 </p>
               </div>
             </div>

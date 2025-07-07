@@ -5,7 +5,9 @@ import {
   ContentOutline,
   LandingPage,
   SocialPosts,
-  CampaignOutput
+  CampaignOutput,
+  PDFContent,
+  LandingPageCopy
 } from '../types/index';
 
 // Get API key from environment variables
@@ -863,8 +865,29 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
       throw new Error('Incomplete content generation. Some components failed to generate.');
     }
 
+    // Create structured PDF content
+    const structured_pdf_content: PDFContent = {
+      ...pdf_content,
+      structured_content: {
+        title_page: {
+          title: pdf_content.title,
+          subtitle: `A comprehensive guide for ${input.target_audience}`
+        },
+        introduction_page: {
+          content: pdf_content.introduction
+        },
+        toolkit_sections: pdf_content.sections.map((section: { title: string; content: string }) => ({
+          title: section.title,
+          content: section.content
+        })),
+        cta_page: {
+          content: pdf_content.cta
+        }
+      }
+    };
+
     return {
-      pdf_content,
+      pdf_content: structured_pdf_content,
       landing_page,
       social_posts
     };
