@@ -39,7 +39,7 @@ function getOpenAIClient(): OpenAI {
         // Add default headers for better debugging
         defaultHeaders: {
           'x-request-source': 'browser',
-          'x-app-name': 'majorbeam'
+          'x-app-name': 'Majorbeam'
         }
       });
       
