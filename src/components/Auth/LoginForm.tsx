@@ -54,10 +54,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
     setError(null);
 
     try {
+      const redirectUrl = typeof window !== 'undefined' 
+        ? `${window.location.origin}/dashboard`
+        : 'https://majorbeam.com/dashboard';
+
       const { error: googleError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `https://majorbeam.com/dashboard`
+          redirectTo: redirectUrl
         }
       });
 

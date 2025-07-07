@@ -25,21 +25,34 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  // Handle OAuth hash: if access_token is present, reload after Supabase processes it
-  if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token')) {
-    setTimeout(() => {
-      window.location.href = '/dashboard';
-    }, 500); // Give Supabase a moment to process the hash
-    return null; // Prevent rendering until reload
-  }
-
-  console.log('AuthProvider rendering...');
-  
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Handle OAuth hash parameters
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const handleOAuthCallback = async () => {
+        try {
+          // Wait for Supabase to process the hash
+          const { data: { session }, error } = await supabase.auth.getSession();
+          if (error) throw error;
+          
+          if (session) {
+            // Session is available, safe to redirect
+            window.location.href = '/dashboard';
+          }
+        } catch (error) {
+          console.error('Error processing OAuth callback:', error);
+          // Redirect to auth page on error
+          window.location.href = '/';
+        }
+      };
+      
+      handleOAuthCallback();
+      return; // Prevent further rendering until redirect
+    }
+
     console.log('AuthProvider useEffect running...');
     
     // Get initial session

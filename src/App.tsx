@@ -39,10 +39,12 @@ function App() {
   // Check for landing page route on mount
   useEffect(() => {
     const path = window.location.pathname;
-    console.log('Current path:', path);
+    const hash = window.location.hash;
+    console.log('Current path:', path, 'Hash:', hash);
+    
     if (path.startsWith('/landing/')) {
       setMode('landing');
-    } else if (path.startsWith('/dashboard')) {
+    } else if (path === '/dashboard' || (path === '/' && hash.includes('access_token'))) {
       setMode('dashboard');
     }
   }, []);
@@ -54,7 +56,9 @@ function App() {
       if (user) {
         // User is authenticated, show dashboard
         console.log('User authenticated, switching to dashboard');
-        if (mode === 'auth') {
+        const path = window.location.pathname;
+        const hash = window.location.hash;
+        if (mode === 'auth' || (path === '/' && hash.includes('access_token'))) {
           setMode('dashboard');
         }
       } else {
