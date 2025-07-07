@@ -57,7 +57,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
       const { error: googleError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${import.meta.env.VITE_REDIRECT_URI || window.location.origin}/dashboard`
+          redirectTo: `https://majorbeam.com/dashboard`
         }
       });
 
@@ -79,7 +79,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
 
     try {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${import.meta.env.VITE_REDIRECT_URI || window.location.origin}/reset-password`
+        redirectTo: `https://majorbeam.com/reset-password`
       });
 
       if (resetError) {
@@ -104,7 +104,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
         type: 'signup',
         email: email,
         options: {
-          emailRedirectTo: `${import.meta.env.VITE_REDIRECT_URI || window.location.origin}/dashboard`
+          emailRedirectTo: `https://majorbeam.com/dashboard`
         }
       });
 

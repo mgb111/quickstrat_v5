@@ -34,7 +34,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
           data: {
             name: name
           },
-          emailRedirectTo: `${import.meta.env.VITE_REDIRECT_URI || window.location.origin}/dashboard`
+          emailRedirectTo: `https://majorbeam.com/dashboard`
         }
       });
 
@@ -104,7 +104,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
       const { error: googleError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${import.meta.env.VITE_REDIRECT_URI || window.location.origin}/dashboard`
+          redirectTo: `https://majorbeam.com/dashboard`
         }
       });
 
