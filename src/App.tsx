@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Zap, ArrowLeft, BarChart3, Plus, User } from 'lucide-react';
 import CampaignForm from './components/CampaignForm';
 import ConceptSelection from './components/ConceptSelection';
@@ -18,9 +19,9 @@ import LoadingSpinner from './components/LoadingSpinner';
 type AppMode = 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile';
 
 function App() {
-  console.log('App component rendering...');
-  
   const { user, loading } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [mode, setMode] = useState<AppMode>('auth');
   const [wizardState, setWizardState] = useState<WizardState>({
     stage: 'input',
@@ -33,56 +34,37 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('Auth state:', { user, loading, mode });
-  console.log('🎯 Current wizard stage:', wizardState.stage);
-
-  // Check for landing page route on mount
+  // Handle initial routing
   useEffect(() => {
-    const path = window.location.pathname;
-    const hash = window.location.hash;
-    console.log('Current path:', path, 'Hash:', hash);
-    
-    // If we have an access token in the hash, we're in an OAuth callback
-    if (hash && hash.includes('access_token')) {
-      console.log('OAuth callback detected');
-      // Let AuthContext handle the token processing
-      return;
-    }
+    const path = location.pathname;
     
     if (path.startsWith('/landing/')) {
       setMode('landing');
-    } else if (path === '/dashboard') {
+    } else if (path === '/dashboard' && user) {
       setMode('dashboard');
+    } else if (!user && !loading && path !== '/') {
+      navigate('/', { replace: true });
     }
-  }, []);
+  }, [location.pathname, user, loading, navigate]);
 
   // Handle authentication state changes
   useEffect(() => {
-    console.log('Auth effect running:', { loading, user, mode });
     if (!loading) {
       if (user) {
-        // User is authenticated, show dashboard
-        console.log('User authenticated, switching to dashboard');
-        const hash = window.location.hash;
-        
-        // If we're in the OAuth callback or already on dashboard, update mode
-        if (hash.includes('access_token') || mode === 'auth') {
-          console.log('Setting mode to dashboard after auth');
-          setMode('dashboard');
+        if (location.pathname === '/' || location.pathname === '/auth') {
+          navigate('/dashboard', { replace: true });
         }
       } else {
-        // User is not authenticated, show auth
-        console.log('User not authenticated, switching to auth');
-        if (mode !== 'landing') {
-          setMode('auth');
+        if (!location.pathname.startsWith('/landing/') && location.pathname !== '/') {
+          navigate('/', { replace: true });
         }
       }
     }
-  }, [user, loading, mode]);
+  }, [user, loading, location.pathname, navigate]);
 
   // Extract campaign slug from URL
   const getCampaignSlug = () => {
-    const path = window.location.pathname;
+    const path = location.pathname;
     if (path.startsWith('/landing/')) {
       return path.replace('/landing/', '');
     }
@@ -246,226 +228,34 @@ function App() {
 
   // Show loading while checking authentication
   if (loading) {
-    console.log('Showing loading spinner...');
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="xl" text="Loading..." />
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
       </div>
     );
   }
 
-  // Show error if there's an issue
-  if (error) {
-    console.log('Showing error:', error);
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-red-50">
-        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-red-800 mb-4">Application Error</h2>
-          <p className="text-red-600 mb-4">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-          >
-            Reload Page
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  console.log('Rendering main app with mode:', mode);
-
-  // Render landing page (no auth required)
-  if (mode === 'landing') {
-    return <LandingPage campaignSlug={getCampaignSlug()} />;
-  }
-
-  // Render authentication (no user)
-  if (!user) {
-    return <Auth onAuthSuccess={handleAuthSuccess} />;
-  }
-
-  // Render profile page
-  if (mode === 'profile') {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center">
-                <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
-                  <Zap className="h-6 w-6 text-white" />
-                </div>
-                <span className="ml-3 text-xl font-bold text-gray-900">Majorbeam</span>
-              </div>
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => setMode('dashboard')}
-                  className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  ← Back to Dashboard
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
-        <div className="max-w-4xl mx-auto p-6">
-          <UserProfile />
-        </div>
-      </div>
-    );
-  }
-
-  // Render dashboard
-  if (mode === 'dashboard') {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center">
-                <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
-                  <Zap className="h-6 w-6 text-white" />
-                </div>
-                <span className="ml-3 text-xl font-bold text-gray-900">Majorbeam</span>
-              </div>
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => setMode('wizard')}
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Campaign
-                </button>
-                <button
-                  onClick={() => setMode('profile')}
-                  className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  Profile
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
-        <Dashboard onNewCampaign={handleNewCampaign} />
-      </div>
-    );
-  }
-
-  // Render wizard
+  // Render the appropriate component based on the current route
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-12">
-          <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 rounded-2xl">
-              <Zap className="h-8 w-8 text-white" />
-            </div>
+    <Routes>
+      <Route path="/" element={
+        user ? <Navigate to="/dashboard" replace /> : <Auth onAuthSuccess={handleAuthSuccess} />
+      } />
+      <Route path="/dashboard" element={
+        user ? (
+          <div className="container mx-auto px-4 py-8">
+            <Dashboard onNewCampaign={handleNewCampaign} />
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
-            LeadGen <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Machine</span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Transform customer problems into focused, high-value lead magnets with AI assistance
-          </p>
-          
-          {/* Navigation */}
-          <div className="mt-8 flex justify-center space-x-4">
-            <button
-              onClick={() => setMode('dashboard')}
-              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Dashboard
-            </button>
-            <button
-              onClick={() => setMode('profile')}
-              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              <User className="h-4 w-4 mr-2" />
-              Profile
-            </button>
-          </div>
-        </header>
-
-        {wizardState.stage !== 'input' && renderStageIndicator()}
-
-        {error && (
-          <div className="max-w-2xl mx-auto mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-800 text-center">{error}</p>
-          </div>
-        )}
-
-        {wizardState.stage === 'input' && (
-          <div>
-            {(() => { console.log('🎯 Rendering CampaignForm component'); return null; })()}
-            <CampaignForm onSubmit={handleInputSubmit} isLoading={isLoading} />
-          </div>
-        )}
-
-        {wizardState.stage === 'concept-selection' && wizardState.concepts && (
-          <div className="space-y-8">
-            <div className="text-center">
-              <button
-                onClick={handleStartOver}
-                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Start Over
-              </button>
-            </div>
-            <ConceptSelection 
-              concepts={wizardState.concepts}
-              onConceptSelected={handleConceptSelected}
-              isLoading={isLoading}
-            />
-          </div>
-        )}
-
-        {wizardState.stage === 'outline-review' && wizardState.outline && (
-          <div className="space-y-8">
-            <div className="text-center">
-              <button
-                onClick={handleStartOver}
-                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Start Over
-              </button>
-            </div>
-            <OutlineReview 
-              outline={wizardState.outline}
-              onOutlineApproved={handleOutlineApproved}
-              isLoading={isLoading}
-            />
-          </div>
-        )}
-
-        {wizardState.stage === 'complete' && wizardState.finalOutput && (
-          <div className="space-y-8">
-            <div className="text-center">
-              <button
-                onClick={handleStartOver}
-                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Generate Another Campaign
-              </button>
-            </div>
-            <ResultsDisplay 
-              results={wizardState.finalOutput} 
-              brandName={wizardState.input?.brand_name || 'Your Brand'}
-              onCampaignCreated={handleCampaignCreated}
-            />
-          </div>
-        )}
-
-        <footer className="mt-16 text-center text-gray-500">
-          <p>© 2025 Majorbeam. AI assists, experts direct, humans approve.</p>
-        </footer>
-      </div>
-    </div>
+        ) : (
+          <Navigate to="/" replace />
+        )
+      } />
+      <Route path="/landing/*" element={<LandingPage campaignSlug={getCampaignSlug()} />} />
+      <Route path="/profile" element={
+        user ? <UserProfile /> : <Navigate to="/" replace />
+      } />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 

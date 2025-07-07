@@ -30,94 +30,75 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Handle OAuth hash parameters
-    if (typeof window !== 'undefined' && window.location.hash) {
-      const handleOAuthCallback = async () => {
-        try {
-          const hashParams = new URLSearchParams(window.location.hash.substring(1));
-          const accessToken = hashParams.get('access_token');
-          const expiresIn = hashParams.get('expires_in');
-          const refreshToken = hashParams.get('refresh_token');
-          const tokenType = hashParams.get('token_type');
-          
-          if (!accessToken) {
-            console.error('No access token found in URL');
-            window.location.replace('/');
-            return;
-          }
+    // Handle initial session
+    const initializeAuth = async () => {
+      try {
+        // Check if we have a hash in the URL (OAuth callback)
+        if (window.location.hash) {
+          const params = new URLSearchParams(window.location.hash.substring(1));
+          const accessToken = params.get('access_token');
+          const refreshToken = params.get('refresh_token');
 
-          // Set the session manually first
-          const { data: { session: newSession }, error: setSessionError } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken || '',
-          });
+          if (accessToken) {
+            // Set the session directly with Supabase
+            const { data: { session: newSession }, error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken || '',
+            });
 
-          if (setSessionError) {
-            throw setSessionError;
-          }
-
-          if (newSession) {
-            // Get user details after setting session
-            const { data: { user: newUser }, error: userError } = await supabase.auth.getUser();
-            
-            if (userError) {
-              throw userError;
+            if (error) {
+              throw error;
             }
 
-            if (newUser) {
+            if (newSession) {
               setSession(newSession);
-              setUser(newUser);
-              setLoading(false);
-
-              // Clear the hash and redirect
-              window.history.replaceState({}, document.title, window.location.pathname);
-              window.location.replace('/dashboard');
+              setUser(newSession.user);
+              
+              // Clear the hash without triggering a reload
+              window.history.replaceState(null, '', window.location.pathname);
+              
+              // Redirect to dashboard
+              if (window.location.pathname !== '/dashboard') {
+                window.location.href = '/dashboard';
+              }
               return;
             }
           }
-
-          throw new Error('Failed to establish session');
-        } catch (error) {
-          console.error('Error processing OAuth callback:', error);
-          // Clear any partial auth state
-          await supabase.auth.signOut();
-          setUser(null);
-          setSession(null);
-          setLoading(false);
-          window.location.replace('/');
         }
-      };
-      
-      handleOAuthCallback();
-      return;
-    }
 
-    // Get initial session
-    const getInitialSession = async () => {
-      try {
+        // If no hash or session setting failed, try to get existing session
         const { data: { session } } = await supabase.auth.getSession();
-        setSession(session);
-        setUser(session?.user ?? null);
+        if (session) {
+          setSession(session);
+          setUser(session.user);
+        }
       } catch (error) {
-        console.error('Error getting initial session:', error);
+        console.error('Auth initialization error:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    getInitialSession();
+    initializeAuth();
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event);
+    // Set up auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
         setSession(session);
         setUser(session?.user ?? null);
-        setLoading(false);
+        if (window.location.pathname !== '/dashboard') {
+          window.location.href = '/dashboard';
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setSession(null);
+        setUser(null);
+        window.location.href = '/';
       }
-    );
+    });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {
@@ -125,7 +106,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await supabase.auth.signOut();
       setUser(null);
       setSession(null);
-      window.location.replace('/');
+      window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
     }
