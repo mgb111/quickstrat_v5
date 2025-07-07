@@ -1,45 +1,56 @@
-# Fix Supabase Redirect URLs for Local Development
+# Fix Supabase Redirect URLs for Local Development and Production
 
-## Problem
-Supabase is redirecting to the Netlify domain (`resilient-caramel-15133d.netlify.app`) instead of localhost.
+## Local Development
 
-## Solution: Update Supabase Redirect URLs
+- In `.env.local`:
+  ```
+  VITE_REDIRECT_URI=http://localhost:5175
+  ```
+- In Supabase dashboard:
+  - Site URL: `http://localhost:5175`
+  - Redirect URLs:  
+    ```
+    http://localhost:5175
+    http://localhost:5175/dashboard
+    http://localhost:5175/auth
+    ```
+- In Google Cloud Console:
+  - Authorized redirect URIs:
+    ```
+    http://localhost:5175/auth/callback
+    ```
 
-### Step 1: Go to Supabase Dashboard
-1. Open [https://supabase.com/dashboard](https://supabase.com/dashboard)
-2. Select your project
-3. Click **Authentication** → **Settings**
+## Production
 
-### Step 2: Update Site URL
-1. Find **"Site URL"** field
-2. Change it to: `http://localhost:5175`
-3. **Save changes**
+- In Vercel dashboard (Environment Variables):
+  ```
+  VITE_REDIRECT_URI=https://majorbeam.com
+  ```
+- In Supabase dashboard:
+  - Site URL: `https://majorbeam.com`
+  - Redirect URLs:  
+    ```
+    https://majorbeam.com
+    https://majorbeam.com/dashboard
+    https://majorbeam.com/auth
+    ```
+- In Google Cloud Console:
+  - Authorized redirect URIs:
+    ```
+    https://majorbeam.com/auth/callback
+    ```
 
-### Step 3: Update Redirect URLs
-1. Find **"Redirect URLs"** section
-2. Add these URLs (one per line):
-   ```
-   http://localhost:5175
-   http://localhost:5175/dashboard
-   http://localhost:5175/auth
-   http://localhost:3000
-   http://localhost:3000/dashboard
-   http://localhost:3000/auth
-   ```
-3. **Keep your existing Netlify URLs** for production
-4. **Save changes**
+## Code Usage
 
-### Step 4: Update Google OAuth (If using Google login)
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Select your project
-3. Go to **APIs & Services** → **Credentials**
-4. Edit your OAuth 2.0 Client ID
-5. Add to **Authorized redirect URIs**:
-   ```
-   http://localhost:5175/auth/callback
-   http://localhost:3000/auth/callback
-   ```
-6. **Save**
+```js
+const redirectBase = import.meta.env.VITE_REDIRECT_URI || window.location.origin;
+redirectTo: `${redirectBase}/dashboard`
+emailRedirectTo: `${redirectBase}/dashboard`
+```
+
+---
+
+**This setup ensures you never have to change code for local vs. production—just set the right environment variable!**
 
 ## What This Does
 - ✅ **Keeps you on localhost during development**
