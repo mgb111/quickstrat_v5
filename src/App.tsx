@@ -42,6 +42,8 @@ function App() {
     console.log('Current path:', path);
     if (path.startsWith('/landing/')) {
       setMode('landing');
+    } else if (path === '/dashboard') {
+      setMode('dashboard');
     }
   }, []);
 
