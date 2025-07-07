@@ -34,7 +34,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
           data: {
             name: name
           },
-          emailRedirectTo: `${window.location.origin}/dashboard`
+          emailRedirectTo: `${import.meta.env.VITE_REDIRECT_URI || window.location.origin}/dashboard`
         }
       });
 
@@ -104,7 +104,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
       const { error: googleError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/dashboard`
+          redirectTo: `${import.meta.env.VITE_REDIRECT_URI || window.location.origin}/dashboard`
         }
       });
 
