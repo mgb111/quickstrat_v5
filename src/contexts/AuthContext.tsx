@@ -34,18 +34,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (typeof window !== 'undefined' && window.location.hash) {
       const handleOAuthCallback = async () => {
         try {
-          // Wait for Supabase to process the hash
+          // First get the session from the hash
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const accessToken = hashParams.get('access_token');
+          
+          if (!accessToken) {
+            throw new Error('No access token found in URL');
+          }
+
+          // Set the session in Supabase
           const { data: { session }, error } = await supabase.auth.getSession();
           if (error) throw error;
           
           if (session) {
-            // Session is available, safe to redirect
-            window.location.href = '/dashboard';
+            // Ensure we have a user
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
+            if (userError) throw userError;
+            
+            if (user) {
+              // Update state before redirect
+              setSession(session);
+              setUser(user);
+              setLoading(false);
+              
+              // Clear the hash and redirect
+              window.location.replace('/dashboard');
+            }
           }
         } catch (error) {
           console.error('Error processing OAuth callback:', error);
           // Redirect to auth page on error
-          window.location.href = '/';
+          window.location.replace('/');
         }
       };
       

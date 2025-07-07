@@ -42,9 +42,16 @@ function App() {
     const hash = window.location.hash;
     console.log('Current path:', path, 'Hash:', hash);
     
+    // If we have an access token in the hash, we're in an OAuth callback
+    if (hash && hash.includes('access_token')) {
+      console.log('OAuth callback detected');
+      // Let AuthContext handle the token processing
+      return;
+    }
+    
     if (path.startsWith('/landing/')) {
       setMode('landing');
-    } else if (path === '/dashboard' || (path === '/' && hash.includes('access_token'))) {
+    } else if (path === '/dashboard') {
       setMode('dashboard');
     }
   }, []);
@@ -56,9 +63,11 @@ function App() {
       if (user) {
         // User is authenticated, show dashboard
         console.log('User authenticated, switching to dashboard');
-        const path = window.location.pathname;
         const hash = window.location.hash;
-        if (mode === 'auth' || (path === '/' && hash.includes('access_token'))) {
+        
+        // If we're in the OAuth callback or already on dashboard, update mode
+        if (hash.includes('access_token') || mode === 'auth') {
+          console.log('Setting mode to dashboard after auth');
           setMode('dashboard');
         }
       } else {
