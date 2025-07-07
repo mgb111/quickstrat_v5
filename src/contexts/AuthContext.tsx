@@ -34,58 +34,73 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (typeof window !== 'undefined' && window.location.hash) {
       const handleOAuthCallback = async () => {
         try {
-          // First get the session from the hash
           const hashParams = new URLSearchParams(window.location.hash.substring(1));
           const accessToken = hashParams.get('access_token');
+          const expiresIn = hashParams.get('expires_in');
+          const refreshToken = hashParams.get('refresh_token');
+          const tokenType = hashParams.get('token_type');
           
           if (!accessToken) {
-            throw new Error('No access token found in URL');
+            console.error('No access token found in URL');
+            window.location.replace('/');
+            return;
           }
 
-          // Set the session in Supabase
-          const { data: { session }, error } = await supabase.auth.getSession();
-          if (error) throw error;
-          
-          if (session) {
-            // Ensure we have a user
-            const { data: { user }, error: userError } = await supabase.auth.getUser();
-            if (userError) throw userError;
+          // Set the session manually first
+          const { data: { session: newSession }, error: setSessionError } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken || '',
+          });
+
+          if (setSessionError) {
+            throw setSessionError;
+          }
+
+          if (newSession) {
+            // Get user details after setting session
+            const { data: { user: newUser }, error: userError } = await supabase.auth.getUser();
             
-            if (user) {
-              // Update state before redirect
-              setSession(session);
-              setUser(user);
+            if (userError) {
+              throw userError;
+            }
+
+            if (newUser) {
+              setSession(newSession);
+              setUser(newUser);
               setLoading(false);
-              
+
               // Clear the hash and redirect
+              window.history.replaceState({}, document.title, window.location.pathname);
               window.location.replace('/dashboard');
+              return;
             }
           }
+
+          throw new Error('Failed to establish session');
         } catch (error) {
           console.error('Error processing OAuth callback:', error);
-          // Redirect to auth page on error
+          // Clear any partial auth state
+          await supabase.auth.signOut();
+          setUser(null);
+          setSession(null);
+          setLoading(false);
           window.location.replace('/');
         }
       };
       
       handleOAuthCallback();
-      return; // Prevent further rendering until redirect
+      return;
     }
 
-    console.log('AuthProvider useEffect running...');
-    
     // Get initial session
     const getInitialSession = async () => {
-      console.log('Getting initial session...');
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        console.log('Initial session:', session);
         setSession(session);
         setUser(session?.user ?? null);
-        setLoading(false);
       } catch (error) {
         console.error('Error getting initial session:', error);
-        // If Supabase is not configured, just set loading to false
+      } finally {
         setLoading(false);
       }
     };
@@ -93,21 +108,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     getInitialSession();
 
     // Listen for auth changes
-    try {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        async (event, session) => {
-          console.log('Auth state changed:', event, session?.user?.email);
-          setSession(session);
-          setUser(session?.user ?? null);
-          setLoading(false);
-        }
-      );
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event);
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+      }
+    );
 
-      return () => subscription.unsubscribe();
-    } catch (error) {
-      console.error('Error setting up auth listener:', error);
-      setLoading(false);
-    }
+    return () => subscription.unsubscribe();
   }, []);
 
   const signOut = async () => {
@@ -115,6 +125,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await supabase.auth.signOut();
       setUser(null);
       setSession(null);
+      window.location.replace('/');
     } catch (error) {
       console.error('Error signing out:', error);
     }
