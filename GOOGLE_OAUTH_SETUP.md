@@ -1,6 +1,6 @@
 # 🔐 Google OAuth Setup Guide
 
-This guide will help you set up Google OAuth authentication for your LeadGen Machine SaaS platform.
+This guide will help you set up Google OAuth authentication for your Majorbeam SaaS platform.
 
 ## 📋 Prerequisites
 
@@ -24,7 +24,7 @@ This guide will help you set up Google OAuth authentication for your LeadGen Mac
 1. Go to "APIs & Services" > "OAuth consent screen"
 2. Choose "External" user type
 3. Fill in the required information:
-   - **App name**: LeadGen Machine
+   - **App name**: Majorbeam
    - **User support email**: your-email@domain.com
    - **Developer contact information**: your-email@domain.com
 4. Add scopes:
@@ -40,15 +40,13 @@ This guide will help you set up Google OAuth authentication for your LeadGen Mac
 2. Click "Create Credentials" > "OAuth 2.0 Client IDs"
 3. Choose "Web application"
 4. Fill in the details:
-   - **Name**: LeadGen Machine Web Client
+   - **Name**: Majorbeam Web Client
    - **Authorized JavaScript origins**:
-     - `http://localhost:5173` (development)
-     - `http://localhost:3000` (development)
-     - `https://yourdomain.com` (production)
+     - `http://localhost:5175` (development)
+     - `https://majorbeam.com` (production)
    - **Authorized redirect URIs**:
-     - `http://localhost:5173/auth/callback` (development)
-     - `http://localhost:3000/auth/callback` (development)
-     - `https://yourdomain.com/auth/callback` (production)
+     - `http://localhost:5175/auth/callback` (development)
+     - `https://majorbeam.com/auth/callback` (production)
 5. Click "Create"
 6. **Copy the Client ID and Client Secret**
 
@@ -71,6 +69,7 @@ Add these to your `.env` file:
 # Supabase Configuration
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_REDIRECT_URI=http://localhost:5175
 
 # Google OAuth (optional - Supabase handles this)
 VITE_GOOGLE_CLIENT_ID=your_google_client_id
@@ -114,12 +113,14 @@ VITE_GOOGLE_CLIENT_ID=your_google_client_id
 ```env
 VITE_SUPABASE_URL=http://localhost:54321
 VITE_SUPABASE_ANON_KEY=your_dev_anon_key
+VITE_REDIRECT_URI=http://localhost:5175
 ```
 
 **Production:**
 ```env
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_prod_anon_key
+VITE_REDIRECT_URI=https://majorbeam.com
 ```
 
 ## 🔒 Security Best Practices
@@ -164,6 +165,7 @@ For mobile apps, you'll need different OAuth client types:
 # Production
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_production_anon_key
+VITE_REDIRECT_URI=https://majorbeam.com
 ```
 
 ## 📊 Monitoring & Analytics
@@ -208,4 +210,4 @@ Once configured, users will be able to:
 - ✅ Seamlessly authenticate across your app
 - ✅ Maintain session persistence
 
-Your LeadGen Machine SaaS platform now has professional Google OAuth authentication! 🚀 
+Your Majorbeam SaaS platform now has professional Google OAuth authentication! 🚀 
