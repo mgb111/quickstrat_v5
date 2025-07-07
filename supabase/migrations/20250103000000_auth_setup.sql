@@ -5,7 +5,6 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS public.users (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
     email TEXT UNIQUE NOT NULL,
-    full_name TEXT,
     plan TEXT DEFAULT 'free' CHECK (plan IN ('free', 'pro', 'enterprise')),
     subscription_status TEXT DEFAULT 'active' CHECK (subscription_status IN ('active', 'cancelled', 'past_due')),
     settings JSONB DEFAULT '{}',
@@ -49,12 +48,8 @@ CREATE INDEX IF NOT EXISTS idx_user_sessions_token ON public.user_sessions(sessi
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.users (id, email, full_name)
-    VALUES (
-        NEW.id,
-        NEW.email,
-        COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.email)
-    );
+    INSERT INTO public.users (id, email)
+    VALUES (NEW.id, NEW.email);
     
     INSERT INTO public.user_profiles (user_id)
     VALUES (NEW.id);
