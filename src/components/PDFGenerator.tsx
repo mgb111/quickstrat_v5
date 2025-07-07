@@ -12,6 +12,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#ffffff',
     padding: 40,
+    // border: '1px solid red', // Debug border removed
+    // To implement: dynamic padding based on content size if needed
   },
   section: {
     marginBottom: 24,
@@ -187,16 +189,24 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
   };
 
   const renderScripts = (scenarios: Array<{trigger: string; response: string; explanation: string}>) => {
-    return scenarios.map((scenario, index) => (
-      <View key={index} style={styles.scriptSection}>
-        <Text style={styles.scriptLabel}>When they say:</Text>
-        <Text style={styles.scriptText}>"{formatText(scenario.trigger)}"</Text>
-        <Text style={styles.scriptLabel}>You say:</Text>
-        <Text style={styles.scriptText}>"{formatText(scenario.response)}"</Text>
-        <Text style={styles.scriptLabel}>Strategy:</Text>
-        <Text style={styles.scriptText}>{formatText(scenario.explanation)}</Text>
+    return (
+      <View style={{ gap: 12 }}>
+        {scenarios.map((scenario, index) => (
+          <View key={index} style={[styles.scriptSection, { marginBottom: 12, padding: 16 }]}> {/* Tighter spacing */}
+            <Text style={styles.scriptLabel}>When they say:</Text>
+            <Text style={styles.scriptText}>
+              "{formatText(scenario.trigger)}"
+            </Text>
+            <Text style={styles.scriptLabel}>You say:</Text>
+            <Text style={styles.scriptText}>
+              "{formatText(scenario.response)}"
+            </Text>
+            <Text style={styles.scriptLabel}>Strategy:</Text>
+            <Text style={styles.scriptText}>{formatText(scenario.explanation)}</Text>
+          </View>
+        ))}
       </View>
-    ));
+    );
   };
 
   const renderIntroductionContent = (content: string) => {
@@ -275,21 +285,31 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
           </Text>
           {renderIntroductionContent(content.introduction_page.content)}
         </View>
-        <Text style={styles.pageNumber}>1</Text>
+        <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
       </Page>
 
-      {/* Content Pages - Only render pages with actual content */}
-      {content.toolkit_sections
-        .filter(section => section.content)
-        .map((section, pageIndex) => (
-          <Page key={pageIndex} size="A4" style={styles.page}>
-            <View style={styles.section}>
+      {/* Content Pages - Render all toolkit sections in a single continuous page */}
+      <Page size="A4" style={styles.page}>
+        {content.toolkit_sections
+          .filter(section => {
+            // Deeply check for any non-empty, non-whitespace value in section.content
+            const hasDeepContent = (val: any): boolean => {
+              if (typeof val === 'string') return val.trim() !== '';
+              if (Array.isArray(val)) return val.some(item => hasDeepContent(item));
+              if (typeof val === 'object' && val !== null) return Object.values(val).some(item => hasDeepContent(item));
+              return !!val;
+            };
+            return hasDeepContent(section.content);
+          })
+          .map((section, sectionIndex) => (
+            <View key={sectionIndex} style={[styles.section, { marginBottom: 32 }]}> {/* Add extra spacing between sections */}
               <Text style={styles.h2}>{formatText(section.title)}</Text>
               {renderSection(section)}
             </View>
-            <Text style={styles.pageNumber}>{pageIndex + 2}</Text>
-          </Page>
-        ))}
+          ))}
+        {/* Dynamic page number */}
+        <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
+      </Page>
 
       {/* CTA Page */}
       <Page size="A4" style={styles.page}>
@@ -299,7 +319,7 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
             <Text style={styles.ctaText}>{formatText(content.cta_page.content)}</Text>
           </View>
         </View>
-        <Text style={styles.pageNumber}>{content.toolkit_sections.filter(s => s.content).length + 2}</Text>
+        <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
       </Page>
     </Document>
   );

@@ -177,7 +177,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
               </div>
               <h2 className="text-2xl font-bold text-green-900 mb-2">Thank You!</h2>
               <p className="text-green-700">
-                Your guide is ready for download. Check your email for the link, or download it directly below.
+                Your guide is ready for download. Use the button below to get instant access.
               </p>
             </div>
 
