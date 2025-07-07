@@ -21,7 +21,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
       try {
         const campaignData = await CampaignService.getCampaignBySlug(campaignSlug);
         setCampaign(campaignData);
-      } catch (err) {
+      } catch {
         setError('Campaign not found');
       }
     };
@@ -40,7 +40,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
       await CampaignService.captureLead(campaign.id, email.trim());
       setIsSubmitted(true);
       setShowPDF(true);
-    } catch (err) {
+    } catch {
       setError('Failed to submit email. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -69,7 +69,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
     );
   }
 
-  const landingPageCopy = campaign.landing_page_copy as any;
+  const landingPageCopy = campaign.landing_page_copy as {
+    headline?: string;
+    subheadline?: string;
+    benefit_bullets?: string[];
+    cta_button_text?: string;
+  } | null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">

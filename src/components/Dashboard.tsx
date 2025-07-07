@@ -1,21 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Users, 
-  Mail, 
-  Download, 
-  ExternalLink, 
-  Copy, 
-  FileText, 
-  TrendingUp,
-  Calendar,
-  Eye,
-  Plus,
-  Settings,
-  Shield
-} from 'lucide-react';
+import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserCheck } from 'lucide-react';
 import { Campaign, Lead } from '../types';
 import { CampaignService } from '../lib/campaignService';
-import LoadingSpinner, { ContentLoader, TableLoader } from './LoadingSpinner';
 import EmailTest from './EmailTest';
 import AuthTest from './Auth/AuthTest';
 
@@ -27,10 +13,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<Record<string, unknown> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingLeads, setIsLoadingLeads] = useState(false);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
   const [showEmailTest, setShowEmailTest] = useState(false);
   const [showAuthTest, setShowAuthTest] = useState(false);
@@ -54,7 +41,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
       if (campaignsData.length > 0) {
         setSelectedCampaign(campaignsData[0]);
       }
-    } catch (err) {
+    } catch {
       setError('Failed to load campaigns');
     } finally {
       setIsLoading(false);
@@ -66,7 +53,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
       setIsLoadingLeads(true);
       const leadsData = await CampaignService.getLeads(campaignId);
       setLeads(leadsData);
-    } catch (err) {
+    } catch {
       setError('Failed to load leads');
     } finally {
       setIsLoadingLeads(false);
@@ -78,86 +65,74 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
       setIsLoadingStats(true);
       const statsData = await CampaignService.getCampaignStats(campaignId);
       setStats(statsData);
-    } catch (err) {
+    } catch {
       setError('Failed to load statistics');
     } finally {
       setIsLoadingStats(false);
     }
   };
 
-  const exportLeadsCSV = async () => {
+  const copyLandingPageUrl = async (slug: string) => {
+    const url = `${window.location.origin}/landing/${slug}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      // You could add a toast notification here
+    } catch {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = url;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+    }
+  };
+
+  const exportLeads = async () => {
     if (!selectedCampaign) return;
 
     try {
-      const csvData = await CampaignService.exportLeadsCSV(selectedCampaign.id);
-      const blob = new Blob([csvData], { type: 'text/csv' });
+      const csvContent = [
+        'Email,Captured At',
+        ...leads.map(lead => `${lead.email},${lead.captured_at}`)
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `${selectedCampaign.name}-leads.csv`;
       document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-    } catch (err) {
+      window.URL.revokeObjectURL(url);
+    } catch {
       setError('Failed to export leads');
     }
   };
 
-  const copyLandingPageUrl = (slug: string) => {
-    const url = `${window.location.origin}/landing/${slug}`;
-    navigator.clipboard.writeText(url);
-  };
-
-  if (showEmailTest) {
-    return (
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Email Configuration</h1>
-            <p className="text-gray-600">Test and configure your email service</p>
-          </div>
-          <button
-            onClick={() => setShowEmailTest(false)}
-            className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
-          >
-            ← Back to Dashboard
-          </button>
-        </div>
-        <EmailTest />
-      </div>
-    );
-  }
-
-  if (showAuthTest) {
-    return (
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Authentication Test</h1>
-            <p className="text-gray-600">Test authentication and user management</p>
-          </div>
-          <button
-            onClick={() => setShowAuthTest(false)}
-            className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
-          >
-            ← Back to Dashboard
-          </button>
-        </div>
-        <AuthTest />
-      </div>
-    );
-  }
-
   if (isLoading) {
-    return <ContentLoader text="Loading dashboard..." />;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading campaigns...</p>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-800">{error}</p>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
@@ -166,36 +141,42 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Campaign Dashboard</h1>
-          <p className="text-gray-600">Manage your lead generation campaigns</p>
-        </div>
-        <div className="flex space-x-3">
-          <button
-            onClick={() => setShowAuthTest(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center"
-          >
-            <Shield className="h-4 w-4 mr-2" />
-            Auth Test
-          </button>
-          <button
-            onClick={() => setShowEmailTest(true)}
-            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center"
-          >
-            <Settings className="h-4 w-4 mr-2" />
-            Email Setup
-          </button>
-          <button
-            onClick={onNewCampaign}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            New Campaign
-          </button>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+        <p className="text-gray-600">Manage your lead generation campaigns</p>
       </div>
 
+      {/* Test Tools */}
+      <div className="mb-8 flex space-x-4">
+        <button
+          onClick={() => setShowEmailTest(!showEmailTest)}
+          className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+        >
+          <Mail className="h-4 w-4 mr-2" />
+          Email Test
+        </button>
+        <button
+          onClick={() => setShowAuthTest(!showAuthTest)}
+          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+        >
+          <UserCheck className="h-4 w-4 mr-2" />
+          Auth Test
+        </button>
+      </div>
+
+      {showEmailTest && (
+        <div className="mb-8 p-6 bg-white rounded-lg shadow">
+          <EmailTest />
+        </div>
+      )}
+
+      {showAuthTest && (
+        <div className="mb-8 p-6 bg-white rounded-lg shadow">
+          <AuthTest />
+        </div>
+      )}
+
+      {/* Campaigns */}
       {campaigns.length === 0 ? (
         <div className="text-center py-12">
           <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
@@ -214,7 +195,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Campaign List */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow border border-gray-200">
+            <div className="bg-white rounded-lg shadow">
               <div className="p-6 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900">Campaigns</h2>
               </div>
@@ -257,118 +238,105 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
           {/* Campaign Details */}
           {selectedCampaign && (
             <div className="lg:col-span-2 space-y-6">
-              {/* Stats Cards */}
-              {isLoadingStats ? (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                    <div key={index} className="bg-white rounded-lg shadow border border-gray-200 p-6">
-                      <div className="animate-pulse">
-                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                        <div className="h-8 bg-gray-200 rounded w-3/4"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : stats && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-                    <div className="flex items-center">
-                      <Users className="h-8 w-8 text-blue-600 mr-3" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Total Leads</p>
-                        <p className="text-2xl font-bold text-gray-900">{stats.totalLeads || 0}</p>
-                      </div>
-                    </div>
+              {/* Campaign Stats */}
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Overview</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <Users className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-blue-600">{selectedCampaign.lead_count}</p>
+                    <p className="text-sm text-gray-600">Total Leads</p>
                   </div>
-                  <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-                    <div className="flex items-center">
-                      <Mail className="h-8 w-8 text-green-600 mr-3" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Emails Sent</p>
-                        <p className="text-2xl font-bold text-gray-900">{stats.emailsSent || 0}</p>
-                      </div>
-                    </div>
+                  <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-green-600">
+                      {stats?.conversion_rate ? `${stats.conversion_rate}%` : 'N/A'}
+                    </p>
+                    <p className="text-sm text-gray-600">Conversion Rate</p>
                   </div>
-                  <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-                    <div className="flex items-center">
-                      <Download className="h-8 w-8 text-purple-600 mr-3" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">PDF Downloads</p>
-                        <p className="text-2xl font-bold text-gray-900">{stats.pdfDownloads || 0}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-                    <div className="flex items-center">
-                      <TrendingUp className="h-8 w-8 text-orange-600 mr-3" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Conversion Rate</p>
-                        <p className="text-2xl font-bold text-gray-900">{stats.conversionRate || '0%'}</p>
-                      </div>
-                    </div>
+                  <div className="text-center p-4 bg-purple-50 rounded-lg">
+                    <MessageCircle className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-purple-600">
+                      {stats?.avg_time_to_convert ? `${stats.avg_time_to_convert} days` : 'N/A'}
+                    </p>
+                    <p className="text-sm text-gray-600">Avg Time to Convert</p>
                   </div>
                 </div>
-              )}
+              </div>
 
-              {/* Leads Table */}
-              <div className="bg-white rounded-lg shadow border border-gray-200">
-                <div className="p-6 border-b border-gray-200">
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-lg font-semibold text-gray-900">Leads</h2>
-                    <button
-                      onClick={exportLeadsCSV}
-                      className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-                    >
-                      <Download className="h-4 w-4 mr-1" />
-                      Export CSV
-                    </button>
-                  </div>
+              {/* Leads List */}
+              <div className="bg-white rounded-lg shadow">
+                <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-900">Recent Leads</h3>
+                  <button
+                    onClick={exportLeads}
+                    className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Export CSV
+                  </button>
                 </div>
-                <div className="p-6">
+                <div className="divide-y divide-gray-200">
                   {isLoadingLeads ? (
-                    <TableLoader rows={3} />
+                    <div className="p-6 text-center">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                      <p className="text-gray-600">Loading leads...</p>
+                    </div>
                   ) : leads.length === 0 ? (
-                    <div className="text-center py-8">
-                      <Mail className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No leads yet</h3>
-                      <p className="text-gray-600">Leads will appear here once they sign up through your landing page</p>
+                    <div className="p-6 text-center text-gray-500">
+                      No leads captured yet
                     </div>
                   ) : (
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Email
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Captured
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Status
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {leads.map((lead) => (
-                            <tr key={lead.id} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {lead.email}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {new Date(lead.captured_at).toLocaleDateString()}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                  Active
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                    leads.map((lead) => (
+                      <div key={lead.id} className="p-4 flex justify-between items-center">
+                        <div>
+                          <p className="font-medium text-gray-900">{lead.email}</p>
+                          <p className="text-sm text-gray-500">
+                            Captured {new Date(lead.captured_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => copyLandingPageUrl(selectedCampaign.landing_page_slug)}
+                          className="text-gray-400 hover:text-gray-600"
+                          title="Copy landing page URL"
+                        >
+                          <Copy className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))
                   )}
+                </div>
+              </div>
+
+              {/* Campaign Settings */}
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Settings</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Landing Page URL
+                    </label>
+                    <div className="flex">
+                      <input
+                        type="text"
+                        value={`${window.location.origin}/landing/${selectedCampaign.landing_page_slug}`}
+                        readOnly
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg bg-gray-50"
+                      />
+                      <button
+                        onClick={() => copyLandingPageUrl(selectedCampaign.landing_page_slug)}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 transition-colors"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Lead Magnet Title
+                    </label>
+                    <p className="text-gray-900">{selectedCampaign.lead_magnet_title || 'Not set'}</p>
+                  </div>
                 </div>
               </div>
             </div>

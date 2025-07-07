@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, ArrowLeft, BarChart3, Plus, User, LogOut } from 'lucide-react';
+import { Zap, ArrowLeft, BarChart3, Plus, User } from 'lucide-react';
 import CampaignForm from './components/CampaignForm';
 import ConceptSelection from './components/ConceptSelection';
 import OutlineReview from './components/OutlineReview';
@@ -9,7 +9,7 @@ import LandingPage from './components/LandingPage';
 import Auth from './components/Auth/Auth';
 import UserProfile from './components/UserProfile';
 import { useAuth } from './contexts/AuthContext';
-import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, CampaignOutput } from './types/index';
+import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline } from './types/index';
 import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
 import { CampaignService } from './lib/campaignService';
 import { EmailService } from './lib/emailService';
@@ -20,15 +20,7 @@ type AppMode = 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile';
 function App() {
   console.log('App component rendering...');
   
-  let authState: { user: any; loading: boolean } = { user: null, loading: true };
-  try {
-    authState = useAuth();
-  } catch (error) {
-    console.error('Error in useAuth:', error);
-    authState = { user: null, loading: false };
-  }
-  
-  const { user, loading } = authState;
+  const { user, loading } = useAuth();
   const [mode, setMode] = useState<AppMode>('auth');
   const [wizardState, setWizardState] = useState<WizardState>({
     stage: 'input',

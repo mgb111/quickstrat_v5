@@ -63,7 +63,7 @@ export interface PDFContent {
     content: string;
   }[];
   cta: string;
-  structured_content?: any;
+  structured_content?: Record<string, unknown>;
 }
 
 export interface CampaignOutput {
@@ -91,7 +91,7 @@ export interface Campaign {
   lead_count: number;
   lead_magnet_title: string | null;
   lead_magnet_content: string | null;
-  landing_page_copy: any | null;
+  landing_page_copy: Record<string, unknown> | null;
   social_posts: string[] | null;
   created_at: string;
 }

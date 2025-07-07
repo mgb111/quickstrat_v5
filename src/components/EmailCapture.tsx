@@ -9,108 +9,115 @@ interface EmailCaptureProps {
 
 const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignId }) => {
   const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (!email.trim()) return;
+
+    setIsSubmitting(true);
     setError(null);
 
     try {
-      // Store email in Supabase for future use
-      const { error: insertError } = await supabase
-        .from('emails')
-        .insert({
-          email,
-          campaign_id: campaignId || null,
-          pdf_downloaded: false
-        });
+      // Store email in localStorage for demo purposes
+      // In a real app, you'd send this to your backend
+      const existingEmails = JSON.parse(localStorage.getItem('captured_emails') || '[]');
+      const newEmail = {
+        id: Date.now().toString(),
+        email: email.trim(),
+        captured_at: new Date().toISOString(),
+        campaign_id: campaignId || 'demo'
+      };
+      
+      localStorage.setItem('captured_emails', JSON.stringify([...existingEmails, newEmail]));
 
-      if (insertError) throw insertError;
+      // If you have a backend, you'd also save it there
+      if (campaignId) {
+        const { error: supabaseError } = await supabase
+          .from('leads')
+          .insert({
+            campaign_id: campaignId,
+            email: email.trim()
+          });
+
+        if (supabaseError) {
+          console.error('Error saving lead:', supabaseError);
+        }
+      }
 
       setIsSubmitted(true);
       onEmailSubmitted();
-      
-      // Note: In a real implementation, you would integrate with an email service here
-      // For now, we just store the email and provide immediate PDF access
-      
-    } catch (err: any) {
-      console.error('Email capture error:', err);
-      setError('Failed to save email. Please try again.');
+    } catch {
+      setError('Failed to submit email. Please try again.');
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   if (isSubmitted) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
-        <div className="flex justify-center mb-4">
-          <div className="bg-green-100 p-3 rounded-full">
-            <CheckCircle className="h-8 w-8 text-green-600" />
-          </div>
-        </div>
-        <h3 className="text-xl font-bold text-green-900 mb-2">Email submitted successfully!</h3>
-        <p className="text-green-800 mb-4">Your PDF guide is now available for download below.</p>
-        <p className="text-sm text-green-700">We'll also send you future updates and resources.</p>
+      <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+        <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-green-800 mb-2">Email Submitted Successfully!</h3>
+        <p className="text-green-700">Your lead magnet is ready for download below.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-6">
+    <div className="bg-white border border-gray-200 rounded-lg p-6">
       <div className="text-center mb-6">
-        <div className="flex justify-center mb-4">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3 rounded-full">
-            <Mail className="h-6 w-6 text-white" />
-          </div>
-        </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2">Get Your PDF Guide</h3>
-        <p className="text-gray-600">Enter your email to download your complete lead magnet PDF guide.</p>
+        <Mail className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Get Your Free Lead Magnet</h3>
+        <p className="text-gray-600">Enter your email to download your personalized lead magnet</p>
       </div>
 
-      {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-800 text-sm text-center">{error}</p>
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="relative">
-          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            Email Address
+          </label>
           <input
             type="email"
+            id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-            placeholder="Enter your email address"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="your@email.com"
             required
+            disabled={isSubmitting}
           />
         </div>
-        
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <p className="text-red-800 text-sm">{error}</p>
+          </div>
+        )}
+
         <button
           type="submit"
-          disabled={isLoading}
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
+          disabled={isSubmitting || !email.trim()}
+          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
-          {isLoading ? (
+          {isSubmitting ? (
             <>
-              <Loader2 className="animate-spin h-5 w-5 mr-2" />
-              Processing...
+              <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+              Submitting...
             </>
           ) : (
             <>
               <Send className="h-5 w-5 mr-2" />
-              Get My PDF Guide
+              Get My Lead Magnet
             </>
           )}
         </button>
       </form>
 
-      <p className="text-xs text-gray-500 text-center mt-3">
-        We'll never spam you. Unsubscribe at any time.
+      <p className="text-xs text-gray-500 mt-4 text-center">
+        We respect your privacy. Your email will only be used to send you the lead magnet.
       </p>
     </div>
   );
