@@ -42,7 +42,7 @@ function App() {
     console.log('Current path:', path);
     if (path.startsWith('/landing/')) {
       setMode('landing');
-    } else if (path === '/dashboard') {
+    } else if (path.startsWith('/dashboard')) {
       setMode('dashboard');
     }
   }, []);
