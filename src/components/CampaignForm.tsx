@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CampaignInput } from '../types';
-import LoadingSpinner, { ButtonLoader } from './LoadingSpinner';
+import { ButtonLoader } from './LoadingSpinner';
 
 interface CampaignFormProps {
   onSubmit: (input: CampaignInput) => void;
