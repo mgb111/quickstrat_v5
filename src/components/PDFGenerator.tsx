@@ -1,5 +1,5 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, PDFViewer, BlobProvider } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, PDFViewer, BlobProvider, Image, Link } from '@react-pdf/renderer';
 import { PDFContent } from '../types';
 
 interface PDFGeneratorProps {
@@ -144,8 +144,77 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
   const content = data?.structured_content;
   if (!content) return null;
 
+  // Dynamic branding and CTA fields
+  const logo = data.logo;
+  const primaryColor = data.primaryColor || '#1a365d';
+  const secondaryColor = data.secondaryColor || '#4a90e2';
+  const prosIcon = data.prosIcon || '👍';
+  const consIcon = data.consIcon || '👎';
+  const checklistIcon = data.checklistIcon || '☑';
+  const website = data.website;
+  const bookingLink = data.bookingLink;
+  const supportEmail = data.supportEmail;
+  const ctaText = data.ctaText || content.cta_page.content;
+  const mainAction = data.mainAction || 'Book a Call';
+  const fontFamily = data.font || 'Helvetica';
+
+  // Dynamic styles
+  const dynamicStyles = StyleSheet.create({
+    ...styles,
+    titlePageTitle: {
+      ...styles.titlePageTitle,
+      color: primaryColor,
+      fontFamily,
+    },
+    h1: {
+      ...styles.h1,
+      color: primaryColor,
+      fontFamily,
+    },
+    h2: {
+      ...styles.h2,
+      color: secondaryColor,
+      fontFamily,
+    },
+    h3: {
+      ...styles.h3,
+      color: secondaryColor,
+      fontFamily,
+    },
+    bodyText: {
+      ...styles.bodyText,
+      fontFamily,
+    },
+    scriptLabel: {
+      ...styles.scriptLabel,
+      color: primaryColor,
+      fontFamily,
+    },
+    scriptText: {
+      ...styles.scriptText,
+      fontFamily,
+    },
+    ctaTitle: {
+      ...styles.ctaTitle,
+      color: primaryColor,
+      fontFamily,
+    },
+    ctaText: {
+      ...styles.ctaText,
+      fontFamily,
+    },
+    bulletPoint: {
+      ...styles.bulletPoint,
+      color: secondaryColor,
+      fontFamily,
+    },
+    bulletContent: {
+      ...styles.bulletContent,
+      fontFamily,
+    },
+  });
+
   const formatText = (text: string) => {
-    // Replace \n with proper line breaks and handle spacing
     return text.split('\n').map((line, i) => (
       <React.Fragment key={i}>
         {line}
@@ -157,15 +226,15 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
   const renderProsConsList = (items: Array<{method_name: string; pros: string; cons: string}>) => {
     return items.map((item, index) => (
       <View key={index} style={styles.methodSection}>
-        <Text style={styles.methodName}>{item.method_name}</Text>
+        <Text style={dynamicStyles.methodName}>{item.method_name}</Text>
         <View style={styles.prosCons}>
           <View style={styles.bulletItem}>
-            <Text style={styles.bulletPoint}>•</Text>
-            <Text style={styles.bulletContent}>Pros: {formatText(item.pros)}</Text>
+            <Text style={dynamicStyles.bulletPoint}>{prosIcon}</Text>
+            <Text style={dynamicStyles.bulletContent}>Pros: {formatText(item.pros)}</Text>
           </View>
           <View style={styles.bulletItem}>
-            <Text style={styles.bulletPoint}>•</Text>
-            <Text style={styles.bulletContent}>Cons: {formatText(item.cons)}</Text>
+            <Text style={dynamicStyles.bulletPoint}>{consIcon}</Text>
+            <Text style={dynamicStyles.bulletContent}>Cons: {formatText(item.cons)}</Text>
           </View>
         </View>
       </View>
@@ -175,12 +244,12 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
   const renderChecklist = (phases: Array<{phase_title: string; items: string[]}>) => {
     return phases.map((phase, index) => (
       <View key={index} style={styles.section}>
-        <Text style={styles.h3}>{phase.phase_title}</Text>
+        <Text style={dynamicStyles.h3}>{phase.phase_title}</Text>
         <View style={styles.bulletList}>
           {phase.items.map((item: string, itemIndex: number) => (
             <View key={itemIndex} style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletContent}>{formatText(item)}</Text>
+              <Text style={dynamicStyles.bulletPoint}>{checklistIcon}</Text>
+              <Text style={dynamicStyles.bulletContent}>{formatText(item)}</Text>
             </View>
           ))}
         </View>
@@ -193,11 +262,11 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
       <View>
         {scenarios.map((scenario, index) => (
           <View key={index} style={{ marginBottom: 24 }}>
-            <Text style={styles.scriptLabel}>{`Scenario ${index + 1}: ${formatText(scenario.trigger)}`}</Text>
-            <Text style={[styles.scriptLabel, { marginTop: 8 }]}>You say:</Text>
-            <Text style={styles.scriptText}>{formatText(scenario.response)}</Text>
-            <Text style={styles.scriptLabel}>Strategy:</Text>
-            <Text style={styles.scriptText}>{formatText(scenario.explanation)}</Text>
+            <Text style={dynamicStyles.scriptLabel}>{`Scenario ${index + 1}: ${formatText(scenario.trigger)}`}</Text>
+            <Text style={[dynamicStyles.scriptLabel, { marginTop: 8 }]}>You say:</Text>
+            <Text style={dynamicStyles.scriptText}>{formatText(scenario.response)}</Text>
+            <Text style={dynamicStyles.scriptLabel}>Strategy:</Text>
+            <Text style={dynamicStyles.scriptText}>{formatText(scenario.explanation)}</Text>
           </View>
         ))}
       </View>
@@ -210,16 +279,15 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
         <View style={styles.bulletList}>
           {content.map((point, index) => (
             <View key={index} style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>•</Text>
-              <Text style={styles.bulletContent}>{point}</Text>
+              <Text style={dynamicStyles.bulletPoint}>{checklistIcon}</Text>
+              <Text style={dynamicStyles.bulletContent}>{point}</Text>
             </View>
           ))}
         </View>
       );
     }
-    // Otherwise, render as paragraphs
     return content.split('\n').map((paragraph, i) => (
-      <Text key={i} style={styles.bodyText}>{paragraph}</Text>
+      <Text key={i} style={dynamicStyles.bodyText}>{paragraph}</Text>
     ));
   };
 
@@ -229,7 +297,7 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
       return (
         <View style={styles.section}>
           {paragraphs.map((paragraph, index) => (
-            <Text key={index} style={styles.bodyText}>{formatText(paragraph)}</Text>
+            <Text key={index} style={dynamicStyles.bodyText}>{formatText(paragraph)}</Text>
           ))}
         </View>
       );
@@ -247,7 +315,7 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
       return renderScripts(section.content.scenarios);
     }
 
-    return <Text style={styles.bodyText}>Content not available</Text>;
+    return <Text style={dynamicStyles.bodyText}>Content not available</Text>;
   };
 
   return (
@@ -255,10 +323,13 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
       {/* Title Page */}
       <Page size="A4" style={styles.page}>
         <View style={styles.titlePage}>
-          <Text style={styles.titlePageTitle}>
+          {logo && (
+            <Image src={logo} style={{ width: 120, height: 120, marginBottom: 24 }} />
+          )}
+          <Text style={dynamicStyles.titlePageTitle}>
             {formatText(content.title_page.title.split(':')[0])}
           </Text>
-          <Text style={[styles.titlePageTitle, { marginTop: 8 }]}>
+          <Text style={[dynamicStyles.titlePageTitle, { marginTop: 8 }]}> 
             {formatText(content.title_page.title.split(':')[1] || '')}
           </Text>
           <Text style={styles.titlePageSubtitle}>{formatText(content.title_page.subtitle)}</Text>
@@ -268,7 +339,7 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
       {/* Introduction Page */}
       <Page size="A4" style={styles.page}>
         <View style={styles.section}>
-          <Text style={styles.h1}>
+          <Text style={dynamicStyles.h1}>
             {content.introduction_page.title.split('Your').map((part, index) => (
               <React.Fragment key={index}>
                 {index > 0 && '\nYour'}{part}
@@ -284,7 +355,6 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
       <Page size="A4" style={styles.page}>
         {content.toolkit_sections
           .filter(section => {
-            // Deeply check for any non-empty, non-whitespace value in section.content
             const hasDeepContent = (val: any): boolean => {
               if (typeof val === 'string') return val.trim() !== '';
               if (Array.isArray(val)) return val.some(item => hasDeepContent(item));
@@ -295,20 +365,37 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
           })
           .map((section, sectionIndex) => (
             <View key={sectionIndex} style={[styles.section, { marginBottom: 32 }]}> {/* Add extra spacing between sections */}
-              <Text style={styles.h2}>{formatText(section.title)}</Text>
+              <Text style={dynamicStyles.h2}>{formatText(section.title)}</Text>
               {renderSection(section)}
             </View>
           ))}
-        {/* Dynamic page number */}
         <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
       </Page>
 
       {/* CTA Page */}
       <Page size="A4" style={styles.page}>
         <View style={styles.section}>
-          <Text style={styles.ctaTitle}>{formatText(content.cta_page.title)}</Text>
+          <Text style={dynamicStyles.ctaTitle}>{formatText(content.cta_page.title)}</Text>
           <View style={styles.ctaSection}>
-            <Text style={styles.ctaText}>{formatText(content.cta_page.content)}</Text>
+            <Text style={dynamicStyles.ctaText}>{formatText(ctaText)}</Text>
+            {/* CTA Links */}
+            <View style={{ marginTop: 16, alignItems: 'center' }}>
+              {bookingLink && (
+                <Link src={bookingLink} style={{ color: secondaryColor, fontSize: 18, textDecoration: 'underline', marginBottom: 8 }}>
+                  {mainAction}
+                </Link>
+              )}
+              {website && (
+                <Link src={website} style={{ color: secondaryColor, fontSize: 16, textDecoration: 'underline', marginBottom: 8 }}>
+                  Visit our website
+                </Link>
+              )}
+              {supportEmail && (
+                <Link src={`mailto:${supportEmail}`} style={{ color: secondaryColor, fontSize: 16, textDecoration: 'underline' }}>
+                  Contact Support
+                </Link>
+              )}
+            </View>
           </View>
         </View>
         <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />

@@ -101,6 +101,19 @@ export interface PDFContent {
       content: string;
     };
   };
+  // Branding and CTA customization fields
+  logo?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  website?: string;
+  bookingLink?: string;
+  supportEmail?: string;
+  ctaText?: string;
+  mainAction?: string;
+  prosIcon?: string;
+  consIcon?: string;
+  checklistIcon?: string;
+  font?: string;
 }
 
 export interface CampaignOutput {
