@@ -37,12 +37,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const loadCampaigns = async () => {
     try {
       setIsLoading(true);
+      console.log('Dashboard: Loading campaigns...');
       const campaignsData = await CampaignService.getCampaigns();
+      console.log('Dashboard: Campaigns loaded:', campaignsData);
       setCampaigns(campaignsData);
       if (campaignsData.length > 0) {
         setSelectedCampaign(campaignsData[0]);
       }
-    } catch {
+    } catch (err) {
+      console.error('Dashboard: Failed to load campaigns', err);
       setError('Failed to load campaigns');
     } finally {
       setIsLoading(false);
