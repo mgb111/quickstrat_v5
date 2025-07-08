@@ -32,45 +32,61 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     // Handle initial session and OAuth callbacks
     const initializeAuth = async () => {
+      console.log('🔐 Starting auth initialization...');
+      console.log('📍 Current URL:', window.location.href);
+      console.log('📍 Hash:', window.location.hash);
+      
       try {
         // Check if we're handling an OAuth callback
         if (window.location.hash && window.location.hash.includes('access_token')) {
-          console.log('Handling OAuth callback...');
+          console.log('🔄 Detected OAuth callback, handling...');
           
           // Let Supabase handle the OAuth callback
           const { data, error } = await supabase.auth.getSession();
           
           if (error) {
-            console.error('OAuth callback error:', error);
+            console.error('❌ OAuth callback error:', error);
             throw error;
           }
 
           if (data.session) {
-            console.log('OAuth session established:', data.session.user.email);
+            console.log('✅ OAuth session established successfully');
+            console.log('👤 User:', data.session.user.email);
+            console.log('🆔 User ID:', data.session.user.id);
             setSession(data.session);
             setUser(data.session.user);
             
             // Clear the hash and redirect to dashboard
+            console.log('🔄 Redirecting to dashboard...');
             window.history.replaceState(null, '', '/dashboard');
             return;
+          } else {
+            console.log('⚠️ No session found after OAuth callback');
           }
         }
 
         // Get the current session
+        console.log('🔍 Checking for existing session...');
         const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
+          console.error('❌ Session check error:', sessionError);
           throw sessionError;
         }
 
         if (currentSession) {
-          console.log('Existing session found:', currentSession.user.email);
+          console.log('✅ Existing session found');
+          console.log('👤 User:', currentSession.user.email);
+          console.log('🆔 User ID:', currentSession.user.id);
           setSession(currentSession);
           setUser(currentSession.user);
+        } else {
+          console.log('ℹ️ No existing session found');
         }
       } catch (error) {
-        console.error('Auth initialization error:', error);
+        console.error('❌ Auth initialization error:', error);
       } finally {
+        console.log('🏁 Auth initialization complete');
         setLoading(false);
       }
     };
@@ -79,17 +95,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
-      console.log('Auth state changed:', event, newSession?.user?.email);
+      console.log('🔄 Auth state changed:', event);
+      console.log('👤 User:', newSession?.user?.email);
+      console.log('🆔 User ID:', newSession?.user?.id);
       
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        console.log('✅ User signed in or token refreshed');
         setSession(newSession);
         setUser(newSession?.user ?? null);
         
         // Only redirect if we're not already on the dashboard and not handling OAuth callback
         if (window.location.pathname !== '/dashboard' && !window.location.hash.includes('access_token')) {
+          console.log('🔄 Redirecting to dashboard...');
           window.location.href = '/dashboard';
         }
       } else if (event === 'SIGNED_OUT') {
+        console.log('👋 User signed out');
         setSession(null);
         setUser(null);
         window.location.href = '/';
@@ -97,6 +118,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
 
     return () => {
+      console.log('🧹 Cleaning up auth subscription');
       subscription.unsubscribe();
     };
   }, []);

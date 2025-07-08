@@ -14,24 +14,38 @@ export class CampaignService {
 
   // Create a new campaign
   static async createCampaign(input: CampaignInput, output: CampaignOutput): Promise<Campaign> {
+    console.log('🚀 Starting campaign creation...');
+    console.log('📝 Input:', input);
+    
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
+      console.error('❌ No authenticated user found');
       throw new Error('Authentication required to create campaigns');
     }
 
+    console.log('✅ User authenticated:', user.email);
+    console.log('🆔 User ID:', user.id);
+
     // Check if user exists in public.users table
+    console.log('🔍 Checking if user exists in public.users table...');
     const { data: publicUser, error: userError } = await supabase
       .from('users')
       .select('id')
       .eq('id', user.id)
       .single();
 
-    console.log('User check result:', { publicUser, userError, userId: user.id });
+    console.log('📊 User check result:', { 
+      publicUser, 
+      userError, 
+      userId: user.id,
+      hasUser: !!publicUser,
+      errorMessage: userError?.message 
+    });
 
     // If user doesn't exist in public.users, create them
     if (!publicUser) {
-      console.log('Creating user record for:', user.id, user.email);
+      console.log('➕ Creating user record for:', user.id, user.email);
       
       const { data: newUser, error: insertError } = await supabase
         .from('users')
@@ -43,18 +57,26 @@ export class CampaignService {
         .single();
 
       if (insertError) {
-        console.error('Failed to create user record:', insertError);
+        console.error('❌ Failed to create user record:', insertError);
+        console.error('❌ Error details:', {
+          message: insertError.message,
+          details: insertError.details,
+          hint: insertError.hint,
+          code: insertError.code
+        });
         throw new Error(`Failed to initialize user profile: ${insertError.message}`);
       }
 
-      console.log('User record created successfully:', newUser);
+      console.log('✅ User record created successfully:', newUser);
     } else {
-      console.log('User record already exists:', publicUser);
+      console.log('✅ User record already exists:', publicUser);
     }
 
     // Generate unique slug
+    console.log('🔗 Generating unique slug...');
     const { data: slugData } = await supabase.rpc('generate_unique_slug');
     const slug = slugData || `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    console.log('🔗 Generated slug:', slug);
 
     const campaignData = {
       user_id: user.id,
@@ -73,6 +95,14 @@ export class CampaignService {
       ]
     };
 
+    console.log('📊 Campaign data prepared:', {
+      user_id: campaignData.user_id,
+      name: campaignData.name,
+      slug: campaignData.landing_page_slug,
+      hasContent: !!campaignData.lead_magnet_content
+    });
+
+    console.log('💾 Inserting campaign into database...');
     const { data, error } = await supabase
       .from('campaigns')
       .insert(campaignData)
@@ -80,10 +110,17 @@ export class CampaignService {
       .single();
 
     if (error) {
-      console.error('Campaign creation error:', error);
+      console.error('❌ Campaign creation error:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
       throw new Error(`Failed to create campaign: ${error.message}`);
     }
 
+    console.log('✅ Campaign created successfully:', data);
     return data;
   }
 
