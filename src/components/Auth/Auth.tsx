@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Zap } from 'lucide-react';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface AuthProps {
   onAuthSuccess: () => void;
@@ -9,6 +10,7 @@ interface AuthProps {
 
 const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
+  const { error } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center px-4 py-12">
@@ -27,6 +29,13 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             {isLogin ? 'Welcome back to your lead generation platform' : 'Start creating AI-powered lead magnets'}
           </p>
         </div>
+
+        {/* Global Auth Error */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-800 text-sm">{error}</p>
+          </div>
+        )}
 
         {/* Auth Form */}
         {isLogin ? (

@@ -8,6 +8,7 @@ interface AuthContextType {
   loading: boolean;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  error: string | null; // <-- add error to context type
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,6 +29,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Handle initial session and OAuth callbacks
@@ -46,6 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           
           if (error) {
             console.error('❌ OAuth callback error:', error);
+            setError(error.message || 'OAuth callback error');
             throw error;
           }
 
@@ -71,6 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         
         if (sessionError) {
           console.error('❌ Session check error:', sessionError);
+          setError(sessionError.message || 'Session check error');
           throw sessionError;
         }
 
@@ -83,8 +87,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else {
           console.log('ℹ️ No existing session found');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('❌ Auth initialization error:', error);
+        setError(error?.message || 'Auth initialization error');
       } finally {
         console.log('🏁 Auth initialization complete');
         setLoading(false);
@@ -129,8 +134,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(null);
       setSession(null);
       window.location.href = '/';
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error signing out:', error);
+      setError(error?.message || 'Error signing out');
     }
   };
 
@@ -138,8 +144,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const { data: { user: refreshedUser } } = await supabase.auth.getUser();
       setUser(refreshedUser);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error refreshing user:', error);
+      setError(error?.message || 'Error refreshing user');
     }
   };
 
@@ -149,6 +156,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loading,
     signOut,
     refreshUser,
+    error, // <-- add error to context value
   };
 
   return (
