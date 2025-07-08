@@ -11,10 +11,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [stats, setStats] = useState<Record<string, unknown> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingLeads, setIsLoadingLeads] = useState(false);
-  const [isLoadingStats, setIsLoadingStats] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,7 +21,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   useEffect(() => {
     if (selectedCampaign) {
       loadLeads(selectedCampaign.id);
-      loadStats(selectedCampaign.id);
     }
   }, [selectedCampaign]);
 
@@ -45,25 +41,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
 
   const loadLeads = async (campaignId: string) => {
     try {
-      setIsLoadingLeads(true);
       const leadsData = await CampaignService.getLeads(campaignId);
       setLeads(leadsData);
     } catch {
       setError('Failed to load leads');
-    } finally {
-      setIsLoadingLeads(false);
-    }
-  };
-
-  const loadStats = async (campaignId: string) => {
-    try {
-      setIsLoadingStats(true);
-      const statsData = await CampaignService.getCampaignStats(campaignId);
-      setStats(statsData);
-    } catch {
-      setError('Failed to load statistics');
-    } finally {
-      setIsLoadingStats(false);
     }
   };
 
@@ -78,27 +59,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-    }
-  };
-
-  const exportLeads = async () => {
-    if (!selectedCampaign) return;
-    try {
-      const csvContent = [
-        'Email,Captured At',
-        ...leads.map(lead => `${lead.email},${lead.captured_at}`)
-      ].join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${selectedCampaign.name}-leads.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    } catch {
-      setError('Failed to export leads');
     }
   };
 
@@ -131,13 +91,18 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-        <p className="text-gray-600">Manage your lead generation campaigns</p>
+      <div className="mb-8 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+          <p className="text-gray-600">Manage your lead generation campaigns</p>
+        </div>
+        <button
+          onClick={onNewCampaign}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+        >
+          + New Campaign
+        </button>
       </div>
-
-      {/* Campaigns */}
       {campaigns.length === 0 ? (
         <div className="text-center py-12">
           <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
@@ -154,7 +119,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Campaign List */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow">
               <div className="p-6 border-b border-gray-200">
@@ -195,11 +159,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
               </div>
             </div>
           </div>
-
-          {/* Campaign Details */}
           {selectedCampaign && (
             <div className="lg:col-span-2 space-y-6">
-              {/* Campaign Stats */}
               <div className="bg-white rounded-lg shadow p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Overview</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -208,7 +169,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
                     <p className="text-2xl font-bold text-blue-600">{selectedCampaign.lead_count}</p>
                     <p className="text-sm text-gray-600">Total Leads</p>
                   </div>
-                  {/* Add more stats or details here if needed */}
                 </div>
               </div>
               {/* Add more campaign details, leads, etc. here if needed */}
