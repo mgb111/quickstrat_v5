@@ -190,17 +190,12 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
 
   const renderScripts = (scenarios: Array<{trigger: string; response: string; explanation: string}>) => {
     return (
-      <View style={{ gap: 12 }}>
+      <View>
         {scenarios.map((scenario, index) => (
-          <View key={index} style={[styles.scriptSection, { marginBottom: 12, padding: 16 }]}> {/* Tighter spacing */}
-            <Text style={styles.scriptLabel}>When they say:</Text>
-            <Text style={styles.scriptText}>
-              "{formatText(scenario.trigger)}"
-            </Text>
-            <Text style={styles.scriptLabel}>You say:</Text>
-            <Text style={styles.scriptText}>
-              "{formatText(scenario.response)}"
-            </Text>
+          <View key={index} style={{ marginBottom: 24 }}>
+            <Text style={styles.scriptLabel}>{`Scenario ${index + 1}: ${formatText(scenario.trigger)}`}</Text>
+            <Text style={[styles.scriptLabel, { marginTop: 8 }]}>You say:</Text>
+            <Text style={styles.scriptText}>{formatText(scenario.response)}</Text>
             <Text style={styles.scriptLabel}>Strategy:</Text>
             <Text style={styles.scriptText}>{formatText(scenario.explanation)}</Text>
           </View>
