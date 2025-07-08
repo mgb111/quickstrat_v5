@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import ErrorBoundary from './components/ErrorBoundary.tsx'
 import { AuthProvider } from './contexts/AuthContext.tsx'
 import { BrowserRouter } from 'react-router-dom'
 
@@ -23,13 +22,11 @@ try {
   
   root.render(
     <React.StrictMode>
-      <ErrorBoundary>
-        <AuthProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </AuthProvider>
-      </ErrorBoundary>
+      <AuthProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AuthProvider>
     </React.StrictMode>
   );
 } catch (error) {
