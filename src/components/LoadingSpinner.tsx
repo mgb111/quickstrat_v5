@@ -109,8 +109,8 @@ export const ContentLoader: React.FC<{ text?: string }> = ({ text = 'Loading con
   </div>
 );
 
-export const ButtonLoader: React.FC<{ text?: string }> = ({ text = 'Loading...' }) => (
-  <LoadingSpinner size="sm" text={text} />
+export const ButtonLoader: React.FC<{ text?: string; textClassName?: string }> = ({ text = 'Loading...', textClassName }) => (
+  <LoadingSpinner size="sm" text={text} className={textClassName} />
 );
 
 export const CardLoader: React.FC = () => (

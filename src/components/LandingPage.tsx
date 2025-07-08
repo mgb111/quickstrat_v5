@@ -19,9 +19,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
   useEffect(() => {
     const loadCampaign = async () => {
       try {
+        console.log('LandingPage: campaignSlug:', campaignSlug);
         const campaignData = await CampaignService.getCampaignBySlug(campaignSlug);
+        console.log('LandingPage: fetched campaignData:', campaignData);
         setCampaign(campaignData);
-      } catch {
+      } catch (err) {
+        console.error('LandingPage: error fetching campaign by slug:', err);
         setError('Campaign not found');
       }
     };

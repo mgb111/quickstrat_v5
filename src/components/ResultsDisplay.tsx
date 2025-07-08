@@ -156,65 +156,12 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
             </p>
           </div>
           
-          {/* Debug Info */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 text-sm">
-            <p className="font-semibold mb-2">Debug Information:</p>
-            <pre className="whitespace-pre-wrap overflow-auto max-h-40">
-              {JSON.stringify({
-                hasResults: !!results,
-                hasPdfContent: !!results?.pdf_content,
-                pdfContentType: results?.pdf_content ? typeof results.pdf_content : 'undefined',
-                pdfContentPreview: results?.pdf_content 
-                  ? (typeof results.pdf_content === 'string' 
-                      ? results.pdf_content.split('').slice(0, 100).join('') 
-                      : JSON.stringify(results.pdf_content).split('').slice(0, 100).join('')) + '...'
-                  : 'none',
-                brandName,
-                emailSubmitted,
-                error: pdfError
-              }, null, 2)}
-            </pre>
-          </div>
-
           {pdfContent && <PDFGenerator data={pdfContent} />}
         </div>
       )}
 
       {/* Campaign Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Lead Magnet Content */}
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-          <div className="flex items-center mb-4">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg mr-3">
-              <MessageCircle className="h-5 w-5 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900">Lead Magnet Content</h3>
-          </div>
-          
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-2">PDF Content</h4>
-              <div className="bg-gray-50 rounded-lg p-4 max-h-40 overflow-y-auto">
-                <p className="text-gray-700 text-sm whitespace-pre-wrap">
-                  {(() => {
-                    if (!results.pdf_content) {
-                      return 'PDF content is being generated...';
-                    }
-                    
-                    const previewContent = typeof results.pdf_content === 'string'
-                      ? results.pdf_content
-                      : JSON.stringify(results.pdf_content, null, 2);
-                      
-                    return previewContent.length > 300
-                      ? previewContent.split('').slice(0, 300).join('') + '...'
-                      : previewContent;
-                  })()}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Landing Page Copy */}
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
           <div className="flex items-center mb-4">

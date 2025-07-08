@@ -209,26 +209,23 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
     );
   };
 
-  const renderIntroductionContent = (content: string) => {
-    // Split the content into key points
-    const points = [
-      'VR Training offers exciting opportunities for immersive and interactive learning experiences.',
-      'The transition can be challenging and costly without a structured approach.',
-      'The Tesseract Plan equips you with practical tools to implement cost-effective VR Training.',
-      'You\'ll get a detailed comparison of VR Training strategies, an action-packed implementation checklist, and effective script scenarios.',
-      'Prepare to revolutionize your training approach with VR.'
-    ];
-
-    return (
-      <View style={styles.bulletList}>
-        {points.map((point, index) => (
-          <View key={index} style={styles.bulletItem}>
-            <Text style={styles.bulletPoint}>•</Text>
-            <Text style={styles.bulletContent}>{point}</Text>
-          </View>
-        ))}
-      </View>
-    );
+  const renderIntroductionContent = (content: string | string[]) => {
+    if (Array.isArray(content)) {
+      return (
+        <View style={styles.bulletList}>
+          {content.map((point, index) => (
+            <View key={index} style={styles.bulletItem}>
+              <Text style={styles.bulletPoint}>•</Text>
+              <Text style={styles.bulletContent}>{point}</Text>
+            </View>
+          ))}
+        </View>
+      );
+    }
+    // Otherwise, render as paragraphs
+    return content.split('\n').map((paragraph, i) => (
+      <Text key={i} style={styles.bodyText}>{paragraph}</Text>
+    ));
   };
 
   const renderSection = (section: PDFContent['structured_content']['toolkit_sections'][0]) => {

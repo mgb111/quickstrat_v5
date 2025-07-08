@@ -151,7 +151,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
               className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isLoading ? (
-                <ButtonLoader text="Generating Concepts..." />
+                <ButtonLoader text="Generating Concepts..." textClassName="text-white" />
               ) : (
                 <>
                   <span>Generate Lead Magnet Concepts</span>
