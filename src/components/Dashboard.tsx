@@ -18,10 +18,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingLeads, setIsLoadingLeads] = useState(false);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
-
   const [error, setError] = useState<string | null>(null);
-  const [showEmailTest, setShowEmailTest] = useState(false);
-  const [showAuthTest, setShowAuthTest] = useState(false);
 
   useEffect(() => {
     loadCampaigns();
@@ -80,9 +77,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
     const url = `${window.location.origin}/landing/${slug}`;
     try {
       await navigator.clipboard.writeText(url);
-      // You could add a toast notification here
     } catch {
-      // Fallback for older browsers
       const textArea = document.createElement('textarea');
       textArea.value = url;
       document.body.appendChild(textArea);
@@ -94,13 +89,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
 
   const exportLeads = async () => {
     if (!selectedCampaign) return;
-
     try {
       const csvContent = [
         'Email,Captured At',
         ...leads.map(lead => `${lead.email},${lead.captured_at}`)
       ].join('\n');
-
       const blob = new Blob([csvContent], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -149,36 +142,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
         <p className="text-gray-600">Manage your lead generation campaigns</p>
       </div>
-
-      {/* Test Tools */}
-      <div className="mb-8 flex space-x-4">
-        <button
-          onClick={() => setShowEmailTest(!showEmailTest)}
-          className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-        >
-          <Mail className="h-4 w-4 mr-2" />
-          Email Test
-        </button>
-        <button
-          onClick={() => setShowAuthTest(!showAuthTest)}
-          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-        >
-          <UserCheck className="h-4 w-4 mr-2" />
-          Auth Test
-        </button>
-      </div>
-
-      {showEmailTest && (
-        <div className="mb-8 p-6 bg-white rounded-lg shadow">
-          {/* EmailTest component was removed */}
-        </div>
-      )}
-
-      {showAuthTest && (
-        <div className="mb-8 p-6 bg-white rounded-lg shadow">
-          {/* AuthTest component was removed */}
-        </div>
-      )}
 
       {/* Campaigns */}
       {campaigns.length === 0 ? (
