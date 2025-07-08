@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+import AppRouter from './components/Router'
 import './index.css'
 import ErrorBoundary from './components/ErrorBoundary.tsx'
 import { AuthProvider } from './contexts/AuthContext.tsx'
@@ -24,7 +24,7 @@ try {
     <React.StrictMode>
       <ErrorBoundary>
         <AuthProvider>
-          <App />
+          <AppRouter />
         </AuthProvider>
       </ErrorBoundary>
     </React.StrictMode>
