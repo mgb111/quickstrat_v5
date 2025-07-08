@@ -34,7 +34,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
           data: {
             name: name
           },
-          emailRedirectTo: `https://majorbeam.com/dashboard`
+          emailRedirectTo: `${window.location.origin}/dashboard`
         }
       });
 
@@ -101,18 +101,22 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
     setError(null);
 
     try {
+      console.log('🔐 Starting Google OAuth signup...');
       const { error: googleError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `https://majorbeam.com/dashboard`
+          redirectTo: `${window.location.origin}/dashboard`
         }
       });
 
       if (googleError) {
+        console.error('❌ Google OAuth error:', googleError);
         throw googleError;
       }
+      
+      console.log('✅ Google OAuth signup initiated successfully');
     } catch (err) {
-      console.error('Google signup error:', err);
+      console.error('❌ Google signup error:', err);
       setError('Failed to sign up with Google. Please try again.');
       setIsGoogleLoading(false);
     }

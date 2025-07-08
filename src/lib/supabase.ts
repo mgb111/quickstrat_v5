@@ -37,6 +37,17 @@ if (typeof window !== 'undefined') {
       userEmail: session?.user?.email
     });
   });
+
+  // Test OAuth configuration
+  console.log('🔧 Testing OAuth configuration...');
+  const testRedirectUrl = `${window.location.origin}/dashboard`;
+  console.log('🔧 Test redirect URL:', testRedirectUrl);
+  console.log('🔧 URL validation:', {
+    hasProtocol: testRedirectUrl.startsWith('http'),
+    hasDoubleSlash: testRedirectUrl.includes('//'),
+    origin: window.location.origin,
+    pathname: window.location.pathname
+  });
 }
 
 export type Database = {

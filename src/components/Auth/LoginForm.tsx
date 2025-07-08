@@ -52,6 +52,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
   const handleGoogleLogin = async () => {
     try {
       console.log('🔐 Starting Google OAuth login...');
+      console.log('📍 Current origin:', window.location.origin);
+      console.log('📍 Redirect URL:', `${window.location.origin}/dashboard`);
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
