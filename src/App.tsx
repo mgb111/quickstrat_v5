@@ -12,9 +12,10 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [mode, setMode] = useState<AppMode>('auth');
+  const [wizardLoading, setWizardLoading] = useState(false);
 
   useEffect(() => {
-    if (loading) return;
+    if (loading) return; // Don't do anything until loading is false
     if (user) {
       setMode('dashboard');
       if (location.pathname === '/' || location.pathname === '/auth') {
@@ -42,14 +43,31 @@ function App() {
     </header>
   );
 
+  // Block all UI and redirects until loading is false
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (mode === 'wizard') {
     return (
       <div>
         <Header />
         <div className="container mx-auto px-4 py-8">
           <CampaignForm
-            onComplete={() => setMode('dashboard')}
-            onCancel={() => setMode('dashboard')}
+            onSubmit={() => {
+              setWizardLoading(true);
+              // After campaign is created, return to dashboard
+              setMode('dashboard');
+              setWizardLoading(false);
+            }}
+            isLoading={wizardLoading}
           />
         </div>
       </div>
