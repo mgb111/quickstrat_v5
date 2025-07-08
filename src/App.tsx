@@ -1,95 +1,475 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import Dashboard from './components/Dashboard';
+import { Zap, ArrowLeft, BarChart3, Plus, User } from 'lucide-react';
 import CampaignForm from './components/CampaignForm';
+import ConceptSelection from './components/ConceptSelection';
+import OutlineReview from './components/OutlineReview';
+import ResultsDisplay from './components/ResultsDisplay';
+import Dashboard from './components/Dashboard';
+import LandingPage from './components/LandingPage';
 import Auth from './components/Auth/Auth';
+import UserProfile from './components/UserProfile';
 import { useAuth } from './contexts/AuthContext';
+import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline } from './types/index';
+import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
+import { CampaignService } from './lib/campaignService';
+import { EmailService } from './lib/emailService';
+import LoadingSpinner from './components/LoadingSpinner';
 
-type AppMode = 'auth' | 'wizard' | 'dashboard';
+type AppMode = 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile';
 
 function App() {
-  const { user, loading, signOut } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
+  console.log('App component rendering...');
+  
+  const { user, loading } = useAuth();
   const [mode, setMode] = useState<AppMode>('auth');
-  const [wizardLoading, setWizardLoading] = useState(false);
+  const [wizardState, setWizardState] = useState<WizardState>({
+    stage: 'input',
+    input: null,
+    concepts: null,
+    selectedConcept: null,
+    outline: null,
+    finalOutput: null
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  console.log('Auth state:', { user, loading, mode });
+  console.log('🎯 Current wizard stage:', wizardState.stage);
+
+  // Check for landing page route on mount
   useEffect(() => {
-    if (loading) return; // Don't do anything until loading is false
-    if (user) {
-      setMode('dashboard');
-      if (location.pathname === '/' || location.pathname === '/auth') {
-        navigate('/dashboard', { replace: true });
-      }
-    } else {
-      setMode('auth');
-      if (!location.pathname.startsWith('/landing/') && location.pathname !== '/') {
-        navigate('/', { replace: true });
+    const path = window.location.pathname;
+    console.log('Current path:', path);
+    if (path.startsWith('/landing/')) {
+      setMode('landing');
+    }
+  }, []);
+
+  // Handle authentication state changes
+  useEffect(() => {
+    console.log('Auth effect running:', { loading, user, mode });
+    if (!loading) {
+      if (user) {
+        // User is authenticated, show dashboard
+        console.log('User authenticated, switching to dashboard');
+        if (mode === 'auth') {
+          setMode('dashboard');
+        }
+      } else {
+        // User is not authenticated, show auth
+        console.log('User not authenticated, switching to auth');
+        if (mode !== 'landing') {
+          setMode('auth');
+        }
       }
     }
-    // eslint-disable-next-line
-  }, [user, loading]);
+  }, [user, loading, mode]);
 
-  const Header = () => (
-    <header className="w-full flex justify-end p-4">
-      {user && (
-        <button
-          onClick={signOut}
-          className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
-        >
-          Log Out
-        </button>
-      )}
-    </header>
-  );
+  // Extract campaign slug from URL
+  const getCampaignSlug = () => {
+    const path = window.location.pathname;
+    if (path.startsWith('/landing/')) {
+      return path.replace('/landing/', '');
+    }
+    return '';
+  };
 
-  // Block all UI and redirects until loading is false
+  const handleAuthSuccess = () => {
+    setMode('dashboard');
+  };
+
+  const handleInputSubmit = async (input: CampaignInput) => {
+    console.log('🔄 Starting concept generation...');
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const concepts = await generateLeadMagnetConcepts(input);
+      console.log('✅ Concepts generated:', concepts);
+      setWizardState({
+        stage: 'concept-selection',
+        input,
+        concepts,
+        selectedConcept: null,
+        outline: null,
+        finalOutput: null
+      });
+      console.log('🎯 Moved to concept-selection stage');
+    } catch (err) {
+      console.error('❌ Error generating concepts:', err);
+      setError('Failed to generate lead magnet concepts. Please check your API keys and try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConceptSelected = async (selectedConcept: LeadMagnetConcept) => {
+    console.log('🔄 Starting outline generation...');
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const outline = await generateContentOutline(wizardState.input!, selectedConcept);
+      console.log('✅ Outline generated:', outline);
+      setWizardState(prev => ({
+        ...prev,
+        stage: 'outline-review',
+        selectedConcept,
+        outline
+      }));
+      console.log('🎯 Moved to outline-review stage');
+    } catch (err) {
+      console.error('❌ Error generating outline:', err);
+      setError('Failed to generate content outline. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOutlineApproved = async (finalOutline: ContentOutline) => {
+    console.log('🔄 Starting final campaign generation...');
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
+      console.log('✅ Final campaign generated:', finalOutput);
+      setWizardState(prev => ({
+        ...prev,
+        stage: 'complete',
+        outline: finalOutline,
+        finalOutput
+      }));
+      console.log('🎯 Moved to complete stage');
+    } catch (err) {
+      console.error('❌ Error generating final campaign:', err);
+      setError('Failed to generate final campaign. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCampaignCreated = async () => {
+    try {
+      // Create campaign in database
+      const campaign = await CampaignService.createCampaign(
+        wizardState.input!,
+        wizardState.finalOutput!
+      );
+
+      // Send welcome email to any existing leads
+      if (campaign.lead_magnet_content) {
+        // In a real implementation, you would send emails to leads
+        await EmailService.sendWelcomeEmail(
+          'example@email.com', // This would be the actual lead email
+          campaign.id,
+          campaign.lead_magnet_content,
+          campaign.name
+        );
+      }
+
+      // Switch to dashboard
+      setMode('dashboard');
+      setWizardState({
+        stage: 'input',
+        input: null,
+        concepts: null,
+        selectedConcept: null,
+        outline: null,
+        finalOutput: null
+      });
+    } catch (err) {
+      console.error('Error creating campaign:', err);
+      setError('Failed to create campaign. Please try again.');
+    }
+  };
+
+  const handleStartOver = () => {
+    setWizardState({
+      stage: 'input',
+      input: null,
+      concepts: null,
+      selectedConcept: null,
+      outline: null,
+      finalOutput: null
+    });
+    setError(null);
+  };
+
+  const handleNewCampaign = () => {
+    console.log('🎯 New Campaign button clicked');
+    console.log('🎯 Setting mode to wizard');
+    setMode('wizard');
+    console.log('🎯 Calling handleStartOver');
+    handleStartOver();
+    console.log('🎯 New campaign setup complete');
+  };
+
+  const renderStageIndicator = () => {
+    const stages = [
+      { id: 'input', label: 'Input', number: 1 },
+      { id: 'concept-selection', label: 'Focus', number: 2 },
+      { id: 'outline-review', label: 'Review', number: 3 },
+      { id: 'complete', label: 'Complete', number: 4 }
+    ];
+
+    return (
+      <div className="flex justify-center mb-8">
+        <div className="flex items-center space-x-4">
+          {stages.map((stage, index) => {
+            const isActive = wizardState.stage === stage.id;
+            const isCompleted = stages.findIndex(s => s.id === wizardState.stage) > index;
+            
+            return (
+              <React.Fragment key={stage.id}>
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full font-semibold text-sm transition-colors ${
+                  isActive 
+                    ? 'bg-blue-500 text-white' 
+                    : isCompleted 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-gray-200 text-gray-600'
+                }`}>
+                  {stage.number}
+                </div>
+                <span className={`text-sm font-medium ${
+                  isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'
+                }`}>
+                  {stage.label}
+                </span>
+                {index < stages.length - 1 && (
+                  <div className={`w-8 h-0.5 ${
+                    isCompleted ? 'bg-green-500' : 'bg-gray-200'
+                  }`} />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  // Show loading while checking authentication
   if (loading) {
+    console.log('Showing loading spinner...');
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading authentication...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="xl" text="Loading..." />
+      </div>
+    );
+  }
+
+  // Show error if there's an issue
+  if (error) {
+    console.log('Showing error:', error);
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-red-50">
+        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+          <h2 className="text-2xl font-bold text-red-800 mb-4">Application Error</h2>
+          <p className="text-red-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+          >
+            Reload Page
+          </button>
         </div>
       </div>
     );
   }
 
-  if (mode === 'wizard') {
+  console.log('Rendering main app with mode:', mode);
+
+  // Render landing page (no auth required)
+  if (mode === 'landing') {
+    return <LandingPage campaignSlug={getCampaignSlug()} />;
+  }
+
+  // Render authentication (no user)
+  if (!user) {
+    return <Auth onAuthSuccess={handleAuthSuccess} />;
+  }
+
+  // Render profile page
+  if (mode === 'profile') {
     return (
-      <div>
-        <Header />
-        <div className="container mx-auto px-4 py-8">
-          <CampaignForm
-            onSubmit={() => {
-              setWizardLoading(true);
-              // After campaign is created, return to dashboard
-              setMode('dashboard');
-              setWizardLoading(false);
-            }}
-            isLoading={wizardLoading}
-          />
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <span className="ml-3 text-xl font-bold text-gray-900">LeadGen Machine</span>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => setMode('dashboard')}
+                  className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  ← Back to Dashboard
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+        <div className="max-w-4xl mx-auto p-6">
+          <UserProfile />
         </div>
       </div>
     );
   }
 
+  // Render dashboard
+  if (mode === 'dashboard') {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <span className="ml-3 text-xl font-bold text-gray-900">LeadGen Machine</span>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => setMode('wizard')}
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Campaign
+                </button>
+                <button
+                  onClick={() => setMode('profile')}
+                  className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+        <Dashboard onNewCampaign={handleNewCampaign} />
+      </div>
+    );
+  }
+
+  // Render wizard
   return (
-    <div>
-      <Header />
-      <Routes>
-        <Route path="/" element={
-          user ? <Navigate to="/dashboard" replace /> : <Auth onAuthSuccess={() => setMode('dashboard')} />
-        } />
-        <Route path="/dashboard" element={
-          user ? (
-            <Dashboard onNewCampaign={() => setMode('wizard')} />
-          ) : (
-            <Navigate to="/" replace />
-          )
-        } />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="container mx-auto px-4 py-8">
+        <header className="text-center mb-12">
+          <div className="flex justify-center mb-4">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 rounded-2xl">
+              <Zap className="h-8 w-8 text-white" />
+            </div>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+            LeadGen <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Machine</span>
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Transform customer problems into focused, high-value lead magnets with AI assistance
+          </p>
+          
+          {/* Navigation */}
+          <div className="mt-8 flex justify-center space-x-4">
+            <button
+              onClick={() => setMode('dashboard')}
+              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Dashboard
+            </button>
+            <button
+              onClick={() => setMode('profile')}
+              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <User className="h-4 w-4 mr-2" />
+              Profile
+            </button>
+          </div>
+        </header>
+
+        {wizardState.stage !== 'input' && renderStageIndicator()}
+
+        {error && (
+          <div className="max-w-2xl mx-auto mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-800 text-center">{error}</p>
+          </div>
+        )}
+
+        {wizardState.stage === 'input' && (
+          <div>
+            {(() => { console.log('🎯 Rendering CampaignForm component'); return null; })()}
+            <CampaignForm onSubmit={handleInputSubmit} isLoading={isLoading} />
+          </div>
+        )}
+
+        {wizardState.stage === 'concept-selection' && wizardState.concepts && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <button
+                onClick={handleStartOver}
+                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Start Over
+              </button>
+            </div>
+            <ConceptSelection 
+              concepts={wizardState.concepts}
+              onConceptSelected={handleConceptSelected}
+              isLoading={isLoading}
+            />
+          </div>
+        )}
+
+        {wizardState.stage === 'outline-review' && wizardState.outline && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <button
+                onClick={handleStartOver}
+                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Start Over
+              </button>
+            </div>
+            <OutlineReview 
+              outline={wizardState.outline}
+              onOutlineApproved={handleOutlineApproved}
+              isLoading={isLoading}
+            />
+          </div>
+        )}
+
+        {wizardState.stage === 'complete' && wizardState.finalOutput && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <button
+                onClick={handleStartOver}
+                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Generate Another Campaign
+              </button>
+            </div>
+            <ResultsDisplay 
+              results={wizardState.finalOutput} 
+              brandName={wizardState.input?.brand_name || 'Your Brand'}
+              onCampaignCreated={handleCampaignCreated}
+            />
+          </div>
+        )}
+
+        <footer className="mt-16 text-center text-gray-500">
+          <p>© 2025 LeadGen Machine. AI assists, experts direct, humans approve.</p>
+        </footer>
+      </div>
     </div>
   );
 }
