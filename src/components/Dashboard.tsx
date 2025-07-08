@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserCheck } from 'lucide-react';
 import { Campaign, Lead } from '../types';
 import { CampaignService } from '../lib/campaignService';
-import EmailTest from './EmailTest';
-import AuthTest from './Auth/AuthTest';
 
 interface DashboardProps {
   onNewCampaign: () => void;
@@ -19,8 +17,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const [isLoadingStats, setIsLoadingStats] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
-  const [showEmailTest, setShowEmailTest] = useState(false);
-  const [showAuthTest, setShowAuthTest] = useState(false);
 
   useEffect(() => {
     loadCampaigns();
@@ -145,36 +141,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
         <p className="text-gray-600">Manage your lead generation campaigns</p>
       </div>
-
-      {/* Test Tools */}
-      <div className="mb-8 flex space-x-4">
-        <button
-          onClick={() => setShowEmailTest(!showEmailTest)}
-          className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-        >
-          <Mail className="h-4 w-4 mr-2" />
-          Email Test
-        </button>
-        <button
-          onClick={() => setShowAuthTest(!showAuthTest)}
-          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-        >
-          <UserCheck className="h-4 w-4 mr-2" />
-          Auth Test
-        </button>
-      </div>
-
-      {showEmailTest && (
-        <div className="mb-8 p-6 bg-white rounded-lg shadow">
-          <EmailTest />
-        </div>
-      )}
-
-      {showAuthTest && (
-        <div className="mb-8 p-6 bg-white rounded-lg shadow">
-          <AuthTest />
-        </div>
-      )}
 
       {/* Campaigns */}
       {campaigns.length === 0 ? (

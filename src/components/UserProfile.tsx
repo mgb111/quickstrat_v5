@@ -151,25 +151,6 @@ const UserProfile: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Account Actions */}
-        <div className="pt-6 border-t border-gray-200">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">Account Actions</h4>
-          <div className="space-y-3">
-            <button className="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-              Change Password
-            </button>
-            <button className="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-              Notification Settings
-            </button>
-            <button className="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-              Privacy Settings
-            </button>
-            <button className="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-              Delete Account
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );
