@@ -300,13 +300,13 @@ IMPORTANT: DO NOT USE "step_by_step_guide" type if you already have a checklist.
 
 4. Call to Action Page (layout: "centered"):
 Title: A clear, action-oriented title (e.g., "Your Next Step").
-Content: Use this EXACT CTA text: "You now have the complete blueprint for implementing a VR training program. To get a personalized assessment of how this blueprint can be applied to your specific training needs and budget, schedule a free 15-minute strategy session with our experts."
+Content: Write a custom, relevant call-to-action for this campaign. The CTA should reference the brand name (${input.brand_name}) and the lead magnet topic (${outline.title}), and encourage the reader to take a next step relevant to their business (such as booking a call, downloading more resources, or contacting support). Make it actionable, specific, and tailored to the context of this campaign. Do NOT use a generic or unrelated CTA.
 
 FINAL GUARDRAIL AND SELF-CORRECTION: Before generating the JSON, you MUST verify your own output against the mandatory instructions.
 1. Is the content for each page dense enough?
 2. Does the checklist contain 8-12 items across 2-3 phases?
 3. Are there exactly 3 toolkit sections with no redundancy?
-4. Does the CTA use the exact text provided?
+4. Is the CTA custom, relevant, and tailored to the brand and lead magnet topic?
 5. Have you avoided creating both a checklist AND a step-by-step guide?
 If any answer is no, you MUST rewrite that section to fully comply before providing the final output.
 
@@ -428,7 +428,7 @@ CRITICAL REQUIREMENTS:
 8. MANDATORY: For checklist, use phases with numbered items like "1.1", "2.1", etc.
 9. MANDATORY: Generate EXACTLY 3 toolkit sections, no more, no less
 10. MANDATORY: DO NOT create both checklist and step-by-step guide - choose one or the other to avoid redundancy
-11. MANDATORY: Use the exact CTA text provided in the prompt`;
+11. MANDATORY: The CTA must be custom, relevant, and tailored to the brand and lead magnet topic.`;
 
     const res = await client.chat.completions.create({
       model: 'gpt-4',

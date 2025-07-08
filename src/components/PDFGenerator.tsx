@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Document, Page, Text, View, StyleSheet, PDFViewer, BlobProvider, Image, Link } from '@react-pdf/renderer';
 import { PDFContent } from '../types';
 
 interface PDFGeneratorProps {
   data: PDFContent;
+}
+
+// Helper hook to detect mobile
+function useIsMobile(breakpoint = 640) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < breakpoint);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [breakpoint]);
+  return isMobile;
 }
 
 // Define styles
@@ -408,36 +420,41 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   if (!data) return <div>No content available</div>;
 
   const fileName = `${data.title.toLowerCase().replace(/\s+/g, '-')}.pdf`;
+  const isMobile = useIsMobile();
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="flex justify-end">
-        <BlobProvider document={<PDFDocument data={data} />}>
-          {({ url, loading }) => (
+      <BlobProvider document={<PDFDocument data={data} />}>
+        {({ url, loading }) => (
+          isMobile ? (
             <a
               href={url || '#'}
               download={fileName}
-              className={`inline-flex items-center px-4 py-2 rounded-lg transition-colors ${
-                loading || !url
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
-              }`}
-              onClick={(e) => {
-                if (loading || !url) {
-                  e.preventDefault();
-                }
-              }}
+              className="fixed bottom-4 left-1/2 -translate-x-1/2 w-11/12 max-w-xs bg-blue-600 text-white text-lg py-4 rounded-xl shadow-lg text-center z-50"
+              style={{ zIndex: 50 }}
             >
-              {loading ? 'Preparing download...' : 'Download PDF'}
+              {loading ? 'Preparing PDF…' : 'Download PDF'}
             </a>
-          )}
-        </BlobProvider>
-      </div>
-      <div style={{ width: '100%', height: '800px' }}>
-        <PDFViewer style={{ width: '100%', height: '100%' }}>
-          <PDFDocument data={data} />
-        </PDFViewer>
-      </div>
+          ) : (
+            <div className="flex justify-end mb-2">
+              <a
+                href={url || '#'}
+                download={fileName}
+                className="inline-flex items-center px-4 py-2 rounded-lg transition-colors bg-blue-600 hover:bg-blue-700 text-white cursor-pointer text-lg"
+              >
+                {loading ? 'Preparing download...' : 'Download PDF'}
+              </a>
+            </div>
+          )
+        )}
+      </BlobProvider>
+      {!isMobile && (
+        <div style={{ width: '100%', height: '800px' }}>
+          <PDFViewer style={{ width: '100%', height: '100%' }}>
+            <PDFDocument data={data} />
+          </PDFViewer>
+        </div>
+      )}
     </div>
   );
 };
