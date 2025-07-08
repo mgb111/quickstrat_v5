@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Copy, FileText, Users } from 'lucide-react';
 import { Campaign, Lead } from '../types';
 import { CampaignService } from '../lib/campaignService';
-import { useAuth } from '../contexts/AuthContext';
 
 interface DashboardProps {
   onNewCampaign: () => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
-  const { user, session } = useAuth();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -38,7 +36,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
       if (campaignsData.length > 0) {
         setSelectedCampaign(campaignsData[0]);
       }
-    } catch (err) {
+    } catch {
       setError('Failed to load campaigns');
     } finally {
       setIsLoading(false);
@@ -210,7 +208,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
                     <p className="text-2xl font-bold text-blue-600">{selectedCampaign.lead_count}</p>
                     <p className="text-sm text-gray-600">Total Leads</p>
                   </div>
-                  {/* Add more stats here if needed */}
+                  {/* Add more stats or details here if needed */}
                 </div>
               </div>
               {/* Add more campaign details, leads, etc. here if needed */}
@@ -222,4 +220,4 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;
