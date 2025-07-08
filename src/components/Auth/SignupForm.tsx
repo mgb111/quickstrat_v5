@@ -34,7 +34,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, onSuccess }) =
           data: {
             name: name
           },
-          emailRedirectTo: window.location.origin
+          emailRedirectTo: `${window.location.origin}/dashboard`
         }
       });
 

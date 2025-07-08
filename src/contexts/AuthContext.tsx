@@ -58,8 +58,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             
             // Clear the hash and redirect to root
             console.log('🔄 Redirecting to root...');
-            window.history.replaceState(null, '', '/');
-            window.location.href = '/';
+            window.history.replaceState(null, '', '/dashboard');
+            window.location.href = '/dashboard';
             return;
           } else {
             console.log('⚠️ No session found after OAuth callback');
@@ -105,16 +105,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSession(newSession);
         setUser(newSession?.user ?? null);
         
-        // Only redirect if we're not already on the root and not handling OAuth callback
-        if (window.location.pathname !== '/' && !window.location.hash.includes('access_token')) {
+        // Only redirect if we're not already on the dashboard and not handling OAuth callback
+        if (window.location.pathname !== '/dashboard' && !window.location.hash.includes('access_token')) {
           console.log('🔄 Redirecting to root...');
-          window.location.href = '/';
+          window.location.href = '/dashboard';
         }
       } else if (event === 'SIGNED_OUT') {
-        console.log('�� User signed out');
+        console.log(' User signed out');
         setSession(null);
         setUser(null);
-        window.location.href = '/';
+        window.location.href = '/dashboard';
       }
     });
 
@@ -129,7 +129,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await supabase.auth.signOut();
       setUser(null);
       setSession(null);
-      window.location.href = '/';
+      window.location.href = '/dashboard';
     } catch (error) {
       console.error('Error signing out:', error);
     }

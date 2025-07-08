@@ -40,7 +40,7 @@ if (typeof window !== 'undefined') {
 
   // Test OAuth configuration
   console.log('🔧 Testing OAuth configuration...');
-  const testRedirectUrl = window.location.origin;
+  const testRedirectUrl = `${window.location.origin}/dashboard`;
   console.log('🔧 Test redirect URL:', testRedirectUrl);
   console.log('🔧 URL validation:', {
     hasProtocol: testRedirectUrl.startsWith('http'),
