@@ -45,8 +45,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
       await CampaignService.captureLead(campaign.id, email.trim());
       setIsSubmitted(true);
       setShowPDF(true);
-    } catch {
-      setError('Failed to submit email. Please try again.');
+    } catch (err: any) {
+      console.error('Failed to submit email:', err);
+      if (err && err.message) {
+        setError('Failed to submit email: ' + err.message);
+      } else if (err && err.error_description) {
+        setError('Failed to submit email: ' + err.error_description);
+      } else {
+        setError('Failed to submit email. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
