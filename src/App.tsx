@@ -19,7 +19,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 type AppMode = 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile';
 
 function App() {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   console.log('App user:', user, 'loading:', loading);
   const location = useLocation();
   const navigate = useNavigate();
@@ -37,16 +37,20 @@ function App() {
 
   // Handle initial routing
   useEffect(() => {
-    const path = location.pathname;
-    
-    if (path.startsWith('/landing/')) {
-      setMode('landing');
-    } else if (path === '/dashboard' && user) {
+    if (loading) return;
+    if (user) {
       setMode('dashboard');
-    } else if (!user && !loading && path !== '/') {
-      navigate('/', { replace: true });
+      if (location.pathname === '/' || location.pathname === '/auth') {
+        navigate('/dashboard', { replace: true });
+      }
+    } else {
+      setMode('auth');
+      if (!location.pathname.startsWith('/landing/') && location.pathname !== '/') {
+        navigate('/', { replace: true });
+      }
     }
-  }, [location.pathname, user, loading, navigate]);
+    // eslint-disable-next-line
+  }, [user, loading]);
 
   // Handle authentication state changes
   useEffect(() => {
@@ -234,27 +238,58 @@ function App() {
     );
   }
 
-  // Render the appropriate component based on the current route
+  // Always render header with logout if logged in
+  const Header = () => (
+    <header className="w-full flex justify-end p-4">
+      {user && (
+        <button
+          onClick={signOut}
+          className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+        >
+          Log Out
+        </button>
+      )}
+    </header>
+  );
+
+  // Render campaign creation wizard when in wizard mode
+  if (mode === 'wizard') {
+    return (
+      <div>
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <CampaignForm
+            // Pass necessary props for your wizard
+            onComplete={() => setMode('dashboard')}
+            onCancel={() => setMode('dashboard')}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Main app layout
   return (
-    <Routes>
-      <Route path="/" element={
-        user ? <Navigate to="/dashboard" replace /> : <Auth onAuthSuccess={handleAuthSuccess} />
-      } />
-      <Route path="/dashboard" element={
-        user ? (
-          <div className="container mx-auto px-4 py-8">
-            <Dashboard onNewCampaign={handleNewCampaign} />
-          </div>
-        ) : (
-          <Navigate to="/" replace />
-        )
-      } />
-      <Route path="/landing/*" element={<LandingPage campaignSlug={getCampaignSlug()} />} />
-      <Route path="/profile" element={
-        user ? <UserProfile /> : <Navigate to="/" replace />
-      } />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <div>
+      <Header />
+      <Routes>
+        <Route path="/" element={
+          user ? <Navigate to="/dashboard" replace /> : <Auth onAuthSuccess={() => setMode('dashboard')} />
+        } />
+        <Route path="/dashboard" element={
+          user ? (
+            <Dashboard onNewCampaign={() => setMode('wizard')} />
+          ) : (
+            <Navigate to="/" replace />
+          )
+        } />
+        <Route path="/landing/*" element={<LandingPage campaignSlug={getCampaignSlug()} />} />
+        <Route path="/profile" element={
+          user ? <UserProfile /> : <Navigate to="/" replace />
+        } />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
   );
 }
 
