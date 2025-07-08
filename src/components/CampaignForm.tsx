@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CampaignInput } from '../types';
 import { ButtonLoader } from './LoadingSpinner';
+import { Loader2 } from 'lucide-react';
 
 interface CampaignFormProps {
   onSubmit: (input: CampaignInput) => void;
@@ -148,13 +149,16 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
             <button
               type="submit"
               disabled={isLoading || !formData.brand_name || !formData.niche || !formData.target_audience || !formData.problem_statement || !formData.desired_outcome}
-              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isLoading ? (
-                <ButtonLoader text="Generating Concepts..." textClassName="text-white" />
+                <>
+                  <Loader2 className="animate-spin h-5 w-5 mr-3" />
+                  <span className="text-white font-semibold">Generating Concepts...</span>
+                </>
               ) : (
                 <>
-                  <span>Generate Lead Magnet Concepts</span>
+                  Generate Lead Magnet Concepts
                   <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>

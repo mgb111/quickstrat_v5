@@ -17,18 +17,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
   const [showPDF, setShowPDF] = useState(false);
 
   useEffect(() => {
+    setError(null); // Clear error when slug changes or fetch starts
     const loadCampaign = async () => {
       try {
         console.log('LandingPage: campaignSlug:', campaignSlug);
         const campaignData = await CampaignService.getCampaignBySlug(campaignSlug);
         console.log('LandingPage: fetched campaignData:', campaignData);
         setCampaign(campaignData);
+        setError(null); // Clear error if campaign is found
       } catch (err) {
         console.error('LandingPage: error fetching campaign by slug:', err);
         setError('Campaign not found');
+        setCampaign(null);
       }
     };
-
     loadCampaign();
   }, [campaignSlug]);
 
@@ -50,7 +52,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
     }
   };
 
-  if (error) {
+  if (error && !campaign) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center">
         <div className="text-center">
@@ -97,7 +99,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 flex flex-col items-center">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             {landingPageCopy?.headline || campaign.lead_magnet_title || 'Get Your Free Guide'}
           </h1>
@@ -109,9 +111,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
           {/* Benefit Bullets */}
           {landingPageCopy?.benefit_bullets && (
             <div className="max-w-2xl mx-auto mb-8">
-              <ul className="space-y-3 text-left">
+              <ul className="space-y-3 text-center">
                 {landingPageCopy.benefit_bullets.map((bullet: string, index: number) => (
-                  <li key={index} className="flex items-start">
+                  <li key={index} className="flex items-center justify-center">
                     <Check className="h-6 w-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
                     <span className="text-lg text-gray-700">{bullet}</span>
                   </li>
