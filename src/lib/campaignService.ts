@@ -27,19 +27,29 @@ export class CampaignService {
       .eq('id', user.id)
       .single();
 
+    console.log('User check result:', { publicUser, userError, userId: user.id });
+
     // If user doesn't exist in public.users, create them
     if (!publicUser) {
-      const { error: insertError } = await supabase
+      console.log('Creating user record for:', user.id, user.email);
+      
+      const { data: newUser, error: insertError } = await supabase
         .from('users')
         .insert({
           id: user.id,
           email: user.email
-        });
+        })
+        .select()
+        .single();
 
       if (insertError) {
         console.error('Failed to create user record:', insertError);
-        throw new Error('Failed to initialize user profile. Please try logging out and back in.');
+        throw new Error(`Failed to initialize user profile: ${insertError.message}`);
       }
+
+      console.log('User record created successfully:', newUser);
+    } else {
+      console.log('User record already exists:', publicUser);
     }
 
     // Generate unique slug
