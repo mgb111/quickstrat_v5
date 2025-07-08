@@ -187,24 +187,7 @@ export class CampaignService {
 
   // Capture a lead
   static async captureLead(campaignId: string, email: string): Promise<Lead> {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      throw new Error('Authentication required to capture leads');
-    }
-
-    // First, check if the campaign exists and user has access
-    const { data: campaign, error: campaignError } = await supabase
-      .from('campaigns')
-      .select('id')
-      .eq('id', campaignId)
-      .eq('user_id', user.id)
-      .single();
-
-    if (campaignError || !campaign) {
-      throw new Error('Campaign not found or access denied');
-    }
-
+    // Removed authentication check for public lead capture
     // Insert the lead
     const { data, error } = await supabase
       .from('leads')
@@ -217,10 +200,10 @@ export class CampaignService {
 
     if (error) {
       console.error('Lead capture error:', error);
-      throw new Error(`Failed to capture lead: ${error.message}`);
+      throw error;
     }
 
-    // Also insert into emails table for automation
+    // Also insert into emails table for automation (optional)
     await supabase
       .from('emails')
       .insert({
