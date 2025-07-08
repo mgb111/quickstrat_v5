@@ -53,12 +53,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
     try {
       console.log('🔐 Starting Google OAuth login...');
       console.log('📍 Current origin:', window.location.origin);
-      console.log('📍 Redirect URL:', `${window.location.origin}/dashboard`);
+      console.log('📍 Redirect URL:', window.location.origin);
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/dashboard`
+          redirectTo: window.location.origin
         }
       });
 
