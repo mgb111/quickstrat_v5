@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserCheck } from 'lucide-react';
 import { Campaign, Lead } from '../types';
 import { CampaignService } from '../lib/campaignService';
-import EmailTest from './EmailTest';
-import AuthTest from './Auth/AuthTest';
+import { useAuth } from '../contexts/AuthContext';
 
 interface DashboardProps {
   onNewCampaign: () => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
+  const { user, session } = useAuth();
+  console.log('Dashboard user:', user, 'session:', session);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -166,13 +167,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
 
       {showEmailTest && (
         <div className="mb-8 p-6 bg-white rounded-lg shadow">
-          <EmailTest />
+          {/* EmailTest component was removed */}
         </div>
       )}
 
       {showAuthTest && (
         <div className="mb-8 p-6 bg-white rounded-lg shadow">
-          <AuthTest />
+          {/* AuthTest component was removed */}
         </div>
       )}
 

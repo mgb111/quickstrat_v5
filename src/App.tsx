@@ -20,6 +20,7 @@ type AppMode = 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile';
 
 function App() {
   const { user, loading } = useAuth();
+  console.log('App user:', user, 'loading:', loading);
   const location = useLocation();
   const navigate = useNavigate();
   const [mode, setMode] = useState<AppMode>('auth');
@@ -175,9 +176,7 @@ function App() {
 
   const handleNewCampaign = () => {
     console.log('🎯 New Campaign button clicked');
-    console.log('🎯 Setting mode to wizard');
     setMode('wizard');
-    console.log('🎯 Calling handleStartOver');
     handleStartOver();
     console.log('🎯 New campaign setup complete');
   };
