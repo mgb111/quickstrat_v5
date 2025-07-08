@@ -53,12 +53,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
     try {
       console.log('🔐 Starting Google OAuth login...');
       console.log('📍 Current origin:', window.location.origin);
-      console.log('📍 Redirect URL:', window.location.origin);
+      console.log('📍 Redirect URL:', `${window.location.origin}/dashboard`);
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin
+          redirectTo: `${window.location.origin}/dashboard`
         }
       });
 
@@ -106,7 +106,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
         type: 'signup',
         email: email,
         options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`
+          emailRedirectTo: `https://majorbeam.com/dashboard`
         }
       });
 

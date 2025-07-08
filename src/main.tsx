@@ -2,8 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+import ErrorBoundary from './components/ErrorBoundary.tsx'
 import { AuthProvider } from './contexts/AuthContext.tsx'
-import { BrowserRouter } from 'react-router-dom'
 
 // Debug environment
 console.log('Application starting...', {
@@ -22,11 +22,11 @@ try {
   
   root.render(
     <React.StrictMode>
-      <AuthProvider>
-        <BrowserRouter>
+      <ErrorBoundary>
+        <AuthProvider>
           <App />
-        </BrowserRouter>
-      </AuthProvider>
+        </AuthProvider>
+      </ErrorBoundary>
     </React.StrictMode>
   );
 } catch (error) {
