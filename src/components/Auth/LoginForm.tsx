@@ -106,7 +106,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
         type: 'signup',
         email: email,
         options: {
-          emailRedirectTo: `https://majorbeam.com/dashboard`
+          emailRedirectTo: window.location.origin
         }
       });
 

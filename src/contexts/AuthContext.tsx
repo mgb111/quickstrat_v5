@@ -56,9 +56,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setSession(data.session);
             setUser(data.session.user);
             
-            // Clear the hash and redirect to dashboard
-            console.log('🔄 Redirecting to dashboard...');
-            window.history.replaceState(null, '', '/dashboard');
+            // Clear the hash and redirect to root
+            console.log('🔄 Redirecting to root...');
+            window.history.replaceState(null, '', '/');
+            window.location.href = '/';
             return;
           } else {
             console.log('⚠️ No session found after OAuth callback');
@@ -104,13 +105,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSession(newSession);
         setUser(newSession?.user ?? null);
         
-        // Only redirect if we're not already on the dashboard and not handling OAuth callback
-        if (window.location.pathname !== '/dashboard' && !window.location.hash.includes('access_token')) {
-          console.log('🔄 Redirecting to dashboard...');
-          window.location.href = '/dashboard';
+        // Only redirect if we're not already on the root and not handling OAuth callback
+        if (window.location.pathname !== '/' && !window.location.hash.includes('access_token')) {
+          console.log('🔄 Redirecting to root...');
+          window.location.href = '/';
         }
       } else if (event === 'SIGNED_OUT') {
-        console.log('👋 User signed out');
+        console.log('�� User signed out');
         setSession(null);
         setUser(null);
         window.location.href = '/';
