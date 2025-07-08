@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserCheck } from 'lucide-react';
+import { Copy, FileText, Users } from 'lucide-react';
 import { Campaign, Lead } from '../types';
 import { CampaignService } from '../lib/campaignService';
 import { useAuth } from '../contexts/AuthContext';
@@ -10,7 +10,6 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const { user, session } = useAuth();
-  console.log('Dashboard user:', user, 'session:', session);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -34,15 +33,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const loadCampaigns = async () => {
     try {
       setIsLoading(true);
-      console.log('Dashboard: Loading campaigns...');
       const campaignsData = await CampaignService.getCampaigns();
-      console.log('Dashboard: Campaigns loaded:', campaignsData);
       setCampaigns(campaignsData);
       if (campaignsData.length > 0) {
         setSelectedCampaign(campaignsData[0]);
       }
     } catch (err) {
-      console.error('Dashboard: Failed to load campaigns', err);
       setError('Failed to load campaigns');
     } finally {
       setIsLoading(false);
@@ -214,98 +210,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
                     <p className="text-2xl font-bold text-blue-600">{selectedCampaign.lead_count}</p>
                     <p className="text-sm text-gray-600">Total Leads</p>
                   </div>
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-green-600">
-                      {stats?.conversion_rate ? `${stats.conversion_rate}%` : 'N/A'}
-                    </p>
-                    <p className="text-sm text-gray-600">Conversion Rate</p>
-                  </div>
-                  <div className="text-center p-4 bg-purple-50 rounded-lg">
-                    <MessageCircle className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-purple-600">
-                      {stats?.avg_time_to_convert ? `${stats.avg_time_to_convert} days` : 'N/A'}
-                    </p>
-                    <p className="text-sm text-gray-600">Avg Time to Convert</p>
-                  </div>
+                  {/* Add more stats here if needed */}
                 </div>
               </div>
-
-              {/* Leads List */}
-              <div className="bg-white rounded-lg shadow">
-                <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-                  <h3 className="text-lg font-semibold text-gray-900">Recent Leads</h3>
-                  <button
-                    onClick={exportLeads}
-                    className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Export CSV
-                  </button>
-                </div>
-                <div className="divide-y divide-gray-200">
-                  {isLoadingLeads ? (
-                    <div className="p-6 text-center">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                      <p className="text-gray-600">Loading leads...</p>
-                    </div>
-                  ) : leads.length === 0 ? (
-                    <div className="p-6 text-center text-gray-500">
-                      No leads captured yet
-                    </div>
-                  ) : (
-                    leads.map((lead) => (
-                      <div key={lead.id} className="p-4 flex justify-between items-center">
-                        <div>
-                          <p className="font-medium text-gray-900">{lead.email}</p>
-                          <p className="text-sm text-gray-500">
-                            Captured {new Date(lead.captured_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => copyLandingPageUrl(selectedCampaign.landing_page_slug)}
-                          className="text-gray-400 hover:text-gray-600"
-                          title="Copy landing page URL"
-                        >
-                          <Copy className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              {/* Campaign Settings */}
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Settings</h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Landing Page URL
-                    </label>
-                    <div className="flex">
-                      <input
-                        type="text"
-                        value={`${window.location.origin}/landing/${selectedCampaign.landing_page_slug}`}
-                        readOnly
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg bg-gray-50"
-                      />
-                      <button
-                        onClick={() => copyLandingPageUrl(selectedCampaign.landing_page_slug)}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 transition-colors"
-                      >
-                        <Copy className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Lead Magnet Title
-                    </label>
-                    <p className="text-gray-900">{selectedCampaign.lead_magnet_title || 'Not set'}</p>
-                  </div>
-                </div>
-              </div>
+              {/* Add more campaign details, leads, etc. here if needed */}
             </div>
           )}
         </div>
