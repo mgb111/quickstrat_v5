@@ -9,6 +9,7 @@ import {
   Link,
   Image,
 } from '@react-pdf/renderer';
+import { PDFContent } from '../types';
 
 // --- Register Fonts ---
 Font.register({
@@ -221,205 +222,157 @@ const styles = StyleSheet.create({
   },
 });
 
-const PDFGenerator = () => (
-  <Document
-    author="Manish Bhanushali"
-    title="The 3-Step Social Media Playbook"
-  >
-    {/* --- PAGE 1: Welcome --- */}
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.h1}>The 3-Step Social Media Playbook</Text>
-      <Text style={styles.subtitle}>
-        How Solopreneurs Can Turn Followers into Clients—Without Marketing Burnout
-      </Text>
-      <Text style={styles.toolkitCredit}>A QuickStrat AI Toolkit</Text>
-      <Text style={styles.p}>Hi there — I'm Manish, founder of QuickStrat.</Text>
-      <Text style={styles.p}>If you're a solopreneur trying to grow your business online, you already know this: creating content is exhausting and leads are hard to come by.</Text>
-      <Text style={styles.p}>That’s why I built QuickStrat—and this toolkit.</Text>
-      <Text style={styles.p}>Inside, you'll find:</Text>
-      <Text style={styles.welcomeList}>
-        ✅  <Text style={{ fontWeight: 'bold' }}>Proven strategies</Text> (with no fluff)
-      </Text>
-      <Text style={styles.welcomeList}>
-        ✅  A <Text style={{ fontWeight: 'bold' }}>plug-and-play checklist</Text> to stay consistent
-      </Text>
-      <Text style={styles.welcomeList}>
-        ✅  <Text style={{ fontWeight: 'bold' }}>Word-for-word scripts</Text> to convert interest into income
-      </Text>
-      <Text style={styles.p}>You don't need a marketing degree. Just this 3-step playbook.</Text>
-      <Text style={styles.p}>Let’s dive in.</Text>
-    </Page>
+interface PDFGeneratorProps {
+  data: PDFContent;
+}
 
-    {/* --- PAGE 2: What You'll Learn --- */}
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.pageHeader}>Step 1 of 3</Text>
-      <Text style={styles.h2}>🚀 What You’ll Learn</Text>
-      <Text style={styles.h3}>The 3-Step Lead Magnet System</Text>
+const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
+  const content = data.structured_content;
 
-      <View style={styles.learnContainer}>
-        <View style={styles.learnItem}>
-          <Text style={styles.learnIcon}>🧠</Text>
-          <Text style={styles.learnHeading}>Pick Your Strategy</Text>
-          <Text style={styles.p}>Understand what works (and what drains your time).</Text>
-        </View>
-        <View style={styles.learnItem}>
-          <Text style={styles.learnIcon}>✅</Text>
-          <Text style={styles.learnHeading}>Follow the Checklist</Text>
-          <Text style={styles.p}>Nail the daily actions that drive results.</Text>
-        </View>
-        <View style={styles.learnItem}>
-          <Text style={styles.learnIcon}>💬</Text>
-          <Text style={styles.learnHeading}>Use Proven Scripts</Text>
-          <Text style={styles.p}>Say the right thing when people show interest.</Text>
-        </View>
-      </View>
-    </Page>
+  // --- PAGE 1: Welcome ---
+  const title = content?.title_page?.title || 'Lead Magnet Title';
+  const subtitle = content?.title_page?.subtitle || '';
+  const toolkitCredit = 'A QuickStrat AI Toolkit';
+  const introTitle = content?.introduction_page?.title || '';
+  const introContent = content?.introduction_page?.content || '';
 
-    {/* --- PAGE 3: Strategy Showdown --- */}
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.pageHeader}>Step 1 of 3</Text>
-      <Text style={styles.h2}>📊 Strategy Showdown: What Actually Works?</Text>
-      <View style={styles.table}>
-        <View style={styles.tableHeader}>
-          <Text style={styles.tableHeaderCell}>Strategy</Text>
-          <Text style={styles.tableHeaderCell}>Pros</Text>
-          <Text style={styles.tableHeaderCell}>Cons</Text>
-        </View>
-        <View style={styles.tableRow}>
-          <Text style={[styles.tableCell, styles.tableCellFirst]}>Paid Ads</Text>
-          <Text style={styles.tableCell}>Fast results. Laser targeting.</Text>
-          <Text style={styles.tableCell}>Expensive. Needs constant testing.</Text>
-        </View>
-        <View style={[styles.tableRow, styles.tableRowEven]}>
-          <Text style={[styles.tableCell, styles.tableCellFirst]}>Organic Content</Text>
-          <Text style={styles.tableCell}>Builds trust. Low cost.</Text>
-          <Text style={styles.tableCell}>Takes time. Requires consistency.</Text>
-        </View>
-        <View style={styles.tableRow}>
-          <Text style={[styles.tableCell, styles.tableCellFirst]}>Influencer Collabs</Text>
-          <Text style={styles.tableCell}>Access to warm audiences.</Text>
-          <Text style={styles.tableCell}>Can be pricey. Depends on reputation.</Text>
-        </View>
-        <View style={[styles.tableRow, styles.tableRowEven]}>
-          <Text style={[styles.tableCell, styles.tableCellFirst]}>Community Building</Text>
-          <Text style={styles.tableCell}>Loyal fans. Word-of-mouth gold.</Text>
-          <Text style={styles.tableCell}>Slow to scale. High effort.</Text>
-        </View>
-      </View>
-      <View style={styles.proTip}>
-        <Text style={styles.p}>💡 <Text style={{ fontWeight: 'bold' }}>Pro Tip:</Text> Pick 1–2 strategies and go deep. Don’t spread yourself thin.</Text>
-      </View>
-    </Page>
+  // --- Toolkit Sections ---
+  const toolkitSections = content?.toolkit_sections || [];
+  const checklistSection = toolkitSections.find(s => s.type === 'checklist');
+  const prosConsSection = toolkitSections.find(s => s.type === 'pros_and_cons_list');
+  const scriptsSection = toolkitSections.find(s => s.type === 'scripts');
 
-    {/* --- PAGE 4: The Checklist --- */}
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.pageHeader}>Step 2 of 3</Text>
-      <Text style={styles.h2}>✅ The Social Media Checklist</Text>
-      <Text style={styles.p}>Use this to stay consistent and intentional.</Text>
-      <View style={styles.checklistContainer}>
-        <Text style={styles.h3}>Phase A: Set Your Foundation</Text>
-        <View style={styles.checklistItem}>
-          <Text style={styles.checkbox}>🔲</Text>
-          <Text>Define your ideal client</Text>
-        </View>
-        <View style={styles.checklistItem}>
-          <Text style={styles.checkbox}>🔲</Text>
-          <Text>Pick the platform they hang out on</Text>
-        </View>
-        <View style={styles.checklistItem}>
-          <Text style={styles.checkbox}>🔲</Text>
-          <Text>Set a clear goal (book calls, collect emails, etc.)</Text>
-        </View>
+  // --- CTA ---
+  const ctaTitle = content?.cta_page?.title || '';
+  const ctaContent = content?.cta_page?.content || '';
+  const bookingLink = data.bookingLink || '';
+  const website = data.website || '';
+  const supportEmail = data.supportEmail || '';
 
-        <Text style={styles.h3}>Phase B: Create and Connect</Text>
-        <View style={styles.checklistItem}>
-          <Text style={styles.checkbox}>🔲</Text>
-          <Text>Optimize your bio and profile</Text>
-        </View>
-        <View style={styles.checklistItem}>
-          <Text style={styles.checkbox}>🔲</Text>
-          <Text>Post 3–5 times per week (value, proof, offers)</Text>
-        </View>
-        <View style={styles.checklistItem}>
-          <Text style={styles.checkbox}>🔲</Text>
-          <Text>Reply to every comment and DM</Text>
-        </View>
+  return (
+    <Document author="QuickStrat" title={title}>
+      {/* --- PAGE 1: Welcome --- */}
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.h1}>{title}</Text>
+        <Text style={styles.subtitle}>{subtitle}</Text>
+        <Text style={styles.toolkitCredit}>{toolkitCredit}</Text>
+        <Text style={styles.p}>{introTitle}</Text>
+        {introContent.split('\n').map((line, i) => (
+          <Text key={i} style={styles.p}>{line}</Text>
+        ))}
+      </Page>
 
-        <Text style={styles.h3}>Phase C: Track and Tweak</Text>
-        <View style={styles.checklistItem}>
-          <Text style={styles.checkbox}>🔲</Text>
-          <Text>Track likes, DMs, link clicks weekly</Text>
+      {/* --- PAGE 2: What You'll Learn (Toolkit Overview) --- */}
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.pageHeader}>Step 1 of 3</Text>
+        <Text style={styles.h2}>🚀 What You’ll Learn</Text>
+        <Text style={styles.h3}>The 3-Step Lead Magnet System</Text>
+        <View style={styles.learnContainer}>
+          {toolkitSections.map((section, idx) => (
+            <View key={idx} style={styles.learnItem}>
+              <Text style={styles.learnIcon}>
+                {section.type === 'pros_and_cons_list' ? '🧠' : section.type === 'checklist' ? '✅' : section.type === 'scripts' ? '💬' : '📄'}
+              </Text>
+              <Text style={styles.learnHeading}>{section.title}</Text>
+              <Text style={styles.p}>{typeof section.content === 'string' ? section.content : ''}</Text>
+            </View>
+          ))}
         </View>
-        <View style={styles.checklistItem}>
-          <Text style={styles.checkbox}>🔲</Text>
-          <Text>Identify your top 3 posts</Text>
-        </View>
-        <View style={styles.checklistItem}>
-          <Text style={styles.checkbox}>🔲</Text>
-          <Text>Double down on what works</Text>
-        </View>
-      </View>
-    </Page>
+      </Page>
 
-    {/* --- PAGE 5: Scripts --- */}
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.pageHeader}>Step 3 of 3</Text>
-      <Text style={styles.h2}>💬 Scripts That Turn Comments Into Clients</Text>
-      
-      <View style={styles.scriptBlock}>
-        <Text style={styles.h3}>Scenario 1: “Tell me more about your service.”</Text>
-        <Text style={styles.p}><Text style={{ fontWeight: 'bold' }}>You say:</Text></Text>
-        <View style={styles.scriptDialog}>
-          <Text>“Absolutely! I’d love to share more. Are you looking for help with [X] or [Y]? That’ll help me give you the most useful info.”</Text>
-        </View>
-        <View style={styles.scriptWhy}>
-          <Text>✅ <Text style={{ fontWeight: 'bold' }}>Why it works:</Text> Gets them to self-identify and deepens the convo.</Text>
-        </View>
-      </View>
+      {/* --- PAGE 3: Strategy Showdown (Pros & Cons) --- */}
+      {prosConsSection && (
+        <Page size="A4" style={styles.page}>
+          <Text style={styles.pageHeader}>Step 1 of 3</Text>
+          <Text style={styles.h2}>📊 {prosConsSection.title}</Text>
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.tableHeaderCell}>Strategy</Text>
+              <Text style={styles.tableHeaderCell}>Pros</Text>
+              <Text style={styles.tableHeaderCell}>Cons</Text>
+            </View>
+            {Array.isArray((prosConsSection.content as any)?.items) && (prosConsSection.content as any).items.map((item: any, idx: number) => (
+              <View key={idx} style={idx % 2 === 1 ? [styles.tableRow, styles.tableRowEven] : styles.tableRow}>
+                <Text style={[styles.tableCell, styles.tableCellFirst]}>{item.method_name}</Text>
+                <Text style={styles.tableCell}>{item.pros}</Text>
+                <Text style={styles.tableCell}>{item.cons}</Text>
+              </View>
+            ))}
+          </View>
+          {(prosConsSection.content as any)?.example && (
+            <View style={styles.proTip}>
+              <Text style={styles.p}>💡 <Text style={{ fontWeight: 'bold' }}>Pro Tip:</Text> {(prosConsSection.content as any).example}</Text>
+            </View>
+          )}
+        </Page>
+      )}
 
-      <View style={styles.scriptBlock}>
-        <Text style={styles.h3}>Scenario 2: “Your prices are too high.”</Text>
-        <Text style={styles.p}><Text style={{ fontWeight: 'bold' }}>You say:</Text></Text>
-        <View style={styles.scriptDialog}>
-          <Text>“I get it—investing in your growth can feel big. But I make sure you get serious ROI. Want to see a few client results?”</Text>
-        </View>
-        <View style={styles.scriptWhy}>
-          <Text>✅ <Text style={{ fontWeight: 'bold' }}>Why it works:</Text> Shifts focus from cost to value.</Text>
-        </View>
-      </View>
+      {/* --- PAGE 4: Checklist --- */}
+      {checklistSection && (
+        <Page size="A4" style={styles.page}>
+          <Text style={styles.pageHeader}>Step 2 of 3</Text>
+          <Text style={styles.h2}>✅ {checklistSection.title}</Text>
+          <Text style={styles.p}>{typeof checklistSection.content === 'string' ? checklistSection.content : ''}</Text>
+          <View style={styles.checklistContainer}>
+            {Array.isArray((checklistSection.content as any)?.phases) && (checklistSection.content as any).phases.map((phase: any, idx: number) => (
+              <React.Fragment key={idx}>
+                <Text style={styles.h3}>{phase.phase_title}</Text>
+                {phase.items.map((item: string, i: number) => (
+                  <View key={i} style={styles.checklistItem}>
+                    <Text style={styles.checkbox}>🔲</Text>
+                    <Text>{item}</Text>
+                  </View>
+                ))}
+              </React.Fragment>
+            ))}
+          </View>
+        </Page>
+      )}
 
-      <View style={styles.scriptBlock}>
-        <Text style={styles.h3}>Scenario 3: “How soon will I see results?”</Text>
-        <Text style={styles.p}><Text style={{ fontWeight: 'bold' }}>You say:</Text></Text>
-        <View style={styles.scriptDialog}>
-          <Text>“I’ve seen quick wins, but real growth compounds week by week. This isn’t just traffic—it’s strategy that sticks.”</Text>
-        </View>
-        <View style={styles.scriptWhy}>
-          <Text>✅ <Text style={{ fontWeight: 'bold' }}>Why it works:</Text> Sets realistic expectations and positions you as a long-term partner.</Text>
-        </View>
-      </View>
-    </Page>
+      {/* --- PAGE 5: Scripts --- */}
+      {scriptsSection && (
+        <Page size="A4" style={styles.page}>
+          <Text style={styles.pageHeader}>Step 3 of 3</Text>
+          <Text style={styles.h2}>💬 {scriptsSection.title}</Text>
+          {Array.isArray((scriptsSection.content as any)?.scenarios) && (scriptsSection.content as any).scenarios.map((scenario: any, idx: number) => (
+            <View key={idx} style={styles.scriptBlock}>
+              <Text style={styles.h3}>Scenario {idx + 1}: {scenario.trigger}</Text>
+              <Text style={styles.p}><Text style={{ fontWeight: 'bold' }}>You say:</Text></Text>
+              <View style={styles.scriptDialog}>
+                <Text>{scenario.response}</Text>
+              </View>
+              <View style={styles.scriptWhy}>
+                <Text>✅ <Text style={{ fontWeight: 'bold' }}>Why it works:</Text> {scenario.explanation}</Text>
+              </View>
+            </View>
+          ))}
+        </Page>
+      )}
 
-    {/* --- PAGE 6: Call to Action --- */}
-    <Page size="A4" style={styles.page}>
-      <View style={styles.ctaBlock}>
-        <Text style={styles.ctaHeading}>📞 Ready to Get Your Strategy Done For You?</Text>
-        <Text style={styles.ctaText}>If you want this whole thing done in 30 minutes or less...</Text>
-        
-        <Link src="https://calendly.com/majorbeam" style={styles.ctaButton}>
-          <Text>🎯 Book a free Strategy Session</Text>
-        </Link>
-        
-        <Link src="https://quickstrat.app" style={styles.ctaButton}>
-          <Text>🌐 Explore the tool</Text>
-        </Link>
-
-        <Text style={styles.ctaEmail}>
-          📧 Questions? <Link src="mailto:manishbhanushali1101@gmail.com" style={styles.ctaEmailLink}>manishbhanushali1101@gmail.com</Link>
-        </Text>
-      </View>
-    </Page>
-  </Document>
-);
+      {/* --- PAGE 6: Call to Action --- */}
+      <Page size="A4" style={styles.page}>
+        <View style={styles.ctaBlock}>
+          <Text style={styles.ctaHeading}>{ctaTitle}</Text>
+          <Text style={styles.ctaText}>{ctaContent}</Text>
+          {bookingLink && (
+            <Link src={bookingLink} style={styles.ctaButton}>
+              <Text>🎯 Book a free Strategy Session</Text>
+            </Link>
+          )}
+          {website && (
+            <Link src={website} style={styles.ctaButton}>
+              <Text>🌐 Explore the tool</Text>
+            </Link>
+          )}
+          {supportEmail && (
+            <Text style={styles.ctaEmail}>
+              📧 Questions? <Link src={`mailto:${supportEmail}`} style={styles.ctaEmailLink}>{supportEmail}</Link>
+            </Text>
+          )}
+        </View>
+      </Page>
+    </Document>
+  );
+};
 
 export default PDFGenerator;
