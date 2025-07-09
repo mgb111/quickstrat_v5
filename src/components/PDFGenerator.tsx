@@ -1,550 +1,425 @@
-import React, { useState, useEffect } from 'react';
-import { Document, Page, Text, View, StyleSheet, PDFViewer, BlobProvider, Image } from '@react-pdf/renderer';
-import { PDFContent } from '../types';
+import React from 'react';
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+  Font,
+  Link,
+  Image,
+} from '@react-pdf/renderer';
 
-interface PDFGeneratorProps {
-  data: PDFContent;
-}
+// --- Register Fonts ---
+Font.register({
+  family: 'Inter',
+  fonts: [
+    { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuOKfMZs.ttf', fontWeight: 'normal' },
+    { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfMZs.ttf', fontWeight: 'bold' },
+    { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYMZs.ttf', fontWeight: 900 },
+  ],
+});
 
-// Helper hook to detect mobile
-function useIsMobile(breakpoint = 640) {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < breakpoint);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, [breakpoint]);
-  return isMobile;
-}
-
-// Define styles
 const styles = StyleSheet.create({
   page: {
-    flexDirection: 'column',
+    padding: '25mm',
     backgroundColor: '#ffffff',
-    padding: 48,
-    minHeight: '100%',
-    fontFamily: 'Helvetica',
-    lineHeight: 1.7,
+    fontFamily: 'Inter',
+    color: '#333',
   },
-  coverPage: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#4a90e2', // Use solid color
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100%',
-    position: 'relative',
-  },
-  coverDiagonal: {
+  pageHeader: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: 180,
-    backgroundColor: '#1a365d', // Use a different solid color for effect
-    // Removed transform: 'skewY(-8deg)', not supported
-    zIndex: 0,
-  },
-  coverLogo: {
-    width: 140,
-    height: 140,
-    marginBottom: 32,
-    objectFit: 'contain',
-    boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
-    zIndex: 1,
-  },
-  coverTitle: {
-    fontSize: 44,
+    top: '20mm',
+    right: '25mm',
+    fontSize: 12,
     fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 18,
-    textAlign: 'center',
-    letterSpacing: 1,
-    zIndex: 1,
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
-  },
-  coverSubtitle: {
-    fontSize: 26,
-    color: '#e6f7ff',
-    marginBottom: 18,
-    textAlign: 'center',
-    zIndex: 1,
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
-  },
-  coverByline: {
-    fontSize: 18,
-    color: '#b3c6e2',
-    marginTop: 32,
-    textAlign: 'center',
-    zIndex: 1,
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
-  },
-  section: {
-    marginBottom: 44,
-    breakInside: 'avoid',
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 0,
-    backgroundColor: '#f7fafc',
-    borderRadius: 8,
-    padding: 12,
-    marginTop: 12,
-  },
-  sectionIcon: {
-    fontSize: 28,
-    marginRight: 14,
-  },
-  sectionTitleBar: {
-    height: 8,
-    width: 36,
-    backgroundColor: '#4a90e2',
-    borderRadius: 4,
-    marginRight: 14,
-  },
-  sectionTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1a365d',
-    letterSpacing: 0.5,
-    textAlign: 'left',
+    color: '#888',
   },
   h1: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#1a365d',
-    marginBottom: 24,
-    letterSpacing: 0.5,
+    fontSize: 38,
+    fontWeight: 900,
+    color: '#1a237e',
+    marginBottom: 10,
   },
   h2: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#2d3748',
-    marginBottom: 18,
+    color: '#283593',
+    borderBottomWidth: 2,
+    borderBottomColor: '#5c6bc0',
+    paddingBottom: 8,
+    marginBottom: 20,
   },
   h3: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#4a5568',
-    marginBottom: 14,
+    color: '#3949ab',
+    marginBottom: 10,
   },
-  bodyText: {
-    fontSize: 17,
-    lineHeight: 1.7,
-    color: '#4a5568',
-    marginBottom: 14,
+  p: {
+    fontSize: 11,
+    lineHeight: 1.6,
+    marginBottom: 10,
   },
-  bulletList: {
-    marginLeft: 24,
+  subtitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#555',
     marginBottom: 20,
   },
-  bulletItem: {
+  toolkitCredit: {
+    fontSize: 12,
+    fontStyle: 'italic',
+    color: '#7986cb',
+    marginBottom: 30,
+  },
+  welcomeList: {
+    fontSize: 11,
+    lineHeight: 1.6,
+    marginBottom: 10,
+    paddingLeft: 10,
+  },
+  learnContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 12,
+    justifyContent: 'space-around',
+    marginTop: 40,
   },
-  bulletPoint: {
-    fontSize: 20,
-    color: '#38a169',
-    marginRight: 10,
-  },
-  bulletContent: {
+  learnItem: {
     flex: 1,
-    fontSize: 17,
-    color: '#4a5568',
-  },
-  checklistBlock: {
-    backgroundColor: '#f7fafc',
-    borderRadius: 10,
     padding: 20,
-    marginBottom: 20,
-    borderLeft: '8px solid #4a90e2',
-    boxShadow: '0 2px 8px rgba(74,144,226,0.06)',
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 8,
+    backgroundColor: '#f8f9fa',
+    textAlign: 'center',
+  },
+  learnIcon: {
+    fontSize: 32,
+    marginBottom: 10,
+  },
+  learnHeading: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  table: {
+    width: '100%',
+    marginTop: 20,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#3f51b5',
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
+  },
+  tableHeaderCell: {
+    padding: 10,
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+    flex: 1,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  tableRowEven: {
+    backgroundColor: '#f4f6f8',
+  },
+  tableCell: {
+    padding: 10,
+    fontSize: 10,
+    flex: 1,
+  },
+  tableCellFirst: {
+    fontWeight: 'bold',
+  },
+  proTip: {
+    backgroundColor: '#e8eaf6',
+    borderLeftWidth: 4,
+    borderLeftColor: '#7986cb',
+    padding: 15,
+    marginTop: 30,
+  },
+  checklistContainer: {
+    backgroundColor: '#f7f9fc',
+    padding: 25,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#dbe2ef',
+  },
+  checklistItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    fontSize: 12,
   },
   checkbox: {
-    fontSize: 20,
-    color: '#38a169',
-    marginRight: 12,
+    fontSize: 18,
+    marginRight: 10,
+    color: '#3f51b5',
   },
-  checklistText: {
-    fontSize: 17,
-    color: '#2d3748',
+  scriptBlock: {
+    marginBottom: 30,
   },
-  chatScenario: {
-    backgroundColor: '#e6f7ff',
-    borderRadius: 8,
-    padding: 14,
-    marginBottom: 8,
-    fontWeight: 'bold',
-    color: '#1a365d',
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
+  scriptDialog: {
+    backgroundColor: '#e3f2fd',
+    borderRadius: 15,
+    padding: 15,
+    fontStyle: 'italic',
+    fontSize: 11,
   },
-  chatResponse: {
-    backgroundColor: '#f7fafc',
-    borderLeft: '6px solid #38a169',
-    borderRadius: 8,
-    padding: 14,
-    marginBottom: 8,
-    color: '#2d3748',
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
-  },
-  pageNumber: {
-    position: 'absolute',
-    bottom: 30,
-    right: 30,
-    fontSize: 15,
-    color: '#718096',
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 40,
-    right: 40,
-    textAlign: 'center',
-    fontSize: 15,
-    color: '#718096',
-  },
-  ctaBox: {
-    marginTop: 44,
-    padding: 36,
-    backgroundColor: '#4a90e2',
-    borderRadius: 16,
-    alignItems: 'center',
-    boxShadow: '0 2px 12px rgba(74,144,226,0.10)',
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
-  },
-  ctaHeadline: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 22,
-    textAlign: 'center',
-    letterSpacing: 0.5,
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
-  },
-  ctaLink: {
-    fontSize: 19,
-    color: '#fff',
-    marginBottom: 14,
-    textAlign: 'center',
-    fontWeight: 'bold',
-    backgroundColor: '#38a169',
-    borderRadius: 8,
+  scriptWhy: {
+    backgroundColor: '#f1f8e9',
     padding: 10,
-    marginTop: 8,
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
+    borderRadius: 8,
+    marginTop: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#8bc34a',
+    fontSize: 10,
   },
-  // 1. Add a new style for infographics and quote/callout boxes (e.g., styles.infographicBox, styles.quoteCard).
-  infographicBox: {
-    backgroundColor: '#f7fafc',
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
-    borderLeft: '8px solid #4a90e2',
-    boxShadow: '0 2px 8px rgba(74,144,226,0.06)',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 16,
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
+  ctaBlock: {
+    backgroundColor: '#1a237e',
+    color: 'white',
+    textAlign: 'center',
+    padding: 40,
+    borderRadius: 12,
+    marginTop: 50,
   },
-  // 2. When rendering scripts or toolkit sections, if a micro-case study or example is present, render it in a visually distinct, shaded box with an icon (e.g., 💡 or 📈).
-  microCaseStudy: {
-    backgroundColor: '#f7fafc',
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
-    borderLeft: '8px solid #4a90e2',
-    boxShadow: '0 2px 8px rgba(74,144,226,0.06)',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 16,
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
-  },
-  // 3. For quote/callout boxes, use a left border, background color, and an icon (e.g., 🗣️ or 📢).
-  quoteCard: {
-    backgroundColor: '#f7fafc',
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
-    borderLeft: '8px solid #4a90e2',
-    boxShadow: '0 2px 8px rgba(74,144,226,0.06)',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 16,
-    flexWrap: 'wrap',
-    wordBreak: 'break-word',
-  },
-  // 4. Add a sample SVG infographic (e.g., a simple bar chart or icon) in the appropriate section.
-  // 5. Ensure all new elements use flexWrap: 'wrap', wordBreak: 'break-word', and sufficient padding/margin for mobile-friendliness.
-  // 6. Add comments to clarify these changes for future maintenance.
-  // 7. Add a new style for the icon in the quote card.
-  quoteIcon: {
+  ctaHeading: {
+    color: 'white',
     fontSize: 24,
-    marginRight: 12,
-    color: '#4a90e2',
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  ctaText: {
+    color: '#c5cae9',
+    fontSize: 11,
+    marginBottom: 20,
+  },
+  ctaButton: {
+    backgroundColor: '#448aff',
+    color: 'white',
+    padding: 15,
+    marginVertical: 10,
+    borderRadius: 8,
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textDecoration: 'none',
+  },
+  ctaEmail: {
+    marginTop: 20,
+    fontSize: 11,
+    color: '#c5cae9',
+  },
+  ctaEmailLink: {
+    color: '#9fa8da',
+    textDecoration: 'none',
   },
 });
 
-const PDFDocument = ({ data }: PDFGeneratorProps) => {
-  const content = data?.structured_content;
-  if (!content) return null;
+const PDFGenerator = () => (
+  <Document
+    author="Manish Bhanushali"
+    title="The 3-Step Social Media Playbook"
+  >
+    {/* --- PAGE 1: Welcome --- */}
+    <Page size="A4" style={styles.page}>
+      <Text style={styles.h1}>The 3-Step Social Media Playbook</Text>
+      <Text style={styles.subtitle}>
+        How Solopreneurs Can Turn Followers into Clients—Without Marketing Burnout
+      </Text>
+      <Text style={styles.toolkitCredit}>A QuickStrat AI Toolkit</Text>
+      <Text style={styles.p}>Hi there — I'm Manish, founder of QuickStrat.</Text>
+      <Text style={styles.p}>If you're a solopreneur trying to grow your business online, you already know this: creating content is exhausting and leads are hard to come by.</Text>
+      <Text style={styles.p}>That’s why I built QuickStrat—and this toolkit.</Text>
+      <Text style={styles.p}>Inside, you'll find:</Text>
+      <Text style={styles.welcomeList}>
+        ✅  <Text style={{ fontWeight: 'bold' }}>Proven strategies</Text> (with no fluff)
+      </Text>
+      <Text style={styles.welcomeList}>
+        ✅  A <Text style={{ fontWeight: 'bold' }}>plug-and-play checklist</Text> to stay consistent
+      </Text>
+      <Text style={styles.welcomeList}>
+        ✅  <Text style={{ fontWeight: 'bold' }}>Word-for-word scripts</Text> to convert interest into income
+      </Text>
+      <Text style={styles.p}>You don't need a marketing degree. Just this 3-step playbook.</Text>
+      <Text style={styles.p}>Let’s dive in.</Text>
+    </Page>
 
-  // Dynamic branding and CTA fields
-  const logo = data.logo;
-  const primaryColor = data.primaryColor || '#1a365d';
-  const secondaryColor = data.secondaryColor || '#4a90e2';
-  const prosIcon = data.prosIcon || '👍';
-  const consIcon = data.consIcon || '👎';
-  const checklistIcon = data.checklistIcon || '☑';
-  const website = data.website;
-  const bookingLink = data.bookingLink;
-  const supportEmail = data.supportEmail;
-  const ctaText = data.ctaText || content.cta_page.content;
-  const mainAction = data.mainAction || 'Book a Call';
-  const fontFamily = data.font || 'Helvetica';
-  const userName = (data as any).name || 'there';
+    {/* --- PAGE 2: What You'll Learn --- */}
+    <Page size="A4" style={styles.page}>
+      <Text style={styles.pageHeader}>Step 1 of 3</Text>
+      <Text style={styles.h2}>🚀 What You’ll Learn</Text>
+      <Text style={styles.h3}>The 3-Step Lead Magnet System</Text>
 
-  const welcomeMessage = `Hi ${userName} — I’m Manish, founder of QuickStrat. I built this toolkit to help solopreneurs like you generate more leads without marketing burnout. Inside, you’ll find actionable strategies, clear frameworks, and proven scripts—all designed to turn your online presence into a client magnet. Let’s dive in.`;
-
-  const formatText = (text: string) => {
-    return text.split('\n').map((line, i) => (
-      <React.Fragment key={i}>
-        {line}
-        {i < text.split('\n').length - 1 && <Text>{'\n'}</Text>}
-      </React.Fragment>
-    ));
-  };
-
-  const renderIntroductionContent = (content: string | string[]) => {
-    if (Array.isArray(content)) {
-      return (
-        <View style={styles.bulletList}>
-          {content.map((point, index) => (
-            <View key={index} style={styles.bulletItem}>
-              <Text style={styles.bulletPoint}>{checklistIcon}</Text>
-              <Text style={styles.bulletContent}>{point}</Text>
-            </View>
-          ))}
+      <View style={styles.learnContainer}>
+        <View style={styles.learnItem}>
+          <Text style={styles.learnIcon}>🧠</Text>
+          <Text style={styles.learnHeading}>Pick Your Strategy</Text>
+          <Text style={styles.p}>Understand what works (and what drains your time).</Text>
         </View>
-      );
-    }
-    return content.split('\n').map((paragraph, i) => (
-      <Text key={i} style={styles.bodyText}>{paragraph}</Text>
-    ));
-  };
-
-  return (
-    <Document>
-      {/* Branded Cover Page */}
-      <Page size="A4" style={styles.coverPage}>
-        <View style={styles.coverDiagonal} />
-        <View style={styles.coverLogo}>
-          {data.logo && <Image src={data.logo} />}
+        <View style={styles.learnItem}>
+          <Text style={styles.learnIcon}>✅</Text>
+          <Text style={styles.learnHeading}>Follow the Checklist</Text>
+          <Text style={styles.p}>Nail the daily actions that drive results.</Text>
         </View>
-        <Text style={styles.coverTitle} wrap={false}>How Solopreneurs Can Get 10X More Clients from Social Media—Without Burning Out</Text>
-        <Text style={styles.coverSubtitle} wrap={false}>A 3-Step AI-Backed Lead Magnet Toolkit</Text>
-        <Text style={styles.coverByline}>Created by QuickStrat | Powered by AI</Text>
-      </Page>
-      {/* Welcome Message Page */}
-      <Page size="A4" style={styles.page}>
-        <View style={{ ...styles.section, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f7fafc', borderRadius: 12, padding: 32, marginTop: 60 }}>
-          <Text style={{ fontSize: 22, fontWeight: 'bold', color: primaryColor, marginBottom: 18, textAlign: 'center' }}>Welcome!</Text>
-          <Text style={{ fontSize: 16, color: '#2d3748', textAlign: 'center' }}>{welcomeMessage}</Text>
+        <View style={styles.learnItem}>
+          <Text style={styles.learnIcon}>💬</Text>
+          <Text style={styles.learnHeading}>Use Proven Scripts</Text>
+          <Text style={styles.p}>Say the right thing when people show interest.</Text>
         </View>
-        <Text style={styles.footer} render={({ pageNumber, totalPages }) => `QuickStrat • quickstrat.app • Page ${pageNumber} of ${totalPages}`} fixed />
-      </Page>
-      {/* Introduction Page */}
-      <Page size="A4" style={styles.page}>
-        <View style={{ ...styles.section, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ ...styles.h1, textAlign: 'center' }}>{content.introduction_page.title}</Text>
-          {content.introduction_page.content.split('\n').map((paragraph, i) => (
-            <Text key={i} style={styles.bodyText}>{paragraph}</Text>
-          ))}
+      </View>
+    </Page>
+
+    {/* --- PAGE 3: Strategy Showdown --- */}
+    <Page size="A4" style={styles.page}>
+      <Text style={styles.pageHeader}>Step 1 of 3</Text>
+      <Text style={styles.h2}>📊 Strategy Showdown: What Actually Works?</Text>
+      <View style={styles.table}>
+        <View style={styles.tableHeader}>
+          <Text style={styles.tableHeaderCell}>Strategy</Text>
+          <Text style={styles.tableHeaderCell}>Pros</Text>
+          <Text style={styles.tableHeaderCell}>Cons</Text>
         </View>
-        <Text style={styles.footer} render={({ pageNumber, totalPages }) => `QuickStrat • quickstrat.app • Page ${pageNumber} of ${totalPages}`} fixed />
-      </Page>
-      {/* Toolkit Sections */}
-      <Page size="A4" style={styles.page}>
-        {content.toolkit_sections.map((section, sectionIndex) => {
-          // Defensive: Only access .phases, .items, .scenarios if section.content is an object
-          const contentObj = typeof section.content === 'object' && section.content !== null ? section.content : {};
-          return (
-            <View key={sectionIndex} style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionIcon}>{section.type === 'checklist' ? '✅' : section.type === 'pros_and_cons_list' ? '📋' : section.type === 'scripts' ? '💬' : '📄'}</Text>
-                <View style={styles.sectionTitleBar} />
-                <Text style={styles.sectionTitle}>{section.title}</Text>
-              </View>
-              {/* Add horizontal rule below section header */}
-              <View style={{ height: 4, backgroundColor: '#e6f7ff', borderRadius: 2, marginBottom: 16, marginTop: -8 }} />
-              {/* Checklist as a grid */}
-              {section.type === 'checklist' && Array.isArray(contentObj.phases) && (
-                <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 16 }}>
-                  {contentObj.phases.map((phase: { phase_title: string; items: string[] }, idx: number) => (
-                    <View key={idx} style={{ ...styles.checklistBlock, flex: 1, minWidth: 180, maxWidth: '48%' }}>
-                      <Text style={styles.h3}>{phase.phase_title}</Text>
-                      {phase.items.map((item: string, itemIdx: number) => (
-                        <View key={itemIdx} style={styles.bulletItem}>
-                          <Text style={styles.checkbox}>☑</Text>
-                          <Text style={styles.checklistText}>{item}</Text>
-                        </View>
-                      ))}
-                    </View>
-                  ))}
-                </View>
-              )}
-              {/* Checklist Example/Template */}
-              {section.type === 'checklist' && (contentObj.example || contentObj.template) && (
-                <View style={styles.microCaseStudy}>
-                  <Text style={styles.quoteIcon}>💡</Text>
-                  <View>
-                    {contentObj.example && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Example:</Text> {contentObj.example}</Text>}
-                    {contentObj.template && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Template:</Text> {contentObj.template}</Text>}
-                  </View>
-                </View>
-              )}
-              {/* Pros & Cons as infographic cards */}
-              {section.type === 'pros_and_cons_list' && Array.isArray(contentObj.items) && (
-                <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 16 }}>
-                  {contentObj.items.map((item: any, idx: number) => (
-                    <View key={idx} style={{ ...styles.infographicBox, flex: 1, minWidth: 180, maxWidth: '48%' }}>
-                      <Text style={styles.h3}>{item.method_name}</Text>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-                        <Text style={styles.quoteIcon}>{prosIcon}</Text>
-                        <Text style={styles.bodyText}>Pros: {item.pros}</Text>
-                      </View>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-                        <Text style={styles.quoteIcon}>{consIcon}</Text>
-                        <Text style={styles.bodyText}>Cons: {item.cons}</Text>
-                      </View>
-                      {/* Simple bar chart infographic (visual cue only) */}
-                      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, marginBottom: 8 }}>
-                        <View style={{ height: 10, width: `${Math.max(30, Math.min(100, (item.pros.length / (item.pros.length + item.cons.length)) * 100))}%`, backgroundColor: '#38a169', borderRadius: 4 }} />
-                        <View style={{ height: 10, width: `${Math.max(30, Math.min(100, (item.cons.length / (item.pros.length + item.cons.length)) * 100))}%`, backgroundColor: '#e53e3e', borderRadius: 4, marginLeft: 4 }} />
-                      </View>
-                      {/* Example/Template */}
-                      {(item.example || item.template) && (
-                        <View style={styles.microCaseStudy}>
-                          <Text style={styles.quoteIcon}>💡</Text>
-                          <View>
-                            {item.example && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Example:</Text> {item.example}</Text>}
-                            {item.template && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Template:</Text> {item.template}</Text>}
-                          </View>
-                        </View>
-                      )}
-                    </View>
-                  ))}
-                </View>
-              )}
-              {/* Scripts as quote/callout cards */}
-              {section.type === 'scripts' && Array.isArray(contentObj.scenarios) && contentObj.scenarios.map((scenario: any, idx: number) => (
-                <View key={idx} style={styles.quoteCard}>
-                  <Text style={styles.quoteIcon}>🗣️</Text>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.h3}>Scenario: {scenario.trigger}</Text>
-                    <View style={styles.chatScenario}>
-                      <Text style={styles.bodyText}>Scenario: {scenario.trigger}</Text>
-                    </View>
-                    <View style={styles.chatResponse}>
-                      <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Your Response:</Text> {scenario.response}</Text>
-                    </View>
-                    {scenario.explanation && (
-                      <View style={styles.chatResponse}>
-                        <Text style={styles.bodyText}>Strategy: {scenario.explanation}</Text>
-                      </View>
-                    )}
-                    {/* Example/Template */}
-                    {(scenario.example || scenario.template) && (
-                      <View style={styles.microCaseStudy}>
-                        <Text style={styles.quoteIcon}>💡</Text>
-                        <View>
-                          {scenario.example && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Example:</Text> {scenario.example}</Text>}
-                          {scenario.template && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Template:</Text> {scenario.template}</Text>}
-                        </View>
-                      </View>
-                    )}
-                  </View>
-                </View>
-              ))}
-              {/* Fallback for plain text */}
-              {typeof section.content === 'string' && (
-                <Text style={styles.bodyText}>{section.content}</Text>
-              )}
-            </View>
-          );
-        })}
-        <Text style={styles.footer} render={({ pageNumber, totalPages }) => `QuickStrat • quickstrat.app • Page ${pageNumber} of ${totalPages}`} fixed />
-      </Page>
-      {/* CTA Page */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.ctaBox}>
-          <Text style={styles.ctaHeadline}>Want us to build your strategy for you—in 30 minutes or less?</Text>
-          <Text style={styles.ctaLink}>🕒 Book a free strategy call and walk away with a complete social plan.{"\n"}{data.bookingLink}</Text>
-          <Text style={styles.ctaLink}>🌐 Visit Our Website{"\n"}{data.website}</Text>
-          <Text style={styles.ctaLink}>📬 Questions?{"\n"}Email us at {data.supportEmail}</Text>
+        <View style={styles.tableRow}>
+          <Text style={[styles.tableCell, styles.tableCellFirst]}>Paid Ads</Text>
+          <Text style={styles.tableCell}>Fast results. Laser targeting.</Text>
+          <Text style={styles.tableCell}>Expensive. Needs constant testing.</Text>
         </View>
-        <Text style={styles.footer} render={({ pageNumber, totalPages }) => `QuickStrat • quickstrat.app • Page ${pageNumber} of ${totalPages}`} fixed />
-      </Page>
-    </Document>
-  );
-};
+        <View style={[styles.tableRow, styles.tableRowEven]}>
+          <Text style={[styles.tableCell, styles.tableCellFirst]}>Organic Content</Text>
+          <Text style={styles.tableCell}>Builds trust. Low cost.</Text>
+          <Text style={styles.tableCell}>Takes time. Requires consistency.</Text>
+        </View>
+        <View style={styles.tableRow}>
+          <Text style={[styles.tableCell, styles.tableCellFirst]}>Influencer Collabs</Text>
+          <Text style={styles.tableCell}>Access to warm audiences.</Text>
+          <Text style={styles.tableCell}>Can be pricey. Depends on reputation.</Text>
+        </View>
+        <View style={[styles.tableRow, styles.tableRowEven]}>
+          <Text style={[styles.tableCell, styles.tableCellFirst]}>Community Building</Text>
+          <Text style={styles.tableCell}>Loyal fans. Word-of-mouth gold.</Text>
+          <Text style={styles.tableCell}>Slow to scale. High effort.</Text>
+        </View>
+      </View>
+      <View style={styles.proTip}>
+        <Text style={styles.p}>💡 <Text style={{ fontWeight: 'bold' }}>Pro Tip:</Text> Pick 1–2 strategies and go deep. Don’t spread yourself thin.</Text>
+      </View>
+    </Page>
 
-const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
-  if (!data) return <div>No content available</div>;
+    {/* --- PAGE 4: The Checklist --- */}
+    <Page size="A4" style={styles.page}>
+      <Text style={styles.pageHeader}>Step 2 of 3</Text>
+      <Text style={styles.h2}>✅ The Social Media Checklist</Text>
+      <Text style={styles.p}>Use this to stay consistent and intentional.</Text>
+      <View style={styles.checklistContainer}>
+        <Text style={styles.h3}>Phase A: Set Your Foundation</Text>
+        <View style={styles.checklistItem}>
+          <Text style={styles.checkbox}>🔲</Text>
+          <Text>Define your ideal client</Text>
+        </View>
+        <View style={styles.checklistItem}>
+          <Text style={styles.checkbox}>🔲</Text>
+          <Text>Pick the platform they hang out on</Text>
+        </View>
+        <View style={styles.checklistItem}>
+          <Text style={styles.checkbox}>🔲</Text>
+          <Text>Set a clear goal (book calls, collect emails, etc.)</Text>
+        </View>
 
-  const fileName = `${data.title.toLowerCase().replace(/\s+/g, '-')}.pdf`;
-  const isMobile = useIsMobile();
+        <Text style={styles.h3}>Phase B: Create and Connect</Text>
+        <View style={styles.checklistItem}>
+          <Text style={styles.checkbox}>🔲</Text>
+          <Text>Optimize your bio and profile</Text>
+        </View>
+        <View style={styles.checklistItem}>
+          <Text style={styles.checkbox}>🔲</Text>
+          <Text>Post 3–5 times per week (value, proof, offers)</Text>
+        </View>
+        <View style={styles.checklistItem}>
+          <Text style={styles.checkbox}>🔲</Text>
+          <Text>Reply to every comment and DM</Text>
+        </View>
 
-  return (
-    <div className="flex flex-col gap-4 w-full">
-      <BlobProvider document={<PDFDocument data={data} />}>
-        {({ url, loading }) => (
-          isMobile ? (
-            <a
-              href={url || '#'}
-              download={fileName}
-              className="fixed bottom-4 left-1/2 -translate-x-1/2 w-11/12 max-w-xs bg-blue-600 text-white text-lg py-4 rounded-xl shadow-lg text-center z-50"
-              style={{ zIndex: 50 }}
-            >
-              {loading ? 'Preparing PDF…' : 'Download PDF'}
-            </a>
-          ) : (
-            <div className="flex justify-end mb-2">
-              <a
-                href={url || '#'}
-                download={fileName}
-                className="inline-flex items-center px-4 py-2 rounded-lg transition-colors bg-blue-600 hover:bg-blue-700 text-white cursor-pointer text-lg"
-              >
-                {loading ? 'Preparing download...' : 'Download PDF'}
-              </a>
-            </div>
-          )
-        )}
-      </BlobProvider>
-      {!isMobile && (
-        <div style={{ width: '100%', height: '800px' }}>
-          <PDFViewer style={{ width: '100%', height: '100%' }}>
-            <PDFDocument data={data} />
-          </PDFViewer>
-        </div>
-      )}
-    </div>
-  );
-};
+        <Text style={styles.h3}>Phase C: Track and Tweak</Text>
+        <View style={styles.checklistItem}>
+          <Text style={styles.checkbox}>🔲</Text>
+          <Text>Track likes, DMs, link clicks weekly</Text>
+        </View>
+        <View style={styles.checklistItem}>
+          <Text style={styles.checkbox}>🔲</Text>
+          <Text>Identify your top 3 posts</Text>
+        </View>
+        <View style={styles.checklistItem}>
+          <Text style={styles.checkbox}>🔲</Text>
+          <Text>Double down on what works</Text>
+        </View>
+      </View>
+    </Page>
+
+    {/* --- PAGE 5: Scripts --- */}
+    <Page size="A4" style={styles.page}>
+      <Text style={styles.pageHeader}>Step 3 of 3</Text>
+      <Text style={styles.h2}>💬 Scripts That Turn Comments Into Clients</Text>
+      
+      <View style={styles.scriptBlock}>
+        <Text style={styles.h3}>Scenario 1: “Tell me more about your service.”</Text>
+        <Text style={styles.p}><Text style={{ fontWeight: 'bold' }}>You say:</Text></Text>
+        <View style={styles.scriptDialog}>
+          <Text>“Absolutely! I’d love to share more. Are you looking for help with [X] or [Y]? That’ll help me give you the most useful info.”</Text>
+        </View>
+        <View style={styles.scriptWhy}>
+          <Text>✅ <Text style={{ fontWeight: 'bold' }}>Why it works:</Text> Gets them to self-identify and deepens the convo.</Text>
+        </View>
+      </View>
+
+      <View style={styles.scriptBlock}>
+        <Text style={styles.h3}>Scenario 2: “Your prices are too high.”</Text>
+        <Text style={styles.p}><Text style={{ fontWeight: 'bold' }}>You say:</Text></Text>
+        <View style={styles.scriptDialog}>
+          <Text>“I get it—investing in your growth can feel big. But I make sure you get serious ROI. Want to see a few client results?”</Text>
+        </View>
+        <View style={styles.scriptWhy}>
+          <Text>✅ <Text style={{ fontWeight: 'bold' }}>Why it works:</Text> Shifts focus from cost to value.</Text>
+        </View>
+      </View>
+
+      <View style={styles.scriptBlock}>
+        <Text style={styles.h3}>Scenario 3: “How soon will I see results?”</Text>
+        <Text style={styles.p}><Text style={{ fontWeight: 'bold' }}>You say:</Text></Text>
+        <View style={styles.scriptDialog}>
+          <Text>“I’ve seen quick wins, but real growth compounds week by week. This isn’t just traffic—it’s strategy that sticks.”</Text>
+        </View>
+        <View style={styles.scriptWhy}>
+          <Text>✅ <Text style={{ fontWeight: 'bold' }}>Why it works:</Text> Sets realistic expectations and positions you as a long-term partner.</Text>
+        </View>
+      </View>
+    </Page>
+
+    {/* --- PAGE 6: Call to Action --- */}
+    <Page size="A4" style={styles.page}>
+      <View style={styles.ctaBlock}>
+        <Text style={styles.ctaHeading}>📞 Ready to Get Your Strategy Done For You?</Text>
+        <Text style={styles.ctaText}>If you want this whole thing done in 30 minutes or less...</Text>
+        
+        <Link src="https://calendly.com/majorbeam" style={styles.ctaButton}>
+          <Text>🎯 Book a free Strategy Session</Text>
+        </Link>
+        
+        <Link src="https://quickstrat.app" style={styles.ctaButton}>
+          <Text>🌐 Explore the tool</Text>
+        </Link>
+
+        <Text style={styles.ctaEmail}>
+          📧 Questions? <Link src="mailto:manishbhanushali1101@gmail.com" style={styles.ctaEmailLink}>manishbhanushali1101@gmail.com</Link>
+        </Text>
+      </View>
+    </Page>
+  </Document>
+);
 
 export default PDFGenerator;
