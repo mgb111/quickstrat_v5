@@ -123,6 +123,18 @@ export interface CampaignOutput {
   social_posts: SocialPosts;
 }
 
+export interface PDFCustomization {
+  ctaText?: string;
+  mainAction?: string;
+  bookingLink?: string;
+  website?: string;
+  supportEmail?: string;
+  logo?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  font?: string;
+}
+
 export type WizardState = {
   stage: 'input' | 'concept-selection' | 'outline-review' | 'complete';
   input: CampaignInput | null;
@@ -130,6 +142,7 @@ export type WizardState = {
   selectedConcept: LeadMagnetConcept | null;
   outline: ContentOutline | null;
   finalOutput: CampaignOutput | null;
+  customization?: PDFCustomization | null;
 };
 
 export interface Campaign {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Target, ArrowRight, Loader2 } from 'lucide-react';
 import { LeadMagnetConcept } from '../types';
+import { PDFCustomization } from '../types';
 
 interface CustomizationValues {
   ctaText: string;
@@ -16,7 +17,7 @@ interface CustomizationValues {
 
 interface ConceptSelectionProps {
   concepts: LeadMagnetConcept[];
-  onConceptSelected: (concept: LeadMagnetConcept, customization?: CustomizationValues) => void;
+  onConceptSelected: (concept: LeadMagnetConcept, customization?: PDFCustomization) => void;
   isLoading?: boolean;
 }
 

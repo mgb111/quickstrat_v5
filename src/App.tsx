@@ -9,7 +9,7 @@ import LandingPage from './components/LandingPage';
 import Auth from './components/Auth/Auth';
 import UserProfile from './components/UserProfile';
 import { useAuth } from './contexts/AuthContext';
-import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline } from './types/index';
+import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, PDFCustomization } from './types/index';
 import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
 import { CampaignService } from './lib/campaignService';
 import { EmailService } from './lib/emailService';
@@ -28,7 +28,8 @@ function App() {
     concepts: null,
     selectedConcept: null,
     outline: null,
-    finalOutput: null
+    finalOutput: null,
+    customization: null
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -92,7 +93,8 @@ function App() {
         concepts,
         selectedConcept: null,
         outline: null,
-        finalOutput: null
+        finalOutput: null,
+        customization: null // Reset customization on new input
       });
       console.log('🎯 Moved to concept-selection stage');
     } catch (err) {
@@ -103,7 +105,7 @@ function App() {
     }
   };
 
-  const handleConceptSelected = async (selectedConcept: LeadMagnetConcept) => {
+  const handleConceptSelected = async (selectedConcept: LeadMagnetConcept, customization: PDFCustomization) => {
     console.log('🔄 Starting outline generation...');
     setIsLoading(true);
     setError(null);
@@ -115,7 +117,8 @@ function App() {
         ...prev,
         stage: 'outline-review',
         selectedConcept,
-        outline
+        outline,
+        customization // store customization in wizard state
       }));
       console.log('🎯 Moved to outline-review stage');
     } catch (err) {
@@ -132,8 +135,18 @@ function App() {
     setError(null);
 
     try {
-      const finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
+      let finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
       console.log('✅ Final campaign generated:', finalOutput);
+      // Merge customization into pdf_content if present
+      if (wizardState.customization && typeof finalOutput.pdf_content === 'object') {
+        finalOutput = {
+          ...finalOutput,
+          pdf_content: {
+            ...finalOutput.pdf_content,
+            ...wizardState.customization
+          }
+        };
+      }
       // Automatically save campaign to Supabase
       await CampaignService.createCampaign(wizardState.input!, finalOutput);
       setWizardState(prev => ({
@@ -160,7 +173,8 @@ function App() {
       concepts: null,
       selectedConcept: null,
       outline: null,
-      finalOutput: null
+      finalOutput: null,
+      customization: null // Reset customization on new campaign
     });
   };
 
@@ -171,7 +185,8 @@ function App() {
       concepts: null,
       selectedConcept: null,
       outline: null,
-      finalOutput: null
+      finalOutput: null,
+      customization: null // Reset customization on start over
     });
     setError(null);
   };
