@@ -17,11 +17,14 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
     desired_outcome: '',
     tone: 'professional'
   });
+  const [localLoading, setLocalLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoading) {
-      onSubmit(formData);
+    if (!isLoading && !localLoading) {
+      setLocalLoading(true);
+      await onSubmit(formData);
+      setLocalLoading(false);
     }
   };
 
@@ -52,7 +55,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="e.g., TechCorp Solutions"
                 required
-                disabled={isLoading}
+                disabled={isLoading || localLoading}
               />
             </div>
 
@@ -69,7 +72,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="e.g., Digital Marketing, SaaS, E-commerce, Health & Wellness"
                 required
-                disabled={isLoading}
+                disabled={isLoading || localLoading}
               />
             </div>
 
@@ -86,7 +89,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Describe your ideal customer (e.g., Small business owners aged 30-50 who struggle with digital marketing)"
                 required
-                disabled={isLoading}
+                disabled={isLoading || localLoading}
               />
             </div>
 
@@ -103,7 +106,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Describe the main problem your customers face (e.g., Small business owners struggle to create effective social media strategies because they lack time, knowledge, and a clear system to follow)"
                 required
-                disabled={isLoading}
+                disabled={isLoading || localLoading}
               />
             </div>
 
@@ -120,7 +123,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="What do your customers want to achieve? (e.g., Create a consistent social media presence that generates leads and builds brand awareness)"
                 required
-                disabled={isLoading}
+                disabled={isLoading || localLoading}
               />
             </div>
 
@@ -134,7 +137,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
                 value={formData.tone}
                 onChange={(e) => handleInputChange('tone', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={isLoading}
+                disabled={isLoading || localLoading}
               >
                 <option value="professional">Professional</option>
                 <option value="friendly">Friendly & Approachable</option>
@@ -148,10 +151,10 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
           <div className="mt-8 flex justify-center items-center">
             <button
               type="submit"
-              disabled={isLoading || !formData.brand_name || !formData.niche || !formData.target_audience || !formData.problem_statement || !formData.desired_outcome}
+              disabled={isLoading || localLoading || !formData.brand_name || !formData.niche || !formData.target_audience || !formData.problem_statement || !formData.desired_outcome}
               className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {isLoading ? (
+              {localLoading ? (
                 <>
                   <Loader2 className="animate-spin h-5 w-5 mr-3" />
                   <span className="text-white font-semibold">Generating Concepts...</span>

@@ -779,13 +779,15 @@ PLATFORM REQUIREMENTS:
    - Ask a question or share a personal experience
    - No hashtags, no emojis
    - Use a conversational, authentic tone
+   - At the end, suggest 2-3 relevant subreddits (as a list) where this post could be shared, based on the topic and audience.
 
 Return JSON in this exact format:
 {
   "linkedin": "Professional post text with 1-2 hashtags... #example #marketing",
   "twitter": "Engaging tweet under 280 chars with 1-2 hashtags... #example",
   "instagram": "Engaging Instagram caption with 2-3 hashtags... #example #socialmedia #tips",
-  "reddit": "Conversational Reddit post, longer, no hashtags, invites discussion."
+  "reddit": "Conversational Reddit post, longer, no hashtags, invites discussion.",
+  "subreddits": ["subreddit1", "subreddit2", "subreddit3"]
 }`;
 
     const res = await client.chat.completions.create({
@@ -806,7 +808,7 @@ Return JSON in this exact format:
     const parsed = JSON.parse(content);
 
     // Validate the response structure
-    if (!parsed.linkedin || !parsed.twitter || !parsed.instagram || !parsed.reddit) {
+    if (!parsed.linkedin || !parsed.twitter || !parsed.instagram || !parsed.reddit || !parsed.subreddits) {
       throw new Error('Invalid response format from OpenAI API');
     }
 

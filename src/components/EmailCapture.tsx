@@ -12,47 +12,22 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [localSubmitting, setLocalSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
-
+    if (!email.trim() || isSubmitting || localSubmitting) return;
+    setLocalSubmitting(true);
     setIsSubmitting(true);
     setError(null);
-
     try {
-      // Store email in localStorage for demo purposes
-      // In a real app, you'd send this to your backend
-      const existingEmails = JSON.parse(localStorage.getItem('captured_emails') || '[]');
-      const newEmail = {
-        id: Date.now().toString(),
-        email: email.trim(),
-        captured_at: new Date().toISOString(),
-        campaign_id: campaignId || 'demo'
-      };
-      
-      localStorage.setItem('captured_emails', JSON.stringify([...existingEmails, newEmail]));
-
-      // If you have a backend, you'd also save it there
-      if (campaignId) {
-        const { error: supabaseError } = await supabase
-          .from('leads')
-          .insert({
-            campaign_id: campaignId,
-            email: email.trim()
-          });
-
-        if (supabaseError) {
-          console.error('Error saving lead:', supabaseError);
-        }
-      }
-
-      setIsSubmitted(true);
-      onEmailSubmitted();
-    } catch {
+      await onEmailSubmitted();
+      setEmail('');
+    } catch (err: any) {
       setError('Failed to submit email. Please try again.');
     } finally {
       setIsSubmitting(false);
+      setLocalSubmitting(false);
     }
   };
 
@@ -87,7 +62,7 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="your@email.com"
             required
-            disabled={isSubmitting}
+            disabled={isSubmitting || localSubmitting}
           />
         </div>
 
@@ -99,7 +74,7 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
 
         <button
           type="submit"
-          disabled={isSubmitting || !email.trim()}
+          disabled={isSubmitting || localSubmitting || !email.trim()}
           className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
           {isSubmitting ? (

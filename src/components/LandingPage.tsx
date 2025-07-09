@@ -15,6 +15,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPDF, setShowPDF] = useState(false);
+  const [localSubmitting, setLocalSubmitting] = useState(false);
 
   useEffect(() => {
     setError(null); // Clear error when slug changes or fetch starts
@@ -36,8 +37,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!campaign || !email.trim()) return;
-
+    if (!campaign || !email.trim() || isSubmitting || localSubmitting) return;
+    setLocalSubmitting(true);
     setIsSubmitting(true);
     setError(null);
 
@@ -56,6 +57,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
       }
     } finally {
       setIsSubmitting(false);
+      setLocalSubmitting(false);
     }
   };
 
@@ -151,10 +153,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
               
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || localSubmitting}
                 className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center text-lg"
               >
-                {isSubmitting ? (
+                {isSubmitting || localSubmitting ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                     Processing...

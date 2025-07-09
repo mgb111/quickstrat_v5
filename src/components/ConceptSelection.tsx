@@ -41,20 +41,30 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
   const [selectedConceptId, setSelectedConceptId] = useState<string>('');
   const [showCustomization, setShowCustomization] = useState(false);
   const [customization, setCustomization] = useState<CustomizationValues>(defaultCustomization);
+  const [localLoading, setLocalLoading] = useState(false);
+  const [customizationLoading, setCustomizationLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const selectedConcept = concepts.find(c => c.id === selectedConceptId);
-    if (selectedConcept) {
-      setShowCustomization(true);
+    if (!isLoading && !localLoading) {
+      setLocalLoading(true);
+      const selectedConcept = concepts.find(c => c.id === selectedConceptId);
+      if (selectedConcept) {
+        setShowCustomization(true);
+      }
+      setLocalLoading(false);
     }
   };
 
-  const handleCustomizationSubmit = (e: React.FormEvent) => {
+  const handleCustomizationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const selectedConcept = concepts.find(c => c.id === selectedConceptId);
-    if (selectedConcept) {
-      onConceptSelected(selectedConcept, customization);
+    if (!customizationLoading) {
+      setCustomizationLoading(true);
+      const selectedConcept = concepts.find(c => c.id === selectedConceptId);
+      if (selectedConcept) {
+        await onConceptSelected(selectedConcept, customization);
+      }
+      setCustomizationLoading(false);
     }
   };
 
@@ -180,10 +190,10 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
         <div className="text-center">
           <button
             type="submit"
-            disabled={!selectedConceptId || isLoading}
+            disabled={!selectedConceptId || isLoading || localLoading}
             className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
-            {isLoading ? (
+            {isLoading || localLoading ? (
               <>
                 <Loader2 className="animate-spin h-5 w-5 mr-3" />
                 <span className="text-white font-semibold">Creating Outline...</span>
