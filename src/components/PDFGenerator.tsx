@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Document, Page, Text, View, StyleSheet, PDFViewer, BlobProvider, Image, Link } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, PDFViewer, BlobProvider, Image } from '@react-pdf/renderer';
 import { PDFContent } from '../types';
 
 interface PDFGeneratorProps {
