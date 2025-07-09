@@ -63,6 +63,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: 1,
     zIndex: 1,
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
   },
   coverSubtitle: {
     fontSize: 26,
@@ -70,6 +72,8 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     textAlign: 'center',
     zIndex: 1,
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
   },
   coverByline: {
     fontSize: 18,
@@ -77,6 +81,8 @@ const styles = StyleSheet.create({
     marginTop: 32,
     textAlign: 'center',
     zIndex: 1,
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
   },
   section: {
     marginBottom: 44,
@@ -160,6 +166,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderLeft: '8px solid #4a90e2',
     boxShadow: '0 2px 8px rgba(74,144,226,0.06)',
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
   },
   checkbox: {
     fontSize: 20,
@@ -177,6 +185,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontWeight: 'bold',
     color: '#1a365d',
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
   },
   chatResponse: {
     backgroundColor: '#f7fafc',
@@ -185,6 +195,8 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 8,
     color: '#2d3748',
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
   },
   pageNumber: {
     position: 'absolute',
@@ -209,6 +221,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     boxShadow: '0 2px 12px rgba(74,144,226,0.10)',
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
   },
   ctaHeadline: {
     fontSize: 30,
@@ -217,6 +231,8 @@ const styles = StyleSheet.create({
     marginBottom: 22,
     textAlign: 'center',
     letterSpacing: 0.5,
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
   },
   ctaLink: {
     fontSize: 19,
@@ -228,6 +244,59 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginTop: 8,
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
+  },
+  // 1. Add a new style for infographics and quote/callout boxes (e.g., styles.infographicBox, styles.quoteCard).
+  infographicBox: {
+    backgroundColor: '#f7fafc',
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 20,
+    borderLeft: '8px solid #4a90e2',
+    boxShadow: '0 2px 8px rgba(74,144,226,0.06)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
+  },
+  // 2. When rendering scripts or toolkit sections, if a micro-case study or example is present, render it in a visually distinct, shaded box with an icon (e.g., 💡 or 📈).
+  microCaseStudy: {
+    backgroundColor: '#f7fafc',
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 20,
+    borderLeft: '8px solid #4a90e2',
+    boxShadow: '0 2px 8px rgba(74,144,226,0.06)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
+  },
+  // 3. For quote/callout boxes, use a left border, background color, and an icon (e.g., 🗣️ or 📢).
+  quoteCard: {
+    backgroundColor: '#f7fafc',
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 20,
+    borderLeft: '8px solid #4a90e2',
+    boxShadow: '0 2px 8px rgba(74,144,226,0.06)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+    flexWrap: 'wrap',
+    wordBreak: 'break-word',
+  },
+  // 4. Add a sample SVG infographic (e.g., a simple bar chart or icon) in the appropriate section.
+  // 5. Ensure all new elements use flexWrap: 'wrap', wordBreak: 'break-word', and sufficient padding/margin for mobile-friendliness.
+  // 6. Add comments to clarify these changes for future maintenance.
+  // 7. Add a new style for the icon in the quote card.
+  quoteIcon: {
+    fontSize: 24,
+    marginRight: 12,
+    color: '#4a90e2',
   },
 });
 
@@ -287,8 +356,8 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
         <View style={styles.coverLogo}>
           {data.logo && <Image src={data.logo} />}
         </View>
-        <Text style={styles.coverTitle}>{content.title_page.title}</Text>
-        <Text style={styles.coverSubtitle}>{content.title_page.subtitle}</Text>
+        <Text style={styles.coverTitle} wrap={false}>How Solopreneurs Can Get 10X More Clients from Social Media—Without Burning Out</Text>
+        <Text style={styles.coverSubtitle} wrap={false}>A 3-Step AI-Backed Lead Magnet Toolkit</Text>
         <Text style={styles.coverByline}>Created by QuickStrat | Powered by AI</Text>
       </Page>
       {/* Welcome Message Page */}
@@ -323,41 +392,93 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
               </View>
               {/* Add horizontal rule below section header */}
               <View style={{ height: 4, backgroundColor: '#e6f7ff', borderRadius: 2, marginBottom: 16, marginTop: -8 }} />
-              {/* Checklist */}
-              {section.type === 'checklist' && Array.isArray(contentObj.phases) && contentObj.phases.map((phase: { phase_title: string; items: string[] }, idx: number) => (
-                <View key={idx} style={styles.checklistBlock}>
-                  <Text style={styles.h3}>{phase.phase_title}</Text>
-                  {phase.items.map((item: string, itemIdx: number) => (
-                    <View key={itemIdx} style={styles.bulletItem}>
-                      <Text style={styles.checkbox}>☑</Text>
-                      <Text style={styles.checklistText}>{item}</Text>
+              {/* Checklist as a grid */}
+              {section.type === 'checklist' && Array.isArray(contentObj.phases) && (
+                <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 16 }}>
+                  {contentObj.phases.map((phase: { phase_title: string; items: string[] }, idx: number) => (
+                    <View key={idx} style={{ ...styles.checklistBlock, flex: 1, minWidth: 180, maxWidth: '48%' }}>
+                      <Text style={styles.h3}>{phase.phase_title}</Text>
+                      {phase.items.map((item: string, itemIdx: number) => (
+                        <View key={itemIdx} style={styles.bulletItem}>
+                          <Text style={styles.checkbox}>☑</Text>
+                          <Text style={styles.checklistText}>{item}</Text>
+                        </View>
+                      ))}
                     </View>
                   ))}
                 </View>
-              ))}
-              {/* Pros & Cons */}
-              {section.type === 'pros_and_cons_list' && Array.isArray(contentObj.items) && contentObj.items.map((item: { method_name: string; pros: string; cons: string }, idx: number) => (
-                <View key={idx} style={styles.checklistBlock}>
-                  <Text style={styles.h3}>{item.method_name}</Text>
-                  <View style={styles.bulletItem}><Text style={styles.checkbox}>👍</Text><Text style={styles.checklistText}>Pros: {item.pros}</Text></View>
-                  <View style={styles.bulletItem}><Text style={styles.checkbox}>👎</Text><Text style={styles.checklistText}>Cons: {item.cons}</Text></View>
+              )}
+              {/* Checklist Example/Template */}
+              {section.type === 'checklist' && (contentObj.example || contentObj.template) && (
+                <View style={styles.microCaseStudy}>
+                  <Text style={styles.quoteIcon}>💡</Text>
+                  <View>
+                    {contentObj.example && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Example:</Text> {contentObj.example}</Text>}
+                    {contentObj.template && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Template:</Text> {contentObj.template}</Text>}
+                  </View>
                 </View>
-              ))}
-              {/* Scripts as scenario/response */}
-              {section.type === 'scripts' && Array.isArray(contentObj.scenarios) && contentObj.scenarios.map((scenario: { trigger: string; response: string; explanation: string }, idx: number) => (
-                <View key={idx} style={styles.checklistBlock}>
-                  <Text style={styles.h3}>Scenario: {scenario.trigger}</Text>
-                  <View style={styles.chatScenario}>
-                    <Text style={styles.bodyText}>Scenario: {scenario.trigger}</Text>
-                  </View>
-                  <View style={styles.chatResponse}>
-                    <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Your Response:</Text> {scenario.response}</Text>
-                  </View>
-                  {scenario.explanation && (
-                    <View style={styles.chatResponse}>
-                      <Text style={styles.bodyText}>Strategy: {scenario.explanation}</Text>
+              )}
+              {/* Pros & Cons as infographic cards */}
+              {section.type === 'pros_and_cons_list' && Array.isArray(contentObj.items) && (
+                <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 16 }}>
+                  {contentObj.items.map((item: any, idx: number) => (
+                    <View key={idx} style={{ ...styles.infographicBox, flex: 1, minWidth: 180, maxWidth: '48%' }}>
+                      <Text style={styles.h3}>{item.method_name}</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                        <Text style={styles.quoteIcon}>{prosIcon}</Text>
+                        <Text style={styles.bodyText}>Pros: {item.pros}</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                        <Text style={styles.quoteIcon}>{consIcon}</Text>
+                        <Text style={styles.bodyText}>Cons: {item.cons}</Text>
+                      </View>
+                      {/* Simple bar chart infographic (visual cue only) */}
+                      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, marginBottom: 8 }}>
+                        <View style={{ height: 10, width: `${Math.max(30, Math.min(100, (item.pros.length / (item.pros.length + item.cons.length)) * 100))}%`, backgroundColor: '#38a169', borderRadius: 4 }} />
+                        <View style={{ height: 10, width: `${Math.max(30, Math.min(100, (item.cons.length / (item.pros.length + item.cons.length)) * 100))}%`, backgroundColor: '#e53e3e', borderRadius: 4, marginLeft: 4 }} />
+                      </View>
+                      {/* Example/Template */}
+                      {(item.example || item.template) && (
+                        <View style={styles.microCaseStudy}>
+                          <Text style={styles.quoteIcon}>💡</Text>
+                          <View>
+                            {item.example && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Example:</Text> {item.example}</Text>}
+                            {item.template && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Template:</Text> {item.template}</Text>}
+                          </View>
+                        </View>
+                      )}
                     </View>
-                  )}
+                  ))}
+                </View>
+              )}
+              {/* Scripts as quote/callout cards */}
+              {section.type === 'scripts' && Array.isArray(contentObj.scenarios) && contentObj.scenarios.map((scenario: any, idx: number) => (
+                <View key={idx} style={styles.quoteCard}>
+                  <Text style={styles.quoteIcon}>🗣️</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.h3}>Scenario: {scenario.trigger}</Text>
+                    <View style={styles.chatScenario}>
+                      <Text style={styles.bodyText}>Scenario: {scenario.trigger}</Text>
+                    </View>
+                    <View style={styles.chatResponse}>
+                      <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Your Response:</Text> {scenario.response}</Text>
+                    </View>
+                    {scenario.explanation && (
+                      <View style={styles.chatResponse}>
+                        <Text style={styles.bodyText}>Strategy: {scenario.explanation}</Text>
+                      </View>
+                    )}
+                    {/* Example/Template */}
+                    {(scenario.example || scenario.template) && (
+                      <View style={styles.microCaseStudy}>
+                        <Text style={styles.quoteIcon}>💡</Text>
+                        <View>
+                          {scenario.example && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Example:</Text> {scenario.example}</Text>}
+                          {scenario.template && <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Template:</Text> {scenario.template}</Text>}
+                        </View>
+                      </View>
+                    )}
+                  </View>
                 </View>
               ))}
               {/* Fallback for plain text */}
@@ -372,16 +493,10 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
       {/* CTA Page */}
       <Page size="A4" style={styles.page}>
         <View style={styles.ctaBox}>
-          <Text style={styles.ctaHeadline}>👇 Ready to Turn Strategy Into Clients?</Text>
-          {data.bookingLink && (
-            <Text style={styles.ctaLink}>🔗 Book a Free Strategy Call{"\n"}{data.bookingLink}</Text>
-          )}
-          {data.website && (
-            <Text style={styles.ctaLink}>🌐 Visit Our Website{"\n"}{data.website}</Text>
-          )}
-          {data.supportEmail && (
-            <Text style={styles.ctaLink}>📬 Questions?{"\n"}Email us at {data.supportEmail}</Text>
-          )}
+          <Text style={styles.ctaHeadline}>Want us to build your strategy for you—in 30 minutes or less?</Text>
+          <Text style={styles.ctaLink}>🕒 Book a free strategy call and walk away with a complete social plan.{"\n"}{data.bookingLink}</Text>
+          <Text style={styles.ctaLink}>🌐 Visit Our Website{"\n"}{data.website}</Text>
+          <Text style={styles.ctaLink}>📬 Questions?{"\n"}Email us at {data.supportEmail}</Text>
         </View>
         <Text style={styles.footer} render={({ pageNumber, totalPages }) => `QuickStrat • quickstrat.app • Page ${pageNumber} of ${totalPages}`} fixed />
       </Page>

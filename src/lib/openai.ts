@@ -86,6 +86,9 @@ Requirements:
 - Frame as actionable tools, not general guides.
 - Make them specific to their niche and audience.
 - Ensure each is distinct and valuable.
+- For each concept, provide a concrete, step-by-step example or micro-case study showing how it would be used in practice (1-2 sentences).
+- If possible, include a plug-and-play template or swipe file for the user to use immediately.
+- Use sharp, actionable language—avoid generic advice.
 
 Return JSON in this exact format:
 {
@@ -93,7 +96,9 @@ Return JSON in this exact format:
     {
       "id": "concept-1",
       "title": "A [Tool Type] for [Specific Problem]",
-      "description": "Brief description of what this tool accomplishes (15-25 words)"
+      "description": "Brief description of what this tool accomplishes (15-25 words)",
+      "example": "A real-life example or micro-case study (1-2 sentences)",
+      "template": "A plug-and-play template or swipe file (if applicable)"
     }
   ]
 }`;
@@ -159,13 +164,19 @@ Generate a content outline with these components:
 2. Introduction: A concise hook that states the problem this tool solves (40-60 words)
 3. Core Points: 4-6 bullet points outlining key steps/points (10-15 words each)
 4. CTA: A brief call-to-action offering next steps (25-40 words)
+5. Example: Provide at least one real-life example or micro-case study for the main strategy (2-3 sentences)
+6. Template: If possible, include a plug-and-play template or swipe file for the user to use immediately.
+
+Use sharp, actionable language—avoid generic advice.
 
 Return JSON in this exact format:
 {
   "title": "The [Tool Name]: [Specific Benefit]",
   "introduction": "...",
   "core_points": ["..."],
-  "cta": "..."
+  "cta": "...",
+  "example": "A real-life example or micro-case study (2-3 sentences)",
+  "template": "A plug-and-play template or swipe file (if applicable)"
 }`;
 
     const res = await client.chat.completions.create({
@@ -292,15 +303,19 @@ EXAMPLE CHECKLIST FORMAT:
   ]
 }
 
-For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), and "explanation" (strategy behind the script).
+For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), and "explanation" (strategy behind the script). For each script, include a real-life example or micro-case study (1-2 sentences) showing the script in action.
 
-For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words.
+For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words. Include a real-life example or case study for at least one mistake.
 
-IMPORTANT: DO NOT USE "step_by_step_guide" type if you already have a checklist. The checklist serves as the implementation guide and creating both would be redundant.
+IMPORTANT: DO NOT USE "step_by_by_step_guide" type if you already have a checklist. The checklist serves as the implementation guide and creating both would be redundant.
 
 4. Call to Action Page (layout: "centered"):
 Title: A clear, action-oriented title (e.g., "Your Next Step").
-Content: Write a custom, relevant call-to-action for this campaign. The CTA should reference the brand name (${input.brand_name}) and the lead magnet topic (${outline.title}), and encourage the reader to take a next step relevant to their business (such as booking a call, downloading more resources, or contacting support). Make it actionable, specific, and tailored to the context of this campaign. Do NOT use a generic or unrelated CTA.
+Content: Write a custom, relevant call-to-action for this campaign. The CTA should reference the brand name (${input.brand_name}) and the lead magnet topic (${outline.title}), and encourage the reader to take a next step relevant to their business (such as booking a call, downloading more resources, or contacting support). Make it actionable, specific, bold, urgent, and benefit-driven. Do NOT use a generic or unrelated CTA.
+
+5. For each toolkit section, if possible, include a plug-and-play template or swipe file for the user to use immediately.
+
+6. Use sharp, actionable language—avoid generic advice. Add at least one real-life example or micro-case study per strategy or script.
 
 FINAL GUARDRAIL AND SELF-CORRECTION: Before generating the JSON, you MUST verify your own output against the mandatory instructions.
 1. Is the content for each page dense enough?
@@ -308,6 +323,8 @@ FINAL GUARDRAIL AND SELF-CORRECTION: Before generating the JSON, you MUST verify
 3. Are there exactly 3 toolkit sections with no redundancy?
 4. Is the CTA custom, relevant, and tailored to the brand and lead magnet topic?
 5. Have you avoided creating both a checklist AND a step-by-step guide?
+6. Have you included at least one real-life example or micro-case study per strategy or script?
+7. Have you included a plug-and-play template or swipe file where possible?
 If any answer is no, you MUST rewrite that section to fully comply before providing the final output.
 
 RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
@@ -332,22 +349,9 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
           {
             "method_name": "Paid Advertising",
             "pros": "Quick results, precise targeting, scalable.",
-            "cons": "Can be expensive, requires constant monitoring and adjustment."
-          },
-          {
-            "method_name": "Organic Growth",
-            "pros": "Cost-effective, builds trust and credibility.",
-            "cons": "Slower results, requires consistent high-quality content."
-          },
-          {
-            "method_name": "Influencer Marketing",
-            "pros": "Access to established audiences, high trust factor.",
-            "cons": "Can be expensive, success heavily dependent on influencer."
-          },
-          {
-            "method_name": "Community Building",
-            "pros": "Encourages engagement, fosters loyalty.",
-            "cons": "Time-consuming, requires active moderation."
+            "cons": "Can be expensive, requires constant monitoring and adjustment.",
+            "example": "A real-life example or micro-case study (1-2 sentences)",
+            "template": "A plug-and-play template or swipe file (if applicable)"
           }
         ]
       }
@@ -365,24 +369,10 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
               "1.2 Estimate the number of users who will need access to VR training",
               "1.3 Calculate the budget available for VR training implementation"
             ]
-          },
-          {
-            "phase_title": "Phase B: Vendor Evaluation",
-            "items": [
-              "2.1 Compare various VR training platforms based on features and cost",
-              "2.2 Evaluate the scalability and flexibility of each platform",
-              "2.3 Consider the support and training provided by the vendor"
-            ]
-          },
-          {
-            "phase_title": "Phase C: Implementation and Monitoring",
-            "items": [
-              "3.1 Implement a pilot project to test the effectiveness of the chosen platform",
-              "3.2 Measure the ROI of the VR training program",
-              "3.3 Iterate and adjust the program based of feedback and results"
-            ]
           }
-        ]
+        ],
+        "example": "A real-life example or micro-case study (1-2 sentences)",
+        "template": "A plug-and-play template or swipe file (if applicable)"
       }
     },
     {
@@ -394,17 +384,9 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
           {
             "trigger": "We can offer you a 20% discount if you sign today.",
             "response": "I appreciate the offer, but I need time to review all terms with my team. Can you put that discount in writing with a 30-day validity period?",
-            "explanation": "This deflects pressure tactics while securing the discount for proper evaluation time."
-          },
-          {
-            "trigger": "This is our standard contract - we don't typically make changes.",
-            "response": "I understand you have standard terms. Which specific clauses have you modified for other enterprise clients in similar situations?",
-            "explanation": "This acknowledges their position while implying flexibility exists and you're aware of industry norms."
-          },
-          {
-            "trigger": "The implementation timeline is fixed at 6 months.",
-            "response": "Help me understand what drives that timeline. Are there specific milestones we could adjust to accelerate delivery?",
-            "explanation": "This uncovers the real constraints and opens discussion about flexible scheduling options."
+            "explanation": "This deflects pressure tactics while securing the discount for proper evaluation time.",
+            "example": "A real-life example or micro-case study (1-2 sentences)",
+            "template": "A plug-and-play template or swipe file (if applicable)"
           }
         ]
       }
@@ -413,22 +395,9 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   "cta_page": {
     "layout": "centered",
     "title": "Your Next Step",
-    "content": "You now have the complete blueprint for implementing a VR training program. To get a personalized assessment of how this blueprint can be applied to your specific training needs and budget, schedule a free 15-minute strategy session with our experts."
+    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and lead magnet topic."
   }
-}
-
-CRITICAL REQUIREMENTS:
-1. Generate content that is dense enough to fill each page completely
-2. Use varied formatting (lists, phases, scripts, etc.) for visual interest
-3. Ensure all toolkit sections provide immediate, actionable value
-4. Make the content 100% educational with no promotional language
-5. Structure the content for professional PDF layout and design
-6. MANDATORY: All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields
-7. MANDATORY: For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays
-8. MANDATORY: For checklist, use phases with numbered items like "1.1", "2.1", etc.
-9. MANDATORY: Generate EXACTLY 3 toolkit sections, no more, no less
-10. MANDATORY: DO NOT create both checklist and step-by-step guide - choose one or the other to avoid redundancy
-11. MANDATORY: The CTA must be custom, relevant, and tailored to the brand and lead magnet topic.`;
+}`;
 
     const res = await client.chat.completions.create({
       model: 'gpt-4',
@@ -658,10 +627,12 @@ INSTRUCTIONS:
 2. Subheadline: Write a clear subheadline that expands on the headline (15-25 words)
 3. Benefit Bullets: Convert the core points into 3-4 powerful benefit statements (each 10-15 words)
 4. CTA Button: Create a strong, action-oriented call-to-action (2-5 words)
+5. Example: Add a real-life example or micro-case study (1-2 sentences) showing the transformation or benefit.
+6. Template: If possible, include a plug-and-play template or swipe file for the user to use immediately.
 
 IMPORTANT:
 - Focus on the transformation the user will experience
-- Use clear, concise language
+- Use clear, concise, actionable language—avoid generic advice
 - Match the tone: ${input.tone}
 - Include a sense of urgency or exclusivity
 - Make it scannable and easy to read
@@ -675,7 +646,9 @@ Return JSON in this exact format:
     "Second compelling benefit...",
     "Third compelling benefit..."
   ],
-  "cta_button_text": "Get Instant Access"
+  "cta_button_text": "Get Instant Access",
+  "example": "A real-life example or micro-case study (1-2 sentences)",
+  "template": "A plug-and-play template or swipe file (if applicable)"
 }`;
 
     const res = await client.chat.completions.create({
@@ -755,6 +728,8 @@ Create four distinct social media posts to drive downloads. Each post should:
 2. Include relevant hashtags (2-3 per post, except Reddit)
 3. Have a clear call-to-action
 4. Match the brand's tone: ${input.tone}
+5. For at least one post, include a real-life example, micro-case study, or plug-and-play template/swipe file (1-2 sentences).
+6. Use sharp, actionable language—avoid generic advice.
 
 PLATFORM REQUIREMENTS:
 1. LinkedIn (Professional):
@@ -787,7 +762,9 @@ Return JSON in this exact format:
   "twitter": "Engaging tweet under 280 chars with 1-2 hashtags... #example",
   "instagram": "Engaging Instagram caption with 2-3 hashtags... #example #socialmedia #tips",
   "reddit": "Conversational Reddit post, longer, no hashtags, invites discussion.",
-  "subreddits": ["subreddit1", "subreddit2", "subreddit3"]
+  "subreddits": ["subreddit1", "subreddit2", "subreddit3"],
+  "example": "A real-life example or micro-case study (1-2 sentences)",
+  "template": "A plug-and-play template or swipe file (if applicable)"
 }`;
 
     const res = await client.chat.completions.create({

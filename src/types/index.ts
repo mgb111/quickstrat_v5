@@ -85,6 +85,8 @@ export interface PDFContent {
           method_name: string;
           pros: string;
           cons: string;
+          example?: string;
+          template?: string;
         }[];
         phases?: {
           phase_title: string;
@@ -94,7 +96,11 @@ export interface PDFContent {
           trigger: string;
           response: string;
           explanation: string;
+          example?: string;
+          template?: string;
         }[];
+        example?: string;
+        template?: string;
       };
     }[];
     cta_page: {
