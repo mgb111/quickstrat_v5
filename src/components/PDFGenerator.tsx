@@ -46,6 +46,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     borderRadius: 16,
     boxShadow: '0 2px 16px rgba(60,60,100,0.08)',
     boxSizing: 'border-box',
+    marginBottom: 32, // Ensure space for buttons
   };
   const mobileStyle: React.CSSProperties = {
     width: '100%',
@@ -53,6 +54,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     fontSize: 15,
     borderRadius: 0,
     boxShadow: 'none',
+    marginBottom: 24,
   };
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 600;
 
@@ -72,7 +74,10 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   const supportEmail = data?.supportEmail || '';
 
   return (
-    <div>
+    <div style={{ overflow: 'visible', width: '100%' }}>
+      <div style={{ textAlign: 'center', fontWeight: 'bold', fontSize: isMobile ? 18 : 24, marginBottom: 16 }}>
+        Your Free Guide
+      </div>
       <div
         ref={pdfRef}
         id="pdf-content"
@@ -196,7 +201,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           )}
         </div>
       </div>
-      <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 16, marginTop: 32, justifyContent: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 16, marginTop: 32, justifyContent: 'center', overflow: 'visible' }}>
         <button onClick={handleDownloadPDF} style={{ padding: '16px 32px', background: '#1a237e', color: '#fff', border: 'none', borderRadius: 8, fontSize: 18, fontWeight: 'bold', cursor: 'pointer', marginBottom: isMobile ? 12 : 0 }}>
           Download as PDF
         </button>
