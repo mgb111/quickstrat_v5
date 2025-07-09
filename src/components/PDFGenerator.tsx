@@ -24,97 +24,151 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#ffffff',
     padding: 40,
-    // border: '1px solid red', // Debug border removed
-    // To implement: dynamic padding based on content size if needed
+    minHeight: '100%',
+  },
+  coverPage: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: '#f7fafc',
+    alignItems: 'stretch',
+    minHeight: '100%',
+  },
+  coverSidebar: {
+    width: 32,
+    backgroundColor: '#4a90e2',
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
+  },
+  coverContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 48,
+  },
+  coverLogo: {
+    width: 100,
+    height: 100,
+    marginBottom: 24,
+    objectFit: 'contain',
+  },
+  coverTitle: {
+    fontSize: 38,
+    fontWeight: 'bold',
+    color: '#1a365d',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  coverSubtitle: {
+    fontSize: 24,
+    color: '#4a5568',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  coverByline: {
+    fontSize: 16,
+    color: '#718096',
+    marginTop: 24,
+    textAlign: 'center',
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 32,
     breakInside: 'avoid',
   },
-  titlePage: {
-    height: '100%',
-    justifyContent: 'center',
+  sectionHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 12,
   },
-  titlePageTitle: {
-    fontSize: 40,
-    marginBottom: 24,
-    textAlign: 'center',
+  sectionIcon: {
+    fontSize: 22,
+    marginRight: 10,
+  },
+  sectionTitleBar: {
+    height: 8,
+    width: 32,
+    backgroundColor: '#4a90e2',
+    borderRadius: 4,
+    marginRight: 10,
+  },
+  sectionTitle: {
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#1a365d',
-  },
-  titlePageSubtitle: {
-    fontSize: 28,
-    marginBottom: 36,
-    textAlign: 'center',
-    color: '#4a5568',
   },
   h1: {
-    fontSize: 36,
-    marginBottom: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#1a365d',
+    marginBottom: 20,
   },
   h2: {
-    fontSize: 32,
-    marginBottom: 24,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#2d3748',
+    marginBottom: 16,
   },
   h3: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#4a5568',
+    marginBottom: 12,
   },
   bodyText: {
     fontSize: 16,
     lineHeight: 1.6,
-    marginBottom: 16,
     color: '#4a5568',
-  },
-  bulletPoint: {
-    width: 20,
-    fontSize: 18,
-    color: '#4a5568',
-  },
-  bulletContent: {
-    flex: 1,
-    paddingLeft: 12,
-    fontSize: 16,
-    lineHeight: 1.6,
-    color: '#4a5568',
-  },
-  methodSection: {
-    marginBottom: 28,
-  },
-  methodName: {
-    fontSize: 20,
-    fontWeight: 'bold',
     marginBottom: 12,
-    color: '#2d3748',
   },
-  prosCons: {
+  bulletList: {
     marginLeft: 24,
     marginBottom: 20,
   },
-  scriptSection: {
-    marginBottom: 28,
-    padding: 20,
-    backgroundColor: '#f7fafc',
-    borderRadius: 4,
+  bulletItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 10,
   },
-  scriptLabel: {
+  bulletPoint: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    color: '#4a90e2',
+    marginRight: 8,
+  },
+  bulletContent: {
+    flex: 1,
+    fontSize: 16,
     color: '#4a5568',
   },
-  scriptText: {
+  checklistBlock: {
+    backgroundColor: '#e6f7ff',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+  },
+  checkbox: {
+    fontSize: 18,
+    color: '#38a169',
+    marginRight: 10,
+  },
+  checklistText: {
     fontSize: 16,
-    lineHeight: 1.6,
-    marginBottom: 12,
-    color: '#4a5568',
+    color: '#2d3748',
+  },
+  chatBubble: {
+    backgroundColor: '#f1f5f9',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    borderLeft: '4px solid #4a90e2',
+  },
+  theySay: {
+    fontSize: 15,
+    color: '#718096',
+    marginBottom: 4,
+  },
+  youSay: {
+    fontSize: 15,
+    color: '#38a169',
+    fontWeight: 'bold',
   },
   pageNumber: {
     position: 'absolute',
@@ -123,32 +177,34 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#718096',
   },
-  ctaSection: {
+  footer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 40,
+    right: 40,
+    textAlign: 'center',
+    fontSize: 13,
+    color: '#718096',
+  },
+  ctaBox: {
     marginTop: 36,
     padding: 28,
-    backgroundColor: '#f7fafc',
-    borderRadius: 8,
+    backgroundColor: '#e6f7ff',
+    borderRadius: 12,
+    alignItems: 'center',
   },
-  ctaTitle: {
-    fontSize: 32,
+  ctaHeadline: {
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#1a365d',
+    marginBottom: 18,
     textAlign: 'center',
+  },
+  ctaLink: {
+    fontSize: 17,
     color: '#2d3748',
-  },
-  ctaText: {
-    fontSize: 18,
-    lineHeight: 1.6,
+    marginBottom: 10,
     textAlign: 'center',
-    color: '#4a5568',
-  },
-  bulletList: {
-    marginLeft: 24,
-    marginBottom: 20,
-  },
-  bulletItem: {
-    flexDirection: 'row',
-    marginBottom: 12,
   },
 });
 
@@ -170,62 +226,6 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
   const mainAction = data.mainAction || 'Book a Call';
   const fontFamily = data.font || 'Helvetica';
 
-  // Dynamic styles
-  const dynamicStyles = StyleSheet.create({
-    ...styles,
-    titlePageTitle: {
-      ...styles.titlePageTitle,
-      color: primaryColor,
-      fontFamily,
-    },
-    h1: {
-      ...styles.h1,
-      color: primaryColor,
-      fontFamily,
-    },
-    h2: {
-      ...styles.h2,
-      color: secondaryColor,
-      fontFamily,
-    },
-    h3: {
-      ...styles.h3,
-      color: secondaryColor,
-      fontFamily,
-    },
-    bodyText: {
-      ...styles.bodyText,
-      fontFamily,
-    },
-    scriptLabel: {
-      ...styles.scriptLabel,
-      color: primaryColor,
-      fontFamily,
-    },
-    scriptText: {
-      ...styles.scriptText,
-      fontFamily,
-    },
-    ctaTitle: {
-      ...styles.ctaTitle,
-      color: primaryColor,
-      fontFamily,
-    },
-    ctaText: {
-      ...styles.ctaText,
-      fontFamily,
-    },
-    bulletPoint: {
-      ...styles.bulletPoint,
-      color: secondaryColor,
-      fontFamily,
-    },
-    bulletContent: {
-      ...styles.bulletContent,
-      fontFamily,
-    },
-  });
-
   const formatText = (text: string) => {
     return text.split('\n').map((line, i) => (
       <React.Fragment key={i}>
@@ -235,178 +235,112 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
     ));
   };
 
-  const renderProsConsList = (items: Array<{method_name: string; pros: string; cons: string}>) => {
-    return items.map((item, index) => (
-      <View key={index} style={styles.methodSection}>
-        <Text style={dynamicStyles.methodName}>{item.method_name}</Text>
-        <View style={styles.prosCons}>
-          <View style={styles.bulletItem}>
-            <Text style={dynamicStyles.bulletPoint}>{prosIcon}</Text>
-            <Text style={dynamicStyles.bulletContent}>Pros: {formatText(item.pros)}</Text>
-          </View>
-          <View style={styles.bulletItem}>
-            <Text style={dynamicStyles.bulletPoint}>{consIcon}</Text>
-            <Text style={dynamicStyles.bulletContent}>Cons: {formatText(item.cons)}</Text>
-          </View>
-        </View>
-      </View>
-    ));
-  };
-
-  const renderChecklist = (phases: Array<{phase_title: string; items: string[]}>) => {
-    return phases.map((phase, index) => (
-      <View key={index} style={styles.section}>
-        <Text style={dynamicStyles.h3}>{phase.phase_title}</Text>
-        <View style={styles.bulletList}>
-          {phase.items.map((item: string, itemIndex: number) => (
-            <View key={itemIndex} style={styles.bulletItem}>
-              <Text style={dynamicStyles.bulletPoint}>{checklistIcon}</Text>
-              <Text style={dynamicStyles.bulletContent}>{formatText(item)}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-    ));
-  };
-
-  const renderScripts = (scenarios: Array<{trigger: string; response: string; explanation: string}>) => {
-    return (
-      <View>
-        {scenarios.map((scenario, index) => (
-          <View key={index} style={{ marginBottom: 24 }}>
-            <Text style={dynamicStyles.scriptLabel}>{`Scenario ${index + 1}: ${formatText(scenario.trigger)}`}</Text>
-            <Text style={[dynamicStyles.scriptLabel, { marginTop: 8 }]}>You say:</Text>
-            <Text style={dynamicStyles.scriptText}>{formatText(scenario.response)}</Text>
-            <Text style={dynamicStyles.scriptLabel}>Strategy:</Text>
-            <Text style={dynamicStyles.scriptText}>{formatText(scenario.explanation)}</Text>
-          </View>
-        ))}
-      </View>
-    );
-  };
-
   const renderIntroductionContent = (content: string | string[]) => {
     if (Array.isArray(content)) {
       return (
         <View style={styles.bulletList}>
           {content.map((point, index) => (
             <View key={index} style={styles.bulletItem}>
-              <Text style={dynamicStyles.bulletPoint}>{checklistIcon}</Text>
-              <Text style={dynamicStyles.bulletContent}>{point}</Text>
+              <Text style={styles.bulletPoint}>{checklistIcon}</Text>
+              <Text style={styles.bulletContent}>{point}</Text>
             </View>
           ))}
         </View>
       );
     }
     return content.split('\n').map((paragraph, i) => (
-      <Text key={i} style={dynamicStyles.bodyText}>{paragraph}</Text>
+      <Text key={i} style={styles.bodyText}>{paragraph}</Text>
     ));
-  };
-
-  const renderSection = (section: PDFContent['structured_content']['toolkit_sections'][0]) => {
-    if (typeof section.content === 'string') {
-      const paragraphs = section.content.split('\n\n');
-      return (
-        <View style={styles.section}>
-          {paragraphs.map((paragraph, index) => (
-            <Text key={index} style={dynamicStyles.bodyText}>{formatText(paragraph)}</Text>
-          ))}
-        </View>
-      );
-    }
-
-    if (section.type === 'pros_and_cons_list' && section.content.items) {
-      return renderProsConsList(section.content.items);
-    }
-
-    if (section.type === 'checklist' && section.content.phases) {
-      return renderChecklist(section.content.phases);
-    }
-
-    if (section.type === 'scripts' && section.content.scenarios) {
-      return renderScripts(section.content.scenarios);
-    }
-
-    return <Text style={dynamicStyles.bodyText}>Content not available</Text>;
   };
 
   return (
     <Document>
-      {/* Title Page */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.titlePage}>
-          {logo && (
-            <Image src={logo} style={{ width: 120, height: 120, marginBottom: 24 }} />
-          )}
-          <Text style={dynamicStyles.titlePageTitle}>
-            {formatText(content.title_page.title.split(':')[0])}
-          </Text>
-          <Text style={[dynamicStyles.titlePageTitle, { marginTop: 8 }]}> 
-            {formatText(content.title_page.title.split(':')[1] || '')}
-          </Text>
-          <Text style={styles.titlePageSubtitle}>{formatText(content.title_page.subtitle)}</Text>
+      {/* Branded Cover Page */}
+      <Page size="A4" style={styles.coverPage}>
+        <View style={styles.coverSidebar} />
+        <View style={styles.coverContent}>
+          {data.logo && <Image src={data.logo} style={styles.coverLogo} />}
+          <Text style={styles.coverTitle}>{content.title_page.title}</Text>
+          <Text style={styles.coverSubtitle}>{content.title_page.subtitle}</Text>
+          <Text style={styles.coverByline}>Created by QuickStrat | Powered by AI</Text>
         </View>
       </Page>
-
       {/* Introduction Page */}
       <Page size="A4" style={styles.page}>
         <View style={{ ...styles.section, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ ...dynamicStyles.h1, textAlign: 'center' }}>
-            Unlock the Power of Effective Lead Generation for Solopreneurs
-          </Text>
-          {renderIntroductionContent(content.introduction_page.content)}
-        </View>
-        <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
-      </Page>
-
-      {/* Content Pages - Render all toolkit sections in a single continuous page */}
-      <Page size="A4" style={styles.page}>
-        {content.toolkit_sections
-          .filter(section => {
-            const hasDeepContent = (val: any): boolean => {
-              if (typeof val === 'string') return val.trim() !== '';
-              if (Array.isArray(val)) return val.some(item => hasDeepContent(item));
-              if (typeof val === 'object' && val !== null) return Object.values(val).some(item => hasDeepContent(item));
-              return !!val;
-            };
-            return hasDeepContent(section.content);
-          })
-          .map((section, sectionIndex) => (
-            <View key={sectionIndex} style={[styles.section, { marginBottom: 32 }]}> {/* Add extra spacing between sections */}
-              <Text style={dynamicStyles.h2}>{formatText(section.title)}</Text>
-              {renderSection(section)}
-            </View>
+          <Text style={{ ...styles.h1, textAlign: 'center' }}>{content.introduction_page.title}</Text>
+          {content.introduction_page.content.split('\n').map((paragraph, i) => (
+            <Text key={i} style={styles.bodyText}>{paragraph}</Text>
           ))}
-        <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
+        </View>
+        <Text style={styles.footer} render={({ pageNumber, totalPages }) => `QuickStrat • quickstrat.app • Page ${pageNumber} of ${totalPages}`} fixed />
       </Page>
-
+      {/* Toolkit Sections */}
+      <Page size="A4" style={styles.page}>
+        {content.toolkit_sections.map((section, sectionIndex) => {
+          // Defensive: Only access .phases, .items, .scenarios if section.content is an object
+          const contentObj = typeof section.content === 'object' && section.content !== null ? section.content : {};
+          return (
+            <View key={sectionIndex} style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionIcon}>{section.type === 'checklist' ? '✅' : section.type === 'pros_and_cons_list' ? '📋' : section.type === 'scripts' ? '💬' : '📄'}</Text>
+                <View style={styles.sectionTitleBar} />
+                <Text style={styles.sectionTitle}>{section.title}</Text>
+              </View>
+              {/* Checklist */}
+              {section.type === 'checklist' && Array.isArray(contentObj.phases) && contentObj.phases.map((phase: { phase_title: string; items: string[] }, idx: number) => (
+                <View key={idx} style={styles.checklistBlock}>
+                  <Text style={styles.h3}>{phase.phase_title}</Text>
+                  {phase.items.map((item: string, itemIdx: number) => (
+                    <View key={itemIdx} style={styles.bulletItem}>
+                      <Text style={styles.checkbox}>✅</Text>
+                      <Text style={styles.checklistText}>{item}</Text>
+                    </View>
+                  ))}
+                </View>
+              ))}
+              {/* Pros & Cons */}
+              {section.type === 'pros_and_cons_list' && Array.isArray(contentObj.items) && contentObj.items.map((item: { method_name: string; pros: string; cons: string }, idx: number) => (
+                <View key={idx} style={styles.checklistBlock}>
+                  <Text style={styles.h3}>{item.method_name}</Text>
+                  <View style={styles.bulletItem}><Text style={styles.checkbox}>👍</Text><Text style={styles.checklistText}>Pros: {item.pros}</Text></View>
+                  <View style={styles.bulletItem}><Text style={styles.checkbox}>👎</Text><Text style={styles.checklistText}>Cons: {item.cons}</Text></View>
+                </View>
+              ))}
+              {/* Scripts as scenario/response */}
+              {section.type === 'scripts' && Array.isArray(contentObj.scenarios) && contentObj.scenarios.map((scenario: { trigger: string; response: string; explanation: string }, idx: number) => (
+                <View key={idx} style={styles.checklistBlock}>
+                  <Text style={styles.h3}>Scenario: {scenario.trigger}</Text>
+                  <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Your Response:</Text> {scenario.response}</Text>
+                  {scenario.explanation && (
+                    <Text style={styles.bodyText}>Strategy: {scenario.explanation}</Text>
+                  )}
+                </View>
+              ))}
+              {/* Fallback for plain text */}
+              {typeof section.content === 'string' && (
+                <Text style={styles.bodyText}>{section.content}</Text>
+              )}
+            </View>
+          );
+        })}
+        <Text style={styles.footer} render={({ pageNumber, totalPages }) => `QuickStrat • quickstrat.app • Page ${pageNumber} of ${totalPages}`} fixed />
+      </Page>
       {/* CTA Page */}
       <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text style={dynamicStyles.ctaTitle}>{formatText(content.cta_page.title)}</Text>
-          <View style={styles.ctaSection}>
-            <Text style={dynamicStyles.ctaText}>{formatText(ctaText)}</Text>
-            {/* CTA Links */}
-            <View style={{ marginTop: 16, alignItems: 'center' }}>
-              {bookingLink && (
-                <Link src={bookingLink} style={{ color: secondaryColor, fontSize: 18, textDecoration: 'underline', marginBottom: 8 }}>
-                  {mainAction}
-                </Link>
-              )}
-              {website && (
-                <Link src={website} style={{ color: secondaryColor, fontSize: 16, textDecoration: 'underline', marginBottom: 8 }}>
-                  Visit our website
-                </Link>
-              )}
-              {supportEmail && (
-                <Link src={`mailto:${supportEmail}`} style={{ color: secondaryColor, fontSize: 16, textDecoration: 'underline' }}>
-                  Contact Support
-                </Link>
-              )}
-            </View>
-          </View>
+        <View style={styles.ctaBox}>
+          <Text style={styles.ctaHeadline}>👇 Ready to Turn Strategy Into Clients?</Text>
+          {data.bookingLink && (
+            <Text style={styles.ctaLink}>🔗 Book a Free Strategy Call{"\n"}{data.bookingLink}</Text>
+          )}
+          {data.website && (
+            <Text style={styles.ctaLink}>🌐 Visit Our Website{"\n"}{data.website}</Text>
+          )}
+          {data.supportEmail && (
+            <Text style={styles.ctaLink}>📬 Questions?{"\n"}Email us at {data.supportEmail}</Text>
+          )}
         </View>
-        <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
+        <Text style={styles.footer} render={({ pageNumber, totalPages }) => `QuickStrat • quickstrat.app • Page ${pageNumber} of ${totalPages}`} fixed />
       </Page>
     </Document>
   );

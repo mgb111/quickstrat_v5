@@ -183,9 +183,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
       )}
 
       {/* Campaign Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full place-items-center">
         {/* Landing Page Copy */}
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 flex flex-col items-center justify-center text-center">
+        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 flex flex-col items-center justify-center text-center h-full w-full">
           <div className="flex items-center mb-4 justify-center">
             <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-2 rounded-lg mr-3">
               <ExternalLink className="h-5 w-5 text-white" />
@@ -229,14 +229,16 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
             </div>
           </div>
         </div>
+        {/* Empty cell for grid symmetry if needed */}
+        <div className="hidden lg:block"></div>
       </div>
 
       {/* Social Media Posts */}
       <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
         <h3 className="text-xl font-bold text-gray-900 mb-4">Social Media Posts</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full place-items-center">
           {/* LinkedIn */}
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="bg-gray-50 rounded-lg p-4 w-full h-full flex flex-col justify-center">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-gray-600">LinkedIn</span>
               <button
@@ -249,7 +251,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
             <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.linkedin}</p>
           </div>
           {/* Twitter */}
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="bg-gray-50 rounded-lg p-4 w-full h-full flex flex-col justify-center">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-gray-600">Twitter</span>
               <button
@@ -262,7 +264,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
             <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.twitter}</p>
           </div>
           {/* Instagram */}
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="bg-gray-50 rounded-lg p-4 w-full h-full flex flex-col justify-center">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-gray-600">Instagram</span>
               <button
@@ -275,17 +277,17 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
             <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.instagram}</p>
           </div>
           {/* Reddit */}
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="bg-gray-50 rounded-lg p-4 w-full h-full flex flex-col justify-center">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-gray-600">Reddit</span>
               <button
-                onClick={() => copyToClipboard(results.social_posts.reddit)}
+                onClick={() => copyToClipboard(results.social_posts.reddit || results.social_posts.linkedin)}
                 className="text-blue-600 hover:text-blue-800"
               >
                 <Copy className="h-4 w-4" />
               </button>
             </div>
-            <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.reddit}</p>
+            <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.reddit || results.social_posts.linkedin}</p>
           </div>
         </div>
       </div>
