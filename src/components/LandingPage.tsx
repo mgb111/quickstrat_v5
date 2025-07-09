@@ -106,8 +106,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12 flex flex-col items-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+        <div className="flex flex-col items-center justify-center text-center mb-12">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight mx-auto">
             {landingPageCopy?.headline || campaign.lead_magnet_title || 'Get Your Free Guide'}
           </h1>
           

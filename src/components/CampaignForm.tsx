@@ -145,7 +145,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
             </div>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-8 flex justify-center items-center">
             <button
               type="submit"
               disabled={isLoading || !formData.brand_name || !formData.niche || !formData.target_audience || !formData.problem_statement || !formData.desired_outcome}

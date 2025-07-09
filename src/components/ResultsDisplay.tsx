@@ -10,6 +10,19 @@ interface ResultsDisplayProps {
   onCampaignCreated?: () => void;
 }
 
+const subredditSuggestions: Record<string, string[]> = {
+  'marketing': ['r/marketing', 'r/Entrepreneur', 'r/smallbusiness', 'r/leadgeneration'],
+  'saas': ['r/SaaS', 'r/startups', 'r/Entrepreneur', 'r/IndieHackers'],
+  'e-commerce': ['r/ecommerce', 'r/Shopify', 'r/Entrepreneur', 'r/smallbusiness'],
+  'health': ['r/Health', 'r/HealthAndFitness', 'r/Entrepreneur', 'r/smallbusiness'],
+  // Add more mappings as needed
+};
+
+function getSuggestedSubreddits(niche: string): string[] {
+  const key = Object.keys(subredditSuggestions).find(k => niche.toLowerCase().includes(k));
+  return key ? subredditSuggestions[key] : ['r/Entrepreneur', 'r/smallbusiness'];
+}
+
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onCampaignCreated }) => {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
@@ -49,6 +62,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
               subtitle: 'A step-by-step blueprint to help you achieve your goals'
             },
             introduction_page: {
+              title: 'Introduction',
               content: results.pdf_content.introduction
             },
             toolkit_sections: results.pdf_content.sections.map(section => ({
@@ -56,6 +70,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
               content: section.content
             })),
             cta_page: {
+              title: 'Next Steps',
               content: results.pdf_content.cta
             }
           }
@@ -83,6 +98,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
             subtitle: 'A step-by-step blueprint to help you achieve your goals'
           },
           introduction_page: {
+            title: 'Introduction',
             content: content
           },
           toolkit_sections: [
@@ -92,6 +108,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
             }
           ],
           cta_page: {
+            title: 'Next Steps',
             content: `Ready to put these strategies into action? Schedule a free strategy session with our team or reach out to ${brandName} for personalized support. Your success starts now!`
           }
         }
@@ -112,6 +129,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
     brandName,
     emailSubmitted
   });
+
+  // Reddit Copy Section
+  const [redditCopy, setRedditCopy] = useState('');
+  const [showReddit, setShowReddit] = useState(false);
+  const subreddits = getSuggestedSubreddits('');
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
@@ -258,6 +280,36 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
             <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.instagram}</p>
           </div>
         </div>
+      </div>
+
+      {/* Reddit Copy Section */}
+      <div className="mt-12 text-center">
+        <button
+          className="px-6 py-3 bg-orange-500 text-white rounded-lg font-semibold text-lg hover:bg-orange-600 transition-all"
+          onClick={() => setShowReddit(v => !v)}
+        >
+          {showReddit ? 'Hide Reddit Copy' : 'Generate Reddit Copy'}
+        </button>
+        {showReddit && (
+          <div className="mt-6 max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+            <h3 className="text-2xl font-bold mb-4">Reddit Post Copy</h3>
+            <textarea
+              className="w-full border rounded-lg px-3 py-2 mb-4"
+              rows={6}
+              value={redditCopy}
+              onChange={e => setRedditCopy(e.target.value)}
+              placeholder="Write your Reddit post here..."
+            />
+            <div className="text-left">
+              <h4 className="font-semibold mb-2">Suggested Subreddits:</h4>
+              <ul className="list-disc list-inside">
+                {subreddits.map(sub => (
+                  <li key={sub} className="text-blue-700">{sub}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

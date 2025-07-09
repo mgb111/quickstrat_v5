@@ -2,11 +2,35 @@ import React, { useState } from 'react';
 import { Target, ArrowRight, Loader2 } from 'lucide-react';
 import { LeadMagnetConcept } from '../types';
 
+interface CustomizationValues {
+  ctaText: string;
+  mainAction: string;
+  bookingLink: string;
+  website: string;
+  supportEmail: string;
+  logo: string;
+  primaryColor: string;
+  secondaryColor: string;
+  font: string;
+}
+
 interface ConceptSelectionProps {
   concepts: LeadMagnetConcept[];
-  onConceptSelected: (concept: LeadMagnetConcept) => void;
+  onConceptSelected: (concept: LeadMagnetConcept, customization?: CustomizationValues) => void;
   isLoading?: boolean;
 }
+
+const defaultCustomization: CustomizationValues = {
+  ctaText: '',
+  mainAction: 'Book a Call',
+  bookingLink: '',
+  website: '',
+  supportEmail: '',
+  logo: '',
+  primaryColor: '#1a365d',
+  secondaryColor: '#4a90e2',
+  font: 'Helvetica',
+};
 
 const ConceptSelection: React.FC<ConceptSelectionProps> = ({ 
   concepts, 
@@ -14,14 +38,73 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
   isLoading = false 
 }) => {
   const [selectedConceptId, setSelectedConceptId] = useState<string>('');
+  const [showCustomization, setShowCustomization] = useState(false);
+  const [customization, setCustomization] = useState<CustomizationValues>(defaultCustomization);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const selectedConcept = concepts.find(c => c.id === selectedConceptId);
     if (selectedConcept) {
-      onConceptSelected(selectedConcept);
+      setShowCustomization(true);
     }
   };
+
+  const handleCustomizationSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const selectedConcept = concepts.find(c => c.id === selectedConceptId);
+    if (selectedConcept) {
+      onConceptSelected(selectedConcept, customization);
+    }
+  };
+
+  if (showCustomization) {
+    return (
+      <div className="max-w-2xl mx-auto mt-8">
+        <h2 className="text-2xl font-bold text-center mb-6">Customize Your PDF</h2>
+        <form onSubmit={handleCustomizationSubmit} className="space-y-4 bg-white p-8 rounded-xl shadow-lg">
+          <div>
+            <label className="block text-sm font-medium mb-1">CTA Text</label>
+            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.ctaText} onChange={e => setCustomization({ ...customization, ctaText: e.target.value })} placeholder="e.g. Unlock your free strategy call!" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Main Action Label</label>
+            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.mainAction} onChange={e => setCustomization({ ...customization, mainAction: e.target.value })} placeholder="e.g. Book a Call" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Booking Link</label>
+            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.bookingLink} onChange={e => setCustomization({ ...customization, bookingLink: e.target.value })} placeholder="e.g. https://calendly.com/your-link" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Website</label>
+            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.website} onChange={e => setCustomization({ ...customization, website: e.target.value })} placeholder="e.g. https://yourwebsite.com" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Support Email</label>
+            <input type="email" className="w-full border rounded-lg px-3 py-2" value={customization.supportEmail} onChange={e => setCustomization({ ...customization, supportEmail: e.target.value })} placeholder="e.g. support@yourwebsite.com" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Logo URL</label>
+            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.logo} onChange={e => setCustomization({ ...customization, logo: e.target.value })} placeholder="Paste image URL" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Primary Color</label>
+            <input type="color" className="w-12 h-8 border rounded" value={customization.primaryColor} onChange={e => setCustomization({ ...customization, primaryColor: e.target.value })} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Secondary Color</label>
+            <input type="color" className="w-12 h-8 border rounded" value={customization.secondaryColor} onChange={e => setCustomization({ ...customization, secondaryColor: e.target.value })} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Font</label>
+            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.font} onChange={e => setCustomization({ ...customization, font: e.target.value })} placeholder="e.g. Helvetica, Arial, etc." />
+          </div>
+          <div className="text-center mt-6">
+            <button type="submit" className="px-8 py-3 bg-blue-600 text-white rounded-xl font-semibold text-lg hover:bg-blue-700 transition-all">Continue</button>
+          </div>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">

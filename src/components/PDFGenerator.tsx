@@ -350,13 +350,9 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
 
       {/* Introduction Page */}
       <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text style={dynamicStyles.h1}>
-            {content.introduction_page.title.split('Your').map((part, index) => (
-              <React.Fragment key={index}>
-                {index > 0 && '\nYour'}{part}
-              </React.Fragment>
-            ))}
+        <View style={{ ...styles.section, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ ...dynamicStyles.h1, textAlign: 'center' }}>
+            Unlock the Power of Effective Lead Generation for Solopreneurs
           </Text>
           {renderIntroductionContent(content.introduction_page.content)}
         </View>
