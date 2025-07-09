@@ -153,64 +153,85 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Step 1: Strategy Table (dynamic) */}
+      {/* Step 1: Strategy Table (robust) */}
       <div className="page">
         <div className="page-header">Step 1 of 3</div>
         <h2>📊 Strategy Showdown: What Actually Works?</h2>
-        <table className="strategy-table">
-          <thead>
-            <tr>
-              <th>Strategy</th>
-              <th>Pros</th>
-              <th>Cons</th>
-            </tr>
-          </thead>
-          <tbody>
-            {strategyRows.map((row: any, idx: number) => (
-              <tr key={idx}>
-                <td><strong>{row.method_name}</strong></td>
-                <td>{row.pros}</td>
-                <td>{row.cons}</td>
+        {strategySection && typeof strategySection.content === 'string' && (
+          <p>{strategySection.content}</p>
+        )}
+        {strategyRows.length > 0 ? (
+          <table className="strategy-table">
+            <thead>
+              <tr>
+                <th>Strategy</th>
+                <th>Pros</th>
+                <th>Cons</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {strategyRows.map((row: any, idx: number) => (
+                <tr key={idx}>
+                  <td><strong>{row.method_name}</strong></td>
+                  <td>{row.pros}</td>
+                  <td>{row.cons}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div style={{textAlign:'center', color: 'red'}}>No strategies found or data missing.</div>
+        )}
         <div className="pro-tip">
           <strong>💡 Pro Tip:</strong> Pick 1–2 strategies and go deep. Don’t spread yourself thin.
         </div>
       </div>
 
-      {/* Step 2: Checklist (dynamic) */}
+      {/* Step 2: Checklist (robust) */}
       <div className="page">
         <div className="page-header">Step 2 of 3</div>
         <h2>✅ The Social Media Checklist</h2>
         <p>Use this to stay consistent and intentional.</p>
         <div className="checklist-box">
-          {checklistPhases.map((phase: any, idx: number) => (
-            <React.Fragment key={idx}>
-              <h3>{phase.phase_title}</h3>
-              <ul className="checklist">
-                {phase.items.map((item: string, i: number) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
-            </React.Fragment>
-          ))}
+          {checklistSection && typeof checklistSection.content === 'string' && (
+            <p>{checklistSection.content}</p>
+          )}
+          {checklistPhases.length > 0 ? (
+            checklistPhases.map((phase: any, idx: number) => (
+              <React.Fragment key={idx}>
+                <h3>{phase.phase_title}</h3>
+                <ul className="checklist">
+                  {phase.items.map((item: string, i: number) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </React.Fragment>
+            ))
+          ) : (
+            <div style={{textAlign:'center', color: 'red'}}>No checklist phases found or data missing.</div>
+          )}
         </div>
       </div>
 
-      {/* Step 3: Scripts (dynamic) */}
+      {/* Step 3: Scripts (robust) */}
       <div className="page">
         <div className="page-header">Step 3 of 3</div>
         <h2>💬 Scripts That Turn Comments Into Clients</h2>
-        {scripts.map((scenario: any, idx: number) => (
-          <div className="script" key={idx}>
-            <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
-            <p><strong>You say:</strong></p>
-            <div className="script-dialog">{scenario.response}</div>
-            <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
-          </div>
-        ))}
+        {scriptsSection && typeof scriptsSection.content === 'string' && (
+          <p>{scriptsSection.content}</p>
+        )}
+        {scripts.length > 0 ? (
+          scripts.map((scenario: any, idx: number) => (
+            <div className="script" key={idx}>
+              <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
+              <p><strong>You say:</strong></p>
+              <div className="script-dialog">{scenario.response}</div>
+              <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
+            </div>
+          ))
+        ) : (
+          <div style={{textAlign:'center', color: 'red'}}>No scripts found or data missing.</div>
+        )}
       </div>
 
       {/* Page 6: CTA (dynamic) */}
