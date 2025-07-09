@@ -130,7 +130,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
 
       {/* Page 2: What You'll Learn (static) */}
       <div className="page">
-        <div className="page-header">Step 1 of 3</div>
+        <div className="page-header">What You’ll Learn</div>
         <h2>🚀 What You’ll Learn</h2>
         <h3>The 3-Step Lead Magnet System</h3>
         <div className="learn-container">
@@ -152,7 +152,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Page 3: Strategy Showdown (dynamic table) */}
+      {/* Step 1: Strategy Table (dynamic) */}
       <div className="page">
         <div className="page-header">Step 1 of 3</div>
         <h2>📊 Strategy Showdown: What Actually Works?</h2>
@@ -179,7 +179,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Page 4: Checklist (dynamic) */}
+      {/* Step 2: Checklist (dynamic) */}
       <div className="page">
         <div className="page-header">Step 2 of 3</div>
         <h2>✅ The Social Media Checklist</h2>
@@ -198,7 +198,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Page 5: Scripts (dynamic) */}
+      {/* Step 3: Scripts (dynamic) */}
       <div className="page">
         <div className="page-header">Step 3 of 3</div>
         <h2>💬 Scripts That Turn Comments Into Clients</h2>
