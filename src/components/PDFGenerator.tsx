@@ -12,26 +12,31 @@ import {
 import { PDFContent } from '../types';
 
 // --- Register Fonts ---
-Font.register({
-  family: 'Inter',
-  fonts: [
-    { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuOKfMZs.ttf', fontWeight: 'normal' },
-    { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfMZs.ttf', fontWeight: 'bold' },
-    { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYMZs.ttf', fontWeight: 900 },
-  ],
-});
+// If you have issues with remote font loading, comment this out and use the default font.
+try {
+  Font.register({
+    family: 'Inter',
+    fonts: [
+      { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuOKfMZs.ttf', fontWeight: 'normal' },
+      { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfMZs.ttf', fontWeight: 'bold' },
+      { src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYMZs.ttf', fontWeight: 900 },
+    ],
+  });
+} catch (e) {
+  // Fallback to default font
+}
 
 const styles = StyleSheet.create({
   page: {
-    padding: '25mm',
+    padding: 40, // px, not mm
     backgroundColor: '#ffffff',
     fontFamily: 'Inter',
     color: '#333',
   },
   pageHeader: {
     position: 'absolute',
-    top: '20mm',
-    right: '25mm',
+    top: 40,
+    right: 40,
     fontSize: 12,
     fontWeight: 'bold',
     color: '#888',
@@ -204,7 +209,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#448aff',
     color: 'white',
     padding: 15,
-    marginVertical: 10,
+    // marginVertical: 10, // Not supported
+    marginTop: 10,
+    marginBottom: 10,
     borderRadius: 8,
     fontSize: 14,
     fontWeight: 'bold',
@@ -227,7 +234,7 @@ interface PDFGeneratorProps {
 }
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
-  const content = data.structured_content;
+  const content = data?.structured_content;
 
   // --- PAGE 1: Welcome ---
   const title = content?.title_page?.title || 'Lead Magnet Title';
@@ -245,9 +252,9 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   // --- CTA ---
   const ctaTitle = content?.cta_page?.title || '';
   const ctaContent = content?.cta_page?.content || '';
-  const bookingLink = data.bookingLink || '';
-  const website = data.website || '';
-  const supportEmail = data.supportEmail || '';
+  const bookingLink = data?.bookingLink || '';
+  const website = data?.website || '';
+  const supportEmail = data?.supportEmail || '';
 
   return (
     <Document author="QuickStrat" title={title}>
@@ -257,9 +264,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         <Text style={styles.subtitle}>{subtitle}</Text>
         <Text style={styles.toolkitCredit}>{toolkitCredit}</Text>
         <Text style={styles.p}>{introTitle}</Text>
-        {introContent.split('\n').map((line, i) => (
-          <Text key={i} style={styles.p}>{line}</Text>
-        ))}
+        {introContent
+          ? introContent.split('\n').map((line, i) => (
+              <Text key={i} style={styles.p}>{line}</Text>
+            ))
+          : <Text style={styles.p}>Welcome to your personalized lead magnet!</Text>
+        }
       </Page>
 
       {/* --- PAGE 2: What You'll Learn (Toolkit Overview) --- */}
@@ -268,7 +278,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         <Text style={styles.h2}>🚀 What You’ll Learn</Text>
         <Text style={styles.h3}>The 3-Step Lead Magnet System</Text>
         <View style={styles.learnContainer}>
-          {toolkitSections.map((section, idx) => (
+          {toolkitSections.length > 0 ? toolkitSections.map((section, idx) => (
             <View key={idx} style={styles.learnItem}>
               <Text style={styles.learnIcon}>
                 {section.type === 'pros_and_cons_list' ? '🧠' : section.type === 'checklist' ? '✅' : section.type === 'scripts' ? '💬' : '📄'}
@@ -276,7 +286,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
               <Text style={styles.learnHeading}>{section.title}</Text>
               <Text style={styles.p}>{typeof section.content === 'string' ? section.content : ''}</Text>
             </View>
-          ))}
+          )) : <Text style={styles.p}>No toolkit sections found.</Text>}
         </View>
       </Page>
 
@@ -291,13 +301,13 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
               <Text style={styles.tableHeaderCell}>Pros</Text>
               <Text style={styles.tableHeaderCell}>Cons</Text>
             </View>
-            {Array.isArray((prosConsSection.content as any)?.items) && (prosConsSection.content as any).items.map((item: any, idx: number) => (
+            {Array.isArray((prosConsSection.content as any)?.items) && (prosConsSection.content as any).items.length > 0 ? (prosConsSection.content as any).items.map((item: any, idx: number) => (
               <View key={idx} style={idx % 2 === 1 ? [styles.tableRow, styles.tableRowEven] : styles.tableRow}>
                 <Text style={[styles.tableCell, styles.tableCellFirst]}>{item.method_name}</Text>
                 <Text style={styles.tableCell}>{item.pros}</Text>
                 <Text style={styles.tableCell}>{item.cons}</Text>
               </View>
-            ))}
+            )) : <Text style={styles.p}>No strategies found.</Text>}
           </View>
           {(prosConsSection.content as any)?.example && (
             <View style={styles.proTip}>
@@ -314,7 +324,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           <Text style={styles.h2}>✅ {checklistSection.title}</Text>
           <Text style={styles.p}>{typeof checklistSection.content === 'string' ? checklistSection.content : ''}</Text>
           <View style={styles.checklistContainer}>
-            {Array.isArray((checklistSection.content as any)?.phases) && (checklistSection.content as any).phases.map((phase: any, idx: number) => (
+            {Array.isArray((checklistSection.content as any)?.phases) && (checklistSection.content as any).phases.length > 0 ? (checklistSection.content as any).phases.map((phase: any, idx: number) => (
               <React.Fragment key={idx}>
                 <Text style={styles.h3}>{phase.phase_title}</Text>
                 {phase.items.map((item: string, i: number) => (
@@ -324,7 +334,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
                   </View>
                 ))}
               </React.Fragment>
-            ))}
+            )) : <Text style={styles.p}>No checklist items found.</Text>}
           </View>
         </Page>
       )}
@@ -334,7 +344,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         <Page size="A4" style={styles.page}>
           <Text style={styles.pageHeader}>Step 3 of 3</Text>
           <Text style={styles.h2}>💬 {scriptsSection.title}</Text>
-          {Array.isArray((scriptsSection.content as any)?.scenarios) && (scriptsSection.content as any).scenarios.map((scenario: any, idx: number) => (
+          {Array.isArray((scriptsSection.content as any)?.scenarios) && (scriptsSection.content as any).scenarios.length > 0 ? (scriptsSection.content as any).scenarios.map((scenario: any, idx: number) => (
             <View key={idx} style={styles.scriptBlock}>
               <Text style={styles.h3}>Scenario {idx + 1}: {scenario.trigger}</Text>
               <Text style={styles.p}><Text style={{ fontWeight: 'bold' }}>You say:</Text></Text>
@@ -345,15 +355,15 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
                 <Text>✅ <Text style={{ fontWeight: 'bold' }}>Why it works:</Text> {scenario.explanation}</Text>
               </View>
             </View>
-          ))}
+          )) : <Text style={styles.p}>No scripts found.</Text>}
         </Page>
       )}
 
       {/* --- PAGE 6: Call to Action --- */}
       <Page size="A4" style={styles.page}>
         <View style={styles.ctaBlock}>
-          <Text style={styles.ctaHeading}>{ctaTitle}</Text>
-          <Text style={styles.ctaText}>{ctaContent}</Text>
+          <Text style={styles.ctaHeading}>{ctaTitle || 'Ready to Get Your Strategy Done For You?'}</Text>
+          <Text style={styles.ctaText}>{ctaContent || 'If you want this whole thing done in 30 minutes or less...'}</Text>
           {bookingLink && (
             <Link src={bookingLink} style={styles.ctaButton}>
               <Text>🎯 Book a free Strategy Session</Text>
