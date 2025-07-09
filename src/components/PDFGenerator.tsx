@@ -35,29 +35,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     link.click();
   };
 
-  // Responsive styles
-  const containerStyle: React.CSSProperties = {
-    background: '#fff',
-    color: '#333',
-    padding: 24,
-    maxWidth: 800,
-    margin: '0 auto',
-    fontFamily: 'Inter, sans-serif',
-    borderRadius: 16,
-    boxShadow: '0 2px 16px rgba(60,60,100,0.08)',
-    boxSizing: 'border-box',
-    marginBottom: 32, // Ensure space for buttons
-  };
-  const mobileStyle: React.CSSProperties = {
-    width: '100%',
-    padding: 8,
-    fontSize: 15,
-    borderRadius: 0,
-    boxShadow: 'none',
-    marginBottom: 24,
-  };
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 600;
-
   // Data extraction
   const title = data?.structured_content?.title_page?.title || '';
   const subtitle = data?.structured_content?.title_page?.subtitle || '';
@@ -73,136 +50,201 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   const website = data?.website || '';
   const supportEmail = data?.supportEmail || '';
 
+  // Helper for rendering checklist phases
+  const renderChecklist = () => {
+    if (!checklistSection || !Array.isArray((checklistSection.content as any)?.phases)) return null;
+    return (checklistSection.content as any).phases.map((phase: any, idx: number) => (
+      <React.Fragment key={idx}>
+        <h3>{phase.phase_title}</h3>
+        <ul className="checklist">
+          {phase.items.map((item: string, i: number) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ul>
+      </React.Fragment>
+    ));
+  };
+
+  // Helper for rendering scripts
+  const renderScripts = () => {
+    if (!scriptsSection || !Array.isArray((scriptsSection.content as any)?.scenarios)) return null;
+    return (scriptsSection.content as any).scenarios.map((scenario: any, idx: number) => (
+      <div className="script" key={idx}>
+        <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
+        <p><strong>You say:</strong></p>
+        <div className="script-dialog">{scenario.response}</div>
+        <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
+      </div>
+    ));
+  };
+
+  // Helper for rendering pros/cons table
+  const renderStrategyTable = () => {
+    if (!prosConsSection || !Array.isArray((prosConsSection.content as any)?.items)) return null;
+    return (
+      <table className="strategy-table">
+        <thead>
+          <tr>
+            <th>Strategy</th>
+            <th>Pros</th>
+            <th>Cons</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(prosConsSection.content as any).items.map((item: any, idx: number) => (
+            <tr key={idx}>
+              <td><strong>{item.method_name}</strong></td>
+              <td>{item.pros}</td>
+              <td>{item.cons}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
+
+  // Helper for toolkit/learn section
+  const renderLearnSection = () => (
+    <div className="learn-container">
+      {toolkitSections.map((section: any, idx: number) => (
+        <div className="learn-item" key={idx}>
+          <div className="icon">
+            {section.type === 'pros_and_cons_list' ? '🧠' : section.type === 'checklist' ? '✅' : section.type === 'scripts' ? '💬' : '📄'}
+          </div>
+          <h3>{section.title}</h3>
+          <p>{typeof section.content === 'string' ? section.content : ''}</p>
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <div style={{ overflow: 'visible', width: '100%' }}>
-      <div style={{ textAlign: 'center', fontWeight: 'bold', fontSize: isMobile ? 18 : 24, marginBottom: 16 }}>
-        Your Free Guide
-      </div>
-      <div
-        ref={pdfRef}
-        id="pdf-content"
-        style={isMobile ? { ...containerStyle, ...mobileStyle } : containerStyle}
-      >
-        {/* Title Page */}
-        <h1 style={{ fontSize: isMobile ? 28 : 42, color: '#1a237e', fontWeight: 900, marginBottom: 10 }}>{title}</h1>
-        <h2 style={{ fontSize: isMobile ? 16 : 20, color: '#555', fontWeight: 'bold', marginBottom: 30 }}>{subtitle}</h2>
-        <div style={{ fontStyle: 'italic', color: '#7986cb', marginBottom: 40, fontSize: isMobile ? 13 : 16 }}>A QuickStrat AI Toolkit</div>
-        <h3 style={{ fontWeight: 'bold', fontSize: isMobile ? 15 : 18 }}>{introTitle}</h3>
-        {introContent.split('\n').map((line, i) => (
-          <p key={i} style={{ fontSize: isMobile ? 14 : 16, lineHeight: 1.6, marginBottom: 10 }}>{line}</p>
-        ))}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        .page { background-color: white; width: 210mm; min-height: 297mm; margin: 20px auto; padding: 25mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; position: relative; display: flex; flex-direction: column; }
+        .page-header { width: 100%; text-align: right; font-size: 14px; color: #888; position: absolute; top: 20mm; right: 25mm; font-weight: bold; }
+        h1 { font-size: 42px; color: #1a237e; font-weight: 900; margin-bottom: 10px; }
+        h2 { font-size: 28px; color: #283593; border-bottom: 2px solid #5c6bc0; padding-bottom: 10px; margin-top: 20px; margin-bottom: 20px; }
+        h3 { font-size: 20px; color: #3949ab; margin-top: 30px; }
+        p, li { font-size: 16px; line-height: 1.6; }
+        a { color: #304ffe; text-decoration: none; }
+        .subtitle { font-size: 20px; font-weight: 700; color: #555; margin-top: 0; margin-bottom: 30px; }
+        .toolkit-credit { font-style: italic; color: #7986cb; margin-bottom: 40px; }
+        .welcome-header { text-align: center; margin-bottom: 40px; }
+        .welcome-header .logo { font-weight: bold; font-size: 24px; color: #333; }
+        .welcome-intro { font-size: 18px; }
+        .welcome-list { list-style: none; padding-left: 0; }
+        .welcome-list li { padding-left: 25px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23304ffe" class="bi bi-check-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>'); background-repeat: no-repeat; background-position: left center; background-size: 16px; margin-bottom: 10px; }
+        .learn-container { display: flex; justify-content: space-around; text-align: center; gap: 20px; margin-top: 40px; }
+        .learn-item { flex: 1; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f8f9fa; }
+        .learn-item .icon { font-size: 48px; margin-bottom: 15px; }
+        .learn-item h3 { margin: 0; font-size: 18px; }
+        .pro-tip { background-color: #e8eaf6; border-left: 5px solid #7986cb; padding: 15px 20px; margin-top: 30px; font-size: 16px; }
+        .strategy-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .strategy-table th, .strategy-table td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        .strategy-table th { background-color: #3f51b5; color: white; font-size: 18px; }
+        .strategy-table tr:nth-child(even) { background-color: #f4f6f8; }
+        .strategy-table td:first-child { font-weight: bold; }
+        .checklist-box { background-color: #f7f9fc; padding: 25px; border-radius: 8px; border: 1px solid #dbe2ef; }
+        .checklist { list-style: none; padding-left: 0; }
+        .checklist li { font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; }
+        .checklist li::before { content: '🔲'; font-size: 24px; margin-right: 15px; color: #3f51b5; }
+        .script { margin-bottom: 40px; }
+        .script h3 { border-bottom: none; }
+        .script-dialog { background-color: #e3f2fd; border-radius: 20px 20px 20px 5px; padding: 20px; position: relative; font-style: italic; }
+        .script-why { background-color: #f1f8e9; padding: 10px 15px; border-radius: 8px; margin-top: 15px; font-size: 15px; border-left: 4px solid #8bc34a; }
+        .cta-block { background-color: #1a237e; color: white; text-align: center; padding: 40px; border-radius: 12px; margin-top: auto; }
+        .cta-block h2 { color: white; border: none; }
+        .cta-button { display: block; background-color: #448aff; color: white; padding: 18px 25px; margin: 20px auto; border-radius: 8px; font-size: 18px; font-weight: bold; max-width: 80%; transition: background-color 0.3s ease; }
+        .cta-button:hover { background-color: #2962ff; }
+        .cta-email { margin-top: 20px; }
+        .cta-email a { color: #c5cae9; }
+        @media (max-width: 700px) { .page { width: 100vw; min-width: 0; padding: 10vw 2vw; } .learn-container { flex-direction: column; gap: 10px; } }
+      `}</style>
 
-        {/* Toolkit Overview */}
-        <h2 style={{ fontSize: isMobile ? 22 : 28, color: '#283593', borderBottom: '2px solid #5c6bc0', paddingBottom: 10, marginBottom: 20, marginTop: 40 }}>🚀 What You’ll Learn</h2>
-        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 20, marginBottom: 20 }}>
-          {toolkitSections.map((section: any, idx: number) => (
-            <div key={idx} style={{ flex: 1, padding: 16, border: '1px solid #e0e0e0', borderRadius: 8, background: '#f8f9fa', textAlign: 'center', marginBottom: isMobile ? 16 : 0 }}>
-              <div style={{ fontSize: isMobile ? 32 : 48, marginBottom: 10 }}>
-                {section.type === 'pros_and_cons_list' ? '🧠' : section.type === 'checklist' ? '✅' : section.type === 'scripts' ? '💬' : '📄'}
-              </div>
-              <div style={{ fontWeight: 'bold', fontSize: isMobile ? 15 : 18, color: '#3949ab', marginBottom: 6 }}>{section.title}</div>
-              <div style={{ fontSize: isMobile ? 13 : 15 }}>{typeof section.content === 'string' ? section.content : ''}</div>
-            </div>
-          ))}
+      {/* Page 1: Welcome */}
+      <div className="page" ref={pdfRef} id="pdf-content">
+        <div className="welcome-header">
+          <div className="logo">QuickStrat</div>
         </div>
+        <h1>{title}</h1>
+        <p className="subtitle">{subtitle}</p>
+        <p className="toolkit-credit">A QuickStrat AI Toolkit</p>
+        {introTitle && <p className="welcome-intro">{introTitle}</p>}
+        {introContent.split('\n').map((line, i) => <p key={i}>{line}</p>)}
+        <ul className="welcome-list">
+          <li><strong>Proven strategies</strong> (with no fluff)</li>
+          <li>A <strong>plug-and-play checklist</strong> to stay consistent</li>
+          <li><strong>Word-for-word scripts</strong> to convert interest into income</li>
+        </ul>
+        <p>You don't need a marketing degree. Just this 3-step playbook.</p>
+        <p>Let’s dive in.</p>
+      </div>
 
-        {/* Pros & Cons Section */}
-        {prosConsSection && (
-          <div style={{ marginTop: 40 }}>
-            <h2 style={{ fontSize: isMobile ? 22 : 28, color: '#283593', borderBottom: '2px solid #5c6bc0', paddingBottom: 10, marginBottom: 20 }}>📊 {prosConsSection.title}</h2>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: isMobile ? 13 : 15 }}>
-                <thead>
-                  <tr style={{ background: '#3f51b5', color: '#fff' }}>
-                    <th style={{ padding: 12, fontWeight: 'bold' }}>Strategy</th>
-                    <th style={{ padding: 12, fontWeight: 'bold' }}>Pros</th>
-                    <th style={{ padding: 12, fontWeight: 'bold' }}>Cons</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Array.isArray((prosConsSection.content as any)?.items) && (prosConsSection.content as any).items.length > 0 ? (prosConsSection.content as any).items.map((item: any, idx: number) => (
-                    <tr key={idx} style={{ background: idx % 2 === 1 ? '#f4f6f8' : '#fff' }}>
-                      <td style={{ padding: 12, fontWeight: 'bold' }}>{item.method_name}</td>
-                      <td style={{ padding: 12 }}>{item.pros}</td>
-                      <td style={{ padding: 12 }}>{item.cons}</td>
-                    </tr>
-                  )) : (
-                    <tr><td colSpan={3} style={{ padding: 12 }}>No strategies found.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-            {(prosConsSection.content as any)?.example && (
-              <div style={{ background: '#e8eaf6', borderLeft: '5px solid #7986cb', padding: 16, marginTop: 24, borderRadius: 8, fontSize: isMobile ? 13 : 16 }}>
-                <span style={{ fontWeight: 'bold' }}>💡 Pro Tip:</span> {(prosConsSection.content as any).example}
-              </div>
-            )}
+      {/* Page 2: What You'll Learn */}
+      <div className="page">
+        <div className="page-header">Step 1 of 3</div>
+        <h2>🚀 What You’ll Learn</h2>
+        <h3>The 3-Step Lead Magnet System</h3>
+        {renderLearnSection()}
+      </div>
+
+      {/* Page 3: Strategy Showdown */}
+      <div className="page">
+        <div className="page-header">Step 1 of 3</div>
+        <h2>📊 {prosConsSection?.title || 'Strategy Showdown: What Actually Works?'}</h2>
+        {renderStrategyTable()}
+        {prosConsSection && (prosConsSection.content as any)?.example && (
+          <div className="pro-tip">
+            <strong>💡 Pro Tip:</strong> {(prosConsSection.content as any)?.example ?? ''}
           </div>
         )}
+      </div>
 
-        {/* Checklist Section */}
-        {checklistSection && (
-          <div style={{ marginTop: 40 }}>
-            <h2 style={{ fontSize: isMobile ? 22 : 28, color: '#283593', borderBottom: '2px solid #5c6bc0', paddingBottom: 10, marginBottom: 20 }}>✅ {checklistSection.title}</h2>
-            <div style={{ fontSize: isMobile ? 13 : 15, marginBottom: 16 }}>{typeof checklistSection.content === 'string' ? checklistSection.content : ''}</div>
-            <div style={{ background: '#f7f9fc', padding: 20, borderRadius: 8, border: '1px solid #dbe2ef' }}>
-              {Array.isArray((checklistSection.content as any)?.phases) && (checklistSection.content as any).phases.length > 0 ? (checklistSection.content as any).phases.map((phase: any, idx: number) => (
-                <div key={idx}>
-                  <div style={{ fontWeight: 'bold', fontSize: isMobile ? 15 : 18, color: '#3949ab', marginTop: 20 }}>{phase.phase_title}</div>
-                  <ul style={{ paddingLeft: 0, listStyle: 'none' }}>
-                    {phase.items.map((item: string, i: number) => (
-                      <li key={i} style={{ fontSize: isMobile ? 15 : 18, marginBottom: 12, display: 'flex', alignItems: 'center' }}>
-                        <span style={{ fontSize: isMobile ? 18 : 24, marginRight: 12, color: '#3f51b5' }}>🔲</span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )) : <div>No checklist items found.</div>}
-            </div>
-          </div>
-        )}
+      {/* Page 4: Checklist */}
+      <div className="page">
+        <div className="page-header">Step 2 of 3</div>
+        <h2>✅ {checklistSection?.title || 'The Social Media Checklist'}</h2>
+        <p>{typeof checklistSection?.content === 'string' ? checklistSection.content : 'Use this to stay consistent and intentional.'}</p>
+        <div className="checklist-box">
+          {renderChecklist()}
+        </div>
+      </div>
 
-        {/* Scripts Section */}
-        {scriptsSection && (
-          <div style={{ marginTop: 40 }}>
-            <h2 style={{ fontSize: isMobile ? 22 : 28, color: '#283593', borderBottom: '2px solid #5c6bc0', paddingBottom: 10, marginBottom: 20 }}>💬 {scriptsSection.title}</h2>
-            {Array.isArray((scriptsSection.content as any)?.scenarios) && (scriptsSection.content as any).scenarios.length > 0 ? (scriptsSection.content as any).scenarios.map((scenario: any, idx: number) => (
-              <div key={idx} style={{ marginBottom: 32 }}>
-                <div style={{ fontWeight: 'bold', fontSize: isMobile ? 15 : 18, marginBottom: 6 }}>Scenario {idx + 1}: {scenario.trigger}</div>
-                <div style={{ fontWeight: 'bold', fontSize: isMobile ? 14 : 16, marginBottom: 4 }}>You say:</div>
-                <div style={{ background: '#e3f2fd', borderRadius: 15, padding: 16, fontStyle: 'italic', fontSize: isMobile ? 13 : 16, lineHeight: 1.6, marginBottom: 8 }}>{scenario.response}</div>
-                <div style={{ background: '#f1f8e9', padding: 12, borderRadius: 8, marginTop: 8, borderLeft: '4px solid #8bc34a', fontSize: isMobile ? 12 : 15 }}>
-                  <span style={{ fontWeight: 'bold' }}>✅ Why it works:</span> {scenario.explanation}
-                </div>
-              </div>
-            )) : <div>No scripts found.</div>}
-          </div>
-        )}
+      {/* Page 5: Scripts */}
+      <div className="page">
+        <div className="page-header">Step 3 of 3</div>
+        <h2>💬 {scriptsSection?.title || 'Scripts That Turn Comments Into Clients'}</h2>
+        {renderScripts()}
+      </div>
 
-        {/* CTA Section */}
-        <div style={{ marginTop: 48, background: '#1a237e', color: '#fff', textAlign: 'center', padding: isMobile ? 24 : 40, borderRadius: 12 }}>
-          <div style={{ color: '#fff', fontSize: isMobile ? 20 : 28, fontWeight: 'bold', marginBottom: 10 }}>{ctaTitle || 'Ready to Get Your Strategy Done For You?'}</div>
-          <div style={{ color: '#c5cae9', fontSize: isMobile ? 13 : 16, marginBottom: 20, lineHeight: 1.6 }}>{ctaContent || 'If you want this whole thing done in 30 minutes or less...'}</div>
+      {/* Page 6: CTA */}
+      <div className="page">
+        <div className="cta-block">
+          <h2>{ctaTitle || '📞 Ready to Get Your Strategy Done For You?'}</h2>
+          <p>{ctaContent || 'If you want this whole thing done in 30 minutes or less...'}</p>
           {bookingLink && (
-            <a href={bookingLink} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', background: '#448aff', color: '#fff', padding: isMobile ? '12px 18px' : '18px 25px', margin: '10px 0', borderRadius: 8, fontSize: isMobile ? 15 : 18, fontWeight: 'bold', textDecoration: 'none' }}>
+            <a href={bookingLink} target="_blank" rel="noopener noreferrer" className="cta-button">
               🎯 Book a free Strategy Session
             </a>
           )}
           {website && (
-            <a href={website} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', background: '#3949ab', color: '#fff', padding: isMobile ? '12px 18px' : '18px 25px', margin: '10px 0', borderRadius: 8, fontSize: isMobile ? 15 : 18, fontWeight: 'bold', textDecoration: 'none' }}>
+            <a href={website} target="_blank" rel="noopener noreferrer" className="cta-button">
               🌐 Explore the tool
             </a>
           )}
           {supportEmail && (
-            <div style={{ marginTop: 20, fontSize: isMobile ? 12 : 14, color: '#c5cae9' }}>
-              📧 Questions? <a href={`mailto:${supportEmail}`} style={{ color: '#9fa8da', textDecoration: 'underline' }}>{supportEmail}</a>
-            </div>
+            <p className="cta-email">
+              📧 Questions? <a href={`mailto:${supportEmail}`}>{supportEmail}</a>
+            </p>
           )}
         </div>
       </div>
-      <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 16, marginTop: 32, justifyContent: 'center', overflow: 'visible' }}>
-        <button onClick={handleDownloadPDF} style={{ padding: '16px 32px', background: '#1a237e', color: '#fff', border: 'none', borderRadius: 8, fontSize: 18, fontWeight: 'bold', cursor: 'pointer', marginBottom: isMobile ? 12 : 0 }}>
+
+      {/* Download Buttons */}
+      <div style={{ display: 'flex', flexDirection: 'row', gap: 16, marginTop: 32, justifyContent: 'center', overflow: 'visible' }}>
+        <button onClick={handleDownloadPDF} style={{ padding: '16px 32px', background: '#1a237e', color: '#fff', border: 'none', borderRadius: 8, fontSize: 18, fontWeight: 'bold', cursor: 'pointer' }}>
           Download as PDF
         </button>
         <button onClick={handleDownloadImage} style={{ padding: '16px 32px', background: '#3949ab', color: '#fff', border: 'none', borderRadius: 8, fontSize: 18, fontWeight: 'bold', cursor: 'pointer' }}>
