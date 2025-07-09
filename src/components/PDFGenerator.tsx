@@ -1,5 +1,4 @@
 // @ts-ignore: No types for html2pdf.js
-// (If you want, add a global.d.ts with: declare module 'html2pdf.js';)
 import React, { useRef } from 'react';
 import { PDFContent } from '../types';
 
@@ -35,97 +34,39 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     link.click();
   };
 
-  // Data extraction
-  const title = data?.structured_content?.title_page?.title || '';
+  // Dynamic data extraction
+  const companyName = (data?.structured_content?.title_page && 'brand_name' in data.structured_content.title_page)
+    ? (data.structured_content.title_page as any).brand_name || 'QuickStrat'
+    : 'QuickStrat';
+  const mainTitle = data?.structured_content?.title_page?.title || '';
   const subtitle = data?.structured_content?.title_page?.subtitle || '';
-  const introTitle = data?.structured_content?.introduction_page?.title || '';
-  const introContent = data?.structured_content?.introduction_page?.content || '';
-  const toolkitSections = data?.structured_content?.toolkit_sections || [];
-  const prosConsSection = toolkitSections.find((s: any) => s.type === 'pros_and_cons_list');
-  const checklistSection = toolkitSections.find((s: any) => s.type === 'checklist');
-  const scriptsSection = toolkitSections.find((s: any) => s.type === 'scripts');
+  const introParagraphs = [
+    data?.structured_content?.introduction_page?.title,
+    ...(data?.structured_content?.introduction_page?.content?.split('\n') || [])
+  ].filter(Boolean);
+
+  // Helper to safely extract toolkit section content
+  function getSectionContent(type: string, key: string) {
+    const section = data?.structured_content?.toolkit_sections?.find((s: any) => s.type === type);
+    if (section && typeof section.content === 'object' && section.content !== null && key in section.content) {
+      return (section.content as any)[key] || [];
+    }
+    return [];
+  }
+  const strategyRows = getSectionContent('pros_and_cons_list', 'items');
+  const checklistPhases = getSectionContent('checklist', 'phases');
+  const scripts = getSectionContent('scripts', 'scenarios');
   const ctaTitle = data?.structured_content?.cta_page?.title || '';
   const ctaContent = data?.structured_content?.cta_page?.content || '';
   const bookingLink = data?.bookingLink || '';
   const website = data?.website || '';
   const supportEmail = data?.supportEmail || '';
 
-  // Toolkit Overview Section (first toolkit section as main heading)
-  const toolkitOverviewTitle = toolkitSections[0]?.title || '';
-  const toolkitOverviewContent = toolkitSections[0]?.content || '';
-
-  // Helper for rendering toolkit cards (all toolkit_sections)
-  const renderToolkitCards = () => (
-    <div className="learn-container">
-      {toolkitSections.map((section: any, idx: number) => (
-        <div className="learn-item" key={idx}>
-          <div className="icon">
-            {section.type === 'pros_and_cons_list' ? '🧠' : section.type === 'checklist' ? '✅' : section.type === 'scripts' ? '💬' : '📄'}
-          </div>
-          <h3>{section.title}</h3>
-          <p>{typeof section.content === 'string' ? section.content : ''}</p>
-        </div>
-      ))}
-    </div>
-  );
-
-  // Helper for rendering pros/cons table
-  const renderStrategyTable = () => {
-    if (!prosConsSection || !Array.isArray((prosConsSection.content as any)?.items)) return null;
-    return (
-      <table className="strategy-table">
-        <thead>
-          <tr>
-            <th>Strategy</th>
-            <th>Pros</th>
-            <th>Cons</th>
-          </tr>
-        </thead>
-        <tbody>
-          {(prosConsSection.content as any).items.map((item: any, idx: number) => (
-            <tr key={idx}>
-              <td><strong>{item.method_name}</strong></td>
-              <td>{item.pros}</td>
-              <td>{item.cons}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  };
-
-  // Helper for rendering checklist phases
-  const renderChecklist = () => {
-    if (!checklistSection || !Array.isArray((checklistSection.content as any)?.phases)) return null;
-    return (checklistSection.content as any).phases.map((phase: any, idx: number) => (
-      <React.Fragment key={idx}>
-        <h3>{phase.phase_title}</h3>
-        <ul className="checklist">
-          {phase.items.map((item: string, i: number) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
-      </React.Fragment>
-    ));
-  };
-
-  // Helper for rendering scripts
-  const renderScripts = () => {
-    if (!scriptsSection || !Array.isArray((scriptsSection.content as any)?.scenarios)) return null;
-    return (scriptsSection.content as any).scenarios.map((scenario: any, idx: number) => (
-      <div className="script" key={idx}>
-        <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
-        <p><strong>You say:</strong></p>
-        <div className="script-dialog">{scenario.response}</div>
-        <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
-      </div>
-    ));
-  };
-
   return (
     <div style={{ overflow: 'visible', width: '100%' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f0f2f5; color: #333; -webkit-print-color-adjust: exact; }
         .page { background-color: white; width: 210mm; min-height: 297mm; margin: 20px auto; padding: 25mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; position: relative; display: flex; flex-direction: column; }
         .page-header { width: 100%; text-align: right; font-size: 14px; color: #888; position: absolute; top: 20mm; right: 25mm; font-weight: bold; }
         h1 { font-size: 42px; color: #1a237e; font-weight: 900; margin-bottom: 10px; }
@@ -138,6 +79,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         .welcome-header { text-align: center; margin-bottom: 40px; }
         .welcome-header .logo { font-weight: bold; font-size: 24px; color: #333; }
         .welcome-intro { font-size: 18px; }
+        .welcome-list { list-style: none; padding-left: 0; }
+        .welcome-list li { padding-left: 25px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23304ffe" class="bi bi-check-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>'); background-repeat: no-repeat; background-position: left center; background-size: 16px; margin-bottom: 10px; }
         .learn-container { display: flex; justify-content: space-around; text-align: center; gap: 20px; margin-top: 40px; }
         .learn-item { flex: 1; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f8f9fa; }
         .learn-item .icon { font-size: 48px; margin-bottom: 15px; }
@@ -162,59 +105,114 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         .cta-button:hover { background-color: #2962ff; }
         .cta-email { margin-top: 20px; }
         .cta-email a { color: #c5cae9; }
+        @media print { body { background-color: white; } .page { width: 100%; min-height: 0; margin: 0; padding: 0; box-shadow: none; page-break-after: always; } .page:last-child { page-break-after: avoid; } .cta-block { margin-top: 50px; } }
         @media (max-width: 700px) { .page { width: 100vw; min-width: 0; padding: 10vw 2vw; } .learn-container { flex-direction: column; gap: 10px; } }
       `}</style>
 
       {/* Page 1: Welcome */}
       <div className="page" ref={pdfRef} id="pdf-content">
         <div className="welcome-header">
-          <div className="logo">QuickStrat</div>
+          <div className="logo">{companyName}</div>
         </div>
-        <h1>{title}</h1>
+        <h1>{mainTitle}</h1>
         <p className="subtitle">{subtitle}</p>
         <p className="toolkit-credit">A QuickStrat AI Toolkit</p>
-        {introTitle && <p className="welcome-intro">{introTitle}</p>}
-        {introContent.split('\n').map((line, i) => <p key={i}>{line}</p>)}
+        {introParagraphs.map((line, i) => <p className="welcome-intro" key={i}>{line}</p>)}
+        <p>Inside, you'll find:</p>
+        <ul className="welcome-list">
+          <li><strong>Proven strategies</strong> (with no fluff)</li>
+          <li>A <strong>plug-and-play checklist</strong> to stay consistent</li>
+          <li><strong>Word-for-word scripts</strong> to convert interest into income</li>
+        </ul>
+        <p>You don't need a marketing degree. Just this 3-step playbook.</p>
+        <p>Let’s dive in.</p>
       </div>
 
-      {/* Page 2: Toolkit Overview (What You'll Learn) */}
+      {/* Page 2: What You'll Learn (static) */}
       <div className="page">
         <div className="page-header">Step 1 of 3</div>
-        <h2>{toolkitOverviewTitle}</h2>
-        <p>{typeof toolkitOverviewContent === 'string' ? toolkitOverviewContent : ''}</p>
-        {renderToolkitCards()}
-      </div>
-
-      {/* Page 3: Strategy Showdown */}
-      <div className="page">
-        <div className="page-header">Section 1</div>
-        <h2>{prosConsSection?.title || ''}</h2>
-        {renderStrategyTable()}
-        {prosConsSection && (prosConsSection.content as any)?.example && (
-          <div className="pro-tip">
-            <strong>💡 Pro Tip:</strong> {(prosConsSection.content as any)?.example ?? ''}
+        <h2>🚀 What You’ll Learn</h2>
+        <h3>The 3-Step Lead Magnet System</h3>
+        <div className="learn-container">
+          <div className="learn-item">
+            <div className="icon">🧠</div>
+            <h3>Pick Your Strategy</h3>
+            <p>Understand what works (and what drains your time).</p>
           </div>
-        )}
-      </div>
-
-      {/* Page 4: Checklist */}
-      <div className="page">
-        <div className="page-header">Section 2</div>
-        <h2>{checklistSection?.title || ''}</h2>
-        <p>{typeof checklistSection?.content === 'string' ? checklistSection.content : ''}</p>
-        <div className="checklist-box">
-          {renderChecklist()}
+          <div className="learn-item">
+            <div className="icon">✅</div>
+            <h3>Follow the Checklist</h3>
+            <p>Nail the daily actions that drive results.</p>
+          </div>
+          <div className="learn-item">
+            <div className="icon">💬</div>
+            <h3>Use Proven Scripts</h3>
+            <p>Say the right thing when people show interest.</p>
+          </div>
         </div>
       </div>
 
-      {/* Page 5: Scripts */}
+      {/* Page 3: Strategy Showdown (dynamic table) */}
       <div className="page">
-        <div className="page-header">Section 3</div>
-        <h2>{scriptsSection?.title || ''}</h2>
-        {renderScripts()}
+        <div className="page-header">Step 1 of 3</div>
+        <h2>📊 Strategy Showdown: What Actually Works?</h2>
+        <table className="strategy-table">
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th>Pros</th>
+              <th>Cons</th>
+            </tr>
+          </thead>
+          <tbody>
+            {strategyRows.map((row: any, idx: number) => (
+              <tr key={idx}>
+                <td><strong>{row.method_name}</strong></td>
+                <td>{row.pros}</td>
+                <td>{row.cons}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="pro-tip">
+          <strong>💡 Pro Tip:</strong> Pick 1–2 strategies and go deep. Don’t spread yourself thin.
+        </div>
       </div>
 
-      {/* Page 6: CTA */}
+      {/* Page 4: Checklist (dynamic) */}
+      <div className="page">
+        <div className="page-header">Step 2 of 3</div>
+        <h2>✅ The Social Media Checklist</h2>
+        <p>Use this to stay consistent and intentional.</p>
+        <div className="checklist-box">
+          {checklistPhases.map((phase: any, idx: number) => (
+            <React.Fragment key={idx}>
+              <h3>{phase.phase_title}</h3>
+              <ul className="checklist">
+                {phase.items.map((item: string, i: number) => (
+                  <li key={i}>{item}</li>
+                ))}
+              </ul>
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+
+      {/* Page 5: Scripts (dynamic) */}
+      <div className="page">
+        <div className="page-header">Step 3 of 3</div>
+        <h2>💬 Scripts That Turn Comments Into Clients</h2>
+        {scripts.map((scenario: any, idx: number) => (
+          <div className="script" key={idx}>
+            <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
+            <p><strong>You say:</strong></p>
+            <div className="script-dialog">{scenario.response}</div>
+            <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Page 6: CTA (dynamic) */}
       <div className="page">
         <div className="cta-block">
           <h2>{ctaTitle}</h2>
