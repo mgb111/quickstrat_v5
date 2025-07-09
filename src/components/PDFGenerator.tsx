@@ -23,101 +23,116 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#ffffff',
-    padding: 40,
+    padding: 48,
     minHeight: '100%',
+    fontFamily: 'Helvetica',
+    lineHeight: 1.7,
   },
   coverPage: {
     flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#f7fafc',
-    alignItems: 'stretch',
-    minHeight: '100%',
-  },
-  coverSidebar: {
-    width: 32,
-    backgroundColor: '#4a90e2',
-    borderTopLeftRadius: 16,
-    borderBottomLeftRadius: 16,
-  },
-  coverContent: {
-    flex: 1,
+    flexDirection: 'column',
+    background: 'linear-gradient(135deg, #4a90e2 0%, #1a365d 100%)',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 48,
+    minHeight: '100%',
+    position: 'relative',
+  },
+  coverDiagonal: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: 180,
+    backgroundColor: '#4a90e2',
+    transform: 'skewY(-8deg)',
+    zIndex: 0,
   },
   coverLogo: {
-    width: 100,
-    height: 100,
-    marginBottom: 24,
+    width: 140,
+    height: 140,
+    marginBottom: 32,
     objectFit: 'contain',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
+    zIndex: 1,
   },
   coverTitle: {
-    fontSize: 38,
+    fontSize: 44,
     fontWeight: 'bold',
-    color: '#1a365d',
-    marginBottom: 16,
+    color: '#fff',
+    marginBottom: 18,
     textAlign: 'center',
+    letterSpacing: 1,
+    zIndex: 1,
   },
   coverSubtitle: {
-    fontSize: 24,
-    color: '#4a5568',
-    marginBottom: 16,
+    fontSize: 26,
+    color: '#e6f7ff',
+    marginBottom: 18,
     textAlign: 'center',
+    zIndex: 1,
   },
   coverByline: {
-    fontSize: 16,
-    color: '#718096',
-    marginTop: 24,
+    fontSize: 18,
+    color: '#b3c6e2',
+    marginTop: 32,
     textAlign: 'center',
+    zIndex: 1,
   },
   section: {
-    marginBottom: 32,
+    marginBottom: 44,
     breakInside: 'avoid',
   },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 0,
+    backgroundColor: '#f7fafc',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 12,
   },
   sectionIcon: {
-    fontSize: 22,
-    marginRight: 10,
+    fontSize: 28,
+    marginRight: 14,
   },
   sectionTitleBar: {
     height: 8,
-    width: 32,
+    width: 36,
     backgroundColor: '#4a90e2',
     borderRadius: 4,
-    marginRight: 10,
+    marginRight: 14,
   },
   sectionTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1a365d',
-  },
-  h1: {
     fontSize: 32,
     fontWeight: 'bold',
     color: '#1a365d',
-    marginBottom: 20,
+    letterSpacing: 0.5,
+    textAlign: 'left',
+  },
+  h1: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#1a365d',
+    marginBottom: 24,
+    letterSpacing: 0.5,
   },
   h2: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#2d3748',
-    marginBottom: 16,
+    marginBottom: 18,
   },
   h3: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#4a5568',
-    marginBottom: 12,
+    marginBottom: 14,
   },
   bodyText: {
-    fontSize: 16,
-    lineHeight: 1.6,
+    fontSize: 17,
+    lineHeight: 1.7,
     color: '#4a5568',
-    marginBottom: 12,
+    marginBottom: 14,
   },
   bulletList: {
     marginLeft: 24,
@@ -126,55 +141,56 @@ const styles = StyleSheet.create({
   bulletItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   bulletPoint: {
-    fontSize: 18,
-    color: '#4a90e2',
-    marginRight: 8,
-  },
-  bulletContent: {
-    flex: 1,
-    fontSize: 16,
-    color: '#4a5568',
-  },
-  checklistBlock: {
-    backgroundColor: '#e6f7ff',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-  },
-  checkbox: {
-    fontSize: 18,
+    fontSize: 20,
     color: '#38a169',
     marginRight: 10,
   },
+  bulletContent: {
+    flex: 1,
+    fontSize: 17,
+    color: '#4a5568',
+  },
+  checklistBlock: {
+    backgroundColor: '#f7fafc',
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 20,
+    borderLeft: '8px solid #4a90e2',
+    boxShadow: '0 2px 8px rgba(74,144,226,0.06)',
+  },
+  checkbox: {
+    fontSize: 20,
+    color: '#38a169',
+    marginRight: 12,
+  },
   checklistText: {
-    fontSize: 16,
+    fontSize: 17,
     color: '#2d3748',
   },
-  chatBubble: {
-    backgroundColor: '#f1f5f9',
+  chatScenario: {
+    backgroundColor: '#e6f7ff',
     borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    borderLeft: '4px solid #4a90e2',
-  },
-  theySay: {
-    fontSize: 15,
-    color: '#718096',
-    marginBottom: 4,
-  },
-  youSay: {
-    fontSize: 15,
-    color: '#38a169',
+    padding: 14,
+    marginBottom: 8,
     fontWeight: 'bold',
+    color: '#1a365d',
+  },
+  chatResponse: {
+    backgroundColor: '#f7fafc',
+    borderLeft: '6px solid #38a169',
+    borderRadius: 8,
+    padding: 14,
+    marginBottom: 8,
+    color: '#2d3748',
   },
   pageNumber: {
     position: 'absolute',
     bottom: 30,
     right: 30,
-    fontSize: 14,
+    fontSize: 15,
     color: '#718096',
   },
   footer: {
@@ -183,28 +199,35 @@ const styles = StyleSheet.create({
     left: 40,
     right: 40,
     textAlign: 'center',
-    fontSize: 13,
+    fontSize: 15,
     color: '#718096',
   },
   ctaBox: {
-    marginTop: 36,
-    padding: 28,
-    backgroundColor: '#e6f7ff',
-    borderRadius: 12,
+    marginTop: 44,
+    padding: 36,
+    backgroundColor: '#4a90e2',
+    borderRadius: 16,
     alignItems: 'center',
+    boxShadow: '0 2px 12px rgba(74,144,226,0.10)',
   },
   ctaHeadline: {
-    fontSize: 26,
+    fontSize: 30,
     fontWeight: 'bold',
-    color: '#1a365d',
-    marginBottom: 18,
+    color: '#fff',
+    marginBottom: 22,
     textAlign: 'center',
+    letterSpacing: 0.5,
   },
   ctaLink: {
-    fontSize: 17,
-    color: '#2d3748',
-    marginBottom: 10,
+    fontSize: 19,
+    color: '#fff',
+    marginBottom: 14,
     textAlign: 'center',
+    fontWeight: 'bold',
+    backgroundColor: '#38a169',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 8,
   },
 });
 
@@ -260,13 +283,13 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
     <Document>
       {/* Branded Cover Page */}
       <Page size="A4" style={styles.coverPage}>
-        <View style={styles.coverSidebar} />
-        <View style={styles.coverContent}>
-          {data.logo && <Image src={data.logo} style={styles.coverLogo} />}
-          <Text style={styles.coverTitle}>{content.title_page.title}</Text>
-          <Text style={styles.coverSubtitle}>{content.title_page.subtitle}</Text>
-          <Text style={styles.coverByline}>Created by QuickStrat | Powered by AI</Text>
+        <View style={styles.coverDiagonal} />
+        <View style={styles.coverLogo}>
+          {data.logo && <Image src={data.logo} />}
         </View>
+        <Text style={styles.coverTitle}>{content.title_page.title}</Text>
+        <Text style={styles.coverSubtitle}>{content.title_page.subtitle}</Text>
+        <Text style={styles.coverByline}>Created by QuickStrat | Powered by AI</Text>
       </Page>
       {/* Welcome Message Page */}
       <Page size="A4" style={styles.page}>
@@ -306,7 +329,7 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
                   <Text style={styles.h3}>{phase.phase_title}</Text>
                   {phase.items.map((item: string, itemIdx: number) => (
                     <View key={itemIdx} style={styles.bulletItem}>
-                      <Text style={styles.checkbox}>✅</Text>
+                      <Text style={styles.checkbox}>☑</Text>
                       <Text style={styles.checklistText}>{item}</Text>
                     </View>
                   ))}
@@ -324,9 +347,16 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
               {section.type === 'scripts' && Array.isArray(contentObj.scenarios) && contentObj.scenarios.map((scenario: { trigger: string; response: string; explanation: string }, idx: number) => (
                 <View key={idx} style={styles.checklistBlock}>
                   <Text style={styles.h3}>Scenario: {scenario.trigger}</Text>
-                  <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Your Response:</Text> {scenario.response}</Text>
+                  <View style={styles.chatScenario}>
+                    <Text style={styles.bodyText}>Scenario: {scenario.trigger}</Text>
+                  </View>
+                  <View style={styles.chatResponse}>
+                    <Text style={styles.bodyText}><Text style={{ fontWeight: 'bold' }}>Your Response:</Text> {scenario.response}</Text>
+                  </View>
                   {scenario.explanation && (
-                    <Text style={styles.bodyText}>Strategy: {scenario.explanation}</Text>
+                    <View style={styles.chatResponse}>
+                      <Text style={styles.bodyText}>Strategy: {scenario.explanation}</Text>
+                    </View>
                   )}
                 </View>
               ))}
