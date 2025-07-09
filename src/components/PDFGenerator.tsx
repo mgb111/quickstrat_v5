@@ -50,6 +50,50 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   const website = data?.website || '';
   const supportEmail = data?.supportEmail || '';
 
+  // Toolkit Overview Section (first toolkit section as main heading)
+  const toolkitOverviewTitle = toolkitSections[0]?.title || '';
+  const toolkitOverviewContent = toolkitSections[0]?.content || '';
+
+  // Helper for rendering toolkit cards (all toolkit_sections)
+  const renderToolkitCards = () => (
+    <div className="learn-container">
+      {toolkitSections.map((section: any, idx: number) => (
+        <div className="learn-item" key={idx}>
+          <div className="icon">
+            {section.type === 'pros_and_cons_list' ? '🧠' : section.type === 'checklist' ? '✅' : section.type === 'scripts' ? '💬' : '📄'}
+          </div>
+          <h3>{section.title}</h3>
+          <p>{typeof section.content === 'string' ? section.content : ''}</p>
+        </div>
+      ))}
+    </div>
+  );
+
+  // Helper for rendering pros/cons table
+  const renderStrategyTable = () => {
+    if (!prosConsSection || !Array.isArray((prosConsSection.content as any)?.items)) return null;
+    return (
+      <table className="strategy-table">
+        <thead>
+          <tr>
+            <th>Strategy</th>
+            <th>Pros</th>
+            <th>Cons</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(prosConsSection.content as any).items.map((item: any, idx: number) => (
+            <tr key={idx}>
+              <td><strong>{item.method_name}</strong></td>
+              <td>{item.pros}</td>
+              <td>{item.cons}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
+
   // Helper for rendering checklist phases
   const renderChecklist = () => {
     if (!checklistSection || !Array.isArray((checklistSection.content as any)?.phases)) return null;
@@ -78,46 +122,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     ));
   };
 
-  // Helper for rendering pros/cons table
-  const renderStrategyTable = () => {
-    if (!prosConsSection || !Array.isArray((prosConsSection.content as any)?.items)) return null;
-    return (
-      <table className="strategy-table">
-        <thead>
-          <tr>
-            <th>Strategy</th>
-            <th>Pros</th>
-            <th>Cons</th>
-          </tr>
-        </thead>
-        <tbody>
-          {(prosConsSection.content as any).items.map((item: any, idx: number) => (
-            <tr key={idx}>
-              <td><strong>{item.method_name}</strong></td>
-              <td>{item.pros}</td>
-              <td>{item.cons}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  };
-
-  // Helper for toolkit/learn section
-  const renderLearnSection = () => (
-    <div className="learn-container">
-      {toolkitSections.map((section: any, idx: number) => (
-        <div className="learn-item" key={idx}>
-          <div className="icon">
-            {section.type === 'pros_and_cons_list' ? '🧠' : section.type === 'checklist' ? '✅' : section.type === 'scripts' ? '💬' : '📄'}
-          </div>
-          <h3>{section.title}</h3>
-          <p>{typeof section.content === 'string' ? section.content : ''}</p>
-        </div>
-      ))}
-    </div>
-  );
-
   return (
     <div style={{ overflow: 'visible', width: '100%' }}>
       <style>{`
@@ -134,8 +138,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         .welcome-header { text-align: center; margin-bottom: 40px; }
         .welcome-header .logo { font-weight: bold; font-size: 24px; color: #333; }
         .welcome-intro { font-size: 18px; }
-        .welcome-list { list-style: none; padding-left: 0; }
-        .welcome-list li { padding-left: 25px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23304ffe" class="bi bi-check-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>'); background-repeat: no-repeat; background-position: left center; background-size: 16px; margin-bottom: 10px; }
         .learn-container { display: flex; justify-content: space-around; text-align: center; gap: 20px; margin-top: 40px; }
         .learn-item { flex: 1; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f8f9fa; }
         .learn-item .icon { font-size: 48px; margin-bottom: 15px; }
@@ -173,27 +175,20 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         <p className="toolkit-credit">A QuickStrat AI Toolkit</p>
         {introTitle && <p className="welcome-intro">{introTitle}</p>}
         {introContent.split('\n').map((line, i) => <p key={i}>{line}</p>)}
-        <ul className="welcome-list">
-          <li><strong>Proven strategies</strong> (with no fluff)</li>
-          <li>A <strong>plug-and-play checklist</strong> to stay consistent</li>
-          <li><strong>Word-for-word scripts</strong> to convert interest into income</li>
-        </ul>
-        <p>You don't need a marketing degree. Just this 3-step playbook.</p>
-        <p>Let’s dive in.</p>
       </div>
 
-      {/* Page 2: What You'll Learn */}
+      {/* Page 2: Toolkit Overview (What You'll Learn) */}
       <div className="page">
         <div className="page-header">Step 1 of 3</div>
-        <h2>🚀 What You’ll Learn</h2>
-        <h3>The 3-Step Lead Magnet System</h3>
-        {renderLearnSection()}
+        <h2>{toolkitOverviewTitle}</h2>
+        <p>{typeof toolkitOverviewContent === 'string' ? toolkitOverviewContent : ''}</p>
+        {renderToolkitCards()}
       </div>
 
       {/* Page 3: Strategy Showdown */}
       <div className="page">
-        <div className="page-header">Step 1 of 3</div>
-        <h2>📊 {prosConsSection?.title || 'Strategy Showdown: What Actually Works?'}</h2>
+        <div className="page-header">Section 1</div>
+        <h2>{prosConsSection?.title || ''}</h2>
         {renderStrategyTable()}
         {prosConsSection && (prosConsSection.content as any)?.example && (
           <div className="pro-tip">
@@ -204,9 +199,9 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
 
       {/* Page 4: Checklist */}
       <div className="page">
-        <div className="page-header">Step 2 of 3</div>
-        <h2>✅ {checklistSection?.title || 'The Social Media Checklist'}</h2>
-        <p>{typeof checklistSection?.content === 'string' ? checklistSection.content : 'Use this to stay consistent and intentional.'}</p>
+        <div className="page-header">Section 2</div>
+        <h2>{checklistSection?.title || ''}</h2>
+        <p>{typeof checklistSection?.content === 'string' ? checklistSection.content : ''}</p>
         <div className="checklist-box">
           {renderChecklist()}
         </div>
@@ -214,16 +209,16 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
 
       {/* Page 5: Scripts */}
       <div className="page">
-        <div className="page-header">Step 3 of 3</div>
-        <h2>💬 {scriptsSection?.title || 'Scripts That Turn Comments Into Clients'}</h2>
+        <div className="page-header">Section 3</div>
+        <h2>{scriptsSection?.title || ''}</h2>
         {renderScripts()}
       </div>
 
       {/* Page 6: CTA */}
       <div className="page">
         <div className="cta-block">
-          <h2>{ctaTitle || '📞 Ready to Get Your Strategy Done For You?'}</h2>
-          <p>{ctaContent || 'If you want this whole thing done in 30 minutes or less...'}</p>
+          <h2>{ctaTitle}</h2>
+          <p>{ctaContent}</p>
           {bookingLink && (
             <a href={bookingLink} target="_blank" rel="noopener noreferrer" className="cta-button">
               🎯 Book a free Strategy Session
