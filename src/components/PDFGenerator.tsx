@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   coverPage: {
     flex: 1,
     flexDirection: 'column',
-    background: 'linear-gradient(135deg, #4a90e2 0%, #1a365d 100%)',
+    backgroundColor: '#4a90e2', // Use solid color
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: '100%',
@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: 180,
-    backgroundColor: '#4a90e2',
-    transform: 'skewY(-8deg)',
+    backgroundColor: '#1a365d', // Use a different solid color for effect
+    // Removed transform: 'skewY(-8deg)', not supported
     zIndex: 0,
   },
   coverLogo: {
