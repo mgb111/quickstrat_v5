@@ -6,40 +6,37 @@ interface PDFGeneratorProps {
   data: PDFContent;
 }
 
-// Utility to process/normalize PDF content for toolkit sections
-function processPdfContent(raw: any, brandNameFallback = 'QuickStrat') {
-  if (!raw) return null;
-  if (typeof raw === 'object' && raw.structured_content) return raw;
-  if (typeof raw === 'object') {
-    return {
-      ...raw,
-      structured_content: {
-        title_page: {
-          title: raw.title || `${brandNameFallback} Lead Magnet Guide`,
-          subtitle: 'A step-by-step blueprint to help you achieve your goals',
-          brand_name: raw.brand_name || brandNameFallback,
-        },
-        introduction_page: {
-          title: 'Introduction',
-          content: raw.introduction || ''
-        },
-        toolkit_sections: raw.sections || [],
-        cta_page: {
-          title: 'Next Steps',
-          content: raw.cta || ''
-        }
-      }
-    };
-  }
-  return null;
-}
-
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
-  // Always normalize/structure the data
-  const normalized = processPdfContent(data);
-  const structured = normalized?.structured_content || {};
-
   const pdfRef = useRef<HTMLDivElement>(null);
+
+  // Direct mapping from backend data
+  const structured = data.structured_content;
+  const companyName = (structured?.title_page && 'brand_name' in structured.title_page)
+    ? (structured.title_page as any).brand_name || 'QuickStrat'
+    : 'QuickStrat';
+  const mainTitle = structured?.title_page?.title || '';
+  const subtitle = structured?.title_page?.subtitle || '';
+  const introParagraphs = [
+    structured?.introduction_page?.title,
+    ...(structured?.introduction_page?.content?.split('\n') || [])
+  ].filter(Boolean);
+
+  // Directly extract toolkit sections, with type guards
+  const toolkit_sections = structured?.toolkit_sections || [];
+  const strategySection = toolkit_sections.find((s: any) => s.type === 'pros_and_cons_list');
+  const checklistSection = toolkit_sections.find((s: any) => s.type === 'checklist');
+  const scriptsSection = toolkit_sections.find((s: any) => s.type === 'scripts');
+  const strategyRows = (strategySection && typeof strategySection.content === 'object' && strategySection.content !== null && 'items' in strategySection.content)
+    ? (strategySection.content as any).items || [] : [];
+  const checklistPhases = (checklistSection && typeof checklistSection.content === 'object' && checklistSection.content !== null && 'phases' in checklistSection.content)
+    ? (checklistSection.content as any).phases || [] : [];
+  const scripts = (scriptsSection && typeof scriptsSection.content === 'object' && scriptsSection.content !== null && 'scenarios' in scriptsSection.content)
+    ? (scriptsSection.content as any).scenarios || [] : [];
+  const ctaTitle = structured?.cta_page?.title || '';
+  const ctaContent = structured?.cta_page?.content || '';
+  const bookingLink = data?.bookingLink || '';
+  const website = data?.website || '';
+  const supportEmail = data?.supportEmail || '';
 
   const handleDownloadPDF = async () => {
     if (!pdfRef.current) return;
@@ -65,33 +62,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     link.href = canvas.toDataURL('image/png');
     link.click();
   };
-
-  // Dynamic data extraction (now from structured)
-  const companyName = (structured.title_page && 'brand_name' in structured.title_page)
-    ? (structured.title_page as any).brand_name || 'QuickStrat'
-    : 'QuickStrat';
-  const mainTitle = structured.title_page?.title || '';
-  const subtitle = structured.title_page?.subtitle || '';
-  const introParagraphs = [
-    structured.introduction_page?.title,
-    ...(structured.introduction_page?.content?.split('\n') || [])
-  ].filter(Boolean);
-
-  function getSectionContent(type: string, key: string) {
-    const section = structured.toolkit_sections?.find((s: any) => s.type === type);
-    if (section && typeof section.content === 'object' && section.content !== null && key in section.content) {
-      return (section.content as any)[key] || [];
-    }
-    return [];
-  }
-  const strategyRows = getSectionContent('pros_and_cons_list', 'items');
-  const checklistPhases = getSectionContent('checklist', 'phases');
-  const scripts = getSectionContent('scripts', 'scenarios');
-  const ctaTitle = structured.cta_page?.title || '';
-  const ctaContent = structured.cta_page?.content || '';
-  const bookingLink = normalized?.bookingLink || '';
-  const website = normalized?.website || '';
-  const supportEmail = normalized?.supportEmail || '';
 
   return (
     <div style={{ overflow: 'visible', width: '100%' }}>
