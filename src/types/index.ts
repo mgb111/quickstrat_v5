@@ -1,4 +1,5 @@
 export interface CampaignInput {
+  name?: string; // Add name for personalization
   brand_name: string;
   target_audience: string;
   niche: string;

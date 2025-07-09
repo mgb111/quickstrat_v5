@@ -10,6 +10,7 @@ interface CampaignFormProps {
 
 const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
   const [formData, setFormData] = useState<CampaignInput>({
+    name: '', // Add name field
     brand_name: '',
     target_audience: '',
     niche: '',
@@ -42,6 +43,23 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Campaign Information</h2>
           
           <div className="space-y-6">
+            {/* Name */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                Your Name (for personalization)
+              </label>
+              <input
+                type="text"
+                id="name"
+                value={formData.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="e.g., Manish"
+                required
+                disabled={isLoading || localLoading}
+              />
+            </div>
+
             {/* Brand Name */}
             <div>
               <label htmlFor="brand_name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -151,7 +169,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
           <div className="mt-8 flex justify-center items-center">
             <button
               type="submit"
-              disabled={isLoading || localLoading || !formData.brand_name || !formData.niche || !formData.target_audience || !formData.problem_statement || !formData.desired_outcome}
+              disabled={isLoading || localLoading || !formData.name || !formData.brand_name || !formData.niche || !formData.target_audience || !formData.problem_statement || !formData.desired_outcome}
               className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {localLoading ? (

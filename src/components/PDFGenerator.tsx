@@ -225,6 +225,9 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
   const ctaText = data.ctaText || content.cta_page.content;
   const mainAction = data.mainAction || 'Book a Call';
   const fontFamily = data.font || 'Helvetica';
+  const userName = (data as any).name || 'there';
+
+  const welcomeMessage = `Hi ${userName} — I’m Manish, founder of QuickStrat. I built this toolkit to help solopreneurs like you generate more leads without marketing burnout. Inside, you’ll find actionable strategies, clear frameworks, and proven scripts—all designed to turn your online presence into a client magnet. Let’s dive in.`;
 
   const formatText = (text: string) => {
     return text.split('\n').map((line, i) => (
@@ -265,6 +268,14 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
           <Text style={styles.coverByline}>Created by QuickStrat | Powered by AI</Text>
         </View>
       </Page>
+      {/* Welcome Message Page */}
+      <Page size="A4" style={styles.page}>
+        <View style={{ ...styles.section, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f7fafc', borderRadius: 12, padding: 32, marginTop: 60 }}>
+          <Text style={{ fontSize: 22, fontWeight: 'bold', color: primaryColor, marginBottom: 18, textAlign: 'center' }}>Welcome!</Text>
+          <Text style={{ fontSize: 16, color: '#2d3748', textAlign: 'center' }}>{welcomeMessage}</Text>
+        </View>
+        <Text style={styles.footer} render={({ pageNumber, totalPages }) => `QuickStrat • quickstrat.app • Page ${pageNumber} of ${totalPages}`} fixed />
+      </Page>
       {/* Introduction Page */}
       <Page size="A4" style={styles.page}>
         <View style={{ ...styles.section, alignItems: 'center', justifyContent: 'center' }}>
@@ -287,6 +298,8 @@ const PDFDocument = ({ data }: PDFGeneratorProps) => {
                 <View style={styles.sectionTitleBar} />
                 <Text style={styles.sectionTitle}>{section.title}</Text>
               </View>
+              {/* Add horizontal rule below section header */}
+              <View style={{ height: 4, backgroundColor: '#e6f7ff', borderRadius: 2, marginBottom: 16, marginTop: -8 }} />
               {/* Checklist */}
               {section.type === 'checklist' && Array.isArray(contentObj.phases) && contentObj.phases.map((phase: { phase_title: string; items: string[] }, idx: number) => (
                 <View key={idx} style={styles.checklistBlock}>
