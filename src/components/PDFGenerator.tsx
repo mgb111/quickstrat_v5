@@ -1,8 +1,6 @@
+// @ts-ignore: No types for html2pdf.js
+// (If you want, add a global.d.ts with: declare module 'html2pdf.js';)
 import React, { useRef } from 'react';
-// @ts-ignore
-import html2pdf from 'html2pdf.js';
-// @ts-ignore
-import html2canvas from 'html2canvas';
 import { PDFContent } from '../types';
 
 interface PDFGeneratorProps {
@@ -12,8 +10,9 @@ interface PDFGeneratorProps {
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   const pdfRef = useRef<HTMLDivElement>(null);
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     if (!pdfRef.current) return;
+    const html2pdf = (await import('html2pdf.js')).default;
     html2pdf()
       .set({
         margin: 0.5,
@@ -28,6 +27,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
 
   const handleDownloadImage = async () => {
     if (!pdfRef.current) return;
+    const html2canvas = (await import('html2canvas')).default;
     const canvas = await html2canvas(pdfRef.current, { scale: 2 });
     const link = document.createElement('a');
     link.download = 'lead-magnet.png';
