@@ -185,19 +185,18 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
       {/* Campaign Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Landing Page Copy */}
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-          <div className="flex items-center mb-4">
+        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 flex flex-col items-center justify-center text-center">
+          <div className="flex items-center mb-4 justify-center">
             <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-2 rounded-lg mr-3">
               <ExternalLink className="h-5 w-5 text-white" />
             </div>
             <h3 className="text-xl font-bold text-gray-900">Landing Page Copy</h3>
           </div>
-          
-          <div className="space-y-4">
+          <div className="space-y-4 w-full">
             <div>
               <h4 className="font-semibold text-gray-900 mb-2">Headline</h4>
-              <div className="flex items-center space-x-2">
-                <p className="text-gray-700 flex-1">{results.landing_page.headline}</p>
+              <div className="flex items-center space-x-2 justify-center">
+                <p className="text-gray-700 flex-1 text-center">{results.landing_page.headline}</p>
                 <button
                   onClick={() => copyToClipboard(results.landing_page.headline)}
                   className="text-blue-600 hover:text-blue-800"
@@ -206,11 +205,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
                 </button>
               </div>
             </div>
-            
             <div>
               <h4 className="font-semibold text-gray-900 mb-2">Subheadline</h4>
-              <div className="flex items-center space-x-2">
-                <p className="text-gray-700 flex-1">{results.landing_page.subheadline}</p>
+              <div className="flex items-center space-x-2 justify-center">
+                <p className="text-gray-700 flex-1 text-center">{results.landing_page.subheadline}</p>
                 <button
                   onClick={() => copyToClipboard(results.landing_page.subheadline)}
                   className="text-blue-600 hover:text-blue-800"
@@ -219,13 +217,12 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
                 </button>
               </div>
             </div>
-            
             <div>
               <h4 className="font-semibold text-gray-900 mb-2">Benefit Bullets</h4>
               <div className="bg-gray-50 rounded-lg p-4">
-                <ul className="text-gray-700 text-sm space-y-1">
+                <ul className="text-gray-700 text-sm space-y-1 text-center">
                   {results.landing_page.benefit_bullets.map((bullet, index) => (
-                    <li key={index}>• {bullet}</li>
+                    <li key={index} className="text-center">• {bullet}</li>
                   ))}
                 </ul>
               </div>
@@ -237,7 +234,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
       {/* Social Media Posts */}
       <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
         <h3 className="text-xl font-bold text-gray-900 mb-4">Social Media Posts</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* LinkedIn */}
           <div className="bg-gray-50 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
@@ -251,7 +248,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
             </div>
             <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.linkedin}</p>
           </div>
-          
           {/* Twitter */}
           <div className="bg-gray-50 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
@@ -265,7 +261,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
             </div>
             <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.twitter}</p>
           </div>
-          
           {/* Instagram */}
           <div className="bg-gray-50 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
@@ -279,37 +274,20 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
             </div>
             <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.instagram}</p>
           </div>
-        </div>
-      </div>
-
-      {/* Reddit Copy Section */}
-      <div className="mt-12 text-center">
-        <button
-          className="px-6 py-3 bg-orange-500 text-white rounded-lg font-semibold text-lg hover:bg-orange-600 transition-all"
-          onClick={() => setShowReddit(v => !v)}
-        >
-          {showReddit ? 'Hide Reddit Copy' : 'Generate Reddit Copy'}
-        </button>
-        {showReddit && (
-          <div className="mt-6 max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-lg">
-            <h3 className="text-2xl font-bold mb-4">Reddit Post Copy</h3>
-            <textarea
-              className="w-full border rounded-lg px-3 py-2 mb-4"
-              rows={6}
-              value={redditCopy}
-              onChange={e => setRedditCopy(e.target.value)}
-              placeholder="Write your Reddit post here..."
-            />
-            <div className="text-left">
-              <h4 className="font-semibold mb-2">Suggested Subreddits:</h4>
-              <ul className="list-disc list-inside">
-                {subreddits.map(sub => (
-                  <li key={sub} className="text-blue-700">{sub}</li>
-                ))}
-              </ul>
+          {/* Reddit */}
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-600">Reddit</span>
+              <button
+                onClick={() => copyToClipboard(results.social_posts.reddit)}
+                className="text-blue-600 hover:text-blue-800"
+              >
+                <Copy className="h-4 w-4" />
+              </button>
             </div>
+            <p className="text-gray-700 text-sm whitespace-pre-wrap">{results.social_posts.reddit}</p>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

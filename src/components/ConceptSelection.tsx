@@ -83,8 +83,25 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
             <input type="email" className="w-full border rounded-lg px-3 py-2" value={customization.supportEmail} onChange={e => setCustomization({ ...customization, supportEmail: e.target.value })} placeholder="e.g. support@yourwebsite.com" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Logo URL</label>
-            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.logo} onChange={e => setCustomization({ ...customization, logo: e.target.value })} placeholder="Paste image URL" />
+            <label className="block text-sm font-medium mb-1">Logo Upload</label>
+            <input
+              type="file"
+              accept="image/*"
+              className="w-full border rounded-lg px-3 py-2"
+              onChange={e => {
+                const file = e.target.files && e.target.files[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    setCustomization({ ...customization, logo: reader.result as string });
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+            {customization.logo && (
+              <img src={customization.logo} alt="Logo Preview" className="mt-2 h-16 object-contain" />
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Primary Color</label>

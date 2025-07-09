@@ -53,6 +53,7 @@ export interface SocialPosts {
   linkedin: string;
   twitter: string;
   instagram: string;
+  reddit: string;
 }
 
 export interface PDFContent {
