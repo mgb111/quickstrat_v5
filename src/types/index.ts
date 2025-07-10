@@ -6,6 +6,7 @@ export interface CampaignInput {
   problem_statement: string;
   desired_outcome: string;
   tone?: string;
+  position?: string;
   // Legacy fields for backward compatibility (optional)
   customer_profile?: string;
   customer_problems?: string;
@@ -121,6 +122,7 @@ export interface PDFContent {
   desiredOutcome: string;
   bookingLink?: string;
   supportEmail?: string;
+  position?: string;
 }
 
 export interface CampaignOutput {

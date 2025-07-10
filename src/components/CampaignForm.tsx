@@ -15,7 +15,8 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
     niche: '',
     problem_statement: '',
     desired_outcome: '',
-    tone: 'professional'
+    tone: 'professional',
+    position: ''
   });
   const [localLoading, setLocalLoading] = useState(false);
 
@@ -162,6 +163,23 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
                 <option value="authoritative">Authoritative & Expert</option>
                 <option value="motivational">Motivational & Inspiring</option>
               </select>
+            </div>
+
+            {/* Position/Title */}
+            <div>
+              <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-2">
+                Your Position/Title *
+              </label>
+              <input
+                type="text"
+                id="position"
+                value={formData.position || ''}
+                onChange={(e) => handleInputChange('position', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="e.g., Founder, CEO, Training Manager"
+                required
+                disabled={isLoading || localLoading}
+              />
             </div>
           </div>
 

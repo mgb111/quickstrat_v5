@@ -234,17 +234,19 @@ Niche: ${input.niche}
 Target Audience: ${input.target_audience}
 Tone: ${input.tone}
 Brand Name: ${input.brand_name}
+Position/Title: ${input.position || ''}
 Selected Concept: A lead magnet about ${outline.title}.
 
 ---
 
 PERSONALIZED FOUNDER INTRODUCTION:
 Before the toolkit, write a short, authentic introduction in the founder’s voice. Use these details:
-- Founder’s name: ${input.name}
+- Name: ${input.name}
+- Position/Title: ${input.position || ''}
 - Brand/company: ${input.brand_name}
 - Customer problem: ${input.problem_statement}
 - Desired outcome: ${input.desired_outcome}
-The intro should sound like the founder is speaking directly to the reader, sharing why they built this and what the reader will achieve. Make it authentic, concise, and motivating. Return this as a field called founder_intro in the JSON.
+If position/title is provided, use it in the intro (e.g., "I'm [Name], [Position] at [Brand]"). The intro should sound like the founder is speaking directly to the reader, sharing why they built this and what the reader will achieve. Make it authentic, concise, and motivating. Return this as a field called founder_intro in the JSON.
 
 ---
 
