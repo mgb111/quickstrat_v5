@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { FcGoogle } from 'react-icons/fc';
 
 interface LoginFormProps {
   onSuccess: () => void;
@@ -231,9 +232,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) =>
       <button
         onClick={handleGoogleLogin}
         disabled={isGoogleLoading}
-        className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors mb-4"
+        className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-2 bg-white hover:bg-gray-50 transition-colors font-semibold text-gray-700"
       >
-        <img src="/google.svg" alt="Google" className="w-5 h-5" />
+        {isGoogleLoading ? (
+          <span className="loader mr-2"></span>
+        ) : (
+          <FcGoogle className="w-5 h-5 mr-2" />
+        )}
         Continue with Google
       </button>
 
