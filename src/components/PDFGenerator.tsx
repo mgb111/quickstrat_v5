@@ -288,9 +288,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
       <div className="page">
         <div className="page-header">Step 1 of 3</div>
         <h2>📊 Strategy Showdown: What Actually Works?</h2>
-        {strategySection && typeof strategySection.content === 'string' && (
-          <p>{strategySection.content}</p>
-        )}
         {strategyRows.length > 0 ? (
           <table className="strategy-table">
             <thead>
@@ -324,9 +321,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         <h2>✅ The Social Media Checklist</h2>
         <p>Use this to stay consistent and intentional.</p>
         <div className="checklist-box">
-          {checklistSection && typeof checklistSection.content === 'string' && (
-            <p>{checklistSection.content}</p>
-          )}
           {checklistPhases.length > 0 ? (
             checklistPhases.map((phase: any, idx: number) => (
               <React.Fragment key={idx}>
@@ -348,9 +342,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
       <div className="page">
         <div className="page-header">Step 3 of 3</div>
         <h2>💬 Scripts That Turn Comments Into Clients</h2>
-        {scriptsSection && typeof scriptsSection.content === 'string' && (
-          <p>{scriptsSection.content}</p>
-        )}
         {scripts.length > 0 ? (
           scripts.map((scenario: any, idx: number) => (
             <div className="script" key={idx}>
