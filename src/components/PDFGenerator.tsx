@@ -54,6 +54,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     strategySection.content !== null && 
     'items' in strategySection.content)
     ? (strategySection.content as any).items || [] 
+    : (strategySection && typeof strategySection.content === 'string')
+    ? parseProsAndConsFromString(strategySection.content)
     : [];
     
   const checklistPhases = (checklistSection && 
@@ -61,6 +63,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     checklistSection.content !== null && 
     'phases' in checklistSection.content)
     ? (checklistSection.content as any).phases || [] 
+    : (checklistSection && typeof checklistSection.content === 'string')
+    ? parseChecklistFromString(checklistSection.content)
     : [];
     
   const scripts = (scriptsSection && 
@@ -68,11 +72,96 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     scriptsSection.content !== null && 
     'scenarios' in scriptsSection.content)
     ? (scriptsSection.content as any).scenarios || [] 
+    : (scriptsSection && typeof scriptsSection.content === 'string')
+    ? parseScriptsFromString(scriptsSection.content)
     : [];
     
   console.log('Strategy rows:', strategyRows.length);
   console.log('Checklist phases:', checklistPhases.length);
   console.log('Scripts:', scripts.length);
+  
+  // Helper functions to parse string content
+  function parseProsAndConsFromString(content: string): any[] {
+    const items: any[] = [];
+    const lines = content.split('\n');
+    let currentItem: any = {};
+    
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      if (trimmedLine.match(/^\d+\./)) {
+        // New item starting
+        if (currentItem.method_name) {
+          items.push(currentItem);
+        }
+        currentItem = { method_name: trimmedLine.replace(/^\d+\.\s*/, '') };
+      } else if (trimmedLine.startsWith('Pros:')) {
+        currentItem.pros = trimmedLine.replace('Pros:', '').trim();
+      } else if (trimmedLine.startsWith('Cons:')) {
+        currentItem.cons = trimmedLine.replace('Cons:', '').trim();
+      }
+    }
+    
+    if (currentItem.method_name) {
+      items.push(currentItem);
+    }
+    
+    return items;
+  }
+  
+  function parseChecklistFromString(content: string): any[] {
+    const phases: any[] = [];
+    const lines = content.split('\n');
+    let currentPhase: any = null;
+    
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith('Phase')) {
+        if (currentPhase) {
+          phases.push(currentPhase);
+        }
+        currentPhase = {
+          phase_title: trimmedLine,
+          items: []
+        };
+      } else if (trimmedLine.match(/^\d+\.\d+/) && currentPhase) {
+        currentPhase.items.push(trimmedLine);
+      }
+    }
+    
+    if (currentPhase) {
+      phases.push(currentPhase);
+    }
+    
+    return phases;
+  }
+  
+  function parseScriptsFromString(content: string): any[] {
+    const scenarios: any[] = [];
+    const lines = content.split('\n');
+    let currentScenario: any = {};
+    
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith('Scenario')) {
+        if (currentScenario.trigger) {
+          scenarios.push(currentScenario);
+        }
+        currentScenario = {};
+      } else if (trimmedLine.startsWith('When they say:')) {
+        currentScenario.trigger = trimmedLine.replace('When they say:', '').replace(/"/g, '').trim();
+      } else if (trimmedLine.startsWith('You say:')) {
+        currentScenario.response = trimmedLine.replace('You say:', '').replace(/"/g, '').trim();
+      } else if (trimmedLine.startsWith('Strategy:')) {
+        currentScenario.explanation = trimmedLine.replace('Strategy:', '').trim();
+      }
+    }
+    
+    if (currentScenario.trigger) {
+      scenarios.push(currentScenario);
+    }
+    
+    return scenarios;
+  }
   
   const ctaTitle = structured?.cta_page?.title || '';
   const ctaContent = structured?.cta_page?.content || '';

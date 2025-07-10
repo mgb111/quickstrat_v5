@@ -58,6 +58,28 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
       // If pdf_content is a PDFContent object without structured_content, create it
       if (typeof results.pdf_content === 'object') {
         console.log('Creating structured_content from pdf_content object');
+        
+        // Analyze sections to determine their types
+        const toolkit_sections = results.pdf_content.sections.map(section => {
+          let type: 'pros_and_cons_list' | 'checklist' | 'scripts' | undefined = undefined;
+          
+          // Determine type based on content analysis
+          const content = section.content.toLowerCase();
+          if (content.includes('pros:') && content.includes('cons:')) {
+            type = 'pros_and_cons_list';
+          } else if (content.includes('phase') && content.includes('1.') && content.includes('2.')) {
+            type = 'checklist';
+          } else if (content.includes('scenario') && content.includes('when they say:') && content.includes('you say:')) {
+            type = 'scripts';
+          }
+          
+          return {
+            title: section.title,
+            type: type,
+            content: section.content
+          };
+        });
+        
         return {
           ...results.pdf_content,
           structured_content: {
@@ -69,10 +91,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
               title: 'Introduction',
               content: results.pdf_content.introduction
             },
-            toolkit_sections: results.pdf_content.sections.map(section => ({
-              title: section.title,
-              content: section.content
-            })),
+            toolkit_sections: toolkit_sections,
             cta_page: {
               title: 'Next Steps',
               content: results.pdf_content.cta
