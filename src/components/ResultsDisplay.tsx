@@ -41,6 +41,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
     console.log('Processing PDF content:', results);
     console.log('PDF content type:', typeof results.pdf_content);
     console.log('PDF content:', results.pdf_content);
+    console.log('PDF content structured_content:', typeof results.pdf_content === 'object' ? results.pdf_content?.structured_content : 'N/A');
     
     if (!results || !results.pdf_content) {
       console.error('No PDF content available:', results);
@@ -52,6 +53,43 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
       // If pdf_content is already a PDFContent object with structured_content, use it directly
       if (typeof results.pdf_content === 'object' && results.pdf_content.structured_content) {
         console.log('Using existing structured_content:', results.pdf_content.structured_content);
+        console.log('Existing toolkit sections:', results.pdf_content.structured_content.toolkit_sections);
+        
+        // Check if the existing structured_content has proper types
+        const hasProperTypes = results.pdf_content.structured_content.toolkit_sections?.some((section: any) => section.type);
+        console.log('Has proper types:', hasProperTypes);
+        
+        if (!hasProperTypes) {
+          console.log('Existing structured_content missing types, fixing...');
+          // Fix the types in the existing structured_content
+          const fixedStructuredContent = {
+            ...results.pdf_content.structured_content,
+            toolkit_sections: results.pdf_content.structured_content.toolkit_sections.map((section: any) => {
+              let type: 'pros_and_cons_list' | 'checklist' | 'scripts' | undefined = undefined;
+              
+              // Determine type based on content analysis
+              const content = section.content.toLowerCase();
+              if (content.includes('pros:') && content.includes('cons:')) {
+                type = 'pros_and_cons_list';
+              } else if (content.includes('phase') && content.includes('1.') && content.includes('2.')) {
+                type = 'checklist';
+              } else if (content.includes('scenario') && content.includes('when they say:') && content.includes('you say:')) {
+                type = 'scripts';
+              }
+              
+              return {
+                ...section,
+                type: type
+              };
+            })
+          };
+          
+          return {
+            ...results.pdf_content,
+            structured_content: fixedStructuredContent
+          };
+        }
+        
         return results.pdf_content;
       }
 
