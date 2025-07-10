@@ -488,38 +488,28 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             font-size: 18px;
           }
           
-          .script-dialog {
-          background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-          border-radius: 12px;
-          padding: 24px 24px;
-          position: relative;
-          font-style: italic;
-          border: 1px solid #93c5fd;
-          margin: 24px 0;
-          word-wrap: break-word;
-          word-break: break-word;
-          overflow-wrap: break-word;
-          hyphens: auto;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          min-height: 80px;
+          .script-dialog { 
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            font-style: italic;
+            border: 1px solid #93c5fd;
+            margin: 16px 0;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
           }
           
-          .script-why {
-          background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-          padding: 20px 24px;
-          border-radius: 8px;
-          margin-top: 20px;
-          font-size: 16px;
-          border: 1px solid #86efac;
-          border-left: 4px solid #22c55e;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          min-height: 60px;
+          .script-why { 
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 14px;
+            border: 1px solid #86efac;
+            border-left: 4px solid #22c55e;
           }
           
           .script-why strong {
