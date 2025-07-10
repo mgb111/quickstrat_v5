@@ -193,7 +193,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
           body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f0f2f5; color: #333; -webkit-print-color-adjust: exact; }
-          .page { background-color: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 12mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; position: relative; display: block; flex-direction: column; page-break-after: always; }
+          .page { background-color: white; width: 210mm; /* min-height: 297mm; */ min-height: 0; margin: 0 auto; padding: 12mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; position: relative; display: block; flex-direction: column; page-break-after: always; }
           .page:last-child { page-break-after: avoid; }
           .page-header { width: 100%; text-align: right; font-size: 14px; color: #888; position: absolute; top: 12mm; right: 12mm; font-weight: bold; }
           h1 { font-size: 42px; color: #1a237e; font-weight: 900; margin-bottom: 10px; }
