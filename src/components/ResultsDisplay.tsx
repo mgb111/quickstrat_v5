@@ -39,6 +39,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
   // Process PDF content
   const processPdfContent = () => {
     console.log('Processing PDF content:', results);
+    console.log('PDF content type:', typeof results.pdf_content);
+    console.log('PDF content:', results.pdf_content);
     
     if (!results || !results.pdf_content) {
       console.error('No PDF content available:', results);
@@ -49,11 +51,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
     try {
       // If pdf_content is already a PDFContent object with structured_content, use it directly
       if (typeof results.pdf_content === 'object' && results.pdf_content.structured_content) {
+        console.log('Using existing structured_content:', results.pdf_content.structured_content);
         return results.pdf_content;
       }
 
       // If pdf_content is a PDFContent object without structured_content, create it
       if (typeof results.pdf_content === 'object') {
+        console.log('Creating structured_content from pdf_content object');
         return {
           ...results.pdf_content,
           structured_content: {
@@ -82,6 +86,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
         ? results.pdf_content 
         : JSON.stringify(results.pdf_content);
 
+      console.log('Creating new PDFContent from string content');
       return {
         title: `${brandName} Lead Magnet Guide`,
         introduction: content,
