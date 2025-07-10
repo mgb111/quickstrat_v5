@@ -199,7 +199,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             box-shadow: 0 4px 32px rgba(0,0,0,0.08), 0 1.5px 6px rgba(0,0,0,0.04);
             max-width: 900px;
             margin: 32px auto;
-            padding: 2vw 2vw 32px 2vw;
+            padding: 32px 32px 40px 32px;
             overflow-x: auto;
             width: 100%;
           }
@@ -207,10 +207,9 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             background-color: white;
             width: 100%;
             max-width: 210mm;
-            /* min-height: 297mm; */
             min-height: 0;
             margin: 0 auto 24px auto;
-            padding: 6vw 4vw;
+            padding: clamp(16px, 4vw, 32px);
             box-shadow: 0 0 10px rgba(0,0,0,0.08);
             box-sizing: border-box;
             position: relative;
@@ -222,17 +221,17 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             word-break: break-word;
           }
           .page:last-child { page-break-after: avoid; margin-bottom: 0; }
-          .page-header { width: 100%; text-align: right; font-size: 14px; color: #888; position: absolute; top: 4vw; right: 4vw; font-weight: bold; }
-          h1 { font-size: 8vw; max-font-size: 42px; color: #1a237e; font-weight: 900; margin-bottom: 10px; }
-          h2 { font-size: 5vw; max-font-size: 28px; color: #283593; border-bottom: 2px solid #5c6bc0; padding-bottom: 10px; margin-top: 20px; margin-bottom: 20px; }
-          h3 { font-size: 4vw; max-font-size: 20px; color: #3949ab; margin-top: 30px; }
-          p, li { font-size: 3.5vw; max-font-size: 16px; line-height: 1.6; }
+          .page-header { width: 100%; text-align: right; font-size: clamp(12px, 1.5vw, 14px); color: #888; position: absolute; top: clamp(12px, 2vw, 24px); right: clamp(12px, 2vw, 24px); font-weight: bold; }
+          h1 { font-size: clamp(28px, 6vw, 42px); color: #1a237e; font-weight: 900; margin-bottom: 10px; }
+          h2 { font-size: clamp(20px, 4vw, 28px); color: #283593; border-bottom: 2px solid #5c6bc0; padding-bottom: 10px; margin-top: 20px; margin-bottom: 20px; }
+          h3 { font-size: clamp(16px, 3vw, 20px); color: #3949ab; margin-top: 30px; }
+          p, li { font-size: clamp(14px, 2.5vw, 16px); line-height: 1.6; }
           a { color: #304ffe; text-decoration: none; }
-          .subtitle { font-size: 4vw; max-font-size: 20px; font-weight: 700; color: #555; margin-top: 0; margin-bottom: 30px; }
+          .subtitle { font-size: clamp(16px, 3vw, 20px); font-weight: 700; color: #555; margin-top: 0; margin-bottom: 30px; }
           .toolkit-credit { font-style: italic; color: #7986cb; margin-bottom: 40px; }
           .welcome-header { text-align: center; margin-bottom: 40px; }
-          .welcome-header .logo { font-weight: bold; font-size: 5vw; max-font-size: 24px; color: #333; }
-          .welcome-intro { font-size: 3.8vw; max-font-size: 18px; }
+          .welcome-header .logo { font-weight: bold; font-size: clamp(18px, 4vw, 24px); color: #333; }
+          .welcome-intro { font-size: clamp(14px, 2.8vw, 18px); }
           .welcome-list { list-style: none; padding-left: 0; }
           .welcome-list li { padding-left: 25px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23304ffe" class="bi bi-check-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>'); background-repeat: no-repeat; background-position: left center; background-size: 16px; margin-bottom: 10px; }
           .learn-container { display: flex; flex-wrap: wrap; justify-content: space-around; text-align: center; gap: 20px; margin-top: 40px; }
@@ -262,15 +261,15 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           @media print { body { background-color: white; } .page { width: 100%; min-height: 0; margin: 0; padding: 0; box-shadow: none; page-break-after: always; display: block; } .page:last-child { page-break-after: avoid; } .cta-block { margin-top: 50px; } }
           @media (max-width: 900px) {
             .pdf-preview-box { max-width: 100vw; border-radius: 0; padding: 2vw 0 32px 0; }
-            .page { max-width: 100vw; padding: 4vw 2vw; border-radius: 0; }
+            .page { max-width: 100vw; padding: clamp(12px, 3vw, 24px); border-radius: 0; }
           }
           @media (max-width: 700px) {
             .pdf-preview-box { max-width: 100vw; border-radius: 0; padding: 0 0 24px 0; }
-            .page { max-width: 100vw; padding: 2vw 1vw; border-radius: 0; }
-            h1 { font-size: 7vw; }
-            h2 { font-size: 5vw; }
-            h3 { font-size: 4vw; }
-            .welcome-header .logo { font-size: 6vw; }
+            .page { max-width: 100vw; padding: clamp(8px, 2vw, 16px); border-radius: 0; }
+            h1 { font-size: clamp(20px, 7vw, 32px); }
+            h2 { font-size: clamp(16px, 5vw, 24px); }
+            h3 { font-size: clamp(14px, 4vw, 18px); }
+            .welcome-header .logo { font-size: clamp(14px, 6vw, 20px); }
           }
         `}</style>
 
