@@ -663,6 +663,16 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
               width: fit-content;
             }
           }
+          .script-dialog, .script-why {
+            page-break-inside: avoid;
+          }
+          .script-dialog {
+            padding: 20px;
+            border-radius: 20px 20px 20px 5px;
+            background-color: #e3f2fd;
+            font-style: italic;
+            margin-top: 12px;
+          }
         `}</style>
 
         {/* Page 1: Welcome */}
