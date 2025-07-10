@@ -474,40 +474,38 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           }
           
           .script { 
-            margin-bottom: 40px;
-            padding: 24px;
+            margin-bottom: 32px;
+            padding: 14px 16px;
             background: #fafafa;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid #e5e7eb;
+            font-size: 14px;
           }
           
           .script h3 { 
             border-bottom: none;
             margin-top: 0;
             color: #1e293b;
-            font-size: 18px;
+            font-size: 16px;
           }
           
           .script-dialog { 
             background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 14px 14px 14px 5px;
+            padding: 12px 16px;
             position: relative;
             font-style: italic;
             border: 1px solid #93c5fd;
-            margin: 16px 0;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
+            margin: 10px 0;
+            font-size: 13px;
           }
           
           .script-why { 
             background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-            padding: 16px 20px;
-            border-radius: 8px;
-            margin-top: 16px;
-            font-size: 14px;
+            padding: 10px 14px;
+            border-radius: 7px;
+            margin-top: 10px;
+            font-size: 12px;
             border: 1px solid #86efac;
             border-left: 4px solid #22c55e;
           }
