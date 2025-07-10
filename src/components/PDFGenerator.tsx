@@ -188,32 +188,59 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   };
 
   return (
-    <>
+    <div className="pdf-preview-box">
       <div style={{ overflow: 'visible', width: '100%' }} ref={pdfRef}>
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
           body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f0f2f5; color: #333; -webkit-print-color-adjust: exact; }
-          .page { background-color: white; width: 210mm; /* min-height: 297mm; */ min-height: 0; margin: 0 auto; padding: 12mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; position: relative; display: block; flex-direction: column; page-break-after: always; }
-          .page:last-child { page-break-after: avoid; }
-          .page-header { width: 100%; text-align: right; font-size: 14px; color: #888; position: absolute; top: 12mm; right: 12mm; font-weight: bold; }
-          h1 { font-size: 42px; color: #1a237e; font-weight: 900; margin-bottom: 10px; }
-          h2 { font-size: 28px; color: #283593; border-bottom: 2px solid #5c6bc0; padding-bottom: 10px; margin-top: 20px; margin-bottom: 20px; }
-          h3 { font-size: 20px; color: #3949ab; margin-top: 30px; }
-          p, li { font-size: 16px; line-height: 1.6; }
+          .pdf-preview-box {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.08), 0 1.5px 6px rgba(0,0,0,0.04);
+            max-width: 900px;
+            margin: 32px auto;
+            padding: 2vw 2vw 32px 2vw;
+            overflow-x: auto;
+            width: 100%;
+          }
+          .page {
+            background-color: white;
+            width: 100%;
+            max-width: 210mm;
+            /* min-height: 297mm; */
+            min-height: 0;
+            margin: 0 auto 24px auto;
+            padding: 6vw 4vw;
+            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+            box-sizing: border-box;
+            position: relative;
+            display: block;
+            flex-direction: column;
+            page-break-after: always;
+            border-radius: 12px;
+            overflow-wrap: break-word;
+            word-break: break-word;
+          }
+          .page:last-child { page-break-after: avoid; margin-bottom: 0; }
+          .page-header { width: 100%; text-align: right; font-size: 14px; color: #888; position: absolute; top: 4vw; right: 4vw; font-weight: bold; }
+          h1 { font-size: 8vw; max-font-size: 42px; color: #1a237e; font-weight: 900; margin-bottom: 10px; }
+          h2 { font-size: 5vw; max-font-size: 28px; color: #283593; border-bottom: 2px solid #5c6bc0; padding-bottom: 10px; margin-top: 20px; margin-bottom: 20px; }
+          h3 { font-size: 4vw; max-font-size: 20px; color: #3949ab; margin-top: 30px; }
+          p, li { font-size: 3.5vw; max-font-size: 16px; line-height: 1.6; }
           a { color: #304ffe; text-decoration: none; }
-          .subtitle { font-size: 20px; font-weight: 700; color: #555; margin-top: 0; margin-bottom: 30px; }
+          .subtitle { font-size: 4vw; max-font-size: 20px; font-weight: 700; color: #555; margin-top: 0; margin-bottom: 30px; }
           .toolkit-credit { font-style: italic; color: #7986cb; margin-bottom: 40px; }
           .welcome-header { text-align: center; margin-bottom: 40px; }
-          .welcome-header .logo { font-weight: bold; font-size: 24px; color: #333; }
-          .welcome-intro { font-size: 18px; }
+          .welcome-header .logo { font-weight: bold; font-size: 5vw; max-font-size: 24px; color: #333; }
+          .welcome-intro { font-size: 3.8vw; max-font-size: 18px; }
           .welcome-list { list-style: none; padding-left: 0; }
           .welcome-list li { padding-left: 25px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23304ffe" class="bi bi-check-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>'); background-repeat: no-repeat; background-position: left center; background-size: 16px; margin-bottom: 10px; }
-          .learn-container { display: flex; justify-content: space-around; text-align: center; gap: 20px; margin-top: 40px; }
-          .learn-item { flex: 1; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f8f9fa; }
+          .learn-container { display: flex; flex-wrap: wrap; justify-content: space-around; text-align: center; gap: 20px; margin-top: 40px; }
+          .learn-item { flex: 1 1 200px; min-width: 180px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f8f9fa; margin-bottom: 12px; }
           .learn-item .icon { font-size: 48px; margin-bottom: 15px; }
           .learn-item h3 { margin: 0; font-size: 18px; }
           .pro-tip { background-color: #e8eaf6; border-left: 5px solid #7986cb; padding: 15px 20px; margin-top: 30px; font-size: 16px; }
-          .strategy-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          .strategy-table { width: 100%; border-collapse: collapse; margin-top: 20px; overflow-x: auto; }
           .strategy-table th, .strategy-table td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
           .strategy-table th { background-color: #3f51b5; color: white; font-size: 18px; }
           .strategy-table tr:nth-child(even) { background-color: #f4f6f8; }
@@ -233,7 +260,18 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           .cta-email { margin-top: 20px; }
           .cta-email a { color: #c5cae9; }
           @media print { body { background-color: white; } .page { width: 100%; min-height: 0; margin: 0; padding: 0; box-shadow: none; page-break-after: always; display: block; } .page:last-child { page-break-after: avoid; } .cta-block { margin-top: 50px; } }
-          @media (max-width: 700px) { .page { width: 100vw; min-width: 0; padding: 10vw 2vw; } .learn-container { flex-direction: column; gap: 10px; } }
+          @media (max-width: 900px) {
+            .pdf-preview-box { max-width: 100vw; border-radius: 0; padding: 2vw 0 32px 0; }
+            .page { max-width: 100vw; padding: 4vw 2vw; border-radius: 0; }
+          }
+          @media (max-width: 700px) {
+            .pdf-preview-box { max-width: 100vw; border-radius: 0; padding: 0 0 24px 0; }
+            .page { max-width: 100vw; padding: 2vw 1vw; border-radius: 0; }
+            h1 { font-size: 7vw; }
+            h2 { font-size: 5vw; }
+            h3 { font-size: 4vw; }
+            .welcome-header .logo { font-size: 6vw; }
+          }
         `}</style>
 
         {/* Page 1: Welcome */}
@@ -374,13 +412,13 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           </div>
         </div>
       </div>
-      {/* Download Buttons (moved outside PDF export area) */}
+      {/* Download Buttons (outside PDF export area) */}
       <div style={{ display: 'flex', flexDirection: 'row', gap: 16, marginTop: 32, justifyContent: 'center', overflow: 'visible' }}>
         <button onClick={handleDownloadPDF} style={{ padding: '16px 32px', background: '#1a237e', color: '#fff', border: 'none', borderRadius: 8, fontSize: 18, fontWeight: 'bold', cursor: 'pointer' }}>
           Download as PDF
         </button>
       </div>
-    </>
+    </div>
   );
 };
 
