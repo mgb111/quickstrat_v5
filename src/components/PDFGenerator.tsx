@@ -222,6 +222,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             page-break-after: always;
             border-bottom: 1px solid #e5e7eb;
             min-height: 500px;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
           }
           
           .page:last-child { 
@@ -271,6 +273,10 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             line-height: 1.6;
             color: #334155;
             margin: 0 0 16px 0;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
           }
           
           a { 
@@ -403,6 +409,11 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             text-align: left;
             border-bottom: 1px solid #e5e7eb;
             vertical-align: top;
+            word-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
+            max-width: 0;
+            overflow-wrap: break-word;
           }
           
           .strategy-table th { 
@@ -447,6 +458,10 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             display: flex;
             align-items: flex-start;
             line-height: 1.5;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
           }
           
           .checklist li::before { 
@@ -481,6 +496,10 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             font-style: italic;
             border: 1px solid #93c5fd;
             margin: 16px 0;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
           }
           
           .script-why { 
