@@ -200,11 +200,50 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
               <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
                 <h3 className="text-xl font-bold text-gray-900 mb-4">Your Free Guide</h3>
                 <PDFGenerator 
-                  data={
-                    typeof campaign.lead_magnet_content === 'string'
+                  data={(() => {
+                    // Parse the lead magnet content
+                    const parsedContent = typeof campaign.lead_magnet_content === 'string'
                       ? JSON.parse(campaign.lead_magnet_content)
-                      : campaign.lead_magnet_content
-                  }
+                      : campaign.lead_magnet_content;
+                    
+                    // Check if structured_content exists and has proper types
+                    if (parsedContent.structured_content && parsedContent.structured_content.toolkit_sections) {
+                      const hasProperTypes = parsedContent.structured_content.toolkit_sections.some((section: any) => section.type);
+                      
+                      if (!hasProperTypes) {
+                        console.log('Fixing missing types in LandingPage...');
+                        // Fix the types in the existing structured_content
+                        const fixedStructuredContent = {
+                          ...parsedContent.structured_content,
+                          toolkit_sections: parsedContent.structured_content.toolkit_sections.map((section: any) => {
+                            let type: 'pros_and_cons_list' | 'checklist' | 'scripts' | undefined = undefined;
+                            
+                            // Determine type based on content analysis
+                            const content = section.content.toLowerCase();
+                            if (content.includes('pros:') && content.includes('cons:')) {
+                              type = 'pros_and_cons_list';
+                            } else if (content.includes('phase') && content.includes('1.') && content.includes('2.')) {
+                              type = 'checklist';
+                            } else if (content.includes('scenario') && content.includes('when they say:') && content.includes('you say:')) {
+                              type = 'scripts';
+                            }
+                            
+                            return {
+                              ...section,
+                              type: type
+                            };
+                          })
+                        };
+                        
+                        return {
+                          ...parsedContent,
+                          structured_content: fixedStructuredContent
+                        };
+                      }
+                    }
+                    
+                    return parsedContent;
+                  })()}
                 />
               </div>
             )}
