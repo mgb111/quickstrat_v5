@@ -7,6 +7,9 @@ import EmailCapture from './EmailCapture';
 interface ResultsDisplayProps {
   results: CampaignOutput;
   brandName: string;
+  userName?: string;
+  problemStatement?: string;
+  desiredOutcome?: string;
   onCampaignCreated?: () => void;
 }
 
@@ -23,7 +26,7 @@ function getSuggestedSubreddits(niche: string): string[] {
   return key ? subredditSuggestions[key] : ['r/Entrepreneur', 'r/smallbusiness'];
 }
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onCampaignCreated }) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, userName, problemStatement, desiredOutcome, onCampaignCreated }) => {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
 
@@ -183,7 +186,15 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, onC
   };
 
   // Get the processed content
-  const pdfContent = emailSubmitted ? processPdfContent() : null;
+  const pdfContentRaw = emailSubmitted ? processPdfContent() : null;
+  // Provide required PDFContent fields, using props for founder intro
+  const pdfContent = pdfContentRaw ? {
+    ...pdfContentRaw,
+    founderName: userName || '',
+    brandName: brandName || '',
+    problemStatement: problemStatement || '',
+    desiredOutcome: desiredOutcome || ''
+  } : null;
 
   console.log('ResultsDisplay render:', { 
     hasPdfContent: !!results.pdf_content,
