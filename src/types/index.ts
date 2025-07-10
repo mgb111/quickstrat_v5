@@ -114,14 +114,12 @@ export interface PDFContent {
   primaryColor?: string;
   secondaryColor?: string;
   website?: string;
+  founderName: string;
+  brandName: string;
+  problemStatement: string;
+  desiredOutcome: string;
   bookingLink?: string;
   supportEmail?: string;
-  ctaText?: string;
-  mainAction?: string;
-  prosIcon?: string;
-  consIcon?: string;
-  checklistIcon?: string;
-  font?: string;
 }
 
 export interface CampaignOutput {

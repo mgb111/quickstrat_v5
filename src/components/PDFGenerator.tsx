@@ -20,11 +20,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     : 'QuickStrat';
   const mainTitle = structured?.title_page?.title || '';
   const subtitle = structured?.title_page?.subtitle || '';
-  const introParagraphs = [
-    structured?.introduction_page?.title,
-    ...(structured?.introduction_page?.content?.split('\n') || [])
-  ].filter(Boolean);
-
+  
   // Directly extract toolkit sections, with type guards
   const toolkit_sections = structured?.toolkit_sections || [];
   console.log('Toolkit sections found:', toolkit_sections.length);
@@ -281,15 +277,17 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           <h1>{mainTitle}</h1>
           <p className="subtitle">{subtitle}</p>
           <p className="toolkit-credit">A QuickStrat AI Toolkit</p>
-          {introParagraphs.map((line, i) => <p className="welcome-intro" key={i}>{line}</p>)}
-          <p>Inside, you'll find:</p>
-          <ul className="welcome-list">
-            <li><strong>Proven strategies</strong> (with no fluff)</li>
-            <li>A <strong>plug-and-play checklist</strong> to stay consistent</li>
-            <li><strong>Word-for-word scripts</strong> to convert interest into income</li>
-          </ul>
-          <p>You don't need a marketing degree. Just this 3-step playbook.</p>
-          <p>Let’s dive in.</p>
+          {/* Personalized founder-style introduction */}
+          <div className="welcome-intro" style={{ marginBottom: 32 }}>
+            {data.founderName && data.brandName && data.problemStatement && data.desiredOutcome && (
+              <>
+                <p>Hi, I'm {data.founderName}, founder of {data.brandName}. I didn’t start out with a tool—I started with a problem.</p>
+                <p>I was {data.problemStatement}.</p>
+                <p>So I built something for myself: {data.brandName}.</p>
+                <p>It worked. Now {data.desiredOutcome}.</p>
+              </>
+            )}
+          </div>
         </div>
 
         {/* Page 2: What You'll Learn (static) */}
