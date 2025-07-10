@@ -187,8 +187,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     <div className="pdf-preview-container">
       <div className="pdf-preview-box" ref={pdfRef}>
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-          body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f0f2f5; color: #333; -webkit-print-color-adjust: exact; }
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+          
           .pdf-preview-container {
             width: 100%;
             display: flex;
@@ -198,111 +198,491 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             padding: 20px;
             min-height: 100vh;
           }
+          
           .pdf-preview-box {
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 4px 32px rgba(0,0,0,0.08), 0 1.5px 6px rgba(0,0,0,0.04);
-            max-width: 900px;
-            margin: 32px auto;
-            padding: 32px 32px 40px 32px;
-            overflow-x: auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+            max-width: 800px;
             width: 100%;
+            padding: 0;
+            margin: 0 auto;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden;
           }
+          
           .page {
             background-color: white;
             width: 100%;
-            max-width: 210mm;
-            min-height: 0;
-            margin: 0 auto 32px auto;
-            padding: clamp(32px, 5vw, 48px) clamp(16px, 4vw, 32px) 56px clamp(16px, 4vw, 32px);
-            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+            padding: 48px 40px;
             box-sizing: border-box;
             position: relative;
-            display: block;
+            display: flex;
             flex-direction: column;
             page-break-after: always;
-            border-radius: 12px;
-            overflow: hidden;
+            border-bottom: 1px solid #e5e7eb;
+            min-height: 500px;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
           }
-          .page:last-child { page-break-after: avoid; margin-bottom: 0; }
-          .page-header { width: 100%; text-align: right; font-size: clamp(12px, 1.5vw, 14px); color: #888; position: absolute; top: clamp(12px, 2vw, 24px); right: clamp(12px, 2vw, 24px); font-weight: bold; }
-          h1 { font-size: clamp(28px, 6vw, 42px); color: #1a237e; font-weight: 900; margin-bottom: 10px; }
-          h2 { font-size: clamp(20px, 4vw, 28px); color: #283593; border-bottom: 2px solid #5c6bc0; padding-bottom: 10px; margin-top: 20px; margin-bottom: 20px; }
-          h3 { font-size: clamp(16px, 3vw, 20px); color: #3949ab; margin-top: 30px; }
-          p, li { font-size: clamp(14px, 2.5vw, 16px); line-height: 1.6; }
-        a { color: #304ffe; text-decoration: none; }
-          .subtitle { font-size: clamp(16px, 3vw, 20px); font-weight: 700; color: #555; margin-top: 0; margin-bottom: 30px; }
-        .toolkit-credit { display: none; }
-        .welcome-header { text-align: center; margin-bottom: 40px; }
-          .welcome-header .logo { display: none; }
-          .welcome-intro { font-size: clamp(14px, 2.8vw, 18px); }
-        .welcome-list { list-style: none; padding-left: 0; }
-        .welcome-list li { padding-left: 25px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23304ffe" class="bi bi-check-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>'); background-repeat: no-repeat; background-position: left center; background-size: 16px; margin-bottom: 10px; }
-          .learn-container { display: flex; flex-wrap: wrap; justify-content: space-around; text-align: center; gap: 20px; margin-top: 40px; }
-          .learn-item { flex: 1 1 200px; min-width: 180px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f8f9fa; margin-bottom: 12px; }
-        .learn-item .icon { font-size: 48px; margin-bottom: 15px; }
-        .learn-item h3 { margin: 0; font-size: 18px; }
-        .pro-tip { background-color: #e8eaf6; border-left: 5px solid #7986cb; padding: 15px 20px; margin-top: 30px; font-size: 16px; }
-          .strategy-table { width: 100%; border-collapse: collapse; margin-top: 20px; overflow-x: auto; }
-        .strategy-table th, .strategy-table td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
-        .strategy-table th { background-color: #3f51b5; color: white; font-size: 18px; }
-        .strategy-table tr:nth-child(even) { background-color: #f4f6f8; }
-        .strategy-table td:first-child { font-weight: bold; }
-        .checklist-box { background-color: #f7f9fc; padding: 25px; border-radius: 8px; border: 1px solid #dbe2ef; }
-        .checklist { list-style: none; padding-left: 0; }
-        .checklist li { font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; }
-        .checklist li::before { content: '🔲'; font-size: 24px; margin-right: 15px; color: #3f51b5; }
-        .script { margin-bottom: 40px; }
-        .script h3 { border-bottom: none; }
-        .script-dialog, .script-why {
+          
+          .page:last-child { 
+            page-break-after: avoid; 
+            border-bottom: none; 
+          }
+          
+          .page-header { 
+            position: absolute;
+            top: 16px;
+            right: 24px;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+          
+          h1 { 
+            font-size: 36px;
+            color: #1e293b;
+            font-weight: 900;
+            margin: 0 0 12px 0;
+            line-height: 1.1;
+            text-align: center;
+          }
+          
+          h2 { 
+            font-size: 28px;
+            color: #334155;
+            font-weight: 800;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 12px;
+            margin: 32px 0 24px 0;
+            text-align: center;
+          }
+          
+          h3 { 
+            font-size: 20px;
+            color: #475569;
+            font-weight: 700;
+            margin: 24px 0 16px 0;
+          }
+          
+          p, li { 
+            font-size: 16px;
+            line-height: 1.6;
+            color: #334155;
+            margin: 0 0 16px 0;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+          }
+          
+          a { 
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+          }
+          
+          .subtitle { 
+            font-size: 18px;
+            font-weight: 600;
+            color: #64748b;
+            margin: 0 0 8px 0;
+            text-align: center;
+          }
+          
+          .toolkit-credit { 
+            font-style: italic;
+            color: #94a3b8;
+            margin: 0 0 40px 0;
+            text-align: center;
+            font-size: 14px;
+          }
+          
+          .welcome-header { 
+            text-align: center;
+            margin-bottom: 32px;
+          }
+          
+          .welcome-header .logo { 
+            font-weight: 800;
+            font-size: 24px;
+            color: #1e293b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+          
+          .welcome-intro { 
+            font-size: 16px;
+            margin-bottom: 32px;
+            text-align: center;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+          }
+          
+          .welcome-list { 
+            list-style: none;
+            padding-left: 0;
+            max-width: 500px;
+            margin: 0 auto;
+          }
+          
+          .welcome-list li { 
+            padding-left: 32px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="%233b82f6" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: 20px;
+            margin-bottom: 12px;
+          }
+          
+          .learn-container { 
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+            text-align: center;
+          }
+          
+          .learn-item { 
+            padding: 32px 24px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            transition: all 0.3s ease;
+          }
+          
+          .learn-item:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+          }
+          
+          .learn-item .icon { 
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+          }
+          
+          .learn-item h3 { 
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+          }
+          
+          .learn-item p {
+            margin: 0;
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+          }
+          
+          .pro-tip { 
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 1px solid #93c5fd;
+            border-left: 4px solid #3b82f6;
+            padding: 20px 24px;
+            margin-top: 32px;
+            border-radius: 8px;
+            font-size: 16px;
+          }
+          
+          .pro-tip strong {
+            color: #1e40af;
+          }
+          
+          .strategy-table { 
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          }
+          
+          .strategy-table th, .strategy-table td { 
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+            word-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
+            max-width: 0;
+            overflow-wrap: break-word;
+          }
+          
+          .strategy-table th { 
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+          
+          .strategy-table tr:nth-child(even) { 
+            background-color: #f8fafc;
+          }
+          
+          .strategy-table tr:hover {
+            background-color: #f1f5f9;
+          }
+          
+          .strategy-table td:first-child { 
+            font-weight: 700;
+            color: #1e293b;
+          }
+          
+          .checklist-box { 
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 32px;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            margin-top: 24px;
+          }
+          
+          .checklist { 
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+          }
+          
+          .checklist li { 
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            line-height: 1.5;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+          }
+          
+          .checklist li::before { 
+            content: '☐';
+            font-size: 20px;
+            margin-right: 12px;
+            color: #3b82f6;
+            margin-top: 2px;
+            flex-shrink: 0;
+          }
+          
+          .script { 
+            margin-bottom: 40px;
+            padding: 24px;
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+          }
+          
+          .script h3 { 
+            border-bottom: none;
+            margin-top: 0;
+            color: #1e293b;
+            font-size: 18px;
+          }
+          
+          .script-dialog {
+          background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+          border-radius: 12px;
+          padding: 24px 24px;
+          position: relative;
+          font-style: italic;
+          border: 1px solid #93c5fd;
+          margin: 24px 0;
+          word-wrap: break-word;
           word-break: break-word;
           overflow-wrap: break-word;
-          white-space: pre-line;
-          min-height: 0;
-          padding-bottom: 12px;
-          margin-bottom: 16px;
-        }
-        .script-dialog {
-          padding: 20px;
-          border-radius: 20px 20px 20px 5px;
-          background-color: #e3f2fd;
-          font-style: italic;
-          margin-top: 12px;
-        }
-        .script-why {
-          background-color: #f1f8e9;
-          border-left: 4px solid #8bc34a;
-          padding: 12px 16px;
-          border-radius: 8px;
-          font-size: 15px;
-          margin-top: 10px;
-        }
-        .cta-block { background-color: #1a237e; color: white; text-align: center; padding: 40px; border-radius: 12px; margin-top: auto; }
-        .cta-block h2 { color: white; border: none; }
-        .cta-button { display: block; background-color: #448aff; color: white; padding: 18px 25px; margin: 20px auto; border-radius: 8px; font-size: 18px; font-weight: bold; max-width: 80%; transition: background-color 0.3s ease; }
-        .cta-button:hover { background-color: #2962ff; }
-        .cta-email { margin-top: 20px; }
-        .cta-email a { color: #c5cae9; }
-          @media print { body { background-color: white; } .page { width: 100%; min-height: 0; margin: 0; padding: 0; box-shadow: none; page-break-after: always; display: block; } .page:last-child { page-break-after: avoid; } .cta-block { margin-top: 50px; } }
-          @media (max-width: 900px) {
-            .pdf-preview-box { max-width: 100vw; border-radius: 0; padding: 2vw 0 32px 0; }
-            .page { max-width: 100vw; padding: clamp(12px, 3vw, 24px); border-radius: 0; }
+          hyphens: auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          min-height: 80px;
           }
-          @media (max-width: 700px) {
-            .pdf-preview-box { max-width: 100vw; border-radius: 0; padding: 0 0 24px 0; }
-            .page { max-width: 100vw; padding: clamp(8px, 2vw, 16px); border-radius: 0; }
-            h1 { font-size: clamp(20px, 7vw, 32px); }
-            h2 { font-size: clamp(16px, 5vw, 24px); }
-            h3 { font-size: clamp(14px, 4vw, 18px); }
-            .welcome-header .logo { font-size: clamp(14px, 6vw, 20px); }
+          
+          .script-why {
+          background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+          padding: 20px 24px;
+          border-radius: 8px;
+          margin-top: 20px;
+          font-size: 16px;
+          border: 1px solid #86efac;
+          border-left: 4px solid #22c55e;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          min-height: 60px;
+          }
+          
+          .script-why strong {
+            color: #15803d;
+          }
+          
+          .cta-block { 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            text-align: center;
+            padding: 48px 32px;
+            border-radius: 12px;
+            margin-top: 32px;
+          }
+          
+          .cta-block h2 { 
+            color: white;
+            border: none;
+            margin-bottom: 16px;
+          }
+          
+          .cta-block p {
+            color: #cbd5e1;
+            font-size: 16px;
+            margin-bottom: 24px;
+          }
+          
+          .cta-button { 
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 16px 32px;
+            margin: 12px 8px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+          }
+          
+          .cta-button:hover { 
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+          }
+          
+          .cta-email { 
+            margin-top: 24px;
+            font-size: 14px;
+          }
+          
+          .cta-email a { 
+            color: #94a3b8;
+            text-decoration: underline;
+          }
+          
+          .download-buttons {
+            display: flex;
+            justify-content: center;
+            padding: 24px;
+            background: #f8fafc;
+            border-top: 1px solid #e5e7eb;
+          }
+          
+          .download-btn {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.3);
+          }
+          
+          .download-btn:hover {
+            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 41, 59, 0.4);
+          }
+          
+          @media print { 
+            .pdf-preview-container {
+              background: white;
+              padding: 0;
+            }
+            .pdf-preview-box {
+              box-shadow: none;
+              border-radius: 0;
+            }
+            .page { 
+              margin: 0;
+              padding: 32px;
+              box-shadow: none;
+              page-break-after: always;
+              border: none;
+            }
+            .page:last-child { 
+              page-break-after: avoid;
+            }
+            .download-buttons {
+              display: none;
+            }
+          }
+          
+          @media (max-width: 768px) {
+            .pdf-preview-container {
+              padding: 12px;
+            }
+            
+            .pdf-preview-box {
+              border-radius: 8px;
+            }
+            
+            .page {
+              padding: 32px 24px;
+            }
+            
+            h1 {
+              font-size: 28px;
+            }
+            
+            h2 {
+              font-size: 24px;
+            }
+            
+            .learn-container {
+              grid-template-columns: 1fr;
+              gap: 16px;
+            }
+            
+            .strategy-table {
+              font-size: 14px;
+            }
+            
+            .strategy-table th,
+            .strategy-table td {
+              padding: 12px 8px;
+            }
+            
+            .cta-block {
+              padding: 32px 24px;
+            }
+            
+            .cta-button {
+              display: block;
+              margin: 12px auto;
+              width: fit-content;
+            }
           }
         `}</style>
 
         {/* Page 1: Welcome */}
         <div className="page" id="pdf-content">
-          <div className="welcome-header"></div>
+          <div className="welcome-header">
+            <div className="logo">{companyName}</div>
+          </div>
           <h1>{mainTitle}</h1>
           <p className="subtitle">{subtitle}</p>
+          <p className="toolkit-credit">A QuickStrat AI Toolkit</p>
           {/* Personalized founder-style introduction */}
           <div className="welcome-intro">
             {data.founder_intro ? (
