@@ -188,7 +188,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   };
 
   return (
-    <div style={{ overflow: 'visible', width: '100%' }}>
+    <div style={{ overflow: 'visible', width: '100%' }} ref={pdfRef}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f0f2f5; color: #333; -webkit-print-color-adjust: exact; }
@@ -236,7 +236,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
       `}</style>
 
       {/* Page 1: Welcome */}
-      <div className="page" ref={pdfRef} id="pdf-content">
+      <div className="page" id="pdf-content">
         <div className="welcome-header">
           <div className="logo">{companyName}</div>
         </div>
