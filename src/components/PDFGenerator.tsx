@@ -213,8 +213,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             width: 100%;
             max-width: 210mm;
             min-height: 0;
-            margin: 0 auto 24px auto;
-            padding: clamp(16px, 4vw, 32px) clamp(16px, 4vw, 32px) 56px clamp(16px, 4vw, 32px);
+            margin: 0 auto 32px auto;
+            padding: clamp(32px, 5vw, 48px) clamp(16px, 4vw, 32px) 56px clamp(16px, 4vw, 32px);
             box-shadow: 0 0 10px rgba(0,0,0,0.08);
             box-sizing: border-box;
             position: relative;
@@ -222,9 +222,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             flex-direction: column;
             page-break-after: always;
             border-radius: 12px;
-            overflow-wrap: break-word;
-            word-break: break-word;
-            overflow: visible !important;
+            overflow: hidden;
           }
           .page:last-child { page-break-after: avoid; margin-bottom: 0; }
           .page-header { width: 100%; text-align: right; font-size: clamp(12px, 1.5vw, 14px); color: #888; position: absolute; top: clamp(12px, 2vw, 24px); right: clamp(12px, 2vw, 24px); font-weight: bold; }
@@ -256,8 +254,29 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         .checklist li::before { content: '🔲'; font-size: 24px; margin-right: 15px; color: #3f51b5; }
         .script { margin-bottom: 40px; }
         .script h3 { border-bottom: none; }
-        .script-dialog { background-color: #e3f2fd; border-radius: 20px 20px 20px 5px; padding: 20px; position: relative; font-style: italic; overflow: visible !important; word-break: break-word !important; overflow-wrap: anywhere !important; white-space: pre-line !important; min-height: 0 !important; padding-bottom: 16px !important; }
-        .script-why { background-color: #f1f8e9; padding: 10px 15px; border-radius: 8px; margin-top: 15px; font-size: 15px; border-left: 4px solid #8bc34a; overflow: visible !important; word-break: break-word !important; overflow-wrap: anywhere !important; white-space: pre-line !important; min-height: 0 !important; margin-bottom: 16px !important; }
+        .script-dialog, .script-why {
+          word-break: break-word;
+          overflow-wrap: break-word;
+          white-space: pre-line;
+          min-height: 0;
+          padding-bottom: 12px;
+          margin-bottom: 16px;
+        }
+        .script-dialog {
+          padding: 20px;
+          border-radius: 20px 20px 20px 5px;
+          background-color: #e3f2fd;
+          font-style: italic;
+          margin-top: 12px;
+        }
+        .script-why {
+          background-color: #f1f8e9;
+          border-left: 4px solid #8bc34a;
+          padding: 12px 16px;
+          border-radius: 8px;
+          font-size: 15px;
+          margin-top: 10px;
+        }
         .cta-block { background-color: #1a237e; color: white; text-align: center; padding: 40px; border-radius: 12px; margin-top: auto; }
         .cta-block h2 { color: white; border: none; }
         .cta-button { display: block; background-color: #448aff; color: white; padding: 18px 25px; margin: 20px auto; border-radius: 8px; font-size: 18px; font-weight: bold; max-width: 80%; transition: background-color 0.3s ease; }
