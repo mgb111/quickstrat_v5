@@ -274,7 +274,7 @@ Generate EXACTLY 3 distinct toolkit sections. Each section must be comprehensive
 
 SECTION TYPES TO USE (NO TABLES, NO REDUNDANT STEP-BY-STEP GUIDES):
 
-- For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of 4-6 items. Each item MUST have a "method_name", a single "pros" string (not an array), and a single "cons" string (not an array). Format exactly like this example:
+- For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of AT LEAST 3-6 items. Each item MUST have a "method_name", a single "pros" string (not an array), and a single "cons" string (not an array). Format exactly like this example:
 
 EXAMPLE PROS AND CONS FORMAT:
 {
@@ -447,6 +447,14 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
     // Validate toolkit sections (EXACTLY 3 sections required for A+ document)
     if (parsed.toolkit_sections.length !== 3) {
       throw new Error('Must have exactly 3 toolkit sections for A+ document quality');
+    }
+
+    // Additional validation: pros_and_cons_list must have at least 3 items
+    const prosConsSection = parsed.toolkit_sections.find((section: any) => section.type === 'pros_and_cons_list');
+    if (prosConsSection && prosConsSection.content && Array.isArray(prosConsSection.content.items)) {
+      if (prosConsSection.content.items.length < 3) {
+        throw new Error('Pros and cons section must have at least 3 items');
+      }
     }
 
     // Check for redundancy - ensure no step-by-step guide if checklist exists

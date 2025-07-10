@@ -68,6 +68,11 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
     }
   };
 
+  const handleConceptSelect = (conceptId: string) => {
+    setSelectedConceptId(conceptId);
+    setShowCustomization(true);
+  };
+
   if (showCustomization) {
     return (
       <div className="max-w-2xl mx-auto mt-8">
@@ -166,7 +171,7 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
                     name="concept"
                     value={concept.id}
                     checked={selectedConceptId === concept.id}
-                    onChange={(e) => setSelectedConceptId(e.target.value)}
+                    onChange={(e) => handleConceptSelect(e.target.value)}
                     className="mt-1 h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                   />
                   <div className="flex-1">
