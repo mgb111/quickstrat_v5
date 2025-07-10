@@ -172,26 +172,19 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   const handleDownloadPDF = async () => {
     if (!pdfRef.current) return;
     const html2pdf = (await import('html2pdf.js')).default;
+    // Select the parent container to include all .page elements
+    const container = pdfRef.current;
     html2pdf()
       .set({
-        margin: 0.5,
+        margin: 0,
         filename: 'lead-magnet.pdf',
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'] }
       })
-      .from(pdfRef.current)
+      .from(container)
       .save();
-  };
-
-  const handleDownloadImage = async () => {
-    if (!pdfRef.current) return;
-    const html2canvas = (await import('html2canvas')).default;
-    const canvas = await html2canvas(pdfRef.current, { scale: 2 });
-    const link = document.createElement('a');
-    link.download = 'lead-magnet.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
   };
 
   return (
@@ -199,7 +192,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f0f2f5; color: #333; -webkit-print-color-adjust: exact; }
-        .page { background-color: white; width: 210mm; min-height: 297mm; margin: 20px auto; padding: 25mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; position: relative; display: flex; flex-direction: column; }
+        .page { background-color: white; width: 210mm; min-height: 297mm; margin: 20px auto; padding: 25mm; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; position: relative; display: block; flex-direction: column; page-break-after: always; }
+        .page:last-child { page-break-after: avoid; }
         .page-header { width: 100%; text-align: right; font-size: 14px; color: #888; position: absolute; top: 20mm; right: 25mm; font-weight: bold; }
         h1 { font-size: 42px; color: #1a237e; font-weight: 900; margin-bottom: 10px; }
         h2 { font-size: 28px; color: #283593; border-bottom: 2px solid #5c6bc0; padding-bottom: 10px; margin-top: 20px; margin-bottom: 20px; }
@@ -237,7 +231,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         .cta-button:hover { background-color: #2962ff; }
         .cta-email { margin-top: 20px; }
         .cta-email a { color: #c5cae9; }
-        @media print { body { background-color: white; } .page { width: 100%; min-height: 0; margin: 0; padding: 0; box-shadow: none; page-break-after: always; } .page:last-child { page-break-after: avoid; } .cta-block { margin-top: 50px; } }
+        @media print { body { background-color: white; } .page { width: 100%; min-height: 0; margin: 0; padding: 0; box-shadow: none; page-break-after: always; display: block; } .page:last-child { page-break-after: avoid; } .cta-block { margin-top: 50px; } }
         @media (max-width: 700px) { .page { width: 100vw; min-width: 0; padding: 10vw 2vw; } .learn-container { flex-direction: column; gap: 10px; } }
       `}</style>
 
@@ -383,9 +377,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
       <div style={{ display: 'flex', flexDirection: 'row', gap: 16, marginTop: 32, justifyContent: 'center', overflow: 'visible' }}>
         <button onClick={handleDownloadPDF} style={{ padding: '16px 32px', background: '#1a237e', color: '#fff', border: 'none', borderRadius: 8, fontSize: 18, fontWeight: 'bold', cursor: 'pointer' }}>
           Download as PDF
-        </button>
-        <button onClick={handleDownloadImage} style={{ padding: '16px 32px', background: '#3949ab', color: '#fff', border: 'none', borderRadius: 8, fontSize: 18, fontWeight: 'bold', cursor: 'pointer' }}>
-          Download as Image
         </button>
       </div>
     </div>
