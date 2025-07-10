@@ -23,15 +23,33 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
 
   // Directly extract toolkit sections, with type guards
   const toolkit_sections = structured?.toolkit_sections || [];
+  
   const strategySection = toolkit_sections.find((s: any) => s.type === 'pros_and_cons_list');
   const checklistSection = toolkit_sections.find((s: any) => s.type === 'checklist');
   const scriptsSection = toolkit_sections.find((s: any) => s.type === 'scripts');
-  const strategyRows = (strategySection && typeof strategySection.content === 'object' && strategySection.content !== null && 'items' in strategySection.content)
-    ? (strategySection.content as any).items || [] : [];
-  const checklistPhases = (checklistSection && typeof checklistSection.content === 'object' && checklistSection.content !== null && 'phases' in checklistSection.content)
-    ? (checklistSection.content as any).phases || [] : [];
-  const scripts = (scriptsSection && typeof scriptsSection.content === 'object' && scriptsSection.content !== null && 'scenarios' in scriptsSection.content)
-    ? (scriptsSection.content as any).scenarios || [] : [];
+  
+  // Extract data with better error handling
+  const strategyRows = (strategySection && 
+    typeof strategySection.content === 'object' && 
+    strategySection.content !== null && 
+    'items' in strategySection.content)
+    ? (strategySection.content as any).items || [] 
+    : [];
+    
+  const checklistPhases = (checklistSection && 
+    typeof checklistSection.content === 'object' && 
+    checklistSection.content !== null && 
+    'phases' in checklistSection.content)
+    ? (checklistSection.content as any).phases || [] 
+    : [];
+    
+  const scripts = (scriptsSection && 
+    typeof scriptsSection.content === 'object' && 
+    scriptsSection.content !== null && 
+    'scenarios' in scriptsSection.content)
+    ? (scriptsSection.content as any).scenarios || [] 
+    : [];
+  
   const ctaTitle = structured?.cta_page?.title || '';
   const ctaContent = structured?.cta_page?.content || '';
   const bookingLink = data?.bookingLink || '';
