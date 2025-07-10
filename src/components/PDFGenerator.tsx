@@ -279,13 +279,17 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           <p className="toolkit-credit">A QuickStrat AI Toolkit</p>
           {/* Personalized founder-style introduction */}
           <div className="welcome-intro" style={{ marginBottom: 32 }}>
-            {data.founderName && data.brandName && data.problemStatement && data.desiredOutcome && (
-              <>
-                <p>Hi, I'm {data.founderName}, founder of {data.brandName}. I didn’t start out with a tool—I started with a problem.</p>
-                <p>I was {data.problemStatement}.</p>
-                <p>So I built something for myself: {data.brandName}.</p>
-                <p>It worked. Now {data.desiredOutcome}.</p>
-              </>
+            {data.founder_intro ? (
+              <p>{data.founder_intro}</p>
+            ) : (
+              data.founderName && data.brandName && data.problemStatement && data.desiredOutcome && (
+                <>
+                  <p>Hi, I'm {data.founderName}, founder of {data.brandName}. I didn’t start out with a tool—I started with a problem.</p>
+                  <p>I was {data.problemStatement}.</p>
+                  <p>So I built something for myself: {data.brandName}.</p>
+                  <p>It worked. Now {data.desiredOutcome}.</p>
+                </>
+              )
             )}
           </div>
         </div>

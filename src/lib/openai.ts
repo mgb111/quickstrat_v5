@@ -236,6 +236,18 @@ Tone: ${input.tone}
 Brand Name: ${input.brand_name}
 Selected Concept: A lead magnet about ${outline.title}.
 
+---
+
+PERSONALIZED FOUNDER INTRODUCTION:
+Before the toolkit, write a short, authentic introduction in the founder’s voice. Use these details:
+- Founder’s name: ${input.name}
+- Brand/company: ${input.brand_name}
+- Customer problem: ${input.problem_statement}
+- Desired outcome: ${input.desired_outcome}
+The intro should sound like the founder is speaking directly to the reader, sharing why they built this and what the reader will achieve. Make it authentic, concise, and motivating. Return this as a field called founder_intro in the JSON.
+
+---
+
 CORE PRINCIPLES (NON-NEGOTIABLE):
 VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or structured content) to fill a standard document page. Sparse pages with single paragraphs are forbidden.
 
@@ -329,6 +341,7 @@ If any answer is no, you MUST rewrite that section to fully comply before provid
 
 RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 {
+  "founder_intro": "...",
   "title_page": {
     "layout": "centered",
     "title": "The VR Vendor Negotiation Toolkit",
@@ -417,7 +430,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
     const parsed = JSON.parse(content);
 
     // Validate the response structure
-    if (!parsed.title_page || !parsed.introduction_page || !Array.isArray(parsed.toolkit_sections) || !parsed.cta_page) {
+    if (!parsed.founder_intro || !parsed.title_page || !parsed.introduction_page || !Array.isArray(parsed.toolkit_sections) || !parsed.cta_page) {
       throw new Error('Invalid response format from OpenAI API - missing required pages');
     }
 
@@ -539,6 +552,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 
     // Return the structured content for better PDF formatting
     return {
+      founder_intro: parsed.founder_intro,
       title: parsed.title_page.title,
       introduction: parsed.title_page.subtitle,
       sections: sections,

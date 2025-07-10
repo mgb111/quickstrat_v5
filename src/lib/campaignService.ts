@@ -78,6 +78,18 @@ export class CampaignService {
     const slug = slugData || `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     console.log('🔗 Generated slug:', slug);
 
+    // Merge founder intro fields into pdf_content
+    let pdfContentWithFounder = output.pdf_content;
+    if (typeof pdfContentWithFounder === 'object') {
+      pdfContentWithFounder = {
+        ...pdfContentWithFounder,
+        founderName: input.name || '',
+        brandName: input.brand_name || '',
+        problemStatement: input.problem_statement || '',
+        desiredOutcome: input.desired_outcome || ''
+      };
+    }
+
     const campaignData = {
       user_id: user.id,
       name: `${input.brand_name} - ${input.customer_profile || input.target_audience || 'General'}`,
@@ -86,7 +98,7 @@ export class CampaignService {
       desired_outcome: input.desired_outcome,
       landing_page_slug: slug,
       lead_magnet_title: output.landing_page.headline,
-      lead_magnet_content: output.pdf_content,
+      lead_magnet_content: pdfContentWithFounder,
       landing_page_copy: output.landing_page,
       social_posts: [
         output.social_posts.linkedin,

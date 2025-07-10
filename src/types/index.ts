@@ -58,6 +58,7 @@ export interface SocialPosts {
 }
 
 export interface PDFContent {
+  founder_intro?: string;
   title: string;
   introduction: string;
   sections: {
