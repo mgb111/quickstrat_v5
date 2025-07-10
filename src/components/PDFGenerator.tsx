@@ -30,6 +30,16 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   console.log('Toolkit sections found:', toolkit_sections.length);
   console.log('Toolkit sections:', toolkit_sections);
   
+  // Log each section's structure
+  toolkit_sections.forEach((section: any, index: number) => {
+    console.log(`Section ${index + 1}:`, {
+      title: section.title,
+      type: section.type,
+      content: section.content,
+      layout: section.layout
+    });
+  });
+  
   const strategySection = toolkit_sections.find((s: any) => s.type === 'pros_and_cons_list');
   const checklistSection = toolkit_sections.find((s: any) => s.type === 'checklist');
   const scriptsSection = toolkit_sections.find((s: any) => s.type === 'scripts');
