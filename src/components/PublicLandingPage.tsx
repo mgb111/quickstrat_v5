@@ -242,7 +242,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted, onL
               <div className="bg-green-100 p-6 rounded-xl">
                 <h5 className="font-bold text-green-800 mb-2 text-lg">Result:</h5>
                 <p className="text-green-700 font-medium">
-                  300% increase in qualified leads who are ready to invest in your services
+                  15+ leads per lead magnet for the average user
                 </p>
               </div>
             </div>
@@ -375,7 +375,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted, onL
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
-                "Majorbeam helped me create a professional lead magnet in minutes. My email list grew by 400% in just one month!"
+                "Majorbeam helped me create a professional lead magnet in minutes. I generated 100+ qualified leads in my first month with just 5 campaigns!"
               </p>
               <div className="font-semibold text-gray-900">Sarah Chen</div>
               <div className="text-gray-600 text-sm">Business Coach</div>
