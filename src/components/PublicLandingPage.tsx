@@ -3,9 +3,10 @@ import { Check, ArrowRight, Zap, Users, FileText, Mail, TrendingUp, Target, Down
 
 interface PublicLandingPageProps {
   onGetStarted: () => void;
+  onLogin: () => void;
 }
 
-const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted }) => {
+const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted, onLogin }) => {
   const [email, setEmail] = useState('');
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -69,7 +70,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted }) =
                 FAQ
               </button>
               <button 
-                onClick={onGetStarted}
+                onClick={onLogin}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
               >
                 Get Started
@@ -111,7 +112,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted }) =
                 FAQ
               </button>
               <button 
-                onClick={onGetStarted}
+                onClick={onLogin}
                 className="w-full mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold"
               >
                 Get Started
@@ -142,7 +143,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted }) =
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
               <button 
-                onClick={onGetStarted}
+                onClick={onLogin}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center"
               >
                 <Download className="w-5 h-5 mr-2" />
@@ -154,7 +155,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted }) =
               </button>
             </div>
             
-            <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500">
+            <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8 text-sm text-gray-500 px-4">
               <div className="flex items-center">
                 <Check className="w-4 h-4 mr-2 text-green-500" />
                 No design skills needed
@@ -185,7 +186,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted }) =
           </div>
 
           {/* Three Column Benefits */}
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-16">
             <div className="text-center">
               <div className="bg-blue-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Users className="w-8 h-8 text-blue-600" />
@@ -269,7 +270,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted }) =
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
                 <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -349,7 +350,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted }) =
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-16">
             <div className="text-center">
               <div className="text-4xl font-bold text-blue-600 mb-2">10,000+</div>
               <div className="text-gray-600">Lead Magnets Created</div>
@@ -364,7 +365,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted }) =
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             <div className="bg-gray-50 p-6 rounded-xl">
               <div className="flex items-center mb-4">
                 <div className="flex text-yellow-400">
@@ -492,7 +493,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted }) =
           </p>
           
           <button 
-            onClick={onGetStarted}
+            onClick={onLogin}
             className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center mx-auto mb-4"
           >
             <Download className="w-5 h-5 mr-2" />

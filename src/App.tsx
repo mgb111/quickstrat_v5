@@ -283,7 +283,7 @@ function App() {
 
   // Render public landing page (no auth required)
   if (mode === 'public') {
-    return <PublicLandingPage onGetStarted={() => setMode('auth')} />;
+    return <PublicLandingPage onGetStarted={() => setMode('auth')} onLogin={() => setMode('auth')} />;
   }
 
   // Render authentication (no user)
@@ -304,10 +304,10 @@ function App() {
                 </div>
                 <span className="ml-3 text-xl font-bold text-gray-900">Majorbeam</span>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 sm:space-x-4">
                 <button
                   onClick={() => setMode('dashboard')}
-                  className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="inline-flex items-center px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
                 >
                   ← Back to Dashboard
                 </button>
@@ -335,17 +335,17 @@ function App() {
                 </div>
                 <span className="ml-3 text-xl font-bold text-gray-900">Majorbeam</span>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
                 <button
                   onClick={() => setMode('wizard')}
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   New Campaign
                 </button>
                 <button
                   onClick={() => setMode('profile')}
-                  className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
                 >
                   <User className="h-4 w-4 mr-2" />
                   Profile
@@ -362,32 +362,32 @@ function App() {
   // Render wizard
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <header className="text-center mb-8 sm:mb-12">
           <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 rounded-2xl">
-              <Zap className="h-8 w-8 text-white" />
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3 sm:p-4 rounded-2xl">
+              <Zap className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-gray-900 mb-4">
             LeadGen <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Machine</span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
             Transform customer problems into focused, high-value lead magnets with AI assistance
           </p>
           
           {/* Navigation */}
-          <div className="mt-8 flex justify-center space-x-4">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
             <button
               onClick={() => setMode('dashboard')}
-              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              className="inline-flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
             >
               <BarChart3 className="h-4 w-4 mr-2" />
               Dashboard
             </button>
             <button
               onClick={() => setMode('profile')}
-              className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              className="inline-flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
             >
               <User className="h-4 w-4 mr-2" />
               Profile
@@ -404,14 +404,14 @@ function App() {
         )}
 
         {wizardState.stage === 'input' && (
-          <div>
+          <div className="w-full">
             {(() => { console.log('🎯 Rendering CampaignForm component'); return null; })()}
             <CampaignForm onSubmit={handleInputSubmit} isLoading={isLoading} />
           </div>
         )}
 
         {wizardState.stage === 'concept-selection' && wizardState.concepts && (
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8 w-full">
             <div className="text-center">
               <button
                 onClick={handleStartOver}
@@ -430,7 +430,7 @@ function App() {
         )}
 
         {wizardState.stage === 'outline-review' && wizardState.outline && (
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8 w-full">
             <div className="text-center">
               <button
                 onClick={handleStartOver}
@@ -449,7 +449,7 @@ function App() {
         )}
 
         {wizardState.stage === 'complete' && wizardState.finalOutput && (
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8 w-full">
             <div className="text-center">
               <button
                 onClick={handleStartOver}
@@ -470,7 +470,7 @@ function App() {
           </div>
         )}
 
-        <footer className="mt-16 text-center text-gray-500">
+        <footer className="mt-12 sm:mt-16 text-center text-gray-500 px-4">
           <p>© 2025 Majorbeam. AI assists, experts direct, humans approve.</p>
         </footer>
       </div>

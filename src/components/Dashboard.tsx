@@ -135,7 +135,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-2 sm:p-4 md:p-6">
+    <div className="max-w-7xl mx-auto p-2 sm:p-4 md:p-6 overflow-x-hidden">
       {/* Header */}
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
@@ -189,7 +189,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
                           e.stopPropagation();
                           copyLandingPageUrl(campaign.landing_page_slug);
                         }}
-                        className="text-gray-400 hover:text-gray-600 p-2 rounded-full"
+                        className="text-gray-400 hover:text-gray-600 p-2 rounded-full flex-shrink-0"
                         title="Copy landing page URL"
                       >
                         <Copy className="h-4 w-4" />
@@ -203,29 +203,29 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
 
           {/* Campaign Details */}
           {selectedCampaign && (
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-6 overflow-x-hidden">
               {/* Campaign Stats */}
               <div className="bg-white rounded-lg shadow p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Overview</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <Users className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-blue-600">{selectedCampaign.lead_count}</p>
-                    <p className="text-sm text-gray-600">Total Leads</p>
+                    <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 mx-auto mb-2" />
+                    <p className="text-xl sm:text-2xl font-bold text-blue-600">{selectedCampaign.lead_count}</p>
+                    <p className="text-xs sm:text-sm text-gray-600">Total Leads</p>
                   </div>
                   <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-green-600">
+                    <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-xl sm:text-2xl font-bold text-green-600">
                       {stats?.conversion_rate ? `${stats.conversion_rate}%` : 'N/A'}
                     </p>
-                    <p className="text-sm text-gray-600">Conversion Rate</p>
+                    <p className="text-xs sm:text-sm text-gray-600">Conversion Rate</p>
                   </div>
-                  <div className="text-center p-4 bg-purple-50 rounded-lg">
-                    <MessageCircle className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-purple-600">
+                  <div className="text-center p-4 bg-purple-50 rounded-lg sm:col-span-2 md:col-span-1">
+                    <MessageCircle className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 mx-auto mb-2" />
+                    <p className="text-xl sm:text-2xl font-bold text-purple-600">
                       {stats?.avg_time_to_convert ? `${stats.avg_time_to_convert} days` : 'N/A'}
                     </p>
-                    <p className="text-sm text-gray-600">Avg Time to Convert</p>
+                    <p className="text-xs sm:text-sm text-gray-600">Avg Time to Convert</p>
                   </div>
                 </div>
               </div>

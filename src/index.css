@@ -11,6 +11,7 @@ html {
 
 body {
   font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -24,4 +25,15 @@ p {
 /* Custom color palette */
 .font-inter {
   font-family: 'Inter', sans-serif;
+}
+
+/* Prevent horizontal scrolling */
+* {
+  box-sizing: border-box;
+}
+
+/* Ensure containers don't overflow */
+.container, .max-w-7xl, .max-w-4xl, .max-w-2xl {
+  max-width: 100%;
+  overflow-x: hidden;
 }
