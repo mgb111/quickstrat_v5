@@ -65,7 +65,7 @@ function App() {
         }
       }
     }
-  }, [user, loading, mode]);
+  }, [user, loading]); // Removed 'mode' from dependencies to prevent infinite loop
 
   // Extract campaign slug from URL
   const getCampaignSlug = () => {
