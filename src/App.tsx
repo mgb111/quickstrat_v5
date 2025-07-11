@@ -6,6 +6,7 @@ import OutlineReview from './components/OutlineReview';
 import ResultsDisplay from './components/ResultsDisplay';
 import Dashboard from './components/Dashboard';
 import LandingPage from './components/LandingPage';
+import PublicLandingPage from './components/PublicLandingPage';
 import Auth from './components/Auth/Auth';
 import UserProfile from './components/UserProfile';
 import { useAuth } from './contexts/AuthContext';
@@ -15,13 +16,13 @@ import { CampaignService } from './lib/campaignService';
 import { EmailService } from './lib/emailService';
 import LoadingSpinner from './components/LoadingSpinner';
 
-type AppMode = 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile';
+type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile';
 
 function App() {
   console.log('App component rendering...');
   
   const { user, loading } = useAuth();
-  const [mode, setMode] = useState<AppMode>('auth');
+  const [mode, setMode] = useState<AppMode>('public');
   const [wizardState, setWizardState] = useState<WizardState>({
     stage: 'input',
     input: null,
@@ -53,14 +54,14 @@ function App() {
       if (user) {
         // User is authenticated, show dashboard
         console.log('User authenticated, switching to dashboard');
-        if (mode === 'auth') {
+        if (mode === 'auth' || mode === 'public') {
           setMode('dashboard');
         }
       } else {
-        // User is not authenticated, show auth
-        console.log('User not authenticated, switching to auth');
-        if (mode !== 'landing') {
-          setMode('auth');
+        // User is not authenticated, show public landing or auth
+        console.log('User not authenticated');
+        if (mode !== 'landing' && mode !== 'public') {
+          setMode('public');
         }
       }
     }
@@ -105,7 +106,7 @@ function App() {
     }
   };
 
-  const handleConceptSelected = async (selectedConcept: LeadMagnetConcept, customization: PDFCustomization) => {
+  const handleConceptSelected = async (selectedConcept: LeadMagnetConcept, customization?: PDFCustomization) => {
     console.log('🔄 Starting outline generation...');
     setIsLoading(true);
     setError(null);
@@ -278,6 +279,11 @@ function App() {
   // Render landing page (no auth required)
   if (mode === 'landing') {
     return <LandingPage campaignSlug={getCampaignSlug()} />;
+  }
+
+  // Render public landing page (no auth required)
+  if (mode === 'public') {
+    return <PublicLandingPage onGetStarted={() => setMode('auth')} />;
   }
 
   // Render authentication (no user)
