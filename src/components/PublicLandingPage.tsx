@@ -356,8 +356,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted, onL
               <div className="text-gray-600">Lead Magnets Created</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">300%</div>
-              <div className="text-gray-600">Average List Growth</div>
+              <div className="text-4xl font-bold text-green-600 mb-2">15+</div>
+              <div className="text-gray-600">Leads Per Lead Magnet</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-purple-600 mb-2">2 Min</div>
@@ -458,7 +458,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted, onL
               },
               {
                 question: "What results can I expect?",
-                answer: "Our users typically see a 300% increase in email list growth after implementing their Majorbeam lead magnets. The professional quality helps establish authority, builds trust before the first sales call, and attracts higher-quality leads who are ready to invest in your services."
+                answer: "Our users typically generate 15+ leads per lead magnet on average. The professional quality helps establish authority, builds trust before the first sales call, and attracts higher-quality leads who are ready to invest in your services."
               }
             ].map((faq, index) => (
               <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
