@@ -18,6 +18,14 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
   onPaymentSuccess,
   onPaymentError
 }) => {
+  // Payment button IDs from the user's Razorpay setup
+  const paymentButtonIds = {
+    monthly: 'pl_QsXORcrhWghFgg',
+    yearly: 'pl_QsXQiWLwBcQ8x5'
+  };
+
+  const currentButtonId = paymentButtonIds[billingCycle];
+
   useEffect(() => {
     // Load Razorpay script if not already loaded
     if (!window.Razorpay) {
@@ -27,6 +35,24 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
       document.head.appendChild(script);
     }
   }, []);
+
+  useEffect(() => {
+    // Create and add the payment button script
+    const formElement = document.getElementById(`razorpay-form-${billingCycle}`);
+    if (formElement) {
+      // Clear any existing content
+      formElement.innerHTML = '';
+      
+      // Create the payment button script
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
+      script.setAttribute('data-payment_button_id', currentButtonId);
+      script.async = true;
+      
+      // Add the script to the form
+      formElement.appendChild(script);
+    }
+  }, [billingCycle, currentButtonId]);
 
   const handlePaymentSuccess = (paymentId: string) => {
     const plan = 'premium';
@@ -40,22 +66,10 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
     onPaymentError?.(error);
   };
 
-  // Payment button IDs from the user's Razorpay setup
-  const paymentButtonIds = {
-    monthly: 'pl_QsXORcrhWghFgg',
-    yearly: 'pl_QsXQiWLwBcQ8x5'
-  };
-
-  const currentButtonId = paymentButtonIds[billingCycle];
-
   return (
     <div className="w-full">
-      <form>
-        <script 
-          src="https://checkout.razorpay.com/v1/payment-button.js" 
-          data-payment_button_id={currentButtonId} 
-          async
-        />
+      <form id={`razorpay-form-${billingCycle}`}>
+        {/* Razorpay payment button will be inserted here by the script */}
       </form>
     </div>
   );
