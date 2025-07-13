@@ -229,10 +229,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted, onL
                 <h5 className="text-lg font-semibold text-gray-800 mb-2">
                   "5 Proven Strategies to Double Your Coaching Revenue"
                 </h5>
-                <div className="flex items-center justify-center text-sm text-gray-500 mb-4">
-                  <Download className="w-4 h-4 mr-2" />
-                  Downloaded 1,247 times this month
-                </div>
               </div>
               
               <svg className="w-8 h-8 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
