@@ -577,7 +577,7 @@ function App() {
                   Ready for Your PDF?
                 </h2>
                 <p className="text-lg text-gray-600 mb-6">
-                  You've completed the free preview! Upgrade to Premium to download your professional lead magnet PDF.
+                  You've completed the free preview! Upgrade to Premium to unlock your complete end-to-end campaign with PDF downloads, landing page generation, and lead capture.
                 </p>
               </div>
               
@@ -611,7 +611,7 @@ function App() {
                   Upgrade to Premium - $49/month
                 </button>
                 <p className="text-sm text-gray-600">
-                  Includes <strong>5 campaigns per month</strong> and unlimited PDF downloads
+                  Includes <strong>5 campaigns per month</strong>, unlimited PDF downloads, landing page generation, and lead capture
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button

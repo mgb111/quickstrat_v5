@@ -43,7 +43,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade 
               Unlock Your Full Lead Magnet Potential
             </h3>
             <p className="text-gray-600">
-              Get unlimited PDF downloads, <strong>5 campaigns per month</strong>, and advanced features
+              Get unlimited PDF downloads, <strong>5 campaigns per month</strong>, landing page generation, lead capture, and complete end-to-end campaigns
             </p>
           </div>
 

@@ -93,6 +93,9 @@ export class SubscriptionService {
       premium: [
         '✅ Unlimited PDF downloads',
         '✅ 5 campaigns per month',
+        '✅ Landing page generation',
+        '✅ Lead capture & management',
+        '✅ Complete end-to-end campaigns',
         '✅ Priority support',
         '✅ Advanced customization options',
         '✅ Export to multiple formats',
