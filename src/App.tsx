@@ -407,7 +407,7 @@ function App() {
                         : 'bg-gray-200 text-gray-600'
                 }`}>
                   {isLocked ? <Lock className="h-4 w-4" /> : stage.number}
-                  {!stage.free && (
+                  {!stage.free && wizardState.stage === 'outline-review' && (
                     <Crown className="absolute -top-1 -right-1 h-3 w-3 text-yellow-500" />
                   )}
                 </div>
@@ -415,7 +415,7 @@ function App() {
                   isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : isLocked ? 'text-gray-400' : 'text-gray-500'
                 }`}>
                   {stage.label}
-                  {!stage.free && <span className="ml-1 text-xs text-yellow-600">(Premium)</span>}
+                  {!stage.free && wizardState.stage === 'outline-review' && <span className="ml-1 text-xs text-yellow-600">(Premium)</span>}
                 </span>
                 {index < stages.length - 1 && (
                   <div className={`w-8 h-0.5 ${
@@ -608,13 +608,15 @@ function App() {
             Transform customer problems into focused, high-value lead magnets with AI assistance
           </p>
           
-          {/* Freemium indicator */}
-          <div className="mt-4 flex justify-center">
-            <div className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full text-sm font-medium">
-              <Crown className="h-4 w-4 mr-1" />
-              {subscription.canAccessPDF ? 'Premium Plan' : 'Free Plan - Upgrade for PDF Downloads'}
+          {/* Freemium indicator - only show during outline-review stage */}
+          {wizardState.stage === 'outline-review' && (
+            <div className="mt-4 flex justify-center">
+              <div className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full text-sm font-medium">
+                <Crown className="h-4 w-4 mr-1" />
+                {subscription.canAccessPDF ? 'Premium Plan' : 'Free Plan - Upgrade for PDF Downloads'}
+              </div>
             </div>
-          </div>
+          )}
           
           {/* Navigation */}
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
