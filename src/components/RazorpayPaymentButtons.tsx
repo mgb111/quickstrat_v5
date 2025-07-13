@@ -41,43 +41,51 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
       return;
     }
 
-    // Check if script is already loading or loaded
-    const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/payment-button.js"]');
-    
-    if (existingScript) {
-      // Script is already loading or loaded
-      if (window.Razorpay) {
-        setIsRazorpayLoaded(true);
-        setIsLoading(false);
-      } else {
-        // Script is loading, wait for it
-        existingScript.addEventListener('load', () => {
+    // Add a small delay to prevent immediate loading conflicts
+    const loadScript = () => {
+      // Check if script is already loading or loaded
+      const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/payment-button.js"]');
+      
+      if (existingScript) {
+        // Script is already loading or loaded
+        if (window.Razorpay) {
           setIsRazorpayLoaded(true);
           setIsLoading(false);
-        });
-        existingScript.addEventListener('error', () => {
-          setHasError(true);
-          setIsLoading(false);
-        });
+        } else {
+          // Script is loading, wait for it
+          existingScript.addEventListener('load', () => {
+            setIsRazorpayLoaded(true);
+            setIsLoading(false);
+          });
+          existingScript.addEventListener('error', () => {
+            setHasError(true);
+            setIsLoading(false);
+          });
+        }
+        return;
       }
-      return;
-    }
 
-    // Load Razorpay script only if we have valid configuration
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
-    script.async = true;
-    script.onload = () => {
-      console.log('✅ Razorpay script loaded successfully');
-      setIsRazorpayLoaded(true);
-      setIsLoading(false);
+      // Load Razorpay script only if we have valid configuration
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
+      script.async = true;
+      script.onload = () => {
+        console.log('✅ Razorpay script loaded successfully');
+        setIsRazorpayLoaded(true);
+        setIsLoading(false);
+      };
+      script.onerror = () => {
+        console.error('❌ Failed to load Razorpay script');
+        setHasError(true);
+        setIsLoading(false);
+      };
+      document.head.appendChild(script);
     };
-    script.onerror = () => {
-      console.error('❌ Failed to load Razorpay script');
-      setHasError(true);
-      setIsLoading(false);
-    };
-    document.head.appendChild(script);
+
+    // Add a small delay to prevent immediate loading
+    const timer = setTimeout(loadScript, 100);
+    
+    return () => clearTimeout(timer);
   }, [hasValidConfig]);
 
   useEffect(() => {

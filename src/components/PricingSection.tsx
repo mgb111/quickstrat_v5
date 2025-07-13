@@ -13,6 +13,7 @@ const PricingSection: React.FC<PricingSectionProps> = ({
   onPaymentError
 }) => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const [showPaymentButtons, setShowPaymentButtons] = useState(false);
   const pricing = SubscriptionService.getPricing();
 
   const handlePaymentSuccess = (paymentId: string, plan: string, billing: string) => {
@@ -23,6 +24,10 @@ const PricingSection: React.FC<PricingSectionProps> = ({
   const handlePaymentError = (error: any) => {
     console.error('Payment failed:', error);
     onPaymentError?.(error);
+  };
+
+  const handleUpgradeClick = () => {
+    setShowPaymentButtons(true);
   };
 
   return (
@@ -149,11 +154,21 @@ const PricingSection: React.FC<PricingSectionProps> = ({
               ))}
             </ul>
 
-            <RazorpayPaymentButtons
-              billingCycle={billingCycle}
-              onPaymentSuccess={handlePaymentSuccess}
-              onPaymentError={handlePaymentError}
-            />
+            {showPaymentButtons && (
+              <RazorpayPaymentButtons
+                billingCycle={billingCycle}
+                onPaymentSuccess={handlePaymentSuccess}
+                onPaymentError={handlePaymentError}
+              />
+            )}
+            {!showPaymentButtons && (
+              <button
+                onClick={handleUpgradeClick}
+                className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              >
+                Upgrade to Premium
+              </button>
+            )}
           </div>
         </div>
 
