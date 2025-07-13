@@ -46,6 +46,13 @@ function App() {
   );
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
+  // Admin check - only show analytics to specific admin emails
+  const isAdmin = user?.email && [
+    'jatin@majorbeam.com',
+    'admin@majorbeam.com',
+    // Add more admin emails here as needed
+  ].includes(user.email.toLowerCase());
+
   console.log('Auth state:', { user, loading, mode });
   console.log('🎯 Current wizard stage:', wizardState.stage);
   console.log('💰 Subscription status:', subscription);
@@ -552,13 +559,15 @@ function App() {
                   <Plus className="h-4 w-4 mr-2" />
                   New Campaign
                 </button>
-                <button
-                  onClick={() => setMode('admin')}
-                  className="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base"
-                >
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  Analytics
-                </button>
+                {isAdmin && (
+                  <button
+                    onClick={() => setMode('admin')}
+                    className="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base"
+                  >
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    Analytics
+                  </button>
+                )}
                 <button
                   onClick={() => setMode('profile')}
                   className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
