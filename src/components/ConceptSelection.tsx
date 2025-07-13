@@ -22,15 +22,15 @@ interface ConceptSelectionProps {
 }
 
 const defaultCustomization: CustomizationValues = {
-  ctaText: '',
-  mainAction: 'Book a Call',
+  ctaText: 'Ready to take your business to the next level?',
+  mainAction: 'Book a Free Strategy Call',
   bookingLink: '',
   website: '',
   supportEmail: '',
   logo: '',
   primaryColor: '#1a365d',
   secondaryColor: '#4a90e2',
-  font: 'Helvetica',
+  font: 'Inter',
 };
 
 const ConceptSelection: React.FC<ConceptSelectionProps> = ({ 
@@ -78,6 +78,18 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
     setSelectedConceptId('');
   };
 
+  const handleSkipCustomization = async () => {
+    if (!customizationLoading) {
+      setCustomizationLoading(true);
+      const selectedConcept = concepts.find(c => c.id === selectedConceptId);
+      if (selectedConcept) {
+        // Use default customization values
+        await onConceptSelected(selectedConcept, defaultCustomization);
+      }
+      setCustomizationLoading(false);
+    }
+  };
+
   if (showCustomization) {
     return (
       <div className="max-w-4xl mx-auto space-y-8">
@@ -89,7 +101,8 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Customize Your PDF</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Personalize your lead magnet with your branding and contact information
+            Personalize your lead magnet with your branding and contact information. 
+            <span className="text-blue-600 font-medium"> You can skip this step and use default settings.</span>
           </p>
         </div>
 
@@ -264,6 +277,15 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Back to Concepts
+            </button>
+            
+            <button
+              type="button"
+              onClick={handleSkipCustomization}
+              disabled={customizationLoading}
+              className="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-600 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200"
+            >
+              Skip Customization
             </button>
             
             <button
