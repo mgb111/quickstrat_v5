@@ -16,6 +16,7 @@ import { CampaignService } from './lib/campaignService';
 import { EmailService } from './lib/emailService';
 import { SubscriptionService, SubscriptionStatus } from './lib/subscriptionService';
 import { AnalyticsService, AnalyticsPhases, AnalyticsEvents } from './lib/analyticsService';
+import { supabase } from './lib/supabase';
 import LoadingSpinner from './components/LoadingSpinner';
 import UpgradeModal from './components/UpgradeModal';
 import AdminAnalytics from './components/AdminAnalytics';
@@ -25,7 +26,7 @@ type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile
 function App() {
   console.log('App component rendering...');
   
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const [mode, setMode] = useState<AppMode>('public');
   const [wizardState, setWizardState] = useState<WizardState>({
     stage: 'input',
@@ -564,6 +565,13 @@ function App() {
                 >
                   <User className="h-4 w-4 mr-2" />
                   Profile
+                </button>
+                <button
+                  onClick={signOut}
+                  className="inline-flex items-center px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm sm:text-base"
+                >
+                  <Lock className="h-4 w-4 mr-2" />
+                  Sign Out
                 </button>
               </div>
             </div>
