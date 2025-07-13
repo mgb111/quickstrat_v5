@@ -91,9 +91,16 @@ function App() {
             try {
               const userSubscription = await SubscriptionService.getUserSubscription(user.id);
               setSubscription(userSubscription);
-            } catch (error) {
-              console.error('Error fetching subscription:', error);
-              setSubscription(SubscriptionService.getDefaultSubscription());
+            } catch (error: any) {
+              console.error('Error fetching user subscription:', error);
+              // Handle the specific Supabase error about multiple/no rows
+              if (error?.code === 'PGRST116' || error?.message?.includes('multiple (or no) rows returned')) {
+                console.log('User not found in users table, using default subscription');
+                setSubscription(SubscriptionService.getDefaultSubscription());
+              } else {
+                console.error('Unexpected subscription error:', error);
+                setSubscription(SubscriptionService.getDefaultSubscription());
+              }
             }
           } else {
             setSubscription(SubscriptionService.getDefaultSubscription());

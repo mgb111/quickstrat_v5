@@ -55,7 +55,12 @@ VITE_RAZORPAY_YEARLY_BUTTON_ID=pl_your_actual_yearly_id
 ```
 
 ### 5. Test the Integration
-1. Restart your development server
+1. **Restart your development server** (important for environment variable changes):
+   ```bash
+   # Stop the current server (Ctrl+C)
+   # Then restart:
+   npm run dev
+   ```
 2. Go to the pricing section
 3. Payment buttons should load without errors
 
@@ -69,6 +74,7 @@ This means the button ID is invalid or doesn't exist.
 2. ✅ Verify the IDs in your Razorpay dashboard
 3. ✅ Make sure the buttons are active (not disabled)
 4. ✅ Check that you're using the correct environment variables
+5. ✅ **Restart your development server** after changing environment variables
 
 ### Button Not Loading
 **Solutions:**
@@ -76,6 +82,16 @@ This means the button ID is invalid or doesn't exist.
 2. ✅ Verify Razorpay script is loading (check browser console)
 3. ✅ Make sure button IDs are correct
 4. ✅ Try refreshing the page
+5. ✅ **Restart your development server** to clear any caching issues
+
+### Supabase Subscription Errors
+If you see "Error fetching user subscription" errors:
+
+**Solutions:**
+1. ✅ **Restart your development server** - this often fixes caching issues
+2. ✅ Clear browser cache and cookies
+3. ✅ Check that your Supabase connection is working
+4. ✅ The app will automatically create user records when needed
 
 ### Test Mode vs Live Mode
 - **Test Mode**: Use test button IDs for development
@@ -92,7 +108,8 @@ These appear to be demo/test IDs that may not be valid.
 1. **For Development**: Create test buttons in Razorpay test mode
 2. **For Production**: Create live buttons in Razorpay live mode
 3. **Update Environment Variables**: Add the correct button IDs
-4. **Test Payment Flow**: Verify the complete payment process works
+4. **Restart Development Server**: Clear any caching issues
+5. **Test Payment Flow**: Verify the complete payment process works
 
 ## Alternative: Disable Payment Buttons
 If you want to temporarily disable payment buttons, you can:
