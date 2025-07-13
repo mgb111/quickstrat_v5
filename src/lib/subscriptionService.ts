@@ -88,7 +88,7 @@ export class SubscriptionService {
     }
   }
 
-  static getUpgradeBenefits(plan: 'premium' | 'enterprise') {
+  static getUpgradeBenefits(plan: 'premium') {
     const benefits = {
       premium: [
         '✅ Unlimited PDF downloads',
@@ -97,14 +97,6 @@ export class SubscriptionService {
         '✅ Advanced customization options',
         '✅ Export to multiple formats',
         '✅ Branded templates'
-      ],
-      enterprise: [
-        '✅ Everything in Premium',
-        '✅ 25 campaigns per month',
-        '✅ White-label options',
-        '✅ API access',
-        '✅ Dedicated account manager',
-        '✅ Custom integrations'
       ]
     };
 
@@ -124,19 +116,6 @@ export class SubscriptionService {
           period: 'year',
           features: this.getUpgradeBenefits('premium'),
           savings: 189 // $49 * 12 - $399 = $189 savings
-        }
-      },
-      enterprise: {
-        monthly: {
-          price: 199,
-          period: 'month',
-          features: this.getUpgradeBenefits('enterprise')
-        },
-        yearly: {
-          price: 1599,
-          period: 'year',
-          features: this.getUpgradeBenefits('enterprise'),
-          savings: 789 // $199 * 12 - $1599 = $789 savings
         }
       }
     };

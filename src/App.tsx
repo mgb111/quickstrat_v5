@@ -273,7 +273,7 @@ function App() {
     setShowUpgradeModal(true);
   };
 
-  const handleUpgradePlan = (plan: 'premium' | 'enterprise', billing: 'monthly' | 'yearly') => {
+  const handleUpgradePlan = (plan: 'premium', billing: 'monthly' | 'yearly') => {
     console.log('🚀 User upgrading to:', plan, 'with', billing, 'billing');
     // TODO: Implement actual payment flow
     // For now, just simulate upgrade
@@ -282,8 +282,8 @@ function App() {
       isSubscribed: true,
       plan,
       canAccessPDF: true,
-      canAccessUnlimitedCampaigns: plan === 'enterprise',
-      monthlyCampaignLimit: plan === 'enterprise' ? 25 : 5
+      canAccessUnlimitedCampaigns: false,
+      monthlyCampaignLimit: 5
     }));
     setShowUpgradeModal(false);
     

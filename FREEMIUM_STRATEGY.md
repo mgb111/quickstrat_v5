@@ -44,16 +44,6 @@ This app implements a **phase-based freemium model** where users can experience 
 - Export to multiple formats
 - Branded templates
 
-### Enterprise Plan
-- **Monthly**: $199/month
-- **Yearly**: $1,599/year (Save $789 - 33% discount)
-- 25 campaigns per month
-- White-label options
-- API access
-- Dedicated account manager
-- Custom integrations
-- Everything in Premium
-
 ## Technical Implementation
 
 ### Key Components
