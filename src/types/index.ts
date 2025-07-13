@@ -144,7 +144,7 @@ export interface PDFCustomization {
 }
 
 export type WizardState = {
-  stage: 'input' | 'concept-selection' | 'outline-review' | 'complete';
+  stage: 'input' | 'concept-selection' | 'outline-review' | 'upgrade-required' | 'complete';
   input: CampaignInput | null;
   concepts: LeadMagnetConcept[] | null;
   selectedConcept: LeadMagnetConcept | null;
