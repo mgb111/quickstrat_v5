@@ -6,6 +6,8 @@ interface ImportMetaEnv {
   readonly VITE_SUPABASE_ANON_KEY: string;
   readonly VITE_RAZORPAY_MONTHLY_BUTTON_ID?: string;
   readonly VITE_RAZORPAY_YEARLY_BUTTON_ID?: string;
+  readonly VITE_CONTACT_EMAIL?: string;
+  readonly VITE_SCHEDULE_URL?: string;
   readonly MODE: string;
   // Add other environment variables as needed
 }
