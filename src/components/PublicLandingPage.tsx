@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Check, ArrowRight, Zap, Users, FileText, Mail, TrendingUp, Target, Download, Play, Star, ChevronDown } from 'lucide-react';
+import PricingSection from './PricingSection';
 
 interface PublicLandingPageProps {
   onGetStarted: () => void;
@@ -58,6 +59,12 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted, onL
                 Features
               </button>
               <button 
+                onClick={() => scrollToSection('pricing')}
+                className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
+              >
+                Pricing
+              </button>
+              <button 
                 onClick={() => scrollToSection('testimonials')}
                 className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
               >
@@ -98,6 +105,12 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted, onL
                 className="block w-full text-left px-3 py-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
               >
                 Features
+              </button>
+              <button 
+                onClick={() => scrollToSection('pricing')}
+                className="block w-full text-left px-3 py-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
+              >
+                Pricing
               </button>
               <button 
                 onClick={() => scrollToSection('testimonials')}
@@ -409,6 +422,18 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted, onL
           </div>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <PricingSection 
+        onPaymentSuccess={(paymentId, plan, billing) => {
+          console.log('Payment successful on landing page:', { paymentId, plan, billing });
+          // You can redirect to dashboard or show success message
+        }}
+        onPaymentError={(error) => {
+          console.error('Payment failed on landing page:', error);
+          // You can show error message
+        }}
+      />
 
       {/* FAQ Section */}
       <section id="faq" className="py-20 bg-gray-50">

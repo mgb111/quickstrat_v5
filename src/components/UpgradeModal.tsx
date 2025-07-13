@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
 import { X, Crown, Check, Star } from 'lucide-react';
 import { SubscriptionService } from '../lib/subscriptionService';
+import RazorpayPaymentButtons from './RazorpayPaymentButtons';
 
 interface UpgradeModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpgrade: (plan: 'premium', billing: 'monthly' | 'yearly') => void;
+  onPaymentSuccess?: (paymentId: string, plan: string, billing: string) => void;
+  onPaymentError?: (error: any) => void;
 }
 
-const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade }) => {
+const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade, onPaymentSuccess, onPaymentError }) => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   
   if (!isOpen) return null;
 
   const pricing = SubscriptionService.getPricing();
 
-  const handleUpgrade = () => {
-    onUpgrade('premium', billingCycle);
+  const handlePaymentSuccess = (paymentId: string, plan: string, billing: string) => {
+    console.log('Payment successful:', { paymentId, plan, billing });
+    onUpgrade('premium', billing as 'monthly' | 'yearly');
+  };
+
+  const handlePaymentError = (error: any) => {
+    console.error('Payment failed:', error);
+    // You can add error handling here, like showing a toast notification
   };
 
   return (
@@ -130,13 +139,11 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade 
                 ))}
               </ul>
 
-              <button
-                onClick={handleUpgrade}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105"
-              >
-                <Crown className="h-5 w-5 inline mr-2" />
-                Choose Premium
-              </button>
+              <RazorpayPaymentButtons
+                billingCycle={billingCycle}
+                onPaymentSuccess={onPaymentSuccess || handlePaymentSuccess}
+                onPaymentError={onPaymentError || handlePaymentError}
+              />
             </div>
           </div>
 

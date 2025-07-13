@@ -396,6 +396,7 @@ export const AnalyticsEvents = {
   SUBSCRIPTION: 'subscription',
   PLAN_UPGRADE: 'plan_upgrade',
   PLAN_DOWNGRADE: 'plan_downgrade',
+  PAYMENT_SUCCESS: 'payment_success',
   PAYMENT_FAILURE: 'payment_failure',
   
   // Navigation events

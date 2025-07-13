@@ -16,6 +16,7 @@ import { CampaignService } from './lib/campaignService';
 import { EmailService } from './lib/emailService';
 import { SubscriptionService, SubscriptionStatus } from './lib/subscriptionService';
 import { AnalyticsService, AnalyticsPhases, AnalyticsEvents } from './lib/analyticsService';
+import { PaymentService } from './lib/paymentService';
 import { supabase } from './lib/supabase';
 import LoadingSpinner from './components/LoadingSpinner';
 import UpgradeModal from './components/UpgradeModal';
@@ -359,10 +360,17 @@ function App() {
     setShowUpgradeModal(true);
   };
 
-  const handleUpgradePlan = (plan: 'premium', billing: 'monthly' | 'yearly') => {
+  const handleUpgradePlan = async (plan: 'premium', billing: 'monthly' | 'yearly') => {
     console.log('🚀 User upgrading to:', plan, 'with', billing, 'billing');
-    // TODO: Implement actual payment flow
-    // For now, just simulate upgrade
+    
+    // Track upgrade attempt
+    await AnalyticsService.trackUserAction('upgrade_completed', AnalyticsPhases.UPGRADE_REQUIRED, {
+      user_id: user?.id,
+      plan,
+      billing_cycle: billing
+    });
+    
+    // Update subscription state
     setSubscription(prev => ({
       ...prev,
       isSubscribed: true,
@@ -377,6 +385,57 @@ function App() {
     if (wizardState.stage === 'upgrade-required' && wizardState.outline) {
       handleOutlineApproved(wizardState.outline);
     }
+  };
+
+  const handlePaymentSuccess = async (paymentId: string, plan: string, billing: string) => {
+    console.log('💰 Payment successful:', { paymentId, plan, billing });
+    
+    // Handle payment success
+    const success = await PaymentService.handlePaymentSuccess({
+      paymentId,
+      plan,
+      billing,
+      userId: user?.id,
+      email: user?.email
+    });
+    
+    if (success) {
+      // Update subscription state
+      setSubscription(prev => ({
+        ...prev,
+        isSubscribed: true,
+        plan: plan as 'premium',
+        canAccessPDF: true,
+        canAccessUnlimitedCampaigns: false,
+        monthlyCampaignLimit: 5
+      }));
+      
+      // Track successful payment
+      await AnalyticsService.trackConversion(AnalyticsEvents.PAYMENT_SUCCESS, {
+        payment_id: paymentId,
+        plan,
+        billing_cycle: billing,
+        user_id: user?.id
+      });
+      
+      // Close modal if open
+      setShowUpgradeModal(false);
+      
+      // Continue to PDF generation if waiting
+      if (wizardState.stage === 'upgrade-required' && wizardState.outline) {
+        handleOutlineApproved(wizardState.outline);
+      }
+    }
+  };
+
+  const handlePaymentError = (error: any) => {
+    console.error('💰 Payment failed:', error);
+    
+    // Track payment failure
+    AnalyticsService.trackUserAction('payment_failed', AnalyticsPhases.UPGRADE_REQUIRED, {
+      user_id: user?.id,
+      error: error?.message || 'Unknown error'
+    });
   };
 
   const renderStageIndicator = () => {
@@ -801,11 +860,13 @@ function App() {
       </div>
 
       {/* Upgrade Modal */}
-      <UpgradeModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        onUpgrade={handleUpgradePlan}
-      />
+              <UpgradeModal
+          isOpen={showUpgradeModal}
+          onClose={() => setShowUpgradeModal(false)}
+          onUpgrade={handleUpgradePlan}
+          onPaymentSuccess={handlePaymentSuccess}
+          onPaymentError={handlePaymentError}
+        />
     </div>
   );
 }
