@@ -21,8 +21,9 @@ import { supabase } from './lib/supabase';
 import LoadingSpinner from './components/LoadingSpinner';
 import UpgradeModal from './components/UpgradeModal';
 import AdminAnalytics from './components/AdminAnalytics';
+import RazorpayDebugPage from './components/RazorpayDebugPage';
 
-type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile' | 'admin';
+type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile' | 'admin' | 'razorpay-debug';
 
 function App() {
   console.log('App component rendering...');
@@ -69,6 +70,8 @@ function App() {
     console.log('Current path:', path);
     if (path.startsWith('/landing/')) {
       setMode('landing');
+    } else if (path === '/razorpay-debug') {
+      setMode('razorpay-debug');
     }
   }, []);
 
@@ -595,6 +598,11 @@ function App() {
         </div>
       </div>
     );
+  }
+
+  // Render razorpay debug page
+  if (mode === 'razorpay-debug') {
+    return <RazorpayDebugPage />;
   }
 
   // Render dashboard
