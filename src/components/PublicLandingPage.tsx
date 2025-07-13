@@ -133,8 +133,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted, onL
             </div>
             
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight">
-              Stop Losing Leads to
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Generic Content</span>
+              Turn Every Visitor Into a
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> High-Value Lead</span>
             </h1>
             
             <p className="text-xl lg:text-2xl text-gray-600 mb-12 leading-relaxed max-w-3xl mx-auto">

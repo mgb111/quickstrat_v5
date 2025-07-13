@@ -98,7 +98,7 @@ export class SubscriptionService {
         '✅ Complete end-to-end campaigns',
         '✅ Priority support',
         '✅ Advanced customization options',
-        '✅ Export to multiple formats',
+
         '✅ Branded templates'
       ]
     };
