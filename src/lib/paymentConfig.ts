@@ -18,9 +18,22 @@ export const getPaymentConfig = (): PaymentConfig => {
   const monthlyButtonId = import.meta.env.VITE_RAZORPAY_MONTHLY_BUTTON_ID;
   const yearlyButtonId = import.meta.env.VITE_RAZORPAY_YEARLY_BUTTON_ID;
   
+  // Debug logging to help identify configuration issues
+  console.log('🔧 Payment Configuration Check:', {
+    monthlyButtonId: monthlyButtonId ? `${monthlyButtonId.substring(0, 10)}...` : 'NOT SET',
+    yearlyButtonId: yearlyButtonId ? `${yearlyButtonId.substring(0, 10)}...` : 'NOT SET',
+    monthlyValid: isValidButtonId(monthlyButtonId),
+    yearlyValid: isValidButtonId(yearlyButtonId),
+    isDev: import.meta.env.DEV
+  });
+  
   // Check if we have valid button IDs
   const hasValidButtonIds = !!(monthlyButtonId && yearlyButtonId && 
     monthlyButtonId.startsWith('pl_') && yearlyButtonId.startsWith('pl_'));
+  
+  if (!hasValidButtonIds) {
+    console.warn('⚠️ Payment buttons not configured. Add VITE_RAZORPAY_MONTHLY_BUTTON_ID and VITE_RAZORPAY_YEARLY_BUTTON_ID to your .env file');
+  }
   
   return {
     enabled: hasValidButtonIds,

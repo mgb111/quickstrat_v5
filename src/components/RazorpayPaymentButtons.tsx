@@ -127,7 +127,13 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
               Payment System Coming Soon
             </h3>
             <p className="text-blue-700 text-sm mb-4">
-              We're setting up secure payment processing. For now, please contact us to upgrade your plan.
+              {import.meta.env.DEV ? (
+                <>
+                  Payment buttons not configured. Add <code className="bg-blue-100 px-1 rounded text-xs">VITE_RAZORPAY_MONTHLY_BUTTON_ID</code> and <code className="bg-blue-100 px-1 rounded text-xs">VITE_RAZORPAY_YEARLY_BUTTON_ID</code> to your .env file.
+                </>
+              ) : (
+                "We're setting up secure payment processing. For now, please contact us to upgrade your plan."
+              )}
             </p>
           </div>
           
@@ -146,6 +152,14 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
               {fallbackActions.secondary.text}
             </button>
           </div>
+          
+          {import.meta.env.DEV && (
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-xs text-yellow-800">
+                <strong>Development Mode:</strong> Check <code className="bg-yellow-100 px-1 rounded">ENVIRONMENT_SETUP.md</code> for setup instructions.
+              </p>
+            </div>
+          )}
           
           <p className="text-xs text-blue-600 mt-3">
             Premium features: Unlimited PDFs • 5 campaigns/month • Landing pages • Lead capture

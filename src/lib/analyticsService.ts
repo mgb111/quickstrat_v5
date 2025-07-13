@@ -84,15 +84,23 @@ export class AnalyticsService {
 
       console.log('📊 Analytics Event:', event);
 
+      // Check if we're in development and analytics table might not exist
+      if (import.meta.env.DEV) {
+        console.log('🔧 Development mode: Analytics event logged to console only');
+        return;
+      }
+
       const { error } = await supabase
         .from('analytics_events')
         .insert(event);
 
       if (error) {
         console.error('❌ Failed to track analytics event:', error);
+        // Don't throw error, just log it to avoid breaking the app
       }
     } catch (error) {
       console.error('❌ Analytics tracking error:', error);
+      // Don't throw error, just log it to avoid breaking the app
     }
   }
 
