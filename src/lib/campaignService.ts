@@ -43,33 +43,37 @@ export class CampaignService {
       errorMessage: userError?.message 
     });
 
-    // If user doesn't exist in public.users, create them
-    if (!publicUser) {
-      console.log('➕ Creating user record for:', user.id, user.email);
-      
-      const { data: newUser, error: insertError } = await supabase
-        .from('users')
-        .insert({
-          id: user.id,
-          email: user.email
-        })
-        .select()
-        .single();
+    // Ensure user exists in public.users table (upsert to handle duplicates)
+    console.log('➕ Ensuring user record exists for:', user.id, user.email);
+    
+    const { data: newUser, error: upsertError } = await supabase
+      .from('users')
+      .upsert({
+        id: user.id,
+        email: user.email
+      }, {
+        onConflict: 'id',
+        ignoreDuplicates: false
+      })
+      .select()
+      .single();
 
-      if (insertError) {
-        console.error('❌ Failed to create user record:', insertError);
-        console.error('❌ Error details:', {
-          message: insertError.message,
-          details: insertError.details,
-          hint: insertError.hint,
-          code: insertError.code
-        });
-        throw new Error(`Failed to initialize user profile: ${insertError.message}`);
+    if (upsertError) {
+      console.error('❌ Failed to upsert user record:', upsertError);
+      console.error('❌ Error details:', {
+        message: upsertError.message,
+        details: upsertError.details,
+        hint: upsertError.hint,
+        code: upsertError.code
+      });
+      // Don't throw error for duplicate users, just log it
+      if (upsertError.code === '23505') {
+        console.log('ℹ️ User already exists, continuing with campaign creation...');
+      } else {
+        throw new Error(`Failed to initialize user profile: ${upsertError.message}`);
       }
-
-      console.log('✅ User record created successfully:', newUser);
     } else {
-      console.log('✅ User record already exists:', publicUser);
+      console.log('✅ User record ensured successfully:', newUser);
     }
 
     // Generate unique slug
