@@ -14,6 +14,11 @@ interface RazorpayPaymentButtonsProps {
   onPaymentError?: (error: any) => void;
 }
 
+const HARDCODED_BUTTON_IDS = {
+  monthly: 'pl_QsXORcrhWghFgg',
+  yearly: 'pl_QsXQiWLwBcQ8x5'
+};
+
 const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
   billingCycle,
   onPaymentSuccess,
@@ -25,12 +30,9 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   
   // Get payment configuration
-  const paymentConfig = getPaymentConfig();
-  const currentButtonId = paymentConfig.buttonIds[billingCycle];
-  const fallbackActions = getFallbackAction();
-
-  // Check if we have valid configuration
-  const hasValidConfig = isValidButtonId(currentButtonId);
+  const currentButtonId = HARDCODED_BUTTON_IDS[billingCycle];
+  const hasValidConfig = !!currentButtonId;
+  // Fallback actions are not needed since we always have a button
 
   useEffect(() => {
     // If no valid button ID, don't even try to load Razorpay
@@ -139,17 +141,17 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
           
           <div className="space-y-3">
             <button 
-              onClick={fallbackActions.primary.action}
+              onClick={() => window.open('mailto:support@majorbeam.com?subject=Payment Issue', '_blank')}
               className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
             >
-              {fallbackActions.primary.text}
+              Contact Support
             </button>
             
             <button 
-              onClick={fallbackActions.secondary.action}
+              onClick={() => window.open('mailto:support@majorbeam.com?subject=Payment Issue', '_blank')}
               className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
             >
-              {fallbackActions.secondary.text}
+              Contact Support
             </button>
           </div>
           
