@@ -70,15 +70,17 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
     }
 
     const loadPaymentButton = () => {
-      if (formRef.current && isRazorpayLoaded && isValidButtonId(currentButtonId)) {
+      if (formRef.current && isRazorpayLoaded && currentButtonId) {
         // Clear any existing content
         formRef.current.innerHTML = '';
         setHasError(false);
         
+        console.log('🔧 Loading payment button with ID:', currentButtonId);
+        
         // Create the payment button script
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
-        script.setAttribute('data-payment_button_id', currentButtonId!);
+        script.setAttribute('data-payment_button_id', currentButtonId);
         script.async = true;
         
         // Add error handling
@@ -99,12 +101,12 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
             console.warn('⚠️ Payment button may not have loaded correctly');
             setHasError(true);
           }
-        }, 3000);
+        }, 5000); // Increased timeout
       }
     };
 
     // Add a delay to ensure everything is ready
-    const timer = setTimeout(loadPaymentButton, 200);
+    const timer = setTimeout(loadPaymentButton, 500); // Increased delay
     
     return () => {
       clearTimeout(timer);

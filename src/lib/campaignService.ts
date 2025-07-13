@@ -46,34 +46,44 @@ export class CampaignService {
     // Ensure user exists in public.users table (upsert to handle duplicates)
     console.log('➕ Ensuring user record exists for:', user.id, user.email);
     
-    const { data: newUser, error: upsertError } = await supabase
-      .from('users')
-      .upsert({
-        id: user.id,
-        email: user.email
-      }, {
-        onConflict: 'id',
-        ignoreDuplicates: false
-      })
-      .select()
-      .single();
+    try {
+      const { data: newUser, error: upsertError } = await supabase
+        .from('users')
+        .upsert({
+          id: user.id,
+          email: user.email
+        }, {
+          onConflict: 'id',
+          ignoreDuplicates: false
+        })
+        .select()
+        .single();
 
-    if (upsertError) {
-      console.error('❌ Failed to upsert user record:', upsertError);
-      console.error('❌ Error details:', {
-        message: upsertError.message,
-        details: upsertError.details,
-        hint: upsertError.hint,
-        code: upsertError.code
-      });
-      // Don't throw error for duplicate users, just log it
-      if (upsertError.code === '23505') {
+      if (upsertError) {
+        console.error('❌ Failed to upsert user record:', upsertError);
+        console.error('❌ Error details:', {
+          message: upsertError.message,
+          details: upsertError.details,
+          hint: upsertError.hint,
+          code: upsertError.code
+        });
+        // Don't throw error for duplicate users, just log it
+        if (upsertError.code === '23505') {
+          console.log('ℹ️ User already exists, continuing with campaign creation...');
+        } else {
+          throw new Error(`Failed to initialize user profile: ${upsertError.message}`);
+        }
+      } else {
+        console.log('✅ User record ensured successfully:', newUser);
+      }
+    } catch (error: any) {
+      console.error('❌ Error creating user record:', error);
+      // If it's a duplicate key error, just continue
+      if (error.code === '23505' || error.message?.includes('duplicate key')) {
         console.log('ℹ️ User already exists, continuing with campaign creation...');
       } else {
-        throw new Error(`Failed to initialize user profile: ${upsertError.message}`);
+        throw error;
       }
-    } else {
-      console.log('✅ User record ensured successfully:', newUser);
     }
 
     // Generate unique slug
