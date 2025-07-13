@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserCheck } from 'lucide-react';
 import { Campaign, Lead } from '../types';
 import { CampaignService } from '../lib/campaignService';
-import RazorpayTestButtons from './RazorpayTestButtons';
+
 
 interface DashboardProps {
   onNewCampaign: () => void;
@@ -311,10 +311,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
         </div>
       )}
 
-      {/* Razorpay Test Section */}
-      <div className="mt-8">
-        <RazorpayTestButtons />
-      </div>
+
     </div>
   );
 };
