@@ -15,10 +15,12 @@ import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampai
 import { CampaignService } from './lib/campaignService';
 import { EmailService } from './lib/emailService';
 import { SubscriptionService, SubscriptionStatus } from './lib/subscriptionService';
+import { AnalyticsService, AnalyticsPhases, AnalyticsEvents } from './lib/analyticsService';
 import LoadingSpinner from './components/LoadingSpinner';
 import UpgradeModal from './components/UpgradeModal';
+import AdminAnalytics from './components/AdminAnalytics';
 
-type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile';
+type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile' | 'admin';
 
 function App() {
   console.log('App component rendering...');
@@ -46,6 +48,11 @@ function App() {
   console.log('Auth state:', { user, loading, mode });
   console.log('🎯 Current wizard stage:', wizardState.stage);
   console.log('💰 Subscription status:', subscription);
+
+  // Initialize analytics session
+  useEffect(() => {
+    AnalyticsService.initializeSession();
+  }, []);
 
   // Check for landing page route on mount
   useEffect(() => {
@@ -110,9 +117,22 @@ function App() {
     setIsLoading(true);
     setError(null);
 
+    // Track phase entry
+    await AnalyticsService.trackPhaseEntry(AnalyticsPhases.INPUT, {
+      input_data: { ...input },
+      user_id: user?.id
+    });
+
     try {
       const concepts = await generateLeadMagnetConcepts(input);
       console.log('✅ Concepts generated:', concepts);
+      
+      // Track phase completion
+      await AnalyticsService.trackPhaseCompletion(AnalyticsPhases.INPUT, {
+        concepts_generated: concepts.length,
+        user_id: user?.id
+      });
+
       setWizardState({
         stage: 'concept-selection',
         input,
@@ -125,6 +145,12 @@ function App() {
       console.log('🎯 Moved to concept-selection stage');
     } catch (err) {
       console.error('❌ Error generating concepts:', err);
+      
+      // Track error
+      await AnalyticsService.trackError('concept_generation_failed', err instanceof Error ? err.message : 'Unknown error', AnalyticsPhases.INPUT, {
+        user_id: user?.id
+      });
+      
       setError('Failed to generate lead magnet concepts. Please check your API keys and try again.');
     } finally {
       setIsLoading(false);
@@ -136,9 +162,23 @@ function App() {
     setIsLoading(true);
     setError(null);
 
+    // Track phase entry
+    await AnalyticsService.trackPhaseEntry(AnalyticsPhases.CONCEPT_SELECTION, {
+      selected_concept: selectedConcept.title,
+      customization_used: !!customization,
+      user_id: user?.id
+    });
+
     try {
       const outline = await generateContentOutline(wizardState.input!, selectedConcept);
       console.log('✅ Outline generated:', outline);
+      
+      // Track phase completion
+      await AnalyticsService.trackPhaseCompletion(AnalyticsPhases.CONCEPT_SELECTION, {
+        outline_generated: true,
+        user_id: user?.id
+      });
+
       setWizardState(prev => ({
         ...prev,
         stage: 'outline-review',
@@ -149,6 +189,12 @@ function App() {
       console.log('🎯 Moved to outline-review stage');
     } catch (err) {
       console.error('❌ Error generating outline:', err);
+      
+      // Track error
+      await AnalyticsService.trackError('outline_generation_failed', err instanceof Error ? err.message : 'Unknown error', AnalyticsPhases.CONCEPT_SELECTION, {
+        user_id: user?.id
+      });
+      
       setError('Failed to generate content outline. Please try again.');
     } finally {
       setIsLoading(false);
@@ -156,9 +202,22 @@ function App() {
   };
 
   const handleOutlineApproved = async (finalOutline: ContentOutline) => {
+    // Track phase entry
+    await AnalyticsService.trackPhaseEntry(AnalyticsPhases.OUTLINE_REVIEW, {
+      outline_approved: true,
+      user_id: user?.id
+    });
+
     // Check if user can access PDF generation (premium feature)
     if (!subscription.canAccessPDF) {
       console.log('🔒 User needs premium access for PDF generation');
+      
+      // Track upgrade required
+      await AnalyticsService.trackPhaseEntry(AnalyticsPhases.UPGRADE_REQUIRED, {
+        subscription_plan: subscription.plan,
+        user_id: user?.id
+      });
+      
       setWizardState(prev => ({
         ...prev,
         stage: 'upgrade-required',
@@ -174,6 +233,13 @@ function App() {
     try {
       let finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
       console.log('✅ Final campaign generated:', finalOutput);
+      
+      // Track phase completion
+      await AnalyticsService.trackPhaseCompletion(AnalyticsPhases.OUTLINE_REVIEW, {
+        final_output_generated: true,
+        user_id: user?.id
+      });
+      
       // Merge customization into pdf_content if present
       if (wizardState.customization && typeof finalOutput.pdf_content === 'object') {
         finalOutput = {
@@ -195,6 +261,12 @@ function App() {
       console.log('🎯 Moved to complete stage and campaign saved');
     } catch (err) {
       console.error('❌ Error generating final campaign:', err);
+      
+      // Track error
+      await AnalyticsService.trackError('final_campaign_generation_failed', err instanceof Error ? err.message : 'Unknown error', AnalyticsPhases.OUTLINE_REVIEW, {
+        user_id: user?.id
+      });
+      
       setError('Failed to generate final campaign. Please try again.');
     } finally {
       setIsLoading(false);
@@ -269,7 +341,13 @@ function App() {
     console.log('🎯 New campaign setup complete');
   };
 
-  const handleUpgrade = () => {
+  const handleUpgrade = async () => {
+    // Track upgrade attempt
+    await AnalyticsService.trackUserAction('upgrade_modal_opened', AnalyticsPhases.UPGRADE_REQUIRED, {
+      user_id: user?.id,
+      subscription_plan: subscription.plan
+    });
+    
     setShowUpgradeModal(true);
   };
 
@@ -421,6 +499,37 @@ function App() {
     );
   }
 
+  // Render admin analytics
+  if (mode === 'admin') {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <span className="ml-3 text-xl font-bold text-gray-900">Majorbeam Analytics</span>
+              </div>
+              <div className="flex items-center space-x-2 sm:space-x-4">
+                <button
+                  onClick={() => setMode('dashboard')}
+                  className="inline-flex items-center px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
+                >
+                  ← Back to Dashboard
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+        <div className="max-w-7xl mx-auto p-6">
+          <AdminAnalytics />
+        </div>
+      </div>
+    );
+  }
+
   // Render dashboard
   if (mode === 'dashboard') {
     return (
@@ -441,6 +550,13 @@ function App() {
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   New Campaign
+                </button>
+                <button
+                  onClick={() => setMode('admin')}
+                  className="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base"
+                >
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Analytics
                 </button>
                 <button
                   onClick={() => setMode('profile')}
