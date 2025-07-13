@@ -204,9 +204,6 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade 
         {/* Footer */}
         <div className="p-6 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
           <div className="text-center">
-            <p className="text-sm text-gray-600 mb-4">
-              All plans include a 14-day free trial. Cancel anytime.
-            </p>
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700 font-medium"

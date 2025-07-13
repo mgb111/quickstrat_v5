@@ -228,6 +228,38 @@ function App() {
     setError(null);
   };
 
+  const handleGoBack = () => {
+    switch (wizardState.stage) {
+      case 'concept-selection':
+        setWizardState(prev => ({
+          ...prev,
+          stage: 'input'
+        }));
+        break;
+      case 'outline-review':
+        setWizardState(prev => ({
+          ...prev,
+          stage: 'concept-selection'
+        }));
+        break;
+      case 'upgrade-required':
+        setWizardState(prev => ({
+          ...prev,
+          stage: 'outline-review'
+        }));
+        break;
+      case 'complete':
+        setWizardState(prev => ({
+          ...prev,
+          stage: 'outline-review'
+        }));
+        break;
+      default:
+        break;
+    }
+    setError(null);
+  };
+
   const handleNewCampaign = () => {
     console.log('🎯 New Campaign button clicked');
     console.log('🎯 Setting mode to wizard');
@@ -487,12 +519,18 @@ function App() {
 
         {wizardState.stage === 'concept-selection' && wizardState.concepts && (
           <div className="space-y-6 sm:space-y-8 w-full">
-            <div className="text-center">
+            <div className="text-center space-x-4">
               <button
-                onClick={handleStartOver}
+                onClick={handleGoBack}
                 className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
+                Go Back
+              </button>
+              <button
+                onClick={handleStartOver}
+                className="inline-flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+              >
                 Start Over
               </button>
             </div>
@@ -506,12 +544,18 @@ function App() {
 
         {wizardState.stage === 'outline-review' && wizardState.outline && (
           <div className="space-y-6 sm:space-y-8 w-full">
-            <div className="text-center">
+            <div className="text-center space-x-4">
               <button
-                onClick={handleStartOver}
+                onClick={handleGoBack}
                 className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
+                Go Back
+              </button>
+              <button
+                onClick={handleStartOver}
+                className="inline-flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+              >
                 Start Over
               </button>
             </div>
@@ -566,12 +610,20 @@ function App() {
                   <Crown className="h-5 w-5 inline mr-2" />
                   Upgrade to Premium - $49/month
                 </button>
-                <button
-                  onClick={handleStartOver}
-                  className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-medium hover:bg-gray-200 transition-colors"
-                >
-                  Start Over with Free Preview
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={handleGoBack}
+                    className="flex-1 bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                  >
+                    Go Back
+                  </button>
+                  <button
+                    onClick={handleStartOver}
+                    className="flex-1 bg-red-100 text-red-700 py-3 px-6 rounded-lg font-medium hover:bg-red-200 transition-colors"
+                  >
+                    Start Over
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -579,12 +631,18 @@ function App() {
 
         {wizardState.stage === 'complete' && wizardState.finalOutput && (
           <div className="space-y-6 sm:space-y-8 w-full">
-            <div className="text-center">
+            <div className="text-center space-x-4">
               <button
-                onClick={handleStartOver}
+                onClick={handleGoBack}
                 className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
+                Go Back
+              </button>
+              <button
+                onClick={handleStartOver}
+                className="inline-flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+              >
                 Generate Another Campaign
               </button>
             </div>

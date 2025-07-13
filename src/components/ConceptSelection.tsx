@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, ArrowRight, Loader2 } from 'lucide-react';
+import { Target, ArrowRight, Loader2, ArrowLeft, Palette, Settings } from 'lucide-react';
 import { LeadMagnetConcept } from '../types';
 import { PDFCustomization } from '../types';
 
@@ -73,67 +73,225 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
     setShowCustomization(true);
   };
 
+  const goBackToConcepts = () => {
+    setShowCustomization(false);
+    setSelectedConceptId('');
+  };
+
   if (showCustomization) {
     return (
-      <div className="max-w-2xl mx-auto mt-8">
-        <h2 className="text-2xl font-bold text-center mb-6">Customize Your PDF</h2>
-        <form onSubmit={handleCustomizationSubmit} className="space-y-4 bg-white p-8 rounded-xl shadow-lg">
-          <div>
-            <label className="block text-sm font-medium mb-1">CTA Text</label>
-            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.ctaText} onChange={e => setCustomization({ ...customization, ctaText: e.target.value })} placeholder="e.g. Unlock your free strategy call!" />
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="text-center">
+          <div className="flex justify-center mb-4">
+            <div className="bg-gradient-to-r from-purple-500 to-pink-600 p-4 rounded-2xl">
+              <Palette className="h-8 w-8 text-white" />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Main Action Label</label>
-            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.mainAction} onChange={e => setCustomization({ ...customization, mainAction: e.target.value })} placeholder="e.g. Book a Call" />
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Customize Your PDF</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Personalize your lead magnet with your branding and contact information
+          </p>
+        </div>
+
+        <form onSubmit={handleCustomizationSubmit} className="space-y-6">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Column - Contact & CTA */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Settings className="h-5 w-5 mr-2 text-blue-600" />
+                  Contact & CTA Settings
+                </h3>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    CTA Text
+                  </label>
+                  <input 
+                    type="text" 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={customization.ctaText} 
+                    onChange={e => setCustomization({ ...customization, ctaText: e.target.value })} 
+                    placeholder="e.g. Unlock your free strategy call!" 
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Main Action Label
+                  </label>
+                  <input 
+                    type="text" 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={customization.mainAction} 
+                    onChange={e => setCustomization({ ...customization, mainAction: e.target.value })} 
+                    placeholder="e.g. Book a Call" 
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Booking Link
+                  </label>
+                  <input 
+                    type="text" 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={customization.bookingLink} 
+                    onChange={e => setCustomization({ ...customization, bookingLink: e.target.value })} 
+                    placeholder="e.g. https://calendly.com/your-link" 
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Website
+                  </label>
+                  <input 
+                    type="text" 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={customization.website} 
+                    onChange={e => setCustomization({ ...customization, website: e.target.value })} 
+                    placeholder="e.g. https://yourwebsite.com" 
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Support Email
+                  </label>
+                  <input 
+                    type="email" 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={customization.supportEmail} 
+                    onChange={e => setCustomization({ ...customization, supportEmail: e.target.value })} 
+                    placeholder="e.g. support@yourwebsite.com" 
+                  />
+                </div>
+              </div>
+
+              {/* Right Column - Branding */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Palette className="h-5 w-5 mr-2 text-purple-600" />
+                  Branding & Design
+                </h3>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Logo Upload
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    onChange={e => {
+                      const file = e.target.files && e.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setCustomization({ ...customization, logo: reader.result as string });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                  {customization.logo && (
+                    <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                      <img src={customization.logo} alt="Logo Preview" className="h-12 object-contain mx-auto" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Primary Color
+                    </label>
+                    <div className="flex items-center space-x-3">
+                      <input 
+                        type="color" 
+                        className="w-12 h-10 border rounded-lg cursor-pointer"
+                        value={customization.primaryColor} 
+                        onChange={e => setCustomization({ ...customization, primaryColor: e.target.value })} 
+                      />
+                      <span className="text-sm text-gray-600">{customization.primaryColor}</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Secondary Color
+                    </label>
+                    <div className="flex items-center space-x-3">
+                      <input 
+                        type="color" 
+                        className="w-12 h-10 border rounded-lg cursor-pointer"
+                        value={customization.secondaryColor} 
+                        onChange={e => setCustomization({ ...customization, secondaryColor: e.target.value })} 
+                      />
+                      <span className="text-sm text-gray-600">{customization.secondaryColor}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Font Family
+                  </label>
+                  <select
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={customization.font}
+                    onChange={e => setCustomization({ ...customization, font: e.target.value })}
+                  >
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Inter">Inter</option>
+                    <option value="Roboto">Roboto</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Booking Link</label>
-            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.bookingLink} onChange={e => setCustomization({ ...customization, bookingLink: e.target.value })} placeholder="e.g. https://calendly.com/your-link" />
+
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <button
+              type="button"
+              onClick={goBackToConcepts}
+              className="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200"
+            >
+              <ArrowLeft className="h-5 w-5 mr-2" />
+              Back to Concepts
+            </button>
+            
+            <button
+              type="submit"
+              disabled={customizationLoading}
+              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            >
+              {customizationLoading ? (
+                <>
+                  <Loader2 className="animate-spin h-5 w-5 mr-3" />
+                  <span className="text-white font-semibold">Creating Outline...</span>
+                </>
+              ) : (
+                <>
+                  Create Content Outline
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </>
+              )}
+            </button>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Website</label>
-            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.website} onChange={e => setCustomization({ ...customization, website: e.target.value })} placeholder="e.g. https://yourwebsite.com" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Support Email</label>
-            <input type="email" className="w-full border rounded-lg px-3 py-2" value={customization.supportEmail} onChange={e => setCustomization({ ...customization, supportEmail: e.target.value })} placeholder="e.g. support@yourwebsite.com" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Logo Upload</label>
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full border rounded-lg px-3 py-2"
-              onChange={e => {
-                const file = e.target.files && e.target.files[0];
-                if (file) {
-                  const reader = new FileReader();
-                  reader.onloadend = () => {
-                    setCustomization({ ...customization, logo: reader.result as string });
-                  };
-                  reader.readAsDataURL(file);
-                }
-              }}
-            />
-            {customization.logo && (
-              <img src={customization.logo} alt="Logo Preview" className="mt-2 h-16 object-contain" />
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Primary Color</label>
-            <input type="color" className="w-12 h-8 border rounded" value={customization.primaryColor} onChange={e => setCustomization({ ...customization, primaryColor: e.target.value })} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Secondary Color</label>
-            <input type="color" className="w-12 h-8 border rounded" value={customization.secondaryColor} onChange={e => setCustomization({ ...customization, secondaryColor: e.target.value })} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Font</label>
-            <input type="text" className="w-full border rounded-lg px-3 py-2" value={customization.font} onChange={e => setCustomization({ ...customization, font: e.target.value })} placeholder="e.g. Helvetica, Arial, etc." />
-          </div>
-          <div className="text-center mt-6">
-            <button type="submit" className="px-8 py-3 bg-blue-600 text-white rounded-xl font-semibold text-lg hover:bg-blue-700 transition-all">Continue</button>
-          </div>
+
+          {customizationLoading && (
+            <div className="text-center">
+              <p className="text-sm text-gray-700 font-medium">
+                Generating your personalized content outline...
+              </p>
+            </div>
+          )}
         </form>
       </div>
     );
