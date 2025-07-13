@@ -46,6 +46,8 @@ const RazorpayDebugPage: React.FC = () => {
             <li>• Ensure buttons are active and not deleted</li>
             <li>• Check if you're using the correct environment (test/live)</li>
             <li>• Verify domain restrictions in button settings</li>
+            <li>• Monthly Button ID: pl_QsXORcrhWghFgg</li>
+            <li>• Yearly Button ID: pl_QsXQiWLwBcQ8x5</li>
           </ul>
         </div>
       </div>

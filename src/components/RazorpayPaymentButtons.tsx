@@ -102,10 +102,12 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
         
         console.log('🔧 Loading payment button with ID:', currentButtonId);
         
-        // Create the payment button script
+        // Create the payment button script with proper attributes
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
         script.setAttribute('data-payment_button_id', currentButtonId);
+        script.setAttribute('data-button_text', billingCycle === 'monthly' ? 'Subscribe Monthly' : 'Subscribe Yearly');
+        script.setAttribute('data-button_color', '#3B82F6');
         script.async = true;
         
         // Add error handling
@@ -126,12 +128,12 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
             console.warn('⚠️ Payment button may not have loaded correctly');
             setHasError(true);
           }
-        }, 3000); // Reduced timeout
+        }, 5000); // Increased timeout for better reliability
       }
     };
 
     // Add a delay to ensure everything is ready
-    const timer = setTimeout(loadPaymentButton, 1000); // Increased delay for better stability
+    const timer = setTimeout(loadPaymentButton, 1500); // Increased delay for better stability
     
     return () => {
       clearTimeout(timer);
@@ -261,6 +263,7 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
         id={`razorpay-form-${billingCycle}`} 
         aria-label="Razorpay Payment Form"
         className="min-h-[60px] flex items-center justify-center"
+        method="POST"
       >
         {/* Razorpay payment button will be inserted here by the script */}
         <div className="text-gray-500 text-sm">Loading payment button...</div>
