@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, ArrowRight, Zap, Users, FileText, Mail, TrendingUp, Target, Download, Play, Star, ChevronDown } from 'lucide-react';
+import { Check, Zap, Users, FileText, TrendingUp, Target, Download, Play, Star, ChevronDown } from 'lucide-react';
 import PricingSection from './PricingSection';
 
 interface PublicLandingPageProps {
@@ -7,16 +7,12 @@ interface PublicLandingPageProps {
   onLogin: () => void;
 }
 
-const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onGetStarted, onLogin }) => {
-  const [email, setEmail] = useState('');
+const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
+
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Email captured:', email);
-    setEmail('');
-  };
+
 
   const toggleFAQ = (index: number) => {
     setOpenFAQ(openFAQ === index ? null : index);
