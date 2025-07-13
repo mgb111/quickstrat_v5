@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 // Type declaration for Razorpay global
 // (Razorpay payment button script does not support direct JS callbacks)
@@ -20,6 +20,8 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
   onPaymentSuccess,
   onPaymentError
 }) => {
+  const formRef = useRef<HTMLFormElement>(null);
+  
   // Payment button IDs from the user's Razorpay setup
   const paymentButtonIds = {
     monthly: 'pl_QsXORcrhWghFgg',
@@ -38,22 +40,39 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
   }, []);
 
   useEffect(() => {
-    // Create and add the payment button script
-    const formElement = document.getElementById(`razorpay-form-${billingCycle}`);
-    if (formElement) {
-      // Clear any existing content
-      formElement.innerHTML = '';
-      // Create the payment button script
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
-      script.setAttribute('data-payment_button_id', currentButtonId);
-      script.async = true;
-      formElement.appendChild(script);
-      // Clean up script on unmount or billing cycle change
-      return () => {
-        formElement.innerHTML = '';
-      };
-    }
+    // Wait for the form to be rendered and Razorpay script to be available
+    const loadPaymentButton = () => {
+      if (formRef.current) {
+        // Clear any existing content
+        formRef.current.innerHTML = '';
+        
+        // Create the payment button script
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
+        script.setAttribute('data-payment_button_id', currentButtonId);
+        script.async = true;
+        
+        // Add error handling
+        script.onerror = () => {
+          console.error('Failed to load Razorpay payment button script');
+        };
+        
+        // Add the script to the form
+        formRef.current.appendChild(script);
+        
+        console.log('Razorpay payment button script added with ID:', currentButtonId);
+      }
+    };
+
+    // Add a small delay to ensure DOM is ready
+    const timer = setTimeout(loadPaymentButton, 100);
+    
+    return () => {
+      clearTimeout(timer);
+      if (formRef.current) {
+        formRef.current.innerHTML = '';
+      }
+    };
   }, [billingCycle, currentButtonId]);
 
   // NOTE: Razorpay payment button script does NOT support direct JS callbacks for payment success/failure.
@@ -62,7 +81,11 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
 
   return (
     <div className="w-full">
-      <form id={`razorpay-form-${billingCycle}`} aria-label="Razorpay Payment Form">
+      <form 
+        ref={formRef}
+        id={`razorpay-form-${billingCycle}`} 
+        aria-label="Razorpay Payment Form"
+      >
         {/* Razorpay payment button will be inserted here by the script */}
       </form>
     </div>
