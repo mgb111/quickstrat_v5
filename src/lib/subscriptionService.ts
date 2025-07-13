@@ -12,16 +12,51 @@ export interface SubscriptionStatus {
 export class SubscriptionService {
   static async getUserSubscription(userId: string): Promise<SubscriptionStatus> {
     try {
-      // Fetch user's subscription data from Supabase
-      const { data: user, error } = await supabase
+      // First, check if user exists in the users table
+      const { data: existingUser, error: fetchError } = await supabase
         .from('users')
-        .select('plan, campaign_count')
+        .select('id, plan, campaign_count')
         .eq('id', userId)
-        .single();
+        .maybeSingle(); // Use maybeSingle instead of single to avoid errors
 
-      if (error) {
-        console.error('Error fetching user subscription:', error);
+      if (fetchError) {
+        console.error('Error fetching user subscription:', fetchError);
         return this.getDefaultSubscription();
+      }
+
+      let user = existingUser;
+
+      // If user doesn't exist, create them with default values
+      if (!user) {
+        console.log('User not found in users table, creating new user record...');
+        
+        // Get user email from auth.users
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        
+        if (!authUser) {
+          console.error('No authenticated user found');
+          return this.getDefaultSubscription();
+        }
+
+        // Create user record
+        const { data: newUser, error: createError } = await supabase
+          .from('users')
+          .insert({
+            id: userId,
+            email: authUser.email,
+            plan: 'free',
+            campaign_count: 0
+          })
+          .select('id, plan, campaign_count')
+          .single();
+
+        if (createError) {
+          console.error('Error creating user record:', createError);
+          return this.getDefaultSubscription();
+        }
+
+        user = newUser;
+        console.log('Created new user record:', user);
       }
 
       // Map plan to subscription status

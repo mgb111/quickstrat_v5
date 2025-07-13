@@ -23,15 +23,28 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
   const formRef = useRef<HTMLFormElement>(null);
   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   
-  // Payment button IDs from the user's Razorpay setup
+  // Payment button IDs from environment variables or fallback to demo IDs
   const paymentButtonIds = {
-    monthly: 'pl_QsXORcrhWghFgg',
-    yearly: 'pl_QsXQiWLwBcQ8x5'
+    monthly: import.meta.env.VITE_RAZORPAY_MONTHLY_BUTTON_ID || 'pl_QsXORcrhWghFgg',
+    yearly: import.meta.env.VITE_RAZORPAY_YEARLY_BUTTON_ID || 'pl_QsXQiWLwBcQ8x5'
   };
   const currentButtonId = paymentButtonIds[billingCycle];
 
+  // Validate button ID format
+  const isValidButtonId = (id: string) => {
+    return id && id.startsWith('pl_') && id.length > 10;
+  };
+
   useEffect(() => {
+    // Check if button ID is valid
+    if (!isValidButtonId(currentButtonId)) {
+      setHasError(true);
+      setErrorMessage(`Invalid payment button ID: ${currentButtonId}. Please check your Razorpay configuration.`);
+      return;
+    }
+
     // Load Razorpay script globally if not already loaded
     if (!window.Razorpay) {
       const script = document.createElement('script');
@@ -44,20 +57,22 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
       script.onerror = () => {
         console.error('Failed to load Razorpay script');
         setHasError(true);
+        setErrorMessage('Failed to load Razorpay payment system. Please check your internet connection.');
       };
       document.head.appendChild(script);
     } else {
       setIsRazorpayLoaded(true);
     }
-  }, []);
+  }, [currentButtonId]);
 
   useEffect(() => {
     // Wait for both the form to be rendered and Razorpay script to be available
     const loadPaymentButton = () => {
-      if (formRef.current && isRazorpayLoaded) {
+      if (formRef.current && isRazorpayLoaded && isValidButtonId(currentButtonId)) {
         // Clear any existing content
         formRef.current.innerHTML = '';
         setHasError(false);
+        setErrorMessage('');
         
         // Create the payment button script
         const script = document.createElement('script');
@@ -69,6 +84,7 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
         script.onerror = () => {
           console.error('Failed to load Razorpay payment button script');
           setHasError(true);
+          setErrorMessage('Failed to load payment button. Please try refreshing the page.');
         };
         
         // Add the script to the form
@@ -82,6 +98,7 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
             // Only the script tag is present, button didn't load
             console.warn('Payment button may not have loaded correctly');
             setHasError(true);
+            setErrorMessage('Payment button failed to load. Please check your Razorpay configuration.');
           }
         }, 3000);
       }
@@ -117,8 +134,13 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
                 Payment Button Error
               </h3>
               <div className="mt-2 text-sm text-red-700">
-                <p>Unable to load payment button. Please check your Razorpay configuration.</p>
+                <p>{errorMessage}</p>
                 <p className="mt-1">Button ID: {currentButtonId}</p>
+                <p className="mt-1 text-xs">
+                  To fix this, please:
+                  <br />• Check your Razorpay dashboard for valid button IDs
+                  <br />• Set VITE_RAZORPAY_MONTHLY_BUTTON_ID and VITE_RAZORPAY_YEARLY_BUTTON_ID in your .env file
+                </p>
               </div>
             </div>
           </div>
