@@ -41,26 +41,43 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
       return;
     }
 
-    // Load Razorpay script only if we have valid configuration
-    if (!window.Razorpay) {
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
-      script.async = true;
-      script.onload = () => {
-        console.log('✅ Razorpay script loaded successfully');
+    // Check if script is already loading or loaded
+    const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/payment-button.js"]');
+    
+    if (existingScript) {
+      // Script is already loading or loaded
+      if (window.Razorpay) {
         setIsRazorpayLoaded(true);
         setIsLoading(false);
-      };
-      script.onerror = () => {
-        console.error('❌ Failed to load Razorpay script');
-        setHasError(true);
-        setIsLoading(false);
-      };
-      document.head.appendChild(script);
-    } else {
+      } else {
+        // Script is loading, wait for it
+        existingScript.addEventListener('load', () => {
+          setIsRazorpayLoaded(true);
+          setIsLoading(false);
+        });
+        existingScript.addEventListener('error', () => {
+          setHasError(true);
+          setIsLoading(false);
+        });
+      }
+      return;
+    }
+
+    // Load Razorpay script only if we have valid configuration
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
+    script.async = true;
+    script.onload = () => {
+      console.log('✅ Razorpay script loaded successfully');
       setIsRazorpayLoaded(true);
       setIsLoading(false);
-    }
+    };
+    script.onerror = () => {
+      console.error('❌ Failed to load Razorpay script');
+      setHasError(true);
+      setIsLoading(false);
+    };
+    document.head.appendChild(script);
   }, [hasValidConfig]);
 
   useEffect(() => {
@@ -101,12 +118,12 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
             console.warn('⚠️ Payment button may not have loaded correctly');
             setHasError(true);
           }
-        }, 5000); // Increased timeout
+        }, 3000); // Reduced timeout
       }
     };
 
     // Add a delay to ensure everything is ready
-    const timer = setTimeout(loadPaymentButton, 500); // Increased delay
+    const timer = setTimeout(loadPaymentButton, 1000); // Increased delay for better stability
     
     return () => {
       clearTimeout(timer);
@@ -173,40 +190,44 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
     );
   }
 
-  // If there's an error loading the payment system
+  // If there's an error loading the payment system, show a simple fallback
   if (hasError) {
     return (
       <div className="w-full">
-        <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-lg p-6 text-center">
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6 text-center">
           <div className="mb-4">
-            <div className="bg-orange-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            <div className="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-orange-900 mb-2">
-              Payment System Temporarily Unavailable
+            <h3 className="text-lg font-semibold text-blue-900 mb-2">
+              Upgrade to Premium
             </h3>
-            <p className="text-orange-700 text-sm mb-4">
-              We're experiencing technical difficulties with our payment processor. Please try again later or contact us.
+            <p className="text-blue-700 text-sm mb-4">
+              Contact us to upgrade your plan and unlock all premium features.
             </p>
           </div>
           
           <div className="space-y-3">
             <button 
-              onClick={() => window.location.reload()}
-              className="w-full bg-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-orange-700 transition-colors"
+              onClick={() => window.open('mailto:contact@majorbeam.com?subject=Premium Plan Inquiry', '_blank')}
+              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
             >
-              🔄 Try Again
+              📧 Contact Us to Upgrade
             </button>
             
             <button 
-              onClick={() => window.open('mailto:support@majorbeam.com?subject=Payment Issue', '_blank')}
-              className="w-full bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-700 transition-colors"
+              onClick={() => window.open('https://calendly.com/majorbeam/consultation', '_blank')}
+              className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
             >
-              📧 Contact Support
+              📅 Schedule a Call
             </button>
           </div>
+          
+          <p className="text-xs text-blue-600 mt-3">
+            Premium features: Unlimited PDFs • 5 campaigns/month • Landing pages • Lead capture
+          </p>
         </div>
       </div>
     );
