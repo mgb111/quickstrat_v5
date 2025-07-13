@@ -43,7 +43,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade 
               Unlock Your Full Lead Magnet Potential
             </h3>
             <p className="text-gray-600">
-              Get unlimited PDF downloads, more campaigns, and advanced features
+              Get unlimited PDF downloads, <strong>5 campaigns per month</strong>, and advanced features
             </p>
           </div>
 
@@ -108,13 +108,24 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade 
                   </div>
                 )}
                 <p className="text-gray-600 text-sm">Perfect for growing businesses</p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
+                  <p className="text-blue-800 font-semibold text-sm">
+                    📊 <strong>5 campaigns per month</strong> included
+                  </p>
+                </div>
               </div>
 
               <ul className="space-y-3 mb-8">
                 {pricing.premium[billingCycle].features.map((feature: string, index: number) => (
                   <li key={index} className="flex items-start">
                     <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
+                    <span className="text-gray-700">
+                      {feature.includes('5 campaigns') ? (
+                        <strong className="text-blue-600">{feature}</strong>
+                      ) : (
+                        feature
+                      )}
+                    </span>
                   </li>
                 ))}
               </ul>

@@ -610,6 +610,9 @@ function App() {
                   <Crown className="h-5 w-5 inline mr-2" />
                   Upgrade to Premium - $49/month
                 </button>
+                <p className="text-sm text-gray-600">
+                  Includes <strong>5 campaigns per month</strong> and unlimited PDF downloads
+                </p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={handleGoBack}
