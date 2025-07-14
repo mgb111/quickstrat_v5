@@ -160,7 +160,9 @@ const PricingSection: React.FC<PricingSectionProps> = ({
             </ul>
 
             {/* Always show Razorpay payment button for the selected billing cycle */}
-            <RazorpayPaymentButtons billingCycle={billingCycle} />
+            <div className="flex justify-center mt-6">
+              <RazorpayPaymentButtons billingCycle={billingCycle} />
+            </div>
           </div>
         </div>
 
