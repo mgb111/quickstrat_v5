@@ -3,27 +3,17 @@ import { Check, Crown, Star } from 'lucide-react';
 import { SubscriptionService } from '../lib/subscriptionService';
 import RazorpayPaymentButtons from './RazorpayPaymentButtons';
 
-interface PricingSectionProps {
-  onPaymentSuccess?: (paymentId: string, plan: string, billing: string) => void;
-  onPaymentError?: (error: any) => void;
-}
-
-const PricingSection: React.FC<PricingSectionProps> = ({
-  onPaymentSuccess,
-  onPaymentError
-}) => {
+const PricingSection: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [showPaymentButtons, setShowPaymentButtons] = useState(false);
   const pricing = SubscriptionService.getPricing();
 
   const handlePaymentSuccess = (paymentId: string, plan: string, billing: string) => {
     console.log('Payment successful:', { paymentId, plan, billing });
-    onPaymentSuccess?.(paymentId, plan, billing);
   };
 
   const handlePaymentError = (error: any) => {
     console.error('Payment failed:', error);
-    onPaymentError?.(error);
   };
 
   const handleUpgradeClick = () => {

@@ -416,16 +416,7 @@ const PublicLandingPage: React.FC = () => {
       </section>
 
       {/* Pricing Section */}
-      <PricingSection 
-        onPaymentSuccess={(paymentId, plan, billing) => {
-          console.log('Payment successful on landing page:', { paymentId, plan, billing });
-          // You can redirect to dashboard or show success message
-        }}
-        onPaymentError={(error) => {
-          console.error('Payment failed on landing page:', error);
-          // You can show error message
-        }}
-      />
+      <PricingSection />
 
       {/* FAQ Section */}
       <section id="faq" className="py-20 bg-gray-50">
