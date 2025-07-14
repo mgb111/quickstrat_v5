@@ -19,6 +19,18 @@ const HARDCODED_BUTTON_IDS = {
   yearly: 'pl_QsXQiWLwBcQ8x5'
 };
 
+// Global Razorpay error suppression (for the session)
+const SUPPRESSED_RAZORPAY_ERRORS = [
+  'Payment Button is not added',
+  'Payment Button cannot be added',
+  'Provide a valid payment button id'
+];
+
+function shouldSuppressRazorpayError(msg: any) {
+  if (typeof msg !== 'string') return false;
+  return SUPPRESSED_RAZORPAY_ERRORS.some(err => msg.toLowerCase().includes(err.toLowerCase()));
+}
+
 const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
   billingCycle,
   onPaymentSuccess,
@@ -35,26 +47,29 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
   // Fallback actions are not needed since we always have a button
 
   useEffect(() => {
+    // --- Razorpay error suppression: globally for the session ---
+    const originalConsoleError = console.error;
+    const originalConsoleWarn = console.warn;
+    const originalConsoleLog = console.log;
+
+    console.error = (...args) => {
+      if (shouldSuppressRazorpayError(args[0])) return;
+      originalConsoleError.apply(console, args);
+    };
+    console.warn = (...args) => {
+      if (shouldSuppressRazorpayError(args[0])) return;
+      originalConsoleWarn.apply(console, args);
+    };
+    console.log = (...args) => {
+      if (shouldSuppressRazorpayError(args[0])) return;
+      originalConsoleLog.apply(console, args);
+    };
+
     // If no valid button ID, don't even try to load Razorpay
     if (!hasValidConfig) {
       setIsLoading(false);
       return;
     }
-
-    // Suppress Razorpay error messages since buttons are working
-    const originalConsoleError = console.error;
-    console.error = (...args) => {
-      const message = args[0];
-      if (typeof message === 'string' && (
-        message.includes('Payment Button is not added') ||
-        message.includes('Payment Button cannot be added') ||
-        message.includes('Provide a valid payment button id')
-      )) {
-        // Suppress these specific Razorpay errors since buttons are working
-        return;
-      }
-      originalConsoleError.apply(console, args);
-    };
 
     // Add a small delay to prevent immediate loading conflicts
     const loadScript = () => {
@@ -102,8 +117,10 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
     
     return () => {
       clearTimeout(timer);
-      // Restore original console.error
+      // Restore all console methods on unmount
       console.error = originalConsoleError;
+      console.warn = originalConsoleWarn;
+      console.log = originalConsoleLog;
     };
   }, [hasValidConfig]);
 
