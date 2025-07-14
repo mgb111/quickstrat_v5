@@ -26,8 +26,16 @@ const PublicLandingPage: React.FC = () => {
     setMobileMenuOpen(false);
   };
 
-  console.log('Rendering PublicLandingPage: header');
-  // Header/Navigation
+  // Debug render order
+  console.log('Rendering: Header');
+  console.log('Rendering: Hero');
+  console.log('Rendering: What is a Lead Magnet');
+  console.log('Rendering: Features');
+  console.log('Rendering: Testimonials');
+  console.log('Rendering: Pricing');
+  console.log('Rendering: FAQ');
+  console.log('Rendering: Final CTA');
+
   return (
     <div className="min-h-screen bg-white font-inter">
       <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
