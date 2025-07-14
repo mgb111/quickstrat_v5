@@ -3,12 +3,7 @@ import { Check, Zap, Users, FileText, TrendingUp, Target, Download, Play, Star, 
 import PricingSection from './PricingSection';
 import { useNavigate } from 'react-router-dom';
 
-interface PublicLandingPageProps {
-  onGetStarted: () => void;
-  onLogin: () => void;
-}
-
-const PublicLandingPage: React.FC<PublicLandingPageProps> = () => {
+const PublicLandingPage: React.FC = () => {
   const navigate = useNavigate();
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

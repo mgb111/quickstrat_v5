@@ -537,7 +537,7 @@ function App() {
 
   // Render public landing page (no auth required)
   if (mode === 'public') {
-    return <PublicLandingPage onGetStarted={() => setMode('auth')} onLogin={() => setMode('auth')} />;
+    return <PublicLandingPage />;
   }
 
   // Render authentication (no user)
