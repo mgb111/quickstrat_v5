@@ -32,12 +32,11 @@ function shouldSuppressRazorpayError(msg: any) {
 }
 
 const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = (props) => {
-  try {
-    const { billingCycle, onPaymentSuccess, onPaymentError } = props;
-    const formRef = useRef<HTMLFormElement>(null);
-    const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
-    const [hasError, setHasError] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+  const { billingCycle, onPaymentSuccess, onPaymentError } = props;
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
     
     // Get payment configuration
     const currentButtonId = HARDCODED_BUTTON_IDS[billingCycle];
@@ -342,10 +341,6 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = (props) =>
         </form>
       </div>
     );
-  } catch (err) {
-    console.error('❌ Error in RazorpayPaymentButtons render:', err);
-    throw err;
-  }
 };
 
 export default RazorpayPaymentButtons; 
