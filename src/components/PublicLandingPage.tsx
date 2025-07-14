@@ -429,6 +429,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
           console.error('Payment failed on landing page:', error);
           // You can show error message
         }}
+        onLogin={onLogin}
       />
 
       {/* FAQ Section */}

@@ -6,11 +6,13 @@ import RazorpayPaymentButtons from './RazorpayPaymentButtons';
 interface PricingSectionProps {
   onPaymentSuccess?: (paymentId: string, plan: string, billing: string) => void;
   onPaymentError?: (error: any) => void;
+  onLogin: () => void;
 }
 
 const PricingSection: React.FC<PricingSectionProps> = ({
   onPaymentSuccess,
-  onPaymentError
+  onPaymentError,
+  onLogin
 }) => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [showPaymentButtons, setShowPaymentButtons] = useState(false);
@@ -111,7 +113,10 @@ const PricingSection: React.FC<PricingSectionProps> = ({
               </li>
             </ul>
 
-            <button className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
+            <button 
+              className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+              onClick={onLogin}
+            >
               Get Started Free
             </button>
           </div>
