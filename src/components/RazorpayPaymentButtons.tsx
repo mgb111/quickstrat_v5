@@ -1,8 +1,8 @@
 import React from 'react';
 
 // Replace these with your actual Razorpay Payment Button IDs
-const MONTHLY_BUTTON_ID = 'pl_MonthlyButtonIdHere';
-const YEARLY_BUTTON_ID = 'pl_YearlyButtonIdHere';
+const MONTHLY_BUTTON_ID = 'pl_QsXORcrhWghFgg';
+const YEARLY_BUTTON_ID = 'pl_QsXQiWLwBcQ8x5';
 
 interface RazorpayPaymentButtonsProps {
   showMonthly?: boolean;
