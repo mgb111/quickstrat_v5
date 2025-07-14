@@ -15,12 +15,27 @@ export class PaymentService {
       
       // Update user's subscription in the database
       if (data.userId) {
+        // Calculate new expiry and period
+        const now = new Date();
+        let expiry: Date;
+        if (data.billing === 'monthly') {
+          expiry = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days
+        } else {
+          expiry = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000); // 365 days
+        }
+        const subscription_expiry = expiry.toISOString();
+        const campaign_count = 0;
+        const campaign_count_period = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
         const { error } = await supabase
           .from('users')
           .update({ 
             plan: 'premium',
             subscription_status: 'active',
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
+            subscription_expiry,
+            campaign_count,
+            campaign_count_period
           })
           .eq('id', data.userId);
 

@@ -24,6 +24,38 @@ export class CampaignService {
       throw new Error('Authentication required to create campaigns');
     }
 
+    // Fetch subscription info
+    const { data: userRecord, error: userFetchError } = await supabase
+      .from('users')
+      .select('plan, subscription_expiry, campaign_count, campaign_count_period')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (userFetchError) {
+      throw new Error('Failed to fetch user subscription info');
+    }
+    const now = new Date();
+    const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    // Check subscription expiry
+    if (!userRecord || userRecord.plan === 'free' || !userRecord.subscription_expiry || new Date(userRecord.subscription_expiry) < now) {
+      throw new Error('You must have an active subscription to create campaigns.');
+    }
+    // Reset campaign count if period changed
+    if (userRecord.campaign_count_period !== currentPeriod) {
+      const { error: resetError } = await supabase
+        .from('users')
+        .update({ campaign_count: 0, campaign_count_period: currentPeriod })
+        .eq('id', user.id);
+      if (resetError) {
+        throw new Error('Failed to reset campaign count for new period.');
+      }
+      userRecord.campaign_count = 0;
+      userRecord.campaign_count_period = currentPeriod;
+    }
+    // Enforce campaign limit
+    if (userRecord.campaign_count >= 5) {
+      throw new Error('You have reached your campaign limit for this month.');
+    }
+
     console.log('✅ User authenticated:', user.email);
     console.log('🆔 User ID:', user.id);
 
@@ -145,6 +177,12 @@ export class CampaignService {
       });
       throw new Error(`Failed to create campaign: ${error.message}`);
     }
+
+    // Increment campaign_count after successful creation
+    await supabase
+      .from('users')
+      .update({ campaign_count: userRecord.campaign_count + 1 })
+      .eq('id', user.id);
 
     console.log('✅ Campaign created successfully:', data);
     return data;
