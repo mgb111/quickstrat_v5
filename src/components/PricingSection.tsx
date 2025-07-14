@@ -154,21 +154,11 @@ const PricingSection: React.FC<PricingSectionProps> = ({
               ))}
             </ul>
 
-            {showPaymentButtons && (
-              <RazorpayPaymentButtons
-                billingCycle={billingCycle}
-                onPaymentSuccess={handlePaymentSuccess}
-                onPaymentError={handlePaymentError}
-              />
-            )}
-            {!showPaymentButtons && (
-              <button
-                onClick={handleUpgradeClick}
-                className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-              >
-                Upgrade to Premium
-              </button>
-            )}
+            {/* Always show Razorpay payment buttons for the selected billing cycle */}
+            <RazorpayPaymentButtons
+              showMonthly={billingCycle === 'monthly'}
+              showYearly={billingCycle === 'yearly'}
+            />
           </div>
         </div>
 
