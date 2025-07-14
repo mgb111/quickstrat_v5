@@ -159,11 +159,8 @@ const PricingSection: React.FC<PricingSectionProps> = ({
               ))}
             </ul>
 
-            {/* Always show Razorpay payment buttons for the selected billing cycle */}
-            <RazorpayPaymentButtons
-              showMonthly={billingCycle === 'monthly'}
-              showYearly={billingCycle === 'yearly'}
-            />
+            {/* Always show Razorpay payment button for the selected billing cycle */}
+            <RazorpayPaymentButtons billingCycle={billingCycle} />
           </div>
         </div>
 

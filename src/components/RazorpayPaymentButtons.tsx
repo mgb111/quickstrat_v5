@@ -1,48 +1,32 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
-// Replace these with your actual Razorpay Payment Button IDs
-const MONTHLY_BUTTON_ID = 'pl_QsXORcrhWghFgg';
-const YEARLY_BUTTON_ID = 'pl_QsXQiWLwBcQ8x5';
+const BUTTON_IDS = {
+  monthly: 'pl_QsXORcrhWghFgg',
+  yearly: 'pl_QsXQiWLwBcQ8x5'
+};
 
 interface RazorpayPaymentButtonsProps {
-  showMonthly?: boolean;
-  showYearly?: boolean;
+  billingCycle: 'monthly' | 'yearly';
 }
 
-const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ showMonthly = true, showYearly = true }) => {
+const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ billingCycle }) => {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (!formRef.current) return;
+    formRef.current.innerHTML = '';
+    const script = document.createElement('script');
+    script.src = 'https://cdn.razorpay.com/static/widget/payment-button.js';
+    script.setAttribute('data-payment_button_id', BUTTON_IDS[billingCycle]);
+    script.async = true;
+    formRef.current.appendChild(script);
+    return () => {
+      if (formRef.current) formRef.current.innerHTML = '';
+    };
+  }, [billingCycle]);
+
   return (
-    <div className="flex flex-col gap-6 items-center w-full">
-      {showMonthly && (
-        <div style={{ width: '100%', maxWidth: 400 }}>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: `
-                <form>
-                  <script src="https://cdn.razorpay.com/static/widget/payment-button.js"
-                    data-payment_button_id="${MONTHLY_BUTTON_ID}"
-                    async> </script>
-                </form>
-              `
-            }}
-          />
-        </div>
-      )}
-      {showYearly && (
-        <div style={{ width: '100%', maxWidth: 400 }}>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: `
-                <form>
-                  <script src="https://cdn.razorpay.com/static/widget/payment-button.js"
-                    data-payment_button_id="${YEARLY_BUTTON_ID}"
-                    async> </script>
-                </form>
-              `
-            }}
-          />
-        </div>
-      )}
-    </div>
+    <form ref={formRef} style={{ width: '100%', maxWidth: 400, margin: '0 auto' }} />
   );
 };
 
