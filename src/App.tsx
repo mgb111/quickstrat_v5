@@ -78,14 +78,14 @@ function App() {
   // Handle authentication state changes
   useEffect(() => {
     const handleAuthChange = async () => {
-      console.log('Auth effect running:', { loading, user, mode });
-      if (!loading) {
-        if (user) {
-          // User is authenticated, show dashboard
-          console.log('User authenticated, switching to dashboard');
-          if (mode === 'auth' || mode === 'public') {
-            setMode('dashboard');
-          }
+    console.log('Auth effect running:', { loading, user, mode });
+    if (!loading) {
+      if (user) {
+        // User is authenticated, show dashboard
+        console.log('User authenticated, switching to dashboard');
+        if (mode === 'auth' || mode === 'public') {
+          setMode('dashboard');
+        }
           // Fetch user's subscription status from Supabase
           if (user?.id) {
             try {
@@ -105,14 +105,14 @@ function App() {
           } else {
             setSubscription(SubscriptionService.getDefaultSubscription());
           }
-        } else {
-          // User is not authenticated, show public landing or auth
-          console.log('User not authenticated');
-          if (mode !== 'landing' && mode !== 'public') {
-            setMode('public');
-          }
+      } else {
+        // User is not authenticated, show public landing or auth
+        console.log('User not authenticated');
+        if (mode !== 'landing' && mode !== 'public') {
+          setMode('public');
         }
       }
+    }
     };
 
     handleAuthChange();
@@ -473,7 +473,7 @@ function App() {
                       ? 'bg-green-500 text-white' 
                       : isLocked
                         ? 'bg-gray-300 text-gray-500'
-                        : 'bg-gray-200 text-gray-600'
+                      : 'bg-gray-200 text-gray-600'
                 }`}>
                   {isLocked ? <Lock className="h-4 w-4" /> : stage.number}
                   {!stage.free && wizardState.stage === 'outline-review' && (
@@ -537,7 +537,7 @@ function App() {
 
   // Render public landing page (no auth required)
   if (mode === 'public') {
-    return <PublicLandingPage />;
+    return <PublicLandingPage onGetStarted={() => setMode('auth')} onLogin={() => setMode('auth')} />;
   }
 
   // Render authentication (no user)

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { Check, Zap, Users, FileText, TrendingUp, Target, Download, Play, Star, ChevronDown } from 'lucide-react';
 import PricingSection from './PricingSection';
-import { useNavigate } from 'react-router-dom';
 
-const PublicLandingPage: React.FC = () => {
-  const navigate = useNavigate();
+interface PublicLandingPageProps {
+  onGetStarted: () => void;
+  onLogin: () => void;
+}
+
+const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
+
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -26,18 +30,9 @@ const PublicLandingPage: React.FC = () => {
     setMobileMenuOpen(false);
   };
 
-  // Debug render order
-  console.log('Rendering: Header');
-  console.log('Rendering: Hero');
-  console.log('Rendering: What is a Lead Magnet');
-  console.log('Rendering: Features');
-  console.log('Rendering: Testimonials');
-  console.log('Rendering: Pricing');
-  console.log('Rendering: FAQ');
-  console.log('Rendering: Final CTA');
-
   return (
     <div className="min-h-screen bg-white font-inter">
+      {/* Header/Navigation */}
       <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -78,7 +73,7 @@ const PublicLandingPage: React.FC = () => {
                 FAQ
               </button>
               <button 
-                onClick={() => navigate('/auth')}
+                onClick={onLogin}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
               >
                 Get Started
@@ -126,7 +121,7 @@ const PublicLandingPage: React.FC = () => {
                 FAQ
               </button>
               <button 
-                onClick={() => navigate('/auth')}
+                onClick={onLogin}
                 className="w-full mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold"
               >
                 Get Started
@@ -157,7 +152,7 @@ const PublicLandingPage: React.FC = () => {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
               <button 
-                onClick={() => navigate('/auth')}
+                onClick={onLogin}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center"
               >
                 <Download className="w-5 h-5 mr-2" />
@@ -280,7 +275,7 @@ const PublicLandingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
                 <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -360,7 +355,7 @@ const PublicLandingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-16">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-16">
             <div className="text-center">
               <div className="text-4xl font-bold text-blue-600 mb-2">10,000+</div>
               <div className="text-gray-600">Lead Magnets Created</div>
@@ -375,7 +370,7 @@ const PublicLandingPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             <div className="bg-gray-50 p-6 rounded-xl">
               <div className="flex items-center mb-4">
                 <div className="flex text-yellow-400">
@@ -425,7 +420,16 @@ const PublicLandingPage: React.FC = () => {
       </section>
 
       {/* Pricing Section */}
-      <PricingSection />
+      <PricingSection 
+        onPaymentSuccess={(paymentId, plan, billing) => {
+          console.log('Payment successful on landing page:', { paymentId, plan, billing });
+          // You can redirect to dashboard or show success message
+        }}
+        onPaymentError={(error) => {
+          console.error('Payment failed on landing page:', error);
+          // You can show error message
+        }}
+      />
 
       {/* FAQ Section */}
       <section id="faq" className="py-20 bg-gray-50">
@@ -506,7 +510,7 @@ const PublicLandingPage: React.FC = () => {
           </p>
           
           <button 
-            onClick={() => navigate('/auth')}
+            onClick={onLogin}
             className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center mx-auto mb-4"
           >
             <Download className="w-5 h-5 mr-2" />

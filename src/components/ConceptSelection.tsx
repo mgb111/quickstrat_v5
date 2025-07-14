@@ -129,7 +129,7 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
                   />
                 </div>
 
-                <div>
+          <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Main Action Label
                   </label>
@@ -140,9 +140,9 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
                     onChange={e => setCustomization({ ...customization, mainAction: e.target.value })} 
                     placeholder="e.g. Book a Call" 
                   />
-                </div>
+          </div>
 
-                <div>
+          <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Booking Link
                   </label>
@@ -153,9 +153,9 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
                     onChange={e => setCustomization({ ...customization, bookingLink: e.target.value })} 
                     placeholder="e.g. https://calendly.com/your-link" 
                   />
-                </div>
+          </div>
 
-                <div>
+          <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Website
                   </label>
@@ -166,9 +166,9 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
                     onChange={e => setCustomization({ ...customization, website: e.target.value })} 
                     placeholder="e.g. https://yourwebsite.com" 
                   />
-                </div>
+          </div>
 
-                <div>
+          <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Support Email
                   </label>
@@ -180,7 +180,7 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
                     placeholder="e.g. support@yourwebsite.com" 
                   />
                 </div>
-              </div>
+          </div>
 
               {/* Right Column - Branding */}
               <div className="space-y-6">
@@ -189,34 +189,34 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
                   Branding & Design
                 </h3>
 
-                <div>
+          <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Logo Upload
                   </label>
-                  <input
-                    type="file"
-                    accept="image/*"
+            <input
+              type="file"
+              accept="image/*"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    onChange={e => {
-                      const file = e.target.files && e.target.files[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setCustomization({ ...customization, logo: reader.result as string });
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                  />
-                  {customization.logo && (
+              onChange={e => {
+                const file = e.target.files && e.target.files[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    setCustomization({ ...customization, logo: reader.result as string });
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+            {customization.logo && (
                     <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                       <img src={customization.logo} alt="Logo Preview" className="h-12 object-contain mx-auto" />
                     </div>
-                  )}
-                </div>
+            )}
+          </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
+          <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Primary Color
                     </label>
@@ -229,9 +229,9 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
                       />
                       <span className="text-sm text-gray-600">{customization.primaryColor}</span>
                     </div>
-                  </div>
+          </div>
 
-                  <div>
+          <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Secondary Color
                     </label>
@@ -245,9 +245,9 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
                       <span className="text-sm text-gray-600">{customization.secondaryColor}</span>
                     </div>
                   </div>
-                </div>
+          </div>
 
-                <div>
+          <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Font Family
                   </label>

@@ -88,52 +88,52 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left Column */}
-            <div className="space-y-6">
-              {/* Name */}
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Your Name (for personalization)
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="e.g., Manish"
-                  required
-                  disabled={isLoading || localLoading}
-                />
-              </div>
+          <div className="space-y-6">
+            {/* Name */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                Your Name (for personalization)
+              </label>
+              <input
+                type="text"
+                id="name"
+                value={formData.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="e.g., Manish"
+                required
+                disabled={isLoading || localLoading}
+              />
+            </div>
 
-              {/* Brand Name */}
-              <div>
-                <label htmlFor="brand_name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Brand/Company Name *
-                </label>
-                <input
-                  type="text"
-                  id="brand_name"
-                  value={formData.brand_name}
-                  onChange={(e) => handleInputChange('brand_name', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="e.g., TechCorp Solutions"
-                  required
-                  disabled={isLoading || localLoading}
-                />
-              </div>
+            {/* Brand Name */}
+            <div>
+              <label htmlFor="brand_name" className="block text-sm font-medium text-gray-700 mb-2">
+                Brand/Company Name *
+              </label>
+              <input
+                type="text"
+                id="brand_name"
+                value={formData.brand_name}
+                onChange={(e) => handleInputChange('brand_name', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="e.g., TechCorp Solutions"
+                required
+                disabled={isLoading || localLoading}
+              />
+            </div>
 
-              {/* Niche */}
-              <div>
-                <label htmlFor="niche" className="block text-sm font-medium text-gray-700 mb-2">
-                  Niche/Industry *
-                </label>
-                <input
-                  type="text"
-                  id="niche"
-                  value={formData.niche}
-                  onChange={(e) => handleInputChange('niche', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            {/* Niche */}
+            <div>
+              <label htmlFor="niche" className="block text-sm font-medium text-gray-700 mb-2">
+                Niche/Industry *
+              </label>
+              <input
+                type="text"
+                id="niche"
+                value={formData.niche}
+                onChange={(e) => handleInputChange('niche', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="e.g., Digital Marketing, SaaS, E-commerce"
                   required
                   disabled={isLoading || localLoading}
@@ -152,10 +152,10 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
                   onChange={(e) => handleInputChange('position', e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="e.g., Founder, CEO, Training Manager"
-                  required
-                  disabled={isLoading || localLoading}
-                />
-              </div>
+                required
+                disabled={isLoading || localLoading}
+              />
+            </div>
 
               {/* Tone */}
               <div>
@@ -180,56 +180,56 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Target Audience */}
-              <div>
-                <label htmlFor="target_audience" className="block text-sm font-medium text-gray-700 mb-2">
-                  Target Audience *
-                </label>
-                <textarea
-                  id="target_audience"
-                  value={formData.target_audience}
-                  onChange={(e) => handleInputChange('target_audience', e.target.value)}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Describe your ideal customer (e.g., Small business owners aged 30-50 who struggle with digital marketing)"
-                  required
-                  disabled={isLoading || localLoading}
-                />
-              </div>
+            {/* Target Audience */}
+            <div>
+              <label htmlFor="target_audience" className="block text-sm font-medium text-gray-700 mb-2">
+                Target Audience *
+              </label>
+              <textarea
+                id="target_audience"
+                value={formData.target_audience}
+                onChange={(e) => handleInputChange('target_audience', e.target.value)}
+                rows={3}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Describe your ideal customer (e.g., Small business owners aged 30-50 who struggle with digital marketing)"
+                required
+                disabled={isLoading || localLoading}
+              />
+            </div>
 
-              {/* Problem Statement */}
-              <div>
-                <label htmlFor="problem_statement" className="block text-sm font-medium text-gray-700 mb-2">
-                  Customer Problem Statement *
-                </label>
-                <textarea
-                  id="problem_statement"
-                  value={formData.problem_statement}
-                  onChange={(e) => handleInputChange('problem_statement', e.target.value)}
-                  rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Describe the main problem your customers face (e.g., Small business owners struggle to create effective social media strategies because they lack time, knowledge, and a clear system to follow)"
-                  required
-                  disabled={isLoading || localLoading}
-                />
-              </div>
+            {/* Problem Statement */}
+            <div>
+              <label htmlFor="problem_statement" className="block text-sm font-medium text-gray-700 mb-2">
+                Customer Problem Statement *
+              </label>
+              <textarea
+                id="problem_statement"
+                value={formData.problem_statement}
+                onChange={(e) => handleInputChange('problem_statement', e.target.value)}
+                rows={4}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Describe the main problem your customers face (e.g., Small business owners struggle to create effective social media strategies because they lack time, knowledge, and a clear system to follow)"
+                required
+                disabled={isLoading || localLoading}
+              />
+            </div>
 
-              {/* Desired Outcome */}
-              <div>
-                <label htmlFor="desired_outcome" className="block text-sm font-medium text-gray-700 mb-2">
-                  Desired Outcome *
-                </label>
-                <textarea
-                  id="desired_outcome"
-                  value={formData.desired_outcome}
-                  onChange={(e) => handleInputChange('desired_outcome', e.target.value)}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="What do your customers want to achieve? (e.g., Create a consistent social media presence that generates leads and builds brand awareness)"
-                  required
-                  disabled={isLoading || localLoading}
-                />
-              </div>
+            {/* Desired Outcome */}
+            <div>
+              <label htmlFor="desired_outcome" className="block text-sm font-medium text-gray-700 mb-2">
+                Desired Outcome *
+              </label>
+              <textarea
+                id="desired_outcome"
+                value={formData.desired_outcome}
+                onChange={(e) => handleInputChange('desired_outcome', e.target.value)}
+                rows={3}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="What do your customers want to achieve? (e.g., Create a consistent social media presence that generates leads and builds brand awareness)"
+                required
+                disabled={isLoading || localLoading}
+              />
+            </div>
             </div>
           </div>
 
