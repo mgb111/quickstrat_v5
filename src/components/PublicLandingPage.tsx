@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Check, Zap, Users, FileText, TrendingUp, Target, Download, Play, Star, ChevronDown } from 'lucide-react';
 import PricingSection from './PricingSection';
+import { useNavigate } from 'react-router-dom';
 
 interface PublicLandingPageProps {
   onGetStarted: () => void;
   onLogin: () => void;
 }
 
-const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
-
+const PublicLandingPage: React.FC<PublicLandingPageProps> = () => {
+  const navigate = useNavigate();
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -73,7 +74,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 FAQ
               </button>
               <button 
-                onClick={onLogin}
+                onClick={() => navigate('/auth')}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
               >
                 Get Started
@@ -121,7 +122,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 FAQ
               </button>
               <button 
-                onClick={onLogin}
+                onClick={() => navigate('/auth')}
                 className="w-full mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold"
               >
                 Get Started
@@ -152,7 +153,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
               <button 
-                onClick={onLogin}
+                onClick={() => navigate('/auth')}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center"
               >
                 <Download className="w-5 h-5 mr-2" />
@@ -510,7 +511,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
           </p>
           
           <button 
-            onClick={onLogin}
+            onClick={() => navigate('/auth')}
             className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center mx-auto mb-4"
           >
             <Download className="w-5 h-5 mr-2" />

@@ -51,6 +51,24 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
     const originalConsoleError = console.error;
     const originalConsoleWarn = console.warn;
     const originalConsoleLog = console.log;
+    const originalWindowOnError = window.onerror;
+    const errorListener = (event: ErrorEvent) => {
+      if (typeof event.message === 'string' && shouldSuppressRazorpayError(event.message)) {
+        event.preventDefault();
+        return false;
+      }
+    };
+    window.onerror = function (...args: any[]) {
+      const message = args[0];
+      if (typeof message === 'string' && shouldSuppressRazorpayError(message)) {
+        return true; // Suppress
+      }
+      if (typeof originalWindowOnError === 'function') {
+        return originalWindowOnError.apply(this, args as [string | Event, string?, number?, number?, Error?]);
+      }
+      return false;
+    };
+    window.addEventListener('error', errorListener, true);
 
     console.error = (...args) => {
       if (shouldSuppressRazorpayError(args[0])) return;
@@ -121,6 +139,8 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
       console.error = originalConsoleError;
       console.warn = originalConsoleWarn;
       console.log = originalConsoleLog;
+      window.onerror = originalWindowOnError;
+      window.removeEventListener('error', errorListener, true);
     };
   }, [hasValidConfig]);
 
