@@ -216,6 +216,41 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
     };
   }, [billingCycle, currentButtonId, isRazorpayLoaded, hasValidConfig]);
 
+  // Remove visible Razorpay error messages from the DOM after button loads
+  useEffect(() => {
+    if (!isRazorpayLoaded || !formRef.current) return;
+    const ERROR_TEXTS = [
+      'Payment Button is not added',
+      'Payment Button cannot be added',
+      'Provide a valid payment button id'
+    ];
+    const cleanupErrors = () => {
+      if (!formRef.current) return;
+      // Remove any direct text nodes or elements containing the error text
+      const elements = formRef.current.querySelectorAll('*');
+      elements.forEach(el => {
+        ERROR_TEXTS.forEach(errText => {
+          if (el.textContent && el.textContent.includes(errText)) {
+            el.remove();
+          }
+        });
+      });
+      // Also check for direct text nodes (rare)
+      Array.from(formRef.current.childNodes).forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE && ERROR_TEXTS.some(errText => node.textContent?.includes(errText))) {
+          node.parentNode?.removeChild(node);
+        }
+      });
+    };
+    // Run cleanup every 500ms for 5 seconds after load
+    const interval = setInterval(cleanupErrors, 500);
+    const timeout = setTimeout(() => clearInterval(interval), 5000);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [isRazorpayLoaded]);
+
   // If no valid configuration, show a clean fallback
   if (!hasValidConfig) {
     return (
