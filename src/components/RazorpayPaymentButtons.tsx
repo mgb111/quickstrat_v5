@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 
 const BUTTON_IDS = {
-  monthly: 'pl_QsXORcrhWghFgg',
-  yearly: 'pl_QsXQiWLwBcQ8x5'
+  monthly: 'pl_QtIGO5QujXNyrB',
+  yearly: 'pl_QtILq0eW8eEBIs'
 };
 
 interface RazorpayPaymentButtonsProps {
