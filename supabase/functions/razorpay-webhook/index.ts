@@ -49,12 +49,22 @@ serve(async (req) => {
     }
 
     const payment = event.payload.payment.entity;
-    // You may need to adjust this depending on your Razorpay button setup
+    // Determine plan based on payment_button_id
+    const paymentButtonId = payment.payment_button_id;
+    let plan: 'monthly' | 'yearly' | null = null;
+    if (paymentButtonId === 'pl_QtIGO5QujXNyrB') {
+      plan = 'monthly';
+    } else if (paymentButtonId === 'pl_QtILq0eW8eEBIs') {
+      plan = 'yearly';
+    }
     const email = payment.email || (payment.notes && payment.notes.email);
-    const plan = payment.notes && payment.notes.plan; // 'monthly' or 'yearly'
-    if (!email || !plan) {
-      console.error('Missing email or plan in payment entity', payment);
-      return new Response('Missing email or plan', { status: 400, headers: corsHeaders });
+    if (!email) {
+      console.error('Missing email in payment entity', payment);
+      return new Response('Missing email', { status: 400, headers: corsHeaders });
+    }
+    if (!plan) {
+      console.error('Unknown payment_button_id', paymentButtonId);
+      return new Response('Unknown payment_button_id', { status: 400, headers: corsHeaders });
     }
 
     // Supabase client
