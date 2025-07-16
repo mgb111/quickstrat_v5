@@ -1,21 +1,10 @@
 -- Enable necessary extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Create users table for additional user data
-CREATE TABLE IF NOT EXISTS public.users (
-    id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
-    email TEXT UNIQUE NOT NULL,
-    plan TEXT DEFAULT 'free' CHECK (plan IN ('free', 'pro', 'enterprise')),
-    subscription_status TEXT DEFAULT 'active' CHECK (subscription_status IN ('active', 'cancelled', 'past_due')),
-    settings JSONB DEFAULT '{}',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
 -- Create user_profiles table for extended profile data
 CREATE TABLE IF NOT EXISTS public.user_profiles (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     company_name TEXT,
     website TEXT,
     industry TEXT,
@@ -38,8 +27,6 @@ CREATE TABLE IF NOT EXISTS public.user_sessions (
 );
 
 -- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
-CREATE INDEX IF NOT EXISTS idx_users_plan ON public.users(plan);
 CREATE INDEX IF NOT EXISTS idx_user_profiles_user_id ON public.user_profiles(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_sessions_user_id ON public.user_sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_sessions_token ON public.user_sessions(session_token);
@@ -126,28 +113,21 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Row Level Security (RLS) Policies
 
 -- Enable RLS on all tables
-ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_sessions ENABLE ROW LEVEL SECURITY;
 
 -- Users can only access their own data
-CREATE POLICY "Users can view own profile" ON public.users
-    FOR SELECT USING (auth.uid() = id);
-
-CREATE POLICY "Users can update own profile" ON public.users
-    FOR UPDATE USING (auth.uid() = id);
-
-CREATE POLICY "Users can view own profile data" ON public.user_profiles
+CREATE POLICY "Users can view own profile" ON public.user_profiles
     FOR SELECT USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can update own profile data" ON public.user_profiles
+CREATE POLICY "Users can update own profile" ON public.user_profiles
     FOR UPDATE USING (auth.uid() = user_id);
 
 CREATE POLICY "Users can view own sessions" ON public.user_sessions
     FOR SELECT USING (auth.uid() = user_id);
 
 -- Update existing campaign policies to include user_id
-ALTER TABLE public.campaigns ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES public.users(id) ON DELETE CASCADE;
+ALTER TABLE public.campaigns ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE;
 
 -- Update campaign policies
 DROP POLICY IF EXISTS "Users can view own campaigns" ON public.campaigns;
@@ -220,7 +200,6 @@ CREATE INDEX IF NOT EXISTS idx_emails_campaign_id ON public.emails(campaign_id);
 
 -- Grant necessary permissions
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
-GRANT ALL ON public.users TO authenticated;
 GRANT ALL ON public.user_profiles TO authenticated;
 GRANT ALL ON public.user_sessions TO authenticated;
 GRANT ALL ON public.campaigns TO authenticated;
@@ -234,7 +213,6 @@ GRANT INSERT ON public.emails TO anon;
 CREATE SEQUENCE IF NOT EXISTS public.user_id_seq;
 
 -- Add comments for documentation
-COMMENT ON TABLE public.users IS 'Extended user data for the SaaS platform';
 COMMENT ON TABLE public.user_profiles IS 'Additional profile information for users';
 COMMENT ON TABLE public.user_sessions IS 'User session tracking for analytics';
 COMMENT ON FUNCTION public.handle_new_user() IS 'Automatically creates user records when auth.users is created';

@@ -4,22 +4,12 @@
 -- Drop existing tables if they exist
 DROP TABLE IF EXISTS leads;
 DROP TABLE IF EXISTS campaigns;
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS emails;
-
--- Create users table
-CREATE TABLE users (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  email text UNIQUE NOT NULL,
-  plan text DEFAULT 'free',
-  campaign_count integer DEFAULT 0,
-  created_at timestamptz DEFAULT now()
-);
 
 -- Create campaigns table
 CREATE TABLE campaigns (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id uuid REFERENCES users(id) ON DELETE CASCADE,
+  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
   name text NOT NULL,
   customer_profile text NOT NULL,
   problem_statement text NOT NULL,
@@ -52,24 +42,9 @@ CREATE TABLE emails (
 );
 
 -- Enable Row Level Security
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE campaigns ENABLE ROW LEVEL SECURITY;
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE emails ENABLE ROW LEVEL SECURITY;
-
--- Create policies for users table
-CREATE POLICY "users_select_policy" ON users
-  FOR SELECT TO authenticated
-  USING (auth.uid() = id);
-
-CREATE POLICY "users_insert_policy" ON users
-  FOR INSERT TO authenticated
-  WITH CHECK (auth.uid() = id);
-
-CREATE POLICY "users_update_policy" ON users
-  FOR UPDATE TO authenticated
-  USING (auth.uid() = id)
-  WITH CHECK (auth.uid() = id);
 
 -- Create policies for campaigns table
 CREATE POLICY "campaigns_select_policy" ON campaigns
