@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Mail, Send, Loader2 } from 'lucide-react';
+import { Mail, Send, CheckCircle, Loader2 } from 'lucide-react';
+import { AnalyticsService, AnalyticsEvents } from '../lib/analyticsService';
+import { supabase } from '../lib/supabase';
 
 interface EmailCaptureProps {
   onEmailSubmitted: () => void;
@@ -9,6 +11,7 @@ interface EmailCaptureProps {
 const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignId }) => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [localSubmitting, setLocalSubmitting] = useState(false);
 
@@ -19,17 +22,43 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
     setIsSubmitting(true);
     setError(null);
     
+    // Track email capture attempt
+    await AnalyticsService.trackConversion(AnalyticsEvents.EMAIL_CAPTURE, {
+      email_provided: true,
+      campaign_id: campaignId
+    });
+    
     try {
       await onEmailSubmitted();
       setEmail('');
       
+      // Track successful email capture
+      await AnalyticsService.trackConversion('email_capture_success', {
+        email_provided: true,
+        campaign_id: campaignId
+      });
     } catch (err: any) {
+      // Track email capture error
+      await AnalyticsService.trackError('email_capture_failed', err.message || 'Unknown error', 'email_capture', {
+        campaign_id: campaignId
+      });
+      
       setError('Failed to submit email. Please try again.');
     } finally {
       setIsSubmitting(false);
       setLocalSubmitting(false);
     }
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+        <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-green-800 mb-2">Email Submitted Successfully!</h3>
+        <p className="text-green-700">Your lead magnet is ready for download below.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">

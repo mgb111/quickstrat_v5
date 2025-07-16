@@ -24,10 +24,105 @@ export class CampaignService {
       throw new Error('Authentication required to create campaigns');
     }
 
+    // Fetch subscription info
+    const { data: userRecord, error: userFetchError } = await supabase
+      .from('users')
+      .select('plan, subscription_expiry, campaign_count, campaign_count_period')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (userFetchError) {
+      throw new Error('Failed to fetch user subscription info');
+    }
+    const now = new Date();
+    const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    // Check subscription expiry
+    if (!userRecord || userRecord.plan === 'free' || !userRecord.subscription_expiry || new Date(userRecord.subscription_expiry) < now) {
+      throw new Error('You must have an active subscription to create campaigns.');
+    }
+    // Reset campaign count if period changed
+    if (userRecord.campaign_count_period !== currentPeriod) {
+      const { error: resetError } = await supabase
+        .from('users')
+        .update({ campaign_count: 0, campaign_count_period: currentPeriod })
+        .eq('id', user.id);
+      if (resetError) {
+        throw new Error('Failed to reset campaign count for new period.');
+      }
+      userRecord.campaign_count = 0;
+      userRecord.campaign_count_period = currentPeriod;
+    }
+    // Enforce campaign limit
+    if (userRecord.campaign_count >= 5) {
+      throw new Error('You have reached your campaign limit for this month.');
+    }
+
+    console.log('✅ User authenticated:', user.email);
+    console.log('🆔 User ID:', user.id);
+
+    // Check if user exists in public.users table
+    console.log('🔍 Checking if user exists in public.users table...');
+    const { data: publicUser, error: userError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', user.id)
+      .single();
+
+    console.log('📊 User check result:', { 
+      publicUser, 
+      userError, 
+      userId: user.id,
+      hasUser: !!publicUser,
+      errorMessage: userError?.message 
+    });
+
+    // Ensure user exists in public.users table (upsert to handle duplicates)
+    console.log('➕ Ensuring user record exists for:', user.id, user.email);
+    
+    try {
+      const { data: newUser, error: upsertError } = await supabase
+        .from('users')
+        .upsert({
+          id: user.id,
+          email: user.email
+        }, {
+          onConflict: 'id',
+          ignoreDuplicates: false
+        })
+        .select()
+        .single();
+
+      if (upsertError) {
+        console.error('❌ Failed to upsert user record:', upsertError);
+        console.error('❌ Error details:', {
+          message: upsertError.message,
+          details: upsertError.details,
+          hint: upsertError.hint,
+          code: upsertError.code
+        });
+        // Don't throw error for duplicate users, just log it
+        if (upsertError.code === '23505') {
+          console.log('ℹ️ User already exists, continuing with campaign creation...');
+        } else {
+          throw new Error(`Failed to initialize user profile: ${upsertError.message}`);
+        }
+      } else {
+        console.log('✅ User record ensured successfully:', newUser);
+      }
+    } catch (error: any) {
+      console.error('❌ Error creating user record:', error);
+      // If it's a duplicate key error, just continue
+      if (error.code === '23505' || error.message?.includes('duplicate key')) {
+        console.log('ℹ️ User already exists, continuing with campaign creation...');
+      } else {
+        throw error;
+      }
+    }
+
     // Generate unique slug
     console.log('🔗 Generating unique slug...');
     const { data: slugData } = await supabase.rpc('generate_unique_slug');
     const slug = slugData || `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    console.log('🔗 Generated slug:', slug);
 
     // Merge founder intro fields into pdf_content
     let pdfContentWithFounder = output.pdf_content;
@@ -51,20 +146,43 @@ export class CampaignService {
       lead_magnet_title: output.landing_page.headline,
       lead_magnet_content: pdfContentWithFounder,
       landing_page_copy: output.landing_page,
-      social_posts: output.social_posts,
-      created_at: new Date().toISOString()
+      social_posts: [
+        output.social_posts.linkedin,
+        output.social_posts.twitter,
+        output.social_posts.instagram
+      ]
     };
 
+    console.log('📊 Campaign data prepared:', {
+      user_id: campaignData.user_id,
+      name: campaignData.name,
+      slug: campaignData.landing_page_slug,
+      hasContent: !!campaignData.lead_magnet_content
+    });
+
+    console.log('💾 Inserting campaign into database...');
     const { data, error } = await supabase
       .from('campaigns')
-      .insert([campaignData])
+      .insert(campaignData)
       .select()
       .single();
 
     if (error) {
-      console.error('❌ Error creating campaign:', error);
-      throw new Error('Failed to create campaign');
+      console.error('❌ Campaign creation error:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+      throw new Error(`Failed to create campaign: ${error.message}`);
     }
+
+    // Increment campaign_count after successful creation
+    await supabase
+      .from('users')
+      .update({ campaign_count: userRecord.campaign_count + 1 })
+      .eq('id', user.id);
 
     console.log('✅ Campaign created successfully:', data);
     return data;
@@ -316,21 +434,5 @@ export class CampaignService {
       pdfsDownloaded: pdfDownloadCount || 0,
       conversionRate: emailCount ? ((pdfDownloadCount || 0) / emailCount * 100).toFixed(1) : '0'
     };
-  }
-
-  // Check if user has paid for a campaign
-  static async hasPaidForCampaign(userId: string, campaignId: string): Promise<boolean> {
-    const { data, error } = await supabase
-      .from('campaign_payments')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('campaign_id', campaignId)
-      .eq('status', 'paid')
-      .maybeSingle();
-    if (error) {
-      console.error('Error checking campaign payment:', error);
-      return false;
-    }
-    return !!data;
   }
 } 
