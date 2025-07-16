@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS public.user_profiles (
 -- Create user_sessions table for tracking user activity
 CREATE TABLE IF NOT EXISTS public.user_sessions (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     session_token TEXT UNIQUE NOT NULL,
     ip_address INET,
     user_agent TEXT,
