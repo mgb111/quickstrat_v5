@@ -24,82 +24,81 @@ export class CampaignService {
       throw new Error('Authentication required to create campaigns');
     }
 
-    // Fetch subscription info
-    const { data: userRecord, error: userFetchError } = await supabase
-      .from('users')
+    // Fetch user profile info
+    const { data: userProfile, error: userProfileError } = await supabase
+      .from('user_profiles')
       .select('plan, subscription_expiry, campaign_count, campaign_count_period')
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .maybeSingle();
-    if (userFetchError) {
-      throw new Error('Failed to fetch user subscription info');
+    if (userProfileError) {
+      throw new Error('Failed to fetch user profile info');
     }
     const now = new Date();
     const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
     // Check subscription expiry
-    if (!userRecord || userRecord.plan === 'free' || !userRecord.subscription_expiry || new Date(userRecord.subscription_expiry) < now) {
+    if (!userProfile || userProfile.plan === 'free' || !userProfile.subscription_expiry || new Date(userProfile.subscription_expiry) < now) {
       throw new Error('You must have an active subscription to create campaigns.');
     }
     // Reset campaign count if period changed
-    if (userRecord.campaign_count_period !== currentPeriod) {
+    if (userProfile.campaign_count_period !== currentPeriod) {
       const { error: resetError } = await supabase
-        .from('users')
+        .from('user_profiles')
         .update({ campaign_count: 0, campaign_count_period: currentPeriod })
-        .eq('id', user.id);
+        .eq('user_id', user.id);
       if (resetError) {
         throw new Error('Failed to reset campaign count for new period.');
       }
-      userRecord.campaign_count = 0;
-      userRecord.campaign_count_period = currentPeriod;
+      userProfile.campaign_count = 0;
+      userProfile.campaign_count_period = currentPeriod;
     }
     // Enforce campaign limit
-    if (userRecord.campaign_count >= 5) {
+    if (userProfile.campaign_count >= 5) {
       throw new Error('You have reached your campaign limit for this month.');
     }
 
     console.log('✅ User authenticated:', user.email);
     console.log('🆔 User ID:', user.id);
 
-    // Check if user exists in public.users table
-    console.log('🔍 Checking if user exists in public.users table...');
-    const { data: publicUser, error: userError } = await supabase
-      .from('users')
-      .select('id')
-      .eq('id', user.id)
+    // Check if user profile exists
+    console.log('🔍 Checking if user profile exists in user_profiles table...');
+    const { data: publicProfile, error: userProfileCheckError } = await supabase
+      .from('user_profiles')
+      .select('user_id')
+      .eq('user_id', user.id)
       .single();
 
-    console.log('📊 User check result:', { 
-      publicUser, 
-      userError, 
-      userId: user.id,
-      hasUser: !!publicUser,
-      errorMessage: userError?.message 
+    console.log('📊 User profile check result:', { 
+      publicProfile, 
+      userProfileCheckError, 
+      hasProfile: !!publicProfile,
+      errorMessage: userProfileCheckError?.message 
     });
 
-    // Ensure user exists in public.users table (upsert to handle duplicates)
+    // Ensure user profile exists in user_profiles table (upsert to handle duplicates)
     try {
-      const { data: newUser, error: upsertError } = await supabase
-        .from('users')
+      const { data: newProfile, error: upsertError } = await supabase
+        .from('user_profiles')
         .upsert({
-          id: user.id,
+          user_id: user.id,
           email: user.email
         }, {
-          onConflict: 'id'
+          onConflict: 'user_id'
         })
         .select()
         .single();
 
       if (upsertError && upsertError.code !== '23505') {
-        console.error('❌ Failed to upsert user record:', upsertError);
+        console.error('❌ Failed to upsert user profile:', upsertError);
         throw new Error(`Failed to initialize user profile: ${upsertError.message}`);
       } else if (upsertError && upsertError.code === '23505') {
-        console.log('ℹ️ User already exists, continuing with campaign creation...');
+        console.log('ℹ️ User profile already exists, continuing with campaign creation...');
       } else {
-        console.log('✅ User record ensured successfully:', newUser);
+        console.log('✅ User profile ensured successfully:', newProfile);
       }
     } catch (error: any) {
-      console.error('❌ Error creating user record:', error);
+      console.error('❌ Error creating user profile:', error);
       if (error.code === '23505' || error.message?.includes('duplicate key')) {
-        console.log('ℹ️ User already exists, continuing with campaign creation...');
+        console.log('ℹ️ User profile already exists, continuing with campaign creation...');
       } else {
         throw error;
       }
@@ -167,9 +166,9 @@ export class CampaignService {
 
     // Increment campaign_count after successful creation
     await supabase
-      .from('users')
-      .update({ campaign_count: userRecord.campaign_count + 1 })
-      .eq('id', user.id);
+      .from('user_profiles')
+      .update({ campaign_count: userProfile.campaign_count + 1 })
+      .eq('user_id', user.id);
 
     console.log('✅ Campaign created successfully:', data);
     return data;
