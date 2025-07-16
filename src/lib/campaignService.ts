@@ -435,4 +435,20 @@ export class CampaignService {
       conversionRate: emailCount ? ((pdfDownloadCount || 0) / emailCount * 100).toFixed(1) : '0'
     };
   }
+
+  // Check if user has paid for a campaign
+  static async hasPaidForCampaign(userId: string, campaignId: string): Promise<boolean> {
+    const { data, error } = await supabase
+      .from('campaign_payments')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('campaign_id', campaignId)
+      .eq('status', 'paid')
+      .maybeSingle();
+    if (error) {
+      console.error('Error checking campaign payment:', error);
+      return false;
+    }
+    return !!data;
+  }
 } 

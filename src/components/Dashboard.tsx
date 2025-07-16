@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserCheck } from 'lucide-react';
 import { Campaign, Lead } from '../types';
+import RazorpayPaymentButtons from './RazorpayPaymentButtons';
 import { CampaignService } from '../lib/campaignService';
 
 
@@ -16,6 +17,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingLeads, setIsLoadingLeads] = useState(false);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
+  const [paidCampaigns, setPaidCampaigns] = useState<{ [key: string]: boolean }>({});
 
   const [error, setError] = useState<string | null>(null);
 
@@ -29,6 +31,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
       loadStats(selectedCampaign.id);
     }
   }, [selectedCampaign]);
+
+  useEffect(() => {
+    if (user && campaigns) {
+      campaigns.forEach(async (campaign) => {
+        const hasPaid = await CampaignService.hasPaidForCampaign(user.id, campaign.id);
+        setPaidCampaigns(prev => ({ ...prev, [campaign.id]: hasPaid }));
+      });
+    }
+  }, [user, campaigns]);
 
   const loadCampaigns = async () => {
     try {

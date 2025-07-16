@@ -15,17 +15,15 @@ serve(async (req) => {
     if (req.method !== 'POST') {
       return new Response('Method Not Allowed', { status: 405, headers: corsHeaders });
     }
-    const { email, plan } = await req.json();
-    if (!email || !['monthly', 'yearly'].includes(plan)) {
+    const { user_id, campaign_id } = await req.json();
+    if (!user_id || !campaign_id) {
       return new Response('Invalid request', { status: 400, headers: corsHeaders });
     }
 
-    // Set plan details
-    const plans = {
-      monthly: { amount: 4900, currency: 'INR', description: 'Monthly Premium Subscription' },
-      yearly: { amount: 39900, currency: 'INR', description: 'Yearly Premium Subscription' }
-    };
-    const { amount, currency, description } = plans[plan];
+    // Set price for single campaign
+    const amount = 900; // 900 INR = ₹9.00 (Razorpay expects paise)
+    const currency = 'INR';
+    const description = 'Unlock Campaign';
 
     // Razorpay credentials
     const key_id = Deno.env.get('RAZORPAY_KEY_ID');
@@ -44,9 +42,9 @@ serve(async (req) => {
       body: JSON.stringify({
         amount, // in paise
         currency,
-        receipt: `receipt_${Date.now()}`,
+        receipt: `campaign_${campaign_id}_${Date.now()}`,
         payment_capture: 1,
-        notes: { email, plan }
+        notes: { user_id, campaign_id }
       })
     });
     if (!orderRes.ok) {
