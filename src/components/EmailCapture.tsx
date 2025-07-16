@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Mail, Send, Loader2 } from 'lucide-react';
-import { AnalyticsService, AnalyticsEvents } from '../lib/analyticsService';
 
 interface EmailCaptureProps {
   onEmailSubmitted: () => void;
@@ -20,27 +19,11 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
     setIsSubmitting(true);
     setError(null);
     
-    // Track email capture attempt
-    await AnalyticsService.trackConversion(AnalyticsEvents.EMAIL_CAPTURE, {
-      email_provided: true,
-      campaign_id: campaignId
-    });
-    
     try {
       await onEmailSubmitted();
       setEmail('');
       
-      // Track successful email capture
-      await AnalyticsService.trackConversion('email_capture_success', {
-        email_provided: true,
-        campaign_id: campaignId
-      });
     } catch (err: any) {
-      // Track email capture error
-      await AnalyticsService.trackError('email_capture_failed', err.message || 'Unknown error', 'email_capture', {
-        campaign_id: campaignId
-      });
-      
       setError('Failed to submit email. Please try again.');
     } finally {
       setIsSubmitting(false);
