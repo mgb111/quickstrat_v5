@@ -3,6 +3,7 @@ import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserC
 import { Campaign, Lead } from '../types';
 import RazorpayPaymentButtons from './RazorpayPaymentButtons';
 import { CampaignService } from '../lib/campaignService';
+import { useAuth } from '../contexts/AuthContext';
 
 
 interface DashboardProps {
@@ -10,6 +11,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
+  const { user } = useAuth();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -118,6 +120,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
       setError('Failed to export leads');
     }
   };
+
+  if (!user) {
+    return <div>Loading user...</div>;
+  }
 
   if (isLoading) {
     return (
