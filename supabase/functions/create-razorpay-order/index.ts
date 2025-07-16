@@ -1,5 +1,4 @@
 Deno.serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', {
       status: 200,
@@ -11,48 +10,37 @@ Deno.serve(async (req) => {
     });
   }
 
-  if (req.method !== 'POST') {
-    return new Response('Method Not Allowed', {
-      status: 405,
-      headers: { 'Access-Control-Allow-Origin': '*' }
-    });
-  }
-
   const body = await req.json();
 
   const key_id = Deno.env.get('RAZORPAY_KEY_ID')!;
   const key_secret = Deno.env.get('RAZORPAY_KEY_SECRET')!;
-  const authHeader = 'Basic ' + btoa(`${key_id}:${key_secret}`);
+  const credentials = `${key_id}:${key_secret}`;
 
-  const razorpayRes = await fetch('https://api.razorpay.com/v1/orders', {
+  // Base64 encode manually
+  const encoded = btoa(credentials); // Works in Deno Edge Functions
+  const authHeader = `Basic ${encoded}`;
+
+  const response = await fetch('https://api.razorpay.com/v1/orders', {
     method: 'POST',
     headers: {
       'Authorization': authHeader,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       amount: body.amount,
       currency: body.currency,
       receipt: body.receipt,
-      payment_capture: 1
-    })
+      payment_capture: 1,
+    }),
   });
 
-  if (!razorpayRes.ok) {
-    const err = await razorpayRes.text();
-    return new Response(`Razorpay order error: ${err}`, {
-      status: 500,
-      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' }
-    });
-  }
+  const data = await response.json();
 
-  const result = await razorpayRes.json();
-
-  return new Response(JSON.stringify(result), {
-    status: 200,
+  return new Response(JSON.stringify(data), {
+    status: response.status,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
 }); 
