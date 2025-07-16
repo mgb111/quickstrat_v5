@@ -85,7 +85,7 @@ export class CampaignService {
           id: user.id,
           email: user.email
         }, {
-          onConflict: 'id',
+          onConflict: 'email', // changed from 'id' to 'email' to avoid duplicate email errors
           ignoreDuplicates: false
         })
         .select()
