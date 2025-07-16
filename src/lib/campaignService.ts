@@ -76,8 +76,6 @@ export class CampaignService {
     });
 
     // Ensure user exists in public.users table (upsert to handle duplicates)
-    console.log('➕ Ensuring user record exists for:', user.id, user.email);
-    
     try {
       const { data: newUser, error: upsertError } = await supabase
         .from('users')
@@ -85,32 +83,21 @@ export class CampaignService {
           id: user.id,
           email: user.email
         }, {
-          onConflict: 'id',
-          ignoreDuplicates: false
+          onConflict: 'id'
         })
         .select()
         .single();
 
-      if (upsertError) {
+      if (upsertError && upsertError.code !== '23505') {
         console.error('❌ Failed to upsert user record:', upsertError);
-        console.error('❌ Error details:', {
-          message: upsertError.message,
-          details: upsertError.details,
-          hint: upsertError.hint,
-          code: upsertError.code
-        });
-        // Don't throw error for duplicate users, just log it
-        if (upsertError.code === '23505') {
-          console.log('ℹ️ User already exists, continuing with campaign creation...');
-        } else {
-          throw new Error(`Failed to initialize user profile: ${upsertError.message}`);
-        }
+        throw new Error(`Failed to initialize user profile: ${upsertError.message}`);
+      } else if (upsertError && upsertError.code === '23505') {
+        console.log('ℹ️ User already exists, continuing with campaign creation...');
       } else {
         console.log('✅ User record ensured successfully:', newUser);
       }
     } catch (error: any) {
       console.error('❌ Error creating user record:', error);
-      // If it's a duplicate key error, just continue
       if (error.code === '23505' || error.message?.includes('duplicate key')) {
         console.log('ℹ️ User already exists, continuing with campaign creation...');
       } else {

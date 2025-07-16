@@ -95,7 +95,11 @@ export class AnalyticsService {
         .insert(event);
 
       if (error) {
-        console.error('❌ Failed to track analytics event:', error);
+        if (error.code === '42501') {
+          console.error('❌ RLS policy prevented analytics event insert. Please ensure RLS allows authenticated users or service role to insert. Error:', error);
+        } else {
+          console.error('❌ Failed to track analytics event:', error);
+        }
         // Don't throw error, just log it to avoid breaking the app
       }
     } catch (error) {
