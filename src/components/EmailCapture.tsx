@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Send, CheckCircle, Loader2 } from 'lucide-react';
+import { Mail, Send, Loader2 } from 'lucide-react';
 import { AnalyticsService, AnalyticsEvents } from '../lib/analyticsService';
-import { supabase } from '../lib/supabase';
 
 interface EmailCaptureProps {
   onEmailSubmitted: () => void;
@@ -11,7 +10,6 @@ interface EmailCaptureProps {
 const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignId }) => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [localSubmitting, setLocalSubmitting] = useState(false);
 
@@ -49,16 +47,6 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
       setLocalSubmitting(false);
     }
   };
-
-  if (isSubmitted) {
-    return (
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-        <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-green-800 mb-2">Email Submitted Successfully!</h3>
-        <p className="text-green-700">Your lead magnet is ready for download below.</p>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
