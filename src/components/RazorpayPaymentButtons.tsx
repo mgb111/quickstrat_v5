@@ -22,7 +22,7 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ billing
     }
     try {
       // Call Edge Function to create order
-      const res = await fetch('/functions/v1/create-razorpay-order', {
+      const res = await fetch('https://uyjqtojxwpfndrmuscag.supabase.co/functions/v1/create-razorpay-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email, plan: billingCycle })
