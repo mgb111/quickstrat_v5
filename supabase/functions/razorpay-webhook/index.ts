@@ -82,7 +82,19 @@ serve(async (req) => {
     const campaign_count = 0;
     const campaign_count_period = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-    // Update user in Supabase
+    // Look up user by email
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (userError || !user) {
+      console.error('User not found for email:', email, userError);
+      return new Response('User not found', { status: 404, headers: corsHeaders });
+    }
+
+    // Update user in Supabase by id
     const { error } = await supabase
       .from('users')
       .update({
@@ -91,7 +103,7 @@ serve(async (req) => {
         campaign_count,
         campaign_count_period
       })
-      .eq('email', email);
+      .eq('id', user.id);
 
     if (error) {
       console.error('Failed to update user subscription:', error);
