@@ -31,6 +31,7 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({ onEmailSubmitted, campaignI
     try {
       await onEmailSubmitted();
       setEmail('');
+      setIsSubmitted(true);
       
       // Track successful email capture
       await AnalyticsService.trackConversion('email_capture_success', {

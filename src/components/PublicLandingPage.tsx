@@ -3,7 +3,6 @@ import { Check, Zap, Users, FileText, TrendingUp, Target, Download, Play, Star, 
 import PricingSection from './PricingSection';
 
 interface PublicLandingPageProps {
-  onGetStarted: () => void;
   onLogin: () => void;
 }
 
