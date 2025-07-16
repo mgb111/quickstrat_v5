@@ -29,32 +29,32 @@ serve(async (req) => {
     const { amount, currency, description } = plans[plan];
 
     // Razorpay credentials
-    const key_id = Deno.env.get('RAZORPAY_KEY_ID');
-    const key_secret = Deno.env.get('RAZORPAY_KEY_SECRET');
-    if (!key_id || !key_secret) {
-      return new Response('Razorpay keys not set', { status: 500, headers: corsHeaders });
-    }
+    const key_id = Deno.env.get('RAZORPAY_KEY_ID')!;
+    const key_secret = Deno.env.get('RAZORPAY_KEY_SECRET')!;
+    const authHeader = 'Basic ' + btoa(`${key_id}:${key_secret}`);
+
+    // Prepare Razorpay order body
+    const orderBody = {
+      amount,
+      currency,
+      receipt: `receipt_${Date.now()}`,
+      payment_capture: 1
+    };
 
     // Create order via Razorpay API
-    const orderRes = await fetch('https://api.razorpay.com/v1/orders', {
+    const razorpayRes = await fetch('https://api.razorpay.com/v1/orders', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + btoa(`${key_id}:${key_secret}`)
+        'Authorization': authHeader,
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        amount, // in paise
-        currency,
-        receipt: `receipt_${Date.now()}`,
-        payment_capture: 1,
-        notes: { email, plan }
-      })
+      body: JSON.stringify(orderBody)
     });
-    if (!orderRes.ok) {
-      const err = await orderRes.text();
+    if (!razorpayRes.ok) {
+      const err = await razorpayRes.text();
       return new Response(`Razorpay order error: ${err}`, { status: 500, headers: corsHeaders });
     }
-    const order = await orderRes.json();
+    const order = await razorpayRes.json();
 
     return new Response(JSON.stringify({ orderId: order.id, keyId: key_id, amount, currency, description }), {
       status: 200,
