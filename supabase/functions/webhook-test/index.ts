@@ -1,5 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
+function toHex(buffer: ArrayBuffer): string {
+  return Array.prototype.map.call(
+    new Uint8Array(buffer),
+    (x: number) => ('00' + x.toString(16)).slice(-2)
+  ).join('');
+}
+
 async function verifySignature(body: string, signature: string, secret: string) {
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(
@@ -10,12 +17,10 @@ async function verifySignature(body: string, signature: string, secret: string) 
     ['sign', 'verify']
   );
   const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(body));
-  // Convert ArrayBuffer to base64
-  const hash = btoa(String.fromCharCode(...new Uint8Array(sig)));
-  // Compare after stripping trailing '='
+  const hashHex = toHex(sig);
   return {
-    valid: hash.replace(/=+$/, '') === signature.replace(/=+$/, ''),
-    computed: hash,
+    valid: hashHex === signature,
+    computed: hashHex,
   };
 }
 
@@ -46,7 +51,7 @@ serve(async (req) => {
     }
 
     const { valid, computed } = await verifySignature(body, signature, secret);
-    console.log('[DEBUG] COMPUTED SIGNATURE:', computed);
+    console.log('[DEBUG] COMPUTED HEX SIGNATURE:', computed);
     if (!valid) {
       console.error('[ERROR] Invalid Razorpay webhook signature');
       return new Response('Invalid Razorpay webhook signature', { status: 400, headers: corsHeaders });
