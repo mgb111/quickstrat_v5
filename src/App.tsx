@@ -200,15 +200,9 @@ function App() {
       let finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
       console.log('✅ Final campaign generated:', finalOutput);
       
-      // Track phase completion
-      // await AnalyticsService.trackPhaseCompletion(AnalyticsPhases.OUTLINE_REVIEW, { // Removed as per edit hint
-      //   final_output_generated: true,
-      //   user_id: user?.id
-      // });
+      // Restore campaign creation
+      await import('./lib/campaignService').then(({ CampaignService }) => CampaignService.createCampaign(wizardState.input!, finalOutput));
       
-      // Remove all customization merging logic
-      // Automatically save campaign to Supabase
-      // await CampaignService.createCampaign(wizardState.input!, finalOutput); // Removed as per edit hint
       setWizardState(prev => ({
         ...prev,
         stage: 'complete',
