@@ -3,14 +3,14 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 // @ts-ignore
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-function toHex(buffer) {
+function toHex(buffer: ArrayBuffer): string {
   return Array.prototype.map.call(
     new Uint8Array(buffer),
-    (x) => ("00" + x.toString(16)).slice(-2)
+    (x: number) => ("00" + x.toString(16)).slice(-2)
   ).join("");
 }
 
-async function verifySignature(body, signature, secret) {
+async function verifySignature(body: string, signature: string, secret: string): Promise<{ valid: boolean; computed: string }> {
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(
     "raw",
@@ -39,10 +39,10 @@ serve(async (req) => {
   }
 
   try {
-    const body = await req.text();
-    const signature = req.headers.get("x-razorpay-signature") || "";
+    const body: string = await req.text();
+    const signature: string = req.headers.get("x-razorpay-signature") || "";
     // @ts-ignore
-    const secret = Deno.env.get("RAZORPAY_WEBHOOK_SECRET") || "";
+    const secret: string = Deno.env.get("RAZORPAY_WEBHOOK_SECRET") || "";
     if (!secret) {
       console.error("[ERROR] Webhook secret not set");
       return new Response("Webhook secret not set", { status: 500, headers: corsHeaders });
@@ -59,7 +59,7 @@ serve(async (req) => {
     console.log("[SUCCESS] Valid Razorpay webhook signature!");
 
     // Parse event
-    let event;
+    let event: any;
     try {
       event = JSON.parse(body);
     } catch (err) {
@@ -73,12 +73,12 @@ serve(async (req) => {
     }
 
     // Extract payment info
-    const payment = event.payload?.payment?.entity;
+    const payment: any = event.payload?.payment?.entity;
     if (!payment) {
       console.error("[ERROR] No payment entity in payload");
       return new Response("No payment entity", { status: 400, headers: corsHeaders });
     }
-    let email = payment.email;
+    let email: string | undefined = payment.email;
     if (!email && payment.notes && typeof payment.notes === 'object') {
       email = payment.notes.email;
     }
@@ -96,16 +96,16 @@ serve(async (req) => {
     }
 
     // Calculate expiry and campaign period
-    const now = new Date();
-    let expiry;
+    const now: Date = new Date();
+    let expiry: Date;
     if (plan === 'monthly') {
       expiry = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
     } else {
       expiry = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
     }
-    const subscription_expiry = expiry.toISOString();
-    const campaign_count = 0;
-    const campaign_count_period = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const subscription_expiry: string = expiry.toISOString();
+    const campaign_count: number = 0;
+    const campaign_count_period: string = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
     // Update user in Supabase
     // @ts-ignore
@@ -125,7 +125,7 @@ serve(async (req) => {
       console.warn('[WARN] No user updated for email:', email);
       return new Response('No user found for email', { status: 404, headers: corsHeaders });
     }
-    console.log('[SUCCESS] Updated user(s):', data.map((u) => u.id).join(', '), 'for email:', email, 'plan:', plan);
+    console.log('[SUCCESS] Updated user(s):', data.map((u: any) => u.id).join(', '), 'for email:', email, 'plan:', plan);
 
     return new Response('OK', { status: 200, headers: corsHeaders });
   } catch (err) {
