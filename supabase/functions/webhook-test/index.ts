@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-ignore
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 function toHex(buffer) {
@@ -38,33 +38,11 @@ serve(async (req) => {
 
   try {
     const body = await req.text();
-    const signature = req.headers.get("x-razorpay-signature") || "";
-    const secret = (typeof Deno !== "undefined" && Deno.env && Deno.env.get)
-      ? Deno.env.get("RAZORPAY_WEBHOOK_SECRET") || ""
-      : "";
-
-    // Debug logs
-    console.log("[DEBUG] RAW BODY:", body);
-    console.log("[DEBUG] SECRET LENGTH:", secret.length);
-    console.log("[DEBUG] INCOMING SIGNATURE:", signature);
-
-    if (!secret) {
-      console.error("[ERROR] Webhook secret not set");
-      return new Response("Webhook secret not set", { status: 500, headers: corsHeaders });
-    }
-
-    const { valid, computed } = await verifySignature(body, signature, secret);
-    console.log("[DEBUG] COMPUTED HEX SIGNATURE:", computed);
-    if (!valid) {
-      console.error("[ERROR] Invalid Razorpay webhook signature");
-      return new Response("Invalid Razorpay webhook signature", { status: 400, headers: corsHeaders });
-    }
-
-    // If signature is valid, just log and return OK for now
-    console.log("[SUCCESS] Valid Razorpay webhook signature!");
+    console.log("[WEBHOOK-TEST] Received webhook event. Body:", body);
+    // Placeholder: Add your business logic here (e.g., signature verification, DB update, etc.)
     return new Response("OK", { status: 200, headers: corsHeaders });
   } catch (err) {
-    console.error("[ERROR] Webhook error:", err);
+    console.error("[WEBHOOK-TEST] Error handling webhook:", err);
     return new Response("Webhook error", { status: 500, headers: corsHeaders });
   }
 }); 
