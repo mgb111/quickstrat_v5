@@ -1,5 +1,7 @@
 // @ts-ignore
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+// @ts-ignore
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 function toHex(buffer) {
   return Array.prototype.map.call(
@@ -38,11 +40,96 @@ serve(async (req) => {
 
   try {
     const body = await req.text();
-    console.log("[WEBHOOK-TEST] Received webhook event. Body:", body);
-    // Placeholder: Add your business logic here (e.g., signature verification, DB update, etc.)
-    return new Response("OK", { status: 200, headers: corsHeaders });
+    const signature = req.headers.get("x-razorpay-signature") || "";
+    // @ts-ignore
+    const secret = Deno.env.get("RAZORPAY_WEBHOOK_SECRET") || "";
+    if (!secret) {
+      console.error("[ERROR] Webhook secret not set");
+      return new Response("Webhook secret not set", { status: 500, headers: corsHeaders });
+    }
+
+    // Signature verification
+    const { valid, computed } = await verifySignature(body, signature, secret);
+    console.log("[DEBUG] INCOMING SIGNATURE:", signature);
+    console.log("[DEBUG] COMPUTED HEX SIGNATURE:", computed);
+    if (!valid) {
+      console.error("[ERROR] Invalid Razorpay webhook signature");
+      return new Response("Invalid Razorpay webhook signature", { status: 400, headers: corsHeaders });
+    }
+    console.log("[SUCCESS] Valid Razorpay webhook signature!");
+
+    // Parse event
+    let event;
+    try {
+      event = JSON.parse(body);
+    } catch (err) {
+      console.error("[ERROR] Failed to parse webhook body as JSON:", err);
+      return new Response("Invalid JSON", { status: 400, headers: corsHeaders });
+    }
+
+    if (event.event !== "payment.captured") {
+      console.log("[INFO] Ignored event type:", event.event);
+      return new Response("Event ignored", { status: 200, headers: corsHeaders });
+    }
+
+    // Extract payment info
+    const payment = event.payload?.payment?.entity;
+    if (!payment) {
+      console.error("[ERROR] No payment entity in payload");
+      return new Response("No payment entity", { status: 400, headers: corsHeaders });
+    }
+    let email = payment.email;
+    if (!email && payment.notes && typeof payment.notes === 'object') {
+      email = payment.notes.email;
+    }
+    if (!email) {
+      console.error("[ERROR] No email found in payment entity");
+      return new Response("No email in payment", { status: 400, headers: corsHeaders });
+    }
+    // Determine plan from payment_button_id
+    let plan: string | null = null;
+    if (payment.payment_button_id === 'pl_QtIGO5QujXNyrB') plan = 'monthly';
+    if (payment.payment_button_id === 'pl_QtILq0eW8eEBIs') plan = 'yearly';
+    if (!plan) {
+      console.error("[ERROR] Unknown payment_button_id:", payment.payment_button_id);
+      return new Response("Unknown payment_button_id", { status: 400, headers: corsHeaders });
+    }
+
+    // Calculate expiry and campaign period
+    const now = new Date();
+    let expiry;
+    if (plan === 'monthly') {
+      expiry = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    } else {
+      expiry = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    }
+    const subscription_expiry = expiry.toISOString();
+    const campaign_count = 0;
+    const campaign_count_period = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+    // Update user in Supabase
+    // @ts-ignore
+    const supabase = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'));
+    const { data, error } = await supabase.from('users').update({
+      plan: 'premium',
+      subscription_expiry,
+      campaign_count,
+      campaign_count_period
+    }).eq('email', email).select('id');
+
+    if (error) {
+      console.error('[ERROR] Failed to update user subscription:', error);
+      return new Response('Failed to update user', { status: 500, headers: corsHeaders });
+    }
+    if (!data || data.length === 0) {
+      console.warn('[WARN] No user updated for email:', email);
+      return new Response('No user found for email', { status: 404, headers: corsHeaders });
+    }
+    console.log('[SUCCESS] Updated user(s):', data.map((u) => u.id).join(', '), 'for email:', email, 'plan:', plan);
+
+    return new Response('OK', { status: 200, headers: corsHeaders });
   } catch (err) {
-    console.error("[WEBHOOK-TEST] Error handling webhook:", err);
-    return new Response("Webhook error", { status: 500, headers: corsHeaders });
+    console.error('[ERROR] Webhook error:', err);
+    return new Response('Webhook error', { status: 500, headers: corsHeaders });
   }
 }); 
