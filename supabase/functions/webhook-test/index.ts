@@ -3,6 +3,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 // @ts-ignore
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+console.log('[DEBUG] Webhook-test function version: 2024-07-17');
+
 function toHex(buffer: ArrayBuffer): string {
   return Array.prototype.map.call(
     new Uint8Array(buffer),
@@ -40,6 +42,8 @@ serve(async (req) => {
 
   try {
     const body: string = await req.text();
+    console.log('[DEBUG] Webhook hit!');
+    console.log('[DEBUG] Body:', body);
     const signature: string = req.headers.get("x-razorpay-signature") || "";
     // @ts-ignore
     const secret: string = Deno.env.get("RAZORPAY_WEBHOOK_SECRET") || "";
