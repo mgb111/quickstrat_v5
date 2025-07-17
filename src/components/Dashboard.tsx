@@ -3,7 +3,6 @@ import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserC
 import { Campaign, Lead } from '../types';
 import { CampaignService } from '../lib/campaignService';
 
-
 interface DashboardProps {
   onNewCampaign: () => void;
 }
@@ -310,8 +309,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
           )}
         </div>
       )}
-
-
     </div>
   );
 };
