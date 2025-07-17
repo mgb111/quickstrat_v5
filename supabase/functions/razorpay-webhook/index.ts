@@ -1,4 +1,6 @@
+// @ts-ignore
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+// @ts-ignore
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -33,6 +35,7 @@ serve(async (req) => {
   try {
     const body = await req.text();
     const signature = req.headers.get('x-razorpay-signature') || '';
+    // @ts-ignore
     const secret = Deno.env.get('RAZORPAY_WEBHOOK_SECRET') || '';
     if (!secret) throw new Error('Webhook secret not set');
 
@@ -68,6 +71,7 @@ serve(async (req) => {
     }
 
     // Supabase client
+    // @ts-ignore
     const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
     // Calculate expiry and campaign period
