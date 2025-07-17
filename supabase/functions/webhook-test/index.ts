@@ -1,9 +1,8 @@
+console.log('[DEBUG] Webhook-test function version: FINAL-2024-07-17-UNIQUE');
 // @ts-ignore
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 // @ts-ignore
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-console.log('[DEBUG] Webhook-test function version: 2024-07-17');
 
 function toHex(buffer: ArrayBuffer): string {
   return Array.prototype.map.call(
