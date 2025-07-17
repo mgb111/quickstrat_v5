@@ -98,26 +98,6 @@ serve(async (req) => {
       return new Response('Failed to update user', { status: 500, headers: corsHeaders });
     }
 
-    // Log payment in payments table (non-blocking)
-    try {
-      await supabase
-        .from('payments')
-        .insert({
-          payment_id: payment.id,
-          user_id: payment.notes && payment.notes.user_id ? payment.notes.user_id : null,
-          email: email,
-          plan: 'premium',
-          billing_cycle: plan,
-          amount: payment.amount / 100, // Razorpay amount is in paise
-          currency: payment.currency,
-          status: payment.status,
-          created_at: new Date().toISOString()
-        });
-    } catch (logErr) {
-      console.error('Failed to log payment:', logErr);
-      // Do not block the main flow
-    }
-
     return new Response('OK', { status: 200, headers: corsHeaders });
   } catch (err) {
     console.error('Webhook error:', err);

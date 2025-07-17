@@ -10,6 +10,10 @@ interface PDFGeneratorProps {
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   const pdfRef = useRef<HTMLDivElement>(null);
 
+  // Debug logging to understand the data structure
+  console.log('PDFGenerator received data:', data);
+  console.log('Structured content:', data.structured_content);
+
   // Direct mapping from backend data
   const structured = data.structured_content;
   const companyName = (structured?.title_page && 'brand_name' in structured.title_page)
@@ -20,9 +24,26 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   
   // Directly extract toolkit sections, with type guards
   const toolkit_sections = structured?.toolkit_sections || [];
+  console.log('Toolkit sections found:', toolkit_sections.length);
+  console.log('Toolkit sections:', toolkit_sections);
+  
+  // Log each section's structure
+  toolkit_sections.forEach((section: any, index: number) => {
+    console.log(`Section ${index + 1}:`, {
+      title: section.title,
+      type: section.type,
+      content: section.content,
+      layout: section.layout
+    });
+  });
+  
   const strategySection = toolkit_sections.find((s: any) => s.type === 'pros_and_cons_list');
   const checklistSection = toolkit_sections.find((s: any) => s.type === 'checklist');
   const scriptsSection = toolkit_sections.find((s: any) => s.type === 'scripts');
+  
+  console.log('Strategy section:', strategySection);
+  console.log('Checklist section:', checklistSection);
+  console.log('Scripts section:', scriptsSection);
   
   // Extract data with better error handling
   const strategyRows = (strategySection && 
@@ -52,6 +73,10 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
     ? parseScriptsFromString(scriptsSection.content)
     : [];
     
+  console.log('Strategy rows:', strategyRows.length);
+  console.log('Checklist phases:', checklistPhases.length);
+  console.log('Scripts:', scripts.length);
+  
   // Helper functions to parse string content
   function parseProsAndConsFromString(content: string): any[] {
     const items: any[] = [];
