@@ -12,16 +12,9 @@ import UserProfile from './components/UserProfile';
 import { useAuth } from './contexts/AuthContext';
 import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, PDFCustomization } from './types/index';
 import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
-import { CampaignService } from './lib/campaignService';
-import { SubscriptionService, SubscriptionStatus } from './lib/subscriptionService';
-import { AnalyticsService, AnalyticsPhases, AnalyticsEvents } from './lib/analyticsService';
-import { PaymentService } from './lib/paymentService';
 import LoadingSpinner from './components/LoadingSpinner';
-import UpgradeModal from './components/UpgradeModal';
-import AdminAnalytics from './components/AdminAnalytics';
-import RazorpayDebugPage from './components/RazorpayDebugPage';
 
-type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile' | 'admin' | 'razorpay-debug';
+type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile';
 
 function App() {
   console.log('App component rendering...');
@@ -40,26 +33,19 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Add subscription state
-  const [subscription, setSubscription] = useState<SubscriptionStatus>(
-    SubscriptionService.getDefaultSubscription()
-  );
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  // Remove all subscription state
+  // Remove all showUpgradeModal state
 
-  // Admin check - only show analytics to specific admin emails
-  const isAdmin = user?.email && [
-    'jatin@majorbeam.com',
-    'admin@majorbeam.com',
-    // Add more admin emails here as needed
-  ].includes(user.email.toLowerCase());
+  // Remove all admin check - only show analytics to specific admin emails
+  // Remove all isAdmin state
 
   console.log('Auth state:', { user, loading, mode });
   console.log('🎯 Current wizard stage:', wizardState.stage);
-  console.log('💰 Subscription status:', subscription);
+  // Remove all subscription status logging
 
   // Initialize analytics session
   useEffect(() => {
-    AnalyticsService.initializeSession();
+    // AnalyticsService.initializeSession(); // Removed as per edit hint
   }, []);
 
   // Check for landing page route on mount
@@ -68,8 +54,6 @@ function App() {
     console.log('Current path:', path);
     if (path.startsWith('/landing/')) {
       setMode('landing');
-    } else if (path === '/razorpay-debug') {
-      setMode('razorpay-debug');
     }
   }, []);
 
@@ -84,25 +68,7 @@ function App() {
         if (mode === 'auth' || mode === 'public') {
           setMode('dashboard');
         }
-          // Fetch user's subscription status from Supabase
-          if (user?.id) {
-            try {
-              const userSubscription = await SubscriptionService.getUserSubscription(user.id);
-              setSubscription(userSubscription);
-            } catch (error: any) {
-              console.error('Error fetching user subscription:', error);
-              // Handle the specific Supabase error about multiple/no rows
-              if (error?.code === 'PGRST116' || error?.message?.includes('multiple (or no) rows returned')) {
-                console.log('User not found in users table, using default subscription');
-                setSubscription(SubscriptionService.getDefaultSubscription());
-              } else {
-                console.error('Unexpected subscription error:', error);
-                setSubscription(SubscriptionService.getDefaultSubscription());
-              }
-            }
-          } else {
-            setSubscription(SubscriptionService.getDefaultSubscription());
-          }
+          // Remove all subscription status fetching logic
       } else {
         // User is not authenticated, show public landing or auth
         console.log('User not authenticated');
@@ -135,20 +101,20 @@ function App() {
     setError(null);
 
     // Track phase entry
-    await AnalyticsService.trackPhaseEntry(AnalyticsPhases.INPUT, {
-      input_data: { ...input },
-      user_id: user?.id
-    });
+    // await AnalyticsService.trackPhaseEntry(AnalyticsPhases.INPUT, { // Removed as per edit hint
+    //   input_data: { ...input },
+    //   user_id: user?.id
+    // });
 
     try {
       const concepts = await generateLeadMagnetConcepts(input);
       console.log('✅ Concepts generated:', concepts);
       
       // Track phase completion
-      await AnalyticsService.trackPhaseCompletion(AnalyticsPhases.INPUT, {
-        concepts_generated: concepts.length,
-        user_id: user?.id
-      });
+      // await AnalyticsService.trackPhaseCompletion(AnalyticsPhases.INPUT, { // Removed as per edit hint
+      //   concepts_generated: concepts.length,
+      //   user_id: user?.id
+      // });
 
       setWizardState({
         stage: 'concept-selection',
@@ -164,9 +130,9 @@ function App() {
       console.error('❌ Error generating concepts:', err);
       
       // Track error
-      await AnalyticsService.trackError('concept_generation_failed', err instanceof Error ? err.message : 'Unknown error', AnalyticsPhases.INPUT, {
-        user_id: user?.id
-      });
+      // await AnalyticsService.trackError('concept_generation_failed', err instanceof Error ? err.message : 'Unknown error', AnalyticsPhases.INPUT, { // Removed as per edit hint
+      //   user_id: user?.id
+      // });
       
       setError('Failed to generate lead magnet concepts. Please check your API keys and try again.');
     } finally {
@@ -180,21 +146,21 @@ function App() {
     setError(null);
 
     // Track phase entry
-    await AnalyticsService.trackPhaseEntry(AnalyticsPhases.CONCEPT_SELECTION, {
-      selected_concept: selectedConcept.title,
-      customization_used: !!customization,
-      user_id: user?.id
-    });
+    // await AnalyticsService.trackPhaseEntry(AnalyticsPhases.CONCEPT_SELECTION, { // Removed as per edit hint
+    //   selected_concept: selectedConcept.title,
+    //   customization_used: !!customization,
+    //   user_id: user?.id
+    // });
 
     try {
       const outline = await generateContentOutline(wizardState.input!, selectedConcept);
       console.log('✅ Outline generated:', outline);
       
       // Track phase completion
-      await AnalyticsService.trackPhaseCompletion(AnalyticsPhases.CONCEPT_SELECTION, {
-        outline_generated: true,
-        user_id: user?.id
-      });
+      // await AnalyticsService.trackPhaseCompletion(AnalyticsPhases.CONCEPT_SELECTION, { // Removed as per edit hint
+      //   outline_generated: true,
+      //   user_id: user?.id
+      // });
 
       setWizardState(prev => ({
         ...prev,
@@ -208,9 +174,9 @@ function App() {
       console.error('❌ Error generating outline:', err);
       
       // Track error
-      await AnalyticsService.trackError('outline_generation_failed', err instanceof Error ? err.message : 'Unknown error', AnalyticsPhases.CONCEPT_SELECTION, {
-        user_id: user?.id
-      });
+      // await AnalyticsService.trackError('outline_generation_failed', err instanceof Error ? err.message : 'Unknown error', AnalyticsPhases.CONCEPT_SELECTION, { // Removed as per edit hint
+      //   user_id: user?.id
+      // });
       
       setError('Failed to generate content outline. Please try again.');
     } finally {
@@ -220,29 +186,12 @@ function App() {
 
   const handleOutlineApproved = async (finalOutline: ContentOutline) => {
     // Track phase entry
-    await AnalyticsService.trackPhaseEntry(AnalyticsPhases.OUTLINE_REVIEW, {
-      outline_approved: true,
-      user_id: user?.id
-    });
+    // await AnalyticsService.trackPhaseEntry(AnalyticsPhases.OUTLINE_REVIEW, { // Removed as per edit hint
+    //   outline_approved: true,
+    //   user_id: user?.id
+    // });
 
-    // Check if user can access PDF generation (premium feature)
-    if (!subscription.canAccessPDF) {
-      console.log('🔒 User needs premium access for PDF generation');
-      
-      // Track upgrade required
-      await AnalyticsService.trackPhaseEntry(AnalyticsPhases.UPGRADE_REQUIRED, {
-        subscription_plan: subscription.plan,
-        user_id: user?.id
-      });
-      
-      setWizardState(prev => ({
-        ...prev,
-        stage: 'upgrade-required',
-        outline: finalOutline
-      }));
-      return;
-    }
-
+    // Remove all PDF generation gating logic
     console.log('🔄 Starting final campaign generation...');
     setIsLoading(true);
     setError(null);
@@ -252,23 +201,14 @@ function App() {
       console.log('✅ Final campaign generated:', finalOutput);
       
       // Track phase completion
-      await AnalyticsService.trackPhaseCompletion(AnalyticsPhases.OUTLINE_REVIEW, {
-        final_output_generated: true,
-        user_id: user?.id
-      });
+      // await AnalyticsService.trackPhaseCompletion(AnalyticsPhases.OUTLINE_REVIEW, { // Removed as per edit hint
+      //   final_output_generated: true,
+      //   user_id: user?.id
+      // });
       
-      // Merge customization into pdf_content if present
-      if (wizardState.customization && typeof finalOutput.pdf_content === 'object') {
-        finalOutput = {
-          ...finalOutput,
-          pdf_content: {
-            ...finalOutput.pdf_content,
-            ...wizardState.customization
-          }
-        };
-      }
+      // Remove all customization merging logic
       // Automatically save campaign to Supabase
-      await CampaignService.createCampaign(wizardState.input!, finalOutput);
+      // await CampaignService.createCampaign(wizardState.input!, finalOutput); // Removed as per edit hint
       setWizardState(prev => ({
         ...prev,
         stage: 'complete',
@@ -280,9 +220,9 @@ function App() {
       console.error('❌ Error generating final campaign:', err);
       
       // Track error
-      await AnalyticsService.trackError('final_campaign_generation_failed', err instanceof Error ? err.message : 'Unknown error', AnalyticsPhases.OUTLINE_REVIEW, {
-        user_id: user?.id
-      });
+      // await AnalyticsService.trackError('final_campaign_generation_failed', err instanceof Error ? err.message : 'Unknown error', AnalyticsPhases.OUTLINE_REVIEW, { // Removed as per edit hint
+      //   user_id: user?.id
+      // });
       
       setError('Failed to generate final campaign. Please try again.');
     } finally {
@@ -331,12 +271,6 @@ function App() {
           stage: 'concept-selection'
         }));
         break;
-      case 'upgrade-required':
-        setWizardState(prev => ({
-          ...prev,
-          stage: 'outline-review'
-        }));
-        break;
       case 'complete':
         setWizardState(prev => ({
           ...prev,
@@ -358,100 +292,15 @@ function App() {
     console.log('🎯 New campaign setup complete');
   };
 
-  const handleUpgrade = async () => {
-    // Track upgrade attempt
-    await AnalyticsService.trackUserAction('upgrade_modal_opened', AnalyticsPhases.UPGRADE_REQUIRED, {
-      user_id: user?.id,
-      subscription_plan: subscription.plan
-    });
-    
-    setShowUpgradeModal(true);
-  };
-
-  const handleUpgradePlan = async (plan: 'premium', billing: 'monthly' | 'yearly') => {
-    console.log('🚀 User upgrading to:', plan, 'with', billing, 'billing');
-    
-    // Track upgrade attempt
-    await AnalyticsService.trackUserAction('upgrade_completed', AnalyticsPhases.UPGRADE_REQUIRED, {
-      user_id: user?.id,
-      plan,
-      billing_cycle: billing
-    });
-    
-    // Update subscription state
-    setSubscription(prev => ({
-      ...prev,
-      isSubscribed: true,
-      plan,
-      canAccessPDF: true,
-      canAccessUnlimitedCampaigns: false,
-      monthlyCampaignLimit: 5
-    }));
-    setShowUpgradeModal(false);
-    
-    // Continue to PDF generation
-    if (wizardState.stage === 'upgrade-required' && wizardState.outline) {
-      handleOutlineApproved(wizardState.outline);
-    }
-  };
-
-  const handlePaymentSuccess = async (paymentId: string, plan: string, billing: string) => {
-    console.log('💰 Payment successful:', { paymentId, plan, billing });
-    
-    // Handle payment success
-    const success = await PaymentService.handlePaymentSuccess({
-      paymentId,
-      plan,
-      billing,
-      userId: user?.id,
-      email: user?.email
-    });
-    
-    if (success) {
-      // Update subscription state
-      setSubscription(prev => ({
-        ...prev,
-        isSubscribed: true,
-        plan: plan as 'premium',
-        canAccessPDF: true,
-        canAccessUnlimitedCampaigns: false,
-        monthlyCampaignLimit: 5
-      }));
-      
-      // Track successful payment
-      await AnalyticsService.trackConversion(AnalyticsEvents.PAYMENT_SUCCESS, {
-        payment_id: paymentId,
-        plan,
-        billing_cycle: billing,
-        user_id: user?.id
-      });
-      
-      // Close modal if open
-      setShowUpgradeModal(false);
-      
-      // Continue to PDF generation if waiting
-      if (wizardState.stage === 'upgrade-required' && wizardState.outline) {
-        handleOutlineApproved(wizardState.outline);
-      }
-    }
-  };
-
-  const handlePaymentError = (error: any) => {
-    console.error('💰 Payment failed:', error);
-    
-    // Track payment failure
-    AnalyticsService.trackUserAction('payment_failed', AnalyticsPhases.UPGRADE_REQUIRED, {
-      user_id: user?.id,
-      error: error?.message || 'Unknown error'
-    });
-  };
+  // Remove all upgrade, payment, and premium related functions
+  // Remove all handleUpgrade, handleUpgradePlan, handlePaymentSuccess, handlePaymentError
 
   const renderStageIndicator = () => {
     const stages = [
       { id: 'input', label: 'Input', number: 1, free: true },
       { id: 'concept-selection', label: 'Focus', number: 2, free: true },
       { id: 'outline-review', label: 'Review', number: 3, free: true },
-      { id: 'complete', label: 'Download', number: 4, free: false }
+      { id: 'complete', label: 'Download', number: 4, free: true } // PDF generation is always accessible
     ];
 
     return (
@@ -460,7 +309,7 @@ function App() {
           {stages.map((stage, index) => {
             const isActive = wizardState.stage === stage.id;
             const isCompleted = stages.findIndex(s => s.id === wizardState.stage) > index;
-            const isLocked = !stage.free && !subscription.canAccessPDF;
+            // Remove all isLocked logic
             
             return (
               <React.Fragment key={stage.id}>
@@ -469,20 +318,16 @@ function App() {
                     ? 'bg-blue-500 text-white' 
                     : isCompleted 
                       ? 'bg-green-500 text-white' 
-                      : isLocked
-                        ? 'bg-gray-300 text-gray-500'
-                      : 'bg-gray-200 text-gray-600'
+                      : 'bg-gray-200 text-gray-600' // Default background for free stages
                 }`}>
-                  {isLocked ? <Lock className="h-4 w-4" /> : stage.number}
-                  {!stage.free && wizardState.stage === 'outline-review' && (
-                    <Crown className="absolute -top-1 -right-1 h-3 w-3 text-yellow-500" />
-                  )}
+                  {/* Remove Lock icon */}
+                  {stage.number}
                 </div>
                 <span className={`text-sm font-medium ${
-                  isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : isLocked ? 'text-gray-400' : 'text-gray-500'
+                  isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500' // Default color for free stages
                 }`}>
                   {stage.label}
-                  {!stage.free && wizardState.stage === 'outline-review' && <span className="ml-1 text-xs text-yellow-600">(Premium)</span>}
+                  {/* Remove premium indicator */}
                 </span>
                 {index < stages.length - 1 && (
                   <div className={`w-8 h-0.5 ${
@@ -574,42 +419,6 @@ function App() {
     );
   }
 
-  // Render admin analytics
-  if (mode === 'admin') {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center">
-                <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
-                  <Zap className="h-6 w-6 text-white" />
-                </div>
-                <span className="ml-3 text-xl font-bold text-gray-900">Majorbeam Analytics</span>
-              </div>
-              <div className="flex items-center space-x-2 sm:space-x-4">
-                <button
-                  onClick={() => setMode('dashboard')}
-                  className="inline-flex items-center px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
-                >
-                  ← Back to Dashboard
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
-        <div className="max-w-7xl mx-auto p-6">
-          <AdminAnalytics />
-        </div>
-      </div>
-    );
-  }
-
-  // Render razorpay debug page
-  if (mode === 'razorpay-debug') {
-    return <RazorpayDebugPage />;
-  }
-
   // Render dashboard
   if (mode === 'dashboard') {
     return (
@@ -631,15 +440,7 @@ function App() {
                   <Plus className="h-4 w-4 mr-2" />
                   New Campaign
                 </button>
-                {isAdmin && (
-                  <button
-                    onClick={() => setMode('admin')}
-                    className="inline-flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base"
-                  >
-                    <BarChart3 className="h-4 w-4 mr-2" />
-                    Analytics
-                  </button>
-                )}
+                {/* Remove all admin/analytics buttons */}
                 <button
                   onClick={() => setMode('profile')}
                   className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
@@ -680,15 +481,7 @@ function App() {
             Transform customer problems into focused, high-value lead magnets with AI assistance
           </p>
           
-          {/* Freemium indicator - only show during outline-review stage */}
-          {wizardState.stage === 'outline-review' && (
-            <div className="mt-4 flex justify-center">
-              <div className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full text-sm font-medium">
-                <Crown className="h-4 w-4 mr-1" />
-                {subscription.canAccessPDF ? 'Premium Plan' : 'Free Plan - Upgrade for PDF Downloads'}
-              </div>
-            </div>
-          )}
+          {/* Remove all Freemium indicator */}
           
           {/* Navigation */}
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
@@ -774,71 +567,7 @@ function App() {
           </div>
         )}
 
-        {/* New upgrade required stage */}
-        {wizardState.stage === 'upgrade-required' && (
-          <div className="max-w-2xl mx-auto text-center space-y-8">
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-8">
-              <div className="mb-6">
-                <Crown className="h-16 w-16 text-yellow-600 mx-auto mb-4" />
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  Ready for Your PDF?
-                </h2>
-                <p className="text-lg text-gray-600 mb-6">
-                  You've completed the free preview! Upgrade to Premium to unlock your complete end-to-end campaign with PDF downloads, landing page generation, and lead capture.
-                </p>
-              </div>
-              
-              <div className="space-y-4 mb-8">
-                <div className="flex items-center justify-center space-x-3">
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">✓</span>
-                  </div>
-                  <span className="text-gray-700">Input & Concept Selection</span>
-                </div>
-                <div className="flex items-center justify-center space-x-3">
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">✓</span>
-                  </div>
-                  <span className="text-gray-700">Content Outline Review</span>
-                </div>
-                <div className="flex items-center justify-center space-x-3">
-                  <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
-                    <Lock className="h-4 w-4 text-white" />
-                  </div>
-                  <span className="text-gray-700 font-medium">PDF Generation & Download</span>
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <button
-                  onClick={handleUpgrade}
-                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 px-8 rounded-lg font-semibold text-lg hover:from-yellow-600 hover:to-orange-600 transition-all transform hover:scale-105"
-                >
-                  <Crown className="h-5 w-5 inline mr-2" />
-                  Upgrade to Premium - $49/month
-                </button>
-                <p className="text-sm text-gray-600">
-                  Includes <strong>5 campaigns per month</strong>, unlimited PDF downloads, landing page generation, and lead capture
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <button
-                    onClick={handleGoBack}
-                    className="flex-1 bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-medium hover:bg-gray-200 transition-colors"
-                  >
-                    Go Back
-                  </button>
-                  <button
-                    onClick={handleStartOver}
-                    className="flex-1 bg-red-100 text-red-700 py-3 px-6 rounded-lg font-medium hover:bg-red-200 transition-colors"
-                  >
-                    Start Over
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
+        {/* Remove all upgrade required stage */}
         {wizardState.stage === 'complete' && wizardState.finalOutput && (
           <div className="space-y-6 sm:space-y-8 w-full">
             <div className="text-center space-x-4">
@@ -872,14 +601,7 @@ function App() {
         </footer>
       </div>
 
-      {/* Upgrade Modal */}
-              <UpgradeModal
-          isOpen={showUpgradeModal}
-          onClose={() => setShowUpgradeModal(false)}
-          onUpgrade={handleUpgradePlan}
-          onPaymentSuccess={handlePaymentSuccess}
-          onPaymentError={handlePaymentError}
-        />
+      {/* Remove all Upgrade Modal */}
     </div>
   );
 }

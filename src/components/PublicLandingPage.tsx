@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Check, Zap, Users, FileText, TrendingUp, Target, Download, Play, Star, ChevronDown } from 'lucide-react';
-import PricingSection from './PricingSection';
 
 interface PublicLandingPageProps {
   onGetStarted: () => void;
@@ -55,12 +54,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 Features
               </button>
               <button 
-                onClick={() => scrollToSection('pricing')}
-                className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
-              >
-                Pricing
-              </button>
-              <button 
                 onClick={() => scrollToSection('testimonials')}
                 className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
               >
@@ -101,12 +94,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 className="block w-full text-left px-3 py-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
               >
                 Features
-              </button>
-              <button 
-                onClick={() => scrollToSection('pricing')}
-                className="block w-full text-left px-3 py-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
-              >
-                Pricing
               </button>
               <button 
                 onClick={() => scrollToSection('testimonials')}
@@ -419,19 +406,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <PricingSection 
-        onPaymentSuccess={(paymentId, plan, billing) => {
-          console.log('Payment successful on landing page:', { paymentId, plan, billing });
-          // You can redirect to dashboard or show success message
-        }}
-        onPaymentError={(error) => {
-          console.error('Payment failed on landing page:', error);
-          // You can show error message
-        }}
-        onLogin={onLogin}
-      />
-
       {/* FAQ Section */}
       <section id="faq" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -519,7 +493,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
           </button>
           
           <p className="text-blue-200 text-sm">
-            No credit card required • Ready in under 2 minutes
+            Ready in under 2 minutes
           </p>
         </div>
       </section>
