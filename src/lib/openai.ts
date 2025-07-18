@@ -227,7 +227,7 @@ Return JSON in this exact format:
 export async function generatePdfContent(input: CampaignInput, outline: ContentOutline): Promise<PDFContent> {
   const client = getOpenAIClient();
 
-  try {    const prompt = `You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
+  try {    const prompt = `You are an expert Instructional Designer and Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
 
 USER CONTEXT:
 Niche: ${input.niche}
@@ -247,6 +247,24 @@ Before the toolkit, write a short, authentic introduction in the founder’s voi
 - Customer problem: ${input.problem_statement}
 - Desired outcome: ${input.desired_outcome}
 If position/title is provided, use it in the intro (e.g., "I'm [Name], [Position] at [Brand]"). The intro should sound like the founder is speaking directly to the reader, sharing why they built this and what the reader will achieve. Make it authentic, concise, and motivating. Return this as a field called founder_intro in the JSON.
+
+---
+
+**MANDATORY CASE STUDY REQUIREMENTS (CRITICAL):**
+- EVERY pros_and_cons_list item MUST have a "case_study" field (2-3 sentences, specific numbers, real-world context)
+- The checklist section MUST have a "case_study" field (2-3 sentences, specific numbers, real-world context)
+- EVERY script scenario MUST have a "case_study" field (2-3 sentences, specific numbers, real-world context)
+- If you miss ANY case study, your output will be REJECTED.
+
+**EXAMPLES:**
+- pros_and_cons_list item:
+  "case_study": "Sarah, a fitness coach, tested Instagram vs. Facebook ads for her online program. Instagram brought in 40% more qualified leads at half the cost, but required daily content creation. She now focuses 80% of her efforts on Instagram while using Facebook for retargeting."
+- checklist section:
+  "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs."
+- script scenario:
+  "case_study": "Lisa, a procurement manager, used this script when negotiating with a software vendor. She secured a 20% discount that was valid for 45 days, giving her team time to evaluate the solution. The vendor later increased the discount to 25% to close the deal."
+
+If you do not include a case study for EVERY required field, your output will be rejected.
 
 ---
 
@@ -298,22 +316,6 @@ EXAMPLE CHECKLIST FORMAT:
         "1.2 Estimate the number of users who will need access to VR training",
         "1.3 Calculate the budget available for VR training implementation"
       ]
-    },
-    {
-      "phase_title": "Phase B: Vendor Evaluation", 
-      "items": [
-        "2.1 Compare various VR training platforms based on features and cost",
-        "2.2 Evaluate the scalability and flexibility of each platform",
-        "2.3 Consider the support and training provided by the vendor"
-      ]
-    },
-    {
-      "phase_title": "Phase C: Implementation and Monitoring",
-      "items": [
-        "3.1 Implement a pilot project to test the effectiveness of the chosen platform",
-        "3.2 Measure the ROI of the VR training program", 
-        "3.3 Iterate and adjust the program based on feedback and results"
-      ]
     }
   ],
   "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs."
@@ -343,86 +345,7 @@ FINAL GUARDRAIL AND SELF-CORRECTION: Before generating the JSON, you MUST verify
 7. **CRITICAL: Are all case studies specific, with real numbers, outcomes, and context?**
 8. Have you included a plug-and-play template or swipe file where possible?
 If any answer is no, you MUST rewrite that section to fully comply before providing the final output.
-
-**MANDATORY CASE STUDY REQUIREMENTS:**
-- Every pros_and_cons_list item MUST have a "case_study" field with 2-3 sentences
-- Every checklist section MUST have a "case_study" field with 2-3 sentences  
-- Every script scenario MUST have a "case_study" field with 2-3 sentences
-- All case studies must include specific numbers, outcomes, and real-world context
-- Case studies should show the strategy/script in action with measurable results
-
-RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
-{
-  "founder_intro": "...",
-  "title_page": {
-    "layout": "centered",
-    "title": "The VR Vendor Negotiation Toolkit",
-    "subtitle": "A 3-Part Guide to Cut Costs and Secure a Future-Proof Contract."
-  },
-  "introduction_page": {
-    "layout": "filled",
-    "title": "Your Strongest Position is a Prepared One",
-    "content": "That complex VR vendor contract is likely hiding thousands in unnecessary costs. Many L&D leaders overpay for bloated feature sets they'll never use and enter into inflexible agreements they later regret. This toolkit provides the specific, actionable resources—a tech glossary, an action checklist, negotiation scripts, and sample contract clauses—to help you negotiate from a position of power, cut costs, and secure a flexible, future-proof partnership. Use these tools to prepare for your next vendor call and ensure you get maximum value for your investment."
-  },
-  "toolkit_sections": [
-    {
-      "layout": "filled",
-      "type": "pros_and_cons_list",
-      "title": "Section 1: Social Media Marketing Strategies Overview",
-      "content": {
-        "items": [
-          {
-            "method_name": "Paid Advertising",
-            "pros": "Quick results, precise targeting, scalable.",
-            "cons": "Can be expensive, requires constant monitoring and adjustment.",
-            "case_study": "Mike, a B2B consultant, spent $2,000 on LinkedIn ads targeting CFOs. He generated 15 qualified leads in 30 days, with 3 converting to $15K clients. The key was testing 5 different ad copy variations and focusing on pain points rather than features.",
-            "template": "A plug-and-play template or swipe file (if applicable)"
-          }
-        ]
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "checklist",
-      "title": "Section 2: Cost-Effectiveness Checklist",
-      "content": {
-        "phases": [
-          {
-            "phase_title": "Phase A: Initial Assessment",
-            "items": [
-              "1.1 Identify the training needs that can be addressed using VR",
-              "1.2 Estimate the number of users who will need access to VR training",
-              "1.3 Calculate the budget available for VR training implementation"
-            ]
-          }
-        ],
-        "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs.",
-        "template": "A plug-and-play template or swipe file (if applicable)"
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "scripts",
-      "title": "Section 3: Negotiation Scripts That Work",
-      "content": {
-        "scenarios": [
-          {
-            "trigger": "We can offer you a 20% discount if you sign today.",
-            "response": "I appreciate the offer, but I need time to review all terms with my team. Can you put that discount in writing with a 30-day validity period?",
-            "explanation": "This deflects pressure tactics while securing the discount for proper evaluation time.",
-            "case_study": "Lisa, a procurement manager, used this script when negotiating with a software vendor. She secured a 20% discount that was valid for 45 days, giving her team time to evaluate the solution. The vendor later increased the discount to 25% to close the deal.",
-            "template": "A plug-and-play template or swipe file (if applicable)"
-          }
-        ]
-      }
-    }
-  ],
-  "cta_page": {
-    "layout": "centered",
-    "title": "Your Next Step",
-    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and lead magnet topic."
-  }
-}`;
+`
 
     const res = await client.chat.completions.create({
       model: 'gpt-4',
