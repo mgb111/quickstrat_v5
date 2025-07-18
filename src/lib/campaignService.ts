@@ -53,7 +53,14 @@ export class CampaignService {
     // Generate unique slug
     console.log('🔗 Generating unique slug...');
     const { data: slugData } = await supabase.rpc('generate_unique_slug');
-    const slug = slugData || `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    let slug = `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    if (Array.isArray(slugData) && slugData.length > 0 && slugData[0].slug) {
+      slug = slugData[0].slug;
+    } else if (typeof slugData === 'object' && slugData?.slug) {
+      slug = slugData.slug;
+    } else if (typeof slugData === 'string') {
+      slug = slugData;
+    }
    
     // Merge founder intro fields into pdf_content
     let pdfContentWithFounder = output.pdf_content;
