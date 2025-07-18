@@ -9,6 +9,7 @@ interface ImportMetaEnv {
   readonly VITE_CONTACT_EMAIL?: string;
   readonly VITE_SCHEDULE_URL?: string;
   readonly MODE: string;
+  readonly VITE_DODO_PAYMENTS_API_KEY: string;
   // Add other environment variables as needed
 }
 

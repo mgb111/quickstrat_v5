@@ -29,6 +29,15 @@ function getSuggestedSubreddits(niche: string): string[] {
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, userName, problemStatement, desiredOutcome, onCampaignCreated }) => {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [hasPaid, setHasPaid] = useState(false);
+
+  // Placeholder: Replace with real Dodo Payments integration
+  const handlePayWithDodo = async () => {
+    // TODO: Integrate Dodo Payments here
+    // For now, just simulate payment success
+    alert('Simulating Dodo Payments: Payment successful!');
+    setHasPaid(true);
+  };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);

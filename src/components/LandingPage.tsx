@@ -16,6 +16,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
   const [error, setError] = useState<string | null>(null);
   const [showPDF, setShowPDF] = useState(false);
   const [localSubmitting, setLocalSubmitting] = useState(false);
+  const [hasPaid, setHasPaid] = useState(false);
+
+  // Placeholder: Replace with real Dodo Payments integration
+  const handlePayWithDodo = async () => {
+    // TODO: Integrate Dodo Payments here
+    // For now, just simulate payment success
+    alert('Simulating Dodo Payments: Payment successful!');
+    setHasPaid(true);
+  };
 
   useEffect(() => {
     setError(null); // Clear error when slug changes or fetch starts
@@ -202,52 +211,58 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
             {showPDF && campaign.lead_magnet_content && (
               <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
                 <h3 className="text-xl font-bold text-gray-900 mb-4">Your Free Guide</h3>
-                <PDFGenerator 
-                  data={(() => {
-                    // Parse the lead magnet content
-                    const parsedContent = typeof campaign.lead_magnet_content === 'string'
-                      ? JSON.parse(campaign.lead_magnet_content)
-                      : campaign.lead_magnet_content;
-                    
-                    // Check if structured_content exists and has proper types
-                    if (parsedContent.structured_content && parsedContent.structured_content.toolkit_sections) {
-                      const hasProperTypes = parsedContent.structured_content.toolkit_sections.some((section: any) => section.type);
-                      
-                      if (!hasProperTypes) {
-                        console.log('Fixing missing types in LandingPage...');
-                        // Fix the types in the existing structured_content
-                        const fixedStructuredContent = {
-                          ...parsedContent.structured_content,
-                          toolkit_sections: parsedContent.structured_content.toolkit_sections.map((section: any) => {
-                            let type: 'pros_and_cons_list' | 'checklist' | 'scripts' | undefined = undefined;
-                            
-                            // Determine type based on content analysis
-                            const content = section.content.toLowerCase();
-                            if (content.includes('pros:') && content.includes('cons:')) {
-                              type = 'pros_and_cons_list';
-                            } else if (content.includes('phase') && content.includes('1.') && content.includes('2.')) {
-                              type = 'checklist';
-                            } else if (content.includes('scenario') && content.includes('when they say:') && content.includes('you say:')) {
-                              type = 'scripts';
-                            }
-                            
-                            return {
-                              ...section,
-                              type: type
-                            };
-                          })
-                        };
-                        
-                        return {
-                          ...parsedContent,
-                          structured_content: fixedStructuredContent
-                        };
+                {!hasPaid ? (
+                  <div className="text-center">
+                    <p className="mb-4 text-lg text-gray-700 font-semibold">Unlock this PDF by completing your payment.</p>
+                    <button
+                      onClick={handlePayWithDodo}
+                      className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
+                    >
+                      Pay with Dodo
+                    </button>
+                  </div>
+                ) : (
+                  <PDFGenerator 
+                    data={(() => {
+                      // Parse the lead magnet content
+                      const parsedContent = typeof campaign.lead_magnet_content === 'string'
+                        ? JSON.parse(campaign.lead_magnet_content)
+                        : campaign.lead_magnet_content;
+                      // Check if structured_content exists and has proper types
+                      if (parsedContent.structured_content && parsedContent.structured_content.toolkit_sections) {
+                        const hasProperTypes = parsedContent.structured_content.toolkit_sections.some((section: any) => section.type);
+                        if (!hasProperTypes) {
+                          console.log('Fixing missing types in LandingPage...');
+                          // Fix the types in the existing structured_content
+                          const fixedStructuredContent = {
+                            ...parsedContent.structured_content,
+                            toolkit_sections: parsedContent.structured_content.toolkit_sections.map((section: any) => {
+                              let type: 'pros_and_cons_list' | 'checklist' | 'scripts' | undefined = undefined;
+                              // Determine type based on content analysis
+                              const content = section.content.toLowerCase();
+                              if (content.includes('pros:') && content.includes('cons:')) {
+                                type = 'pros_and_cons_list';
+                              } else if (content.includes('phase') && content.includes('1.') && content.includes('2.')) {
+                                type = 'checklist';
+                              } else if (content.includes('scenario') && content.includes('when they say:') && content.includes('you say:')) {
+                                type = 'scripts';
+                              }
+                              return {
+                                ...section,
+                                type: type
+                              };
+                            })
+                          };
+                          return {
+                            ...parsedContent,
+                            structured_content: fixedStructuredContent
+                          };
+                        }
                       }
-                    }
-                    
-                    return parsedContent;
-                  })()}
-                />
+                      return parsedContent;
+                    })()}
+                  />
+                )}
               </div>
             )}
           </div>
