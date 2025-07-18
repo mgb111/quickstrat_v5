@@ -110,14 +110,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col items-center justify-center text-center mb-12">
           {/* Average Leads Statistic */}
-          <div className="mb-6">
-            <div className="inline-flex items-center px-4 py-2 bg-blue-50 border border-blue-200 rounded-full">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-              <span className="text-sm font-medium text-blue-700">
-                On average, 15+ leads generated per lead magnet
-              </span>
-            </div>
-          </div>
+          {/* Remove the block that displays the average leads statistic */}
 
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight mx-auto">
             {landingPageCopy?.headline || campaign.lead_magnet_title || 'Get Your Free Guide'}
