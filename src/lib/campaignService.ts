@@ -83,19 +83,41 @@ export class CampaignService {
       };
     }
 
-    const campaignData = {
-      user_id: user.id,
-      name: `${input.brand_name} - ${input.customer_profile || input.target_audience || 'General'}`,
-      customer_profile: input.customer_profile || input.target_audience || 'General',
-      problem_statement: input.problem_statement,
-      desired_outcome: input.desired_outcome,
-      landing_page_slug: slug,
-      lead_magnet_title: output.landing_page.headline,
-      lead_magnet_content: JSON.stringify(pdfContentWithFounder),
-      landing_page_copy: output.landing_page,
-      social_posts: output.social_posts || [],
-      lead_count: 0
-    };
+    let campaignData;
+    try {
+      campaignData = {
+        user_id: user.id,
+        name: `${input.brand_name} - ${input.customer_profile || input.target_audience || 'General'}`,
+        customer_profile: input.customer_profile || input.target_audience || 'General',
+        problem_statement: input.problem_statement,
+        desired_outcome: input.desired_outcome,
+        landing_page_slug: slug,
+        lead_magnet_title: output.landing_page.headline,
+        lead_magnet_content: JSON.stringify(pdfContentWithFounder),
+        landing_page_copy: output.landing_page ? JSON.stringify(output.landing_page) : '{}',
+        social_posts: Array.isArray(output.social_posts) ? output.social_posts : (output.social_posts ? JSON.stringify(output.social_posts) : '[]'),
+        lead_count: 0
+      };
+    } catch (serr) {
+      console.error('Serialization error for campaignData:', serr);
+      campaignData = {
+        user_id: user.id,
+        name: 'Serialization Error',
+        customer_profile: 'Error',
+        problem_statement: 'Error',
+        desired_outcome: 'Error',
+        landing_page_slug: slug,
+        lead_magnet_title: 'Error',
+        lead_magnet_content: '{}',
+        landing_page_copy: '{}',
+        social_posts: '[]',
+        lead_count: 0
+      };
+    }
+
+    // Log the payload before insert
+    console.log('Payload for campaign insert:', campaignData);
+    console.log('Payload type:', typeof campaignData, Array.isArray(campaignData));
 
     const { data, error } = await supabase
       .from('campaigns')
@@ -105,6 +127,7 @@ export class CampaignService {
 
     if (error) {
       console.error('❌ Campaign creation error:', error);
+      console.error('❌ Insert payload:', campaignData);
       throw new Error(`Failed to create campaign: ${error.message}`);
     }
 
