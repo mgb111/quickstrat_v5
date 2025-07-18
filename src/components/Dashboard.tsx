@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserCheck } from 'lucide-react';
 import { Campaign, Lead } from '../types';
 import { CampaignService } from '../lib/campaignService';
+import PDFGenerator from './PDFGenerator';
+import { supabase } from '../lib/supabase';
+import Modal from 'react-modal';
 
 
 interface DashboardProps {
@@ -18,6 +21,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const [isLoadingStats, setIsLoadingStats] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
+  const [viewPdfCampaign, setViewPdfCampaign] = useState<Campaign | null>(null);
+  const [editPdfCampaign, setEditPdfCampaign] = useState<Campaign | null>(null);
+  const [editJson, setEditJson] = useState('');
+  const [editError, setEditError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
 
   useEffect(() => {
     loadCampaigns();
@@ -108,6 +117,41 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
     }
   };
 
+  const handleEditClick = (campaign: Campaign) => {
+    setEditPdfCampaign(campaign);
+    setEditError(null);
+    setEditJson(
+      typeof campaign.lead_magnet_content === 'string'
+        ? campaign.lead_magnet_content
+        : JSON.stringify(campaign.lead_magnet_content, null, 2)
+    );
+  };
+
+  const handleEditSave = async () => {
+    setIsSaving(true);
+    setEditError(null);
+    let parsed;
+    try {
+      parsed = JSON.parse(editJson);
+    } catch (e) {
+      setEditError('Invalid JSON');
+      setIsSaving(false);
+      return;
+    }
+    const { error } = await supabase
+      .from('campaigns')
+      .update({ lead_magnet_content: parsed })
+      .eq('id', editPdfCampaign?.id);
+    if (error) {
+      setEditError('Failed to save: ' + error.message);
+    } else {
+      setEditPdfCampaign(null);
+      setEditJson('');
+      loadCampaigns();
+    }
+    setIsSaving(false);
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -184,6 +228,20 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
                         <p className="text-xs text-gray-400 mt-1">
                           {new Date(campaign.created_at).toLocaleDateString()}
                         </p>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <button
+                          className="text-blue-600 hover:underline text-xs"
+                          onClick={e => { e.stopPropagation(); setViewPdfCampaign(campaign); }}
+                        >
+                          View PDF
+                        </button>
+                        <button
+                          className="text-green-600 hover:underline text-xs"
+                          onClick={e => { e.stopPropagation(); handleEditClick(campaign); }}
+                        >
+                          Edit PDF
+                        </button>
                       </div>
                       <button
                         onClick={(e) => {
@@ -310,8 +368,47 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
           )}
         </div>
       )}
-
-
+      {/* View PDF Modal */}
+      <Modal
+        isOpen={!!viewPdfCampaign}
+        onRequestClose={() => setViewPdfCampaign(null)}
+        contentLabel="View PDF"
+        ariaHideApp={false}
+        style={{ content: { maxWidth: 900, margin: 'auto', height: '90vh', overflow: 'auto' } }}
+      >
+        <button className="mb-4 text-red-600" onClick={() => setViewPdfCampaign(null)}>Close</button>
+        {viewPdfCampaign && (
+          <PDFGenerator
+            data={typeof viewPdfCampaign.lead_magnet_content === 'string'
+              ? JSON.parse(viewPdfCampaign.lead_magnet_content)
+              : viewPdfCampaign.lead_magnet_content}
+          />
+        )}
+      </Modal>
+      {/* Edit PDF Modal */}
+      <Modal
+        isOpen={!!editPdfCampaign}
+        onRequestClose={() => setEditPdfCampaign(null)}
+        contentLabel="Edit PDF"
+        ariaHideApp={false}
+        style={{ content: { maxWidth: 700, margin: 'auto', height: '80vh', overflow: 'auto' } }}
+      >
+        <button className="mb-4 text-red-600" onClick={() => setEditPdfCampaign(null)}>Close</button>
+        <h2 className="text-lg font-bold mb-2">Edit PDF JSON</h2>
+        <textarea
+          className="w-full h-96 border rounded p-2 font-mono text-xs"
+          value={editJson}
+          onChange={e => setEditJson(e.target.value)}
+        />
+        {editError && <div className="text-red-600 my-2">{editError}</div>}
+        <button
+          className="mt-2 px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"
+          onClick={handleEditSave}
+          disabled={isSaving}
+        >
+          {isSaving ? 'Saving...' : 'Save'}
+        </button>
+      </Modal>
     </div>
   );
 };
