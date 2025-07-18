@@ -266,7 +266,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
               {/* Campaign Stats */}
               <div className="bg-white rounded-lg shadow p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Overview</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="flex justify-center">
                   <div className="text-center p-4 bg-blue-50 rounded-lg">
                     <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 mx-auto mb-2" />
                     <p className="text-xl sm:text-2xl font-bold text-blue-600">{selectedCampaign.lead_count}</p>
