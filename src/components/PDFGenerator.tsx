@@ -1,6 +1,7 @@
 // @ts-ignore: No types for html2pdf.js
 import React, { useRef } from 'react';
 import { PDFContent } from '../types';
+import html2pdf from 'html2pdf.js';
 
 interface PDFGeneratorProps {
   data: PDFContent;
@@ -167,11 +168,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
 
   const handleDownloadPDF = async () => {
     if (!pdfRef.current) return;
-    
-    // Remove AnalyticsService.trackConversion
-    // PDF download should work for all users
-    const html2pdf = (await import('html2pdf.js')).default;
-    // Select the parent container to include all .page elements
+    // Use static import
     const container = pdfRef.current;
     html2pdf()
       .set({

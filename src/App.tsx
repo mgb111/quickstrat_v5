@@ -200,8 +200,17 @@ function App() {
       let finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
       console.log('✅ Final campaign generated:', finalOutput);
       
-      // Restore campaign creation
-      await import('./lib/campaignService').then(({ CampaignService }) => CampaignService.createCampaign(wizardState.input!, finalOutput));
+      // Add debug logs for campaign creation
+      console.log('Attempting to create campaign...');
+      try {
+        await import('./lib/campaignService').then(({ CampaignService }) => CampaignService.createCampaign(wizardState.input!, finalOutput));
+        console.log('Campaign creation call finished');
+      } catch (campaignError) {
+        console.error('Campaign creation failed:', campaignError);
+        setError('Failed to create campaign: ' + ((campaignError as any)?.message || campaignError));
+        setIsLoading(false);
+        return;
+      }
       
       setWizardState(prev => ({
         ...prev,
