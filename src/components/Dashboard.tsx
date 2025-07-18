@@ -272,13 +272,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
                     <p className="text-xl sm:text-2xl font-bold text-blue-600">{selectedCampaign.lead_count}</p>
                     <p className="text-xs sm:text-sm text-gray-600">Total Leads</p>
                   </div>
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 mx-auto mb-2" />
-                    <p className="text-xl sm:text-2xl font-bold text-green-600">
-                      {stats?.conversion_rate ? `${stats.conversion_rate}%` : 'N/A'}
-                    </p>
-                    <p className="text-xs sm:text-sm text-gray-600">Conversion Rate</p>
-                  </div>
                   <div className="text-center p-4 bg-purple-50 rounded-lg sm:col-span-2 md:col-span-1">
                     <MessageCircle className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 mx-auto mb-2" />
                     <p className="text-xl sm:text-2xl font-bold text-purple-600">
