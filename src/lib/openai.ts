@@ -339,9 +339,17 @@ FINAL GUARDRAIL AND SELF-CORRECTION: Before generating the JSON, you MUST verify
 3. Are there exactly 3 toolkit sections with no redundancy?
 4. Is the CTA custom, relevant, and tailored to the brand and lead magnet topic?
 5. Have you avoided creating both a checklist AND a step-by-step guide?
-6. Have you included at least one real-life example or micro-case study per strategy or script?
-7. Have you included a plug-and-play template or swipe file where possible?
+6. **CRITICAL: Have you included case_study fields for EVERY strategy item, checklist section, and script scenario?**
+7. **CRITICAL: Are all case studies specific, with real numbers, outcomes, and context?**
+8. Have you included a plug-and-play template or swipe file where possible?
 If any answer is no, you MUST rewrite that section to fully comply before providing the final output.
+
+**MANDATORY CASE STUDY REQUIREMENTS:**
+- Every pros_and_cons_list item MUST have a "case_study" field with 2-3 sentences
+- Every checklist section MUST have a "case_study" field with 2-3 sentences  
+- Every script scenario MUST have a "case_study" field with 2-3 sentences
+- All case studies must include specific numbers, outcomes, and real-world context
+- Case studies should show the strategy/script in action with measurable results
 
 RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 {
@@ -419,7 +427,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
     const res = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: Generate EXACTLY 3 toolkit sections. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc. DO NOT create both checklist and step-by-step guide to avoid redundancy. Use the exact CTA text provided.' },
+        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: Generate EXACTLY 3 toolkit sections. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", "explanation", and "case_study" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), "cons" (single string), and "case_study" fields. For checklist, use phases with numbered items like "1.1", "2.1", etc. and include a "case_study" field. DO NOT create both checklist and step-by-step guide to avoid redundancy. MANDATORY: Every section MUST include case studies with specific numbers and outcomes.' },
         { role: 'user', content: prompt }
       ],
       temperature: 0.7,
@@ -484,6 +492,10 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
           if (section.content.phases.length < 1) {
             throw new Error('Checklist section must have at least 1 phase');
           }
+          // ENFORCE CASE STUDIES
+          if (!section.content.case_study || typeof section.content.case_study !== 'string') {
+            throw new Error('Checklist section MUST include a case_study field with a real-world example (2-3 sentences)');
+          }
           break;
         case 'scripts':
           // Handle both old and new format for scripts
@@ -496,6 +508,10 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
             for (const scenario of section.content.scenarios) {
               if (!scenario.trigger || !scenario.response || !scenario.explanation) {
                 throw new Error('Each script scenario must have trigger, response, and explanation fields');
+              }
+              // ENFORCE CASE STUDIES
+              if (!scenario.case_study || typeof scenario.case_study !== 'string') {
+                throw new Error('Each script scenario MUST include a case_study field with a real-world example (2-3 sentences)');
               }
             }
           } else if (Array.isArray(section.content)) {
@@ -531,6 +547,10 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
           for (const item of section.content.items) {
             if (!item.method_name || typeof item.pros !== 'string' || typeof item.cons !== 'string') {
               throw new Error('Each pros and cons item must have method_name, pros (single string), and cons (single string)');
+            }
+            // ENFORCE CASE STUDIES
+            if (!item.case_study || typeof item.case_study !== 'string') {
+              throw new Error('Each pros and cons item MUST include a case_study field with a real-world example (2-3 sentences)');
             }
           }
           break;
@@ -913,5 +933,94 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
 
     // For unknown errors, provide a generic message
     throw new Error('Failed to generate campaign content. Please try again.');
+  }
+}
+
+// Function to regenerate case studies for existing campaigns
+export async function regenerateCaseStudiesForCampaign(campaign: any): Promise<any> {
+  const client = getOpenAIClient();
+
+  try {
+    // Extract the existing content structure
+    const existingContent = campaign.lead_magnet_content?.structured_content;
+    if (!existingContent || !existingContent.toolkit_sections) {
+      throw new Error('No structured content found in campaign');
+    }
+
+    const prompt = `You are an expert content strategist. Your task is to add case studies to existing lead magnet content.
+
+EXISTING CONTENT:
+${JSON.stringify(existingContent, null, 2)}
+
+INSTRUCTIONS:
+1. Keep ALL existing content exactly as is
+2. Add case_study fields to the following sections:
+   - Each item in pros_and_cons_list sections
+   - Each checklist section
+   - Each scenario in scripts sections
+
+3. Case study requirements:
+   - 2-3 sentences each
+   - Include specific numbers and outcomes
+   - Real-world context with measurable results
+   - Show the strategy/script in action
+
+4. Return the EXACT same JSON structure with case studies added
+
+EXAMPLE CASE STUDY FORMAT:
+"case_study": "Sarah, a fitness coach, tested Instagram vs. Facebook ads for her online program. Instagram brought in 40% more qualified leads at half the cost, but required daily content creation. She now focuses 80% of her efforts on Instagram while using Facebook for retargeting."
+
+Return the complete JSON with case studies added to all sections.`;
+
+    const res = await client.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: 'You are an expert content strategist. Add case studies to existing content while preserving all original content exactly. Output strictly valid JSON.' },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 3000
+    });
+
+    if (!res.choices?.[0]?.message?.content) {
+      throw new Error('Empty response received from OpenAI API');
+    }
+
+    const content = res.choices[0].message.content;
+    const updatedContent = JSON.parse(content);
+
+    // Validate that case studies were added
+    let caseStudiesAdded = 0;
+    for (const section of updatedContent.toolkit_sections) {
+      switch (section.type) {
+        case 'pros_and_cons_list':
+          for (const item of section.content.items) {
+            if (item.case_study) caseStudiesAdded++;
+          }
+          break;
+        case 'checklist':
+          if (section.content.case_study) caseStudiesAdded++;
+          break;
+        case 'scripts':
+          for (const scenario of section.content.scenarios) {
+            if (scenario.case_study) caseStudiesAdded++;
+          }
+          break;
+      }
+    }
+
+    console.log(`Added ${caseStudiesAdded} case studies to campaign ${campaign.id}`);
+
+    return {
+      ...campaign,
+      lead_magnet_content: {
+        ...campaign.lead_magnet_content,
+        structured_content: updatedContent
+      }
+    };
+
+  } catch (err: any) {
+    console.error('Error regenerating case studies:', err);
+    throw new Error(`Failed to regenerate case studies: ${err.message}`);
   }
 }

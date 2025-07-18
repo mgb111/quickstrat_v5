@@ -46,7 +46,7 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoading && !localLoading) {
+    if (!isLoading && !localLoading && selectedConceptId) {
       setLocalLoading(true);
       const selectedConcept = concepts.find(c => c.id === selectedConceptId);
       if (selectedConcept) {
@@ -69,8 +69,10 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
   };
 
   const handleConceptSelect = (conceptId: string) => {
+    console.log('Concept selected:', conceptId);
     setSelectedConceptId(conceptId);
     setShowCustomization(true);
+    console.log('showCustomization set to true');
   };
 
   const goBackToConcepts = () => {
@@ -392,9 +394,14 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
           </button>
           
           {selectedConceptId && !isLoading && (
-            <p className="text-sm text-gray-600 mt-3">
-              AI will create a detailed outline for your selected concept
-            </p>
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mt-3">
+                AI will create a detailed outline for your selected concept
+              </p>
+              <p className="text-sm text-blue-600 mt-2 font-medium">
+                ✨ Customization options will be available after concept selection
+              </p>
+            </div>
           )}
           
           {isLoading && (
