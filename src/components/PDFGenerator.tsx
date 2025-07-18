@@ -796,7 +796,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
               No strategies found or data missing.
             </div>
           )}
-          <div className="pro-tip">
+          <div className="pro-tip no-page-break" style={{ pageBreakBefore: 'always', breakBefore: 'page', marginTop: '48px' }}>
             <strong>💡 Pro Tip:</strong> Pick 1–2 strategies and go deep. Don't spread yourself thin.
           </div>
         </div>
@@ -847,7 +847,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             <>
               {scripts.map((scenario: any, idx: number) => (
                 (idx === 2 ? (
-                  <div className="script" key={idx} style={{ pageBreakBefore: 'always', breakBefore: 'page' }}>
+                  <div className="script" key={idx} style={{ pageBreakBefore: 'always', breakBefore: 'page', marginTop: '48px' }}>
                     <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
                     <p><strong>You say:</strong></p>
                     <div className="script-dialog">{scenario.response}</div>
