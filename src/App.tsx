@@ -63,9 +63,15 @@ function App() {
     console.log('Auth effect running:', { loading, user, mode });
     if (!loading) {
       if (user) {
-        // User is authenticated, show dashboard
-        console.log('User authenticated, switching to dashboard');
-        if (mode === 'auth' || mode === 'public') {
+        // User is authenticated, but preserve landing page mode if on landing page
+        console.log('User authenticated');
+        const path = window.location.pathname;
+        if (path.startsWith('/landing/')) {
+          // Keep landing page mode even if user is authenticated
+          console.log('On landing page, keeping landing mode');
+          setMode('landing');
+        } else if (mode === 'auth' || mode === 'public') {
+          console.log('Switching to dashboard');
           setMode('dashboard');
         }
           // Remove all subscription status fetching logic
