@@ -93,9 +93,9 @@ export class CampaignService {
         desired_outcome: input.desired_outcome,
         landing_page_slug: slug,
         lead_magnet_title: output.landing_page.headline,
-        lead_magnet_content: JSON.stringify(pdfContentWithFounder),
-        landing_page_copy: output.landing_page ? JSON.stringify(output.landing_page) : '{}',
-        social_posts: Array.isArray(output.social_posts) ? output.social_posts : (output.social_posts ? JSON.stringify(output.social_posts) : '[]'),
+        lead_magnet_content: pdfContentWithFounder, // pass as object
+        landing_page_copy: output.landing_page || {}, // pass as object
+        social_posts: Array.isArray(output.social_posts) ? output.social_posts : [], // pass as array
         lead_count: 0
       };
     } catch (serr) {
@@ -108,14 +108,17 @@ export class CampaignService {
         desired_outcome: 'Error',
         landing_page_slug: slug,
         lead_magnet_title: 'Error',
-        lead_magnet_content: '{}',
-        landing_page_copy: '{}',
-        social_posts: '[]',
+        lead_magnet_content: {},
+        landing_page_copy: {},
+        social_posts: [],
         lead_count: 0
       };
     }
 
     // Log the payload before insert
+    console.log('typeof lead_magnet_content:', typeof campaignData.lead_magnet_content);
+    console.log('typeof social_posts:', typeof campaignData.social_posts);
+    console.log('social_posts content:', campaignData.social_posts);
     console.log('Payload for campaign insert:', campaignData);
     console.log('Payload type:', typeof campaignData, Array.isArray(campaignData));
 
