@@ -391,15 +391,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
         onRequestClose={() => setEditPdfCampaign(null)}
         contentLabel="Edit PDF"
         ariaHideApp={false}
-        style={{ content: { maxWidth: 700, margin: 'auto', height: '80vh', overflow: 'auto' } }}
+        style={{ content: { maxWidth: 900, margin: 'auto', height: '90vh', overflow: 'auto' } }}
       >
         <button className="mb-4 text-red-600" onClick={() => setEditPdfCampaign(null)}>Close</button>
-        <h2 className="text-lg font-bold mb-2">Edit PDF JSON</h2>
-        <textarea
-          className="w-full h-96 border rounded p-2 font-mono text-xs"
-          value={editJson}
-          onChange={e => setEditJson(e.target.value)}
-        />
+        <h2 className="text-lg font-bold mb-2">Edit PDF</h2>
+        {editPdfCampaign && (
+          <PDFEditor
+            value={typeof editPdfCampaign.lead_magnet_content === 'string' ? JSON.parse(editPdfCampaign.lead_magnet_content) : editPdfCampaign.lead_magnet_content}
+            onChange={v => setEditJson(JSON.stringify(v))}
+          />
+        )}
         {editError && <div className="text-red-600 my-2">{editError}</div>}
         <button
           className="mt-2 px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"
@@ -408,9 +409,85 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
         >
           {isSaving ? 'Saving...' : 'Save'}
         </button>
+        <div className="mt-8">
+          <h3 className="font-bold mb-2">Live PDF Preview</h3>
+          {editJson && (
+            <PDFGenerator data={JSON.parse(editJson)} />
+          )}
+        </div>
       </Modal>
     </div>
   );
 };
+
+// PDFEditor component (scaffolded for inline use)
+function PDFEditor({ value, onChange }: { value: any, onChange: (v: any) => void }) {
+  const [local, setLocal] = useState(() => JSON.parse(JSON.stringify(value)));
+
+  // Helper to update nested fields
+  const update = (path: string[], val: any) => {
+    const copy = JSON.parse(JSON.stringify(local));
+    let obj = copy;
+    for (let i = 0; i < path.length - 1; i++) obj = obj[path[i]];
+    obj[path[path.length - 1]] = val;
+    setLocal(copy);
+    onChange(copy);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block font-bold mb-1">Title</label>
+        <input className="w-full border rounded p-2" value={local.structured_content?.title_page?.title || ''} onChange={e => update(['structured_content', 'title_page', 'title'], e.target.value)} />
+      </div>
+      <div>
+        <label className="block font-bold mb-1">Subtitle</label>
+        <input className="w-full border rounded p-2" value={local.structured_content?.title_page?.subtitle || ''} onChange={e => update(['structured_content', 'title_page', 'subtitle'], e.target.value)} />
+      </div>
+      <div>
+        <label className="block font-bold mb-1">Introduction</label>
+        <textarea className="w-full border rounded p-2" value={local.structured_content?.introduction_page?.content || ''} onChange={e => update(['structured_content', 'introduction_page', 'content'], e.target.value)} />
+      </div>
+      <div>
+        <label className="block font-bold mb-1">Toolkit Sections</label>
+        {Array.isArray(local.structured_content?.toolkit_sections) && local.structured_content.toolkit_sections.map((section: any, idx: number) => (
+          <div key={idx} className="border rounded p-2 mb-2">
+            <input className="w-full border rounded mb-1" value={section.title || ''} onChange={e => {
+              const arr = [...local.structured_content.toolkit_sections];
+              arr[idx] = { ...arr[idx], title: e.target.value };
+              update(['structured_content', 'toolkit_sections'], arr);
+            }} placeholder="Section Title" />
+            <select className="w-full border rounded mb-1" value={section.type || ''} onChange={e => {
+              const arr = [...local.structured_content.toolkit_sections];
+              arr[idx] = { ...arr[idx], type: e.target.value };
+              update(['structured_content', 'toolkit_sections'], arr);
+            }}>
+              <option value="pros_and_cons_list">Pros & Cons</option>
+              <option value="checklist">Checklist</option>
+              <option value="scripts">Scripts</option>
+            </select>
+            <textarea className="w-full border rounded" value={typeof section.content === 'string' ? section.content : JSON.stringify(section.content, null, 2)} onChange={e => {
+              const arr = [...local.structured_content.toolkit_sections];
+              try {
+                arr[idx] = { ...arr[idx], content: JSON.parse(e.target.value) };
+              } catch {
+                arr[idx] = { ...arr[idx], content: e.target.value };
+              }
+              update(['structured_content', 'toolkit_sections'], arr);
+            }} placeholder="Section Content (JSON or text)" />
+          </div>
+        ))}
+      </div>
+      <div>
+        <label className="block font-bold mb-1">CTA Title</label>
+        <input className="w-full border rounded p-2" value={local.structured_content?.cta_page?.title || ''} onChange={e => update(['structured_content', 'cta_page', 'title'], e.target.value)} />
+      </div>
+      <div>
+        <label className="block font-bold mb-1">CTA Content</label>
+        <textarea className="w-full border rounded p-2" value={local.structured_content?.cta_page?.content || ''} onChange={e => update(['structured_content', 'cta_page', 'content'], e.target.value)} />
+      </div>
+    </div>
+  );
+}
 
 export default Dashboard; 
