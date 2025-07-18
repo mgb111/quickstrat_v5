@@ -745,39 +745,41 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           <div className="page-header">Step 1 of 3</div>
           <h2>📊 Strategy Showdown: What Actually Works?</h2>
           {strategyRows.length > 0 ? (
-            <table className="strategy-table">
-              <thead>
-                <tr>
-                  <th>Strategy</th>
-                  <th>Pros</th>
-                  <th>Cons</th>
-                </tr>
-              </thead>
-              <tbody>
-                {strategyRows.map((row: any, idx: number) => (
-                  <tr key={idx}>
-                    <td><strong>{row.method_name}</strong></td>
-                    <td>{row.pros}</td>
-                    <td>{row.cons}</td>
+            <>
+              <table className="strategy-table">
+                <thead>
+                  <tr>
+                    <th>Strategy</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            
-            {/* Case Studies for Strategies */}
-            {strategyRows.some((row: any) => row.case_study) && (
-              <div style={{marginTop: '24px'}}>
-                <h3 style={{marginBottom: '16px', color: '#1e293b'}}>📈 Real-World Examples</h3>
-                {strategyRows.map((row: any, idx: number) => (
-                  row.case_study && (
-                    <div key={idx} className="case-study">
-                      <strong>💡 {row.method_name} in Action:</strong>
-                      {row.case_study}
-                    </div>
-                  )
-                ))}
-              </div>
-            )}
+                </thead>
+                <tbody>
+                  {strategyRows.map((row: any, idx: number) => (
+                    <tr key={idx}>
+                      <td><strong>{row.method_name}</strong></td>
+                      <td>{row.pros}</td>
+                      <td>{row.cons}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              
+              {/* Case Studies for Strategies */}
+              {strategyRows.some((row: any) => row.case_study) && (
+                <div style={{marginTop: '24px'}}>
+                  <h3 style={{marginBottom: '16px', color: '#1e293b'}}>📈 Real-World Examples</h3>
+                  {strategyRows.map((row: any, idx: number) => (
+                    row.case_study && (
+                      <div key={idx} className="case-study">
+                        <strong>💡 {row.method_name} in Action:</strong>
+                        {row.case_study}
+                      </div>
+                    )
+                  ))}
+                </div>
+              )}
+            </>
           ) : (
             <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
               No strategies found or data missing.
