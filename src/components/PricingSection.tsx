@@ -10,7 +10,6 @@ interface PricingSectionProps {
 const PricingSection: React.FC<PricingSectionProps> = ({
   onLogin
 }) => {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const pricing = SubscriptionService.getPricing();
 
   return (
@@ -23,43 +22,6 @@ const PricingSection: React.FC<PricingSectionProps> = ({
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Start free, upgrade when you're ready to scale your lead generation
           </p>
-        </div>
-
-        {/* Billing Toggle */}
-        <div className="flex justify-center mb-12">
-          <div className="bg-white rounded-lg p-1 flex items-center shadow-sm border border-gray-200">
-            <button
-              onClick={() => setBillingCycle('monthly')}
-              className={`px-6 py-3 rounded-md font-medium transition-colors relative ${
-                billingCycle === 'monthly'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Monthly
-              {billingCycle === 'monthly' && (
-                <span className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
-                  <Star className="h-3 w-3 mr-1" />
-                  Popular
-                </span>
-              )}
-            </button>
-            <button
-              onClick={() => setBillingCycle('yearly')}
-              className={`px-6 py-3 rounded-md font-medium transition-colors ${
-                billingCycle === 'yearly'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Yearly
-              {billingCycle === 'yearly' && (
-                <span className="ml-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                  Save 32%
-                </span>
-              )}
-            </button>
-          </div>
         </div>
 
         {/* Pricing Cards */}
@@ -114,19 +76,18 @@ const PricingSection: React.FC<PricingSectionProps> = ({
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Premium</h3>
               <div className="text-4xl font-bold text-blue-600 mb-1">
-                ${pricing.premium[billingCycle].price}
-                <span className="text-xl font-normal text-gray-500">/{pricing.premium[billingCycle].period}</span>
+                ${pricing.premium.monthly.price}
+                <span className="text-xl font-normal text-gray-500">/month</span>
               </div>
-              {billingCycle === 'yearly' && (
-                <div className="text-sm text-green-600 font-medium mb-2">
-                  Save ${pricing.premium.yearly.savings} per year
-                </div>
-              )}
-              <p className="text-gray-600">Perfect for growing businesses</p>
+              <p className="text-gray-600 mb-2">Perfect for growing businesses</p>
+              <div className="text-sm text-blue-700 font-semibold mb-2">
+                Includes {pricing.premium.monthly.includedCampaigns} campaigns/month<br/>
+                <span className="text-gray-700">$14 for each additional campaign</span>
+              </div>
             </div>
 
             <ul className="space-y-4 mb-8">
-              {pricing.premium[billingCycle].features.map((feature: string, index: number) => (
+              {pricing.premium.monthly.features.map((feature: string, index: number) => (
                 <li key={index} className="flex items-start">
                   <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
                   <span className="text-gray-700">
@@ -142,7 +103,7 @@ const PricingSection: React.FC<PricingSectionProps> = ({
 
             {/* Always show Razorpay payment button for the selected billing cycle */}
             <div className="flex justify-center mt-6">
-              <RazorpayPaymentButtons billingCycle={billingCycle} />
+              <RazorpayPaymentButtons billingCycle="monthly" />
             </div>
           </div>
         </div>

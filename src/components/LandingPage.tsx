@@ -18,12 +18,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
   const [localSubmitting, setLocalSubmitting] = useState(false);
   const [hasPaid, setHasPaid] = useState(false);
 
-  // Placeholder: Replace with real Dodo Payments integration
-  const handlePayWithDodo = async () => {
-    // TODO: Integrate Dodo Payments here
-    // For now, just simulate payment success
-    alert('Simulating Dodo Payments: Payment successful!');
-    setHasPaid(true);
+  // Dodo Payments integration
+  const DODO_PAYMENT_LINK = 'https://test.checkout.dodopayments.com/buy/pdt_k2F91xWDkSnYM91DKXXMG?quantity=1';
+
+  const handlePayWithDodo = () => {
+    // Redirect to Dodo Payments checkout
+    window.location.href = DODO_PAYMENT_LINK;
+    // After payment, Dodo should redirect back to your app with a success indicator (handle this in your app)
   };
 
   useEffect(() => {
@@ -43,6 +44,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
     };
     loadCampaign();
   }, [campaignSlug]);
+
+  useEffect(() => {
+    // Check for payment success in URL (e.g., ?payment=success)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      setHasPaid(true);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

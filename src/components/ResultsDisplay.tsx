@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Copy, ExternalLink, MessageCircle, Download, Mail } from 'lucide-react';
 import { CampaignOutput } from '../types/index';
 import PDFGenerator from './PDFGenerator';
@@ -31,12 +31,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [hasPaid, setHasPaid] = useState(false);
 
-  // Placeholder: Replace with real Dodo Payments integration
-  const handlePayWithDodo = async () => {
-    // TODO: Integrate Dodo Payments here
-    // For now, just simulate payment success
-    alert('Simulating Dodo Payments: Payment successful!');
-    setHasPaid(true);
+  // Dodo Payments integration
+  const DODO_PAYMENT_LINK = 'https://test.checkout.dodopayments.com/buy/pdt_k2F91xWDkSnYM91DKXXMG?quantity=1';
+
+  const handlePayWithDodo = () => {
+    // Redirect to Dodo Payments checkout
+    window.location.href = DODO_PAYMENT_LINK;
+    // After payment, Dodo should redirect back to your app with a success indicator (handle this in your app)
   };
 
   const copyToClipboard = (text: string) => {
@@ -47,6 +48,14 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
     console.log('Email submitted successfully');
     setEmailSubmitted(true);
   };
+
+  useEffect(() => {
+    // Check for payment success in URL (e.g., ?payment=success)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      setHasPaid(true);
+    }
+  }, []);
 
   // Process PDF content
   const processPdfContent = () => {

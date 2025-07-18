@@ -161,17 +161,16 @@ export class SubscriptionService {
     const benefits = {
       premium: [
         '✅ Unlimited PDF downloads',
-        '✅ 5 campaigns per month',
+        '✅ 5 campaigns per month (included)',
+        '✅ $14 per additional campaign',
         '✅ Landing page generation',
         '✅ Lead capture & management',
         '✅ Complete end-to-end campaigns',
         '✅ Priority support',
         '✅ Advanced customization options',
-
         '✅ Branded templates'
       ]
     };
-
     return benefits[plan];
   }
 
@@ -181,15 +180,47 @@ export class SubscriptionService {
         monthly: {
           price: 49,
           period: 'month',
-          features: this.getUpgradeBenefits('premium')
-        },
-        yearly: {
-          price: 399,
-          period: 'year',
           features: this.getUpgradeBenefits('premium'),
-          savings: 189 // $49 * 12 - $399 = $189 savings
+          includedCampaigns: 5,
+          extraCampaignPrice: 14
         }
       }
     };
+  }
+
+  // Calculate the cost for extra campaigns (beyond included)
+  static calculateExtraCampaignCost(plan: 'premium', usedCampaigns: number, billingCycle: 'monthly' = 'monthly') {
+    const pricing = this.getPricing().premium.monthly;
+    const included = pricing.includedCampaigns;
+    const extra = Math.max(0, usedCampaigns - included);
+    return extra * pricing.extraCampaignPrice;
+  }
+
+  // Upgrade user to premium after payment
+  static async upgradeToPremium(userId: string): Promise<void> {
+    // Fetch current expiry
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('subscription_expiry')
+      .eq('id', userId)
+      .maybeSingle();
+    if (error) throw new Error('Failed to fetch user for upgrade');
+    let newExpiry: Date;
+    const now = new Date();
+    if (user && user.subscription_expiry && new Date(user.subscription_expiry) > now) {
+      // Extend from current expiry
+      newExpiry = new Date(user.subscription_expiry);
+      newExpiry.setMonth(newExpiry.getMonth() + 1);
+    } else {
+      // Set to 1 month from now
+      newExpiry = new Date(now.setMonth(now.getMonth() + 1));
+    }
+    await supabase
+      .from('users')
+      .update({
+        plan: 'premium',
+        subscription_expiry: newExpiry.toISOString()
+      })
+      .eq('id', userId);
   }
 } 

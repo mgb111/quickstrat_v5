@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import { Campaign, Lead, CampaignInput, CampaignOutput } from '../types';
+import { SubscriptionService } from './subscriptionService';
 
 export class CampaignService {
   // Get or create a demo session ID for anonymous users
@@ -24,8 +25,31 @@ export class CampaignService {
       throw new Error('Authentication required to create campaigns');
     }
 
-    // Remove all subscription, plan, expiry, and campaign limit checks
-    // Only require authentication
+    // Robust plan/campaign limit enforcement
+    const subscription = await SubscriptionService.getUserSubscription(user.id);
+    if (subscription.plan === 'free' && subscription.usedCampaigns >= subscription.monthlyCampaignLimit) {
+      throw new Error('Free plan limit reached. Upgrade to premium to create more campaigns.');
+    }
+    if (subscription.plan === 'premium') {
+      if (subscription.usedCampaigns >= subscription.monthlyCampaignLimit) {
+        // Check for extra campaign purchase/payment for this period
+        const now = new Date();
+        const period = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        const { data: extraPurchases, error: extraError } = await supabase
+          .from('extra_campaign_purchases')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('period', period);
+        if (extraError) {
+          throw new Error('Error checking extra campaign purchases. Please try again.');
+        }
+        if (!extraPurchases || extraPurchases.length === 0) {
+          throw new Error('Premium plan: 5 campaign limit reached. Please purchase an extra campaign for $14.');
+        }
+        // Optionally, mark one extra purchase as used (if you want to prevent re-use)
+      }
+    }
+    // Enterprise: unlimited
 
     // Ensure user exists in public.users table (upsert to handle duplicates)
     console.log('➕ Ensuring user record exists for:', user.id, user.email);
@@ -133,6 +157,12 @@ export class CampaignService {
       console.error('❌ Insert payload:', campaignData);
       throw new Error(`Failed to create campaign: ${error.message}`);
     }
+
+    // Increment campaign count after successful creation
+    await supabase
+      .from('users')
+      .update({ campaign_count: (subscription.usedCampaigns || 0) + 1 })
+      .eq('id', user.id);
 
     console.log('✅ Campaign created successfully:', data);
     return data;
