@@ -109,8 +109,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSession(newSession);
         setUser(newSession?.user ?? null);
         
-        // Only redirect if we're not already on the dashboard and not handling OAuth callback
-        if (window.location.pathname !== '/dashboard' && !window.location.hash.includes('access_token')) {
+        // Only redirect if we're not already on the dashboard, not on a landing page, and not handling OAuth callback
+        if (window.location.pathname !== '/dashboard' && 
+            !window.location.pathname.startsWith('/landing/') && 
+            !window.location.hash.includes('access_token')) {
           console.log('🔄 Redirecting to dashboard...');
           window.location.href = '/dashboard';
         }
