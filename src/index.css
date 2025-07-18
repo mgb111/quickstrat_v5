@@ -40,6 +40,13 @@ p {
 
 /* Prevent page breaks inside important content blocks for PDF/print */
 .no-page-break,
+.pro-tip {
+  page-break-inside: avoid;
+  break-inside: avoid;
+  display: table;
+  width: 100%;
+}
+
 .blue-box,
 .green-box,
 .yellow-box,
