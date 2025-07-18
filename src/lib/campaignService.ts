@@ -52,14 +52,23 @@ export class CampaignService {
 
     // Generate unique slug
     console.log('🔗 Generating unique slug...');
-    const { data: slugData } = await supabase.rpc('generate_unique_slug');
+    const { data: slugData, error: slugError } = await supabase.rpc('generate_unique_slug');
     let slug = `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    if (Array.isArray(slugData) && slugData.length > 0 && slugData[0].slug) {
+    if (slugError) {
+      console.error('Slug RPC error:', slugError);
+    }
+    if (Array.isArray(slugData) && slugData.length > 0 && typeof slugData[0].slug === 'string') {
       slug = slugData[0].slug;
-    } else if (typeof slugData === 'object' && slugData?.slug) {
+    } else if (typeof slugData === 'object' && slugData !== null && typeof slugData.slug === 'string') {
       slug = slugData.slug;
     } else if (typeof slugData === 'string') {
       slug = slugData;
+    } else if (slugData !== undefined && slugData !== null) {
+      console.error('Unexpected slugData from RPC:', slugData);
+    }
+    if (typeof slug !== 'string') {
+      console.error('Slug is not a string, falling back to generated slug:', slug);
+      slug = `campaign-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     }
    
     // Merge founder intro fields into pdf_content
