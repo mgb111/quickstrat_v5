@@ -776,7 +776,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
                   <h3 style={{marginBottom: '16px', color: '#1e293b'}}>📈 Real-World Examples</h3>
                   {strategyRows.map((row: any, idx: number) => (
                     row.case_study && (
-                      <div key={idx} className="case-study">
+                      <div key={idx} className="case-study no-page-break">
                         <strong>💡 {row.method_name} in Action:</strong>
                         {row.case_study}
                       </div>
@@ -819,7 +819,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
                  typeof checklistSection.content === 'object' && 
                  'case_study' in checklistSection.content && 
                  checklistSection.content.case_study && (
-                  <div className="case-study" style={{marginTop: '24px'}}>
+                  <div className="case-study no-page-break" style={{marginTop: '24px'}}>
                     <strong>📈 Success Story:</strong>
                     {checklistSection.content.case_study}
                   </div>
@@ -848,7 +848,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
                   
                   {/* Case Study for Script */}
                   {scenario.case_study && (
-                    <div className="case-study" style={{marginTop: '12px'}}>
+                    <div className="case-study no-page-break" style={{marginTop: '12px'}}>
                       <strong>📈 Real Results:</strong>
                       {scenario.case_study}
                     </div>
@@ -865,7 +865,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
 
         {/* Page 6: CTA (dynamic) */}
         <div className="page">
-          <div className="cta-block">
+          <div className="cta-block no-page-break">
             <h2>{ctaTitle}</h2>
             <p>{ctaContent}</p>
             {bookingLink && (
