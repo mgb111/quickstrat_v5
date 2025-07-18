@@ -87,7 +87,7 @@ export interface PDFContent {
           method_name: string;
           pros: string;
           cons: string;
-          example?: string;
+          case_study?: string;
           template?: string;
         }[];
         phases?: {
@@ -98,9 +98,10 @@ export interface PDFContent {
           trigger: string;
           response: string;
           explanation: string;
-          example?: string;
+          case_study?: string;
           template?: string;
         }[];
+        case_study?: string;
         example?: string;
         template?: string;
       };

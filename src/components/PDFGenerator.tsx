@@ -77,6 +77,11 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
   console.log('Checklist phases:', checklistPhases.length);
   console.log('Scripts:', scripts.length);
   
+  // Debug case studies
+  console.log('Strategy case studies:', strategyRows.filter((row: any) => row.case_study).length);
+  console.log('Checklist case study:', checklistSection?.content && typeof checklistSection.content === 'object' && 'case_study' in checklistSection.content ? checklistSection.content.case_study : 'None');
+  console.log('Script case studies:', scripts.filter((script: any) => script.case_study).length);
+  
   // Helper functions to parse string content
   function parseProsAndConsFromString(content: string): any[] {
     const items: any[] = [];
@@ -810,10 +815,13 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
                 ))}
                 
                 {/* Case Study for Checklist */}
-                {checklistPhases.length > 0 && checklistPhases[0]?.case_study && (
+                {checklistSection?.content && 
+                 typeof checklistSection.content === 'object' && 
+                 'case_study' in checklistSection.content && 
+                 checklistSection.content.case_study && (
                   <div className="case-study" style={{marginTop: '24px'}}>
                     <strong>📈 Success Story:</strong>
-                    {checklistPhases[0].case_study}
+                    {checklistSection.content.case_study}
                   </div>
                 )}
               </>
