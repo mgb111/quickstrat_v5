@@ -37,3 +37,13 @@ p {
   max-width: 100%;
   overflow-x: hidden;
 }
+
+/* Prevent page breaks inside important content blocks for PDF/print */
+.no-page-break,
+.blue-box,
+.green-box,
+.yellow-box,
+.tip-box {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
