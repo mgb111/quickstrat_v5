@@ -796,9 +796,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
               No strategies found or data missing.
             </div>
           )}
-          <div className="pro-tip no-page-break" style={{ pageBreakBefore: 'always', breakBefore: 'page', marginTop: '48px', paddingTop: '48px' }}>
-            <strong>💡 Pro Tip:</strong> Pick 1–2 strategies and go deep. Don't spread yourself thin.
-          </div>
+          <>
+            <div style={{height: '48px'}} />
+            <div className="pro-tip no-page-break" style={{ pageBreakBefore: 'always', breakBefore: 'page', marginTop: '0' }}>
+              <strong>💡 Pro Tip:</strong> Pick 1–2 strategies and go deep. Don't spread yourself thin.
+            </div>
+          </>
         </div>
 
         {/* Step 2: Checklist (robust) */}
@@ -847,33 +850,39 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             <>
               {scripts.map((scenario: any, idx: number) => (
                 (idx === 2 ? (
-                  <div className="script" key={idx} style={{ pageBreakBefore: 'always', breakBefore: 'page', marginTop: '48px', paddingTop: '48px' }}>
-                    <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
-                    <p><strong>You say:</strong></p>
-                    <div className="script-dialog">{scenario.response}</div>
-                    <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
-                    {/* Case Study for Script */}
-                    {scenario.case_study && (
-                      <div className="case-study no-page-break" style={{marginTop: '12px'}}>
-                        <strong>📈 Real Results:</strong>
-                        {scenario.case_study}
-                      </div>
-                    )}
-                  </div>
+                  <React.Fragment key={idx}>
+                    <div style={{height: '48px'}} />
+                    <div className="script" style={{ pageBreakBefore: 'always', breakBefore: 'page', marginTop: '0' }}>
+                      <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
+                      <p><strong>You say:</strong></p>
+                      <div className="script-dialog">{scenario.response}</div>
+                      <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
+                      {/* Case Study for Script */}
+                      {scenario.case_study && (
+                        <div className="case-study no-page-break" style={{marginTop: '12px'}}>
+                          <strong>📈 Real Results:</strong>
+                          {scenario.case_study}
+                        </div>
+                      )}
+                    </div>
+                  </React.Fragment>
                 ) : (
-                  <div className="script" key={idx}>
-                    <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
-                    <p><strong>You say:</strong></p>
-                    <div className="script-dialog">{scenario.response}</div>
-                    <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
-                    {/* Case Study for Script */}
-                    {scenario.case_study && (
-                      <div className="case-study no-page-break" style={{marginTop: '12px'}}>
-                        <strong>📈 Real Results:</strong>
-                        {scenario.case_study}
-                      </div>
-                    )}
-                  </div>
+                  <React.Fragment key={idx}>
+                    <div style={{height: '48px'}} />
+                    <div className="script" key={idx}>
+                      <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
+                      <p><strong>You say:</strong></p>
+                      <div className="script-dialog">{scenario.response}</div>
+                      <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
+                      {/* Case Study for Script */}
+                      {scenario.case_study && (
+                        <div className="case-study no-page-break" style={{marginTop: '12px'}}>
+                          <strong>📈 Real Results:</strong>
+                          {scenario.case_study}
+                        </div>
+                      )}
+                    </div>
+                  </React.Fragment>
                 ))
               ))}
             </>
