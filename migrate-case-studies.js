@@ -84,7 +84,7 @@ function checkIfHasCaseStudies(campaign) {
   try {
     const structuredContent = campaign.lead_magnet_content?.structured_content;
     if (!structuredContent?.toolkit_sections) {
-      return false;
+      return false; // No structured content means no case studies
     }
 
     for (const section of structuredContent.toolkit_sections) {
