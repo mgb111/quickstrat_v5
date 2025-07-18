@@ -445,10 +445,10 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           
           .checklist-box { 
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            padding: 32px;
+            padding: 18px;
             border-radius: 12px;
             border: 2px solid #e5e7eb;
-            margin-top: 24px;
+            margin-top: 16px;
           }
           
           .checklist { 
@@ -458,11 +458,11 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           }
           
           .checklist li { 
-            font-size: 16px;
-            margin-bottom: 16px;
+            font-size: 13px;
+            margin-bottom: 8px;
             display: flex;
             align-items: flex-start;
-            line-height: 1.5;
+            line-height: 1.35;
             word-wrap: break-word;
             word-break: break-word;
             overflow-wrap: break-word;
@@ -471,8 +471,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           
           .checklist li::before { 
             content: '☐';
-            font-size: 20px;
-            margin-right: 12px;
+            font-size: 16px;
+            margin-right: 8px;
             color: #3b82f6;
             margin-top: 2px;
             flex-shrink: 0;
