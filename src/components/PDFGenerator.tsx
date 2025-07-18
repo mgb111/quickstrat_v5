@@ -694,6 +694,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             font-style: italic;
             margin-top: 12px;
           }
+          .strategy-page-small {
+            font-size: 14px;
+          }
+          .strategy-page-small * {
+            font-size: 14px !important;
+          }
         `}</style>
 
         {/* Page 1: Welcome */}
@@ -746,7 +752,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
         </div>
 
         {/* Step 1: Strategy Table (robust) */}
-        <div className="page">
+        <div className="page strategy-page-small">
           <div className="page-header">Step 1 of 3</div>
           <h2>📊 Strategy Showdown: What Actually Works?</h2>
           {strategyRows.length > 0 ? (
@@ -840,20 +846,35 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           {scripts.length > 0 ? (
             <>
               {scripts.map((scenario: any, idx: number) => (
-                <div className="script" key={idx}>
-                  <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
-                  <p><strong>You say:</strong></p>
-                  <div className="script-dialog">{scenario.response}</div>
-                  <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
-                  
-                  {/* Case Study for Script */}
-                  {scenario.case_study && (
-                    <div className="case-study no-page-break" style={{marginTop: '12px'}}>
-                      <strong>📈 Real Results:</strong>
-                      {scenario.case_study}
-                    </div>
-                  )}
-                </div>
+                (idx === 2 ? (
+                  <div className="script" key={idx} style={{ pageBreakBefore: 'always', breakBefore: 'page' }}>
+                    <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
+                    <p><strong>You say:</strong></p>
+                    <div className="script-dialog">{scenario.response}</div>
+                    <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
+                    {/* Case Study for Script */}
+                    {scenario.case_study && (
+                      <div className="case-study no-page-break" style={{marginTop: '12px'}}>
+                        <strong>📈 Real Results:</strong>
+                        {scenario.case_study}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="script" key={idx}>
+                    <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
+                    <p><strong>You say:</strong></p>
+                    <div className="script-dialog">{scenario.response}</div>
+                    <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
+                    {/* Case Study for Script */}
+                    {scenario.case_study && (
+                      <div className="case-study no-page-break" style={{marginTop: '12px'}}>
+                        <strong>📈 Real Results:</strong>
+                        {scenario.case_study}
+                      </div>
+                    )}
+                  </div>
+                ))
               ))}
             </>
           ) : (
