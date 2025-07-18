@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserCheck, RefreshCw, Eye, Edit, Loader2 } from 'lucide-react';
+import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserCheck } from 'lucide-react';
 import { Campaign, Lead } from '../types';
 import { CampaignService } from '../lib/campaignService';
 import PDFGenerator from './PDFGenerator';
 import { supabase } from '../lib/supabase';
 import Modal from 'react-modal';
-import { useAuth } from '../contexts/AuthContext';
-import { regenerateCaseStudiesForCampaign } from '../lib/openai';
 
 
 interface DashboardProps {
@@ -28,7 +26,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const [editJson, setEditJson] = useState('');
   const [editError, setEditError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [regeneratingCaseStudies, setRegeneratingCaseStudies] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -155,30 +152,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
     setIsSaving(false);
   };
 
-  const handleRegenerateCaseStudies = async (campaign: Campaign) => {
-    try {
-      setRegeneratingCaseStudies(campaign.id);
-      const updatedCampaign = await regenerateCaseStudiesForCampaign(campaign);
-      
-      const { error } = await supabase
-        .from('campaigns')
-        .update({ lead_magnet_content: updatedCampaign.lead_magnet_content })
-        .eq('id', campaign.id);
-        
-      if (error) {
-        throw new Error('Failed to update campaign: ' + error.message);
-      }
-      
-      // Refresh campaigns to show updated content
-      await loadCampaigns();
-      
-    } catch (err: any) {
-      setError('Failed to regenerate case studies: ' + err.message);
-    } finally {
-      setRegeneratingCaseStudies(null);
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -268,23 +241,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
                           onClick={e => { e.stopPropagation(); handleEditClick(campaign); }}
                         >
                           Edit PDF
-                        </button>
-                        <button
-                          className="text-purple-600 hover:underline text-xs flex items-center gap-1"
-                          onClick={e => { e.stopPropagation(); handleRegenerateCaseStudies(campaign); }}
-                          disabled={regeneratingCaseStudies === campaign.id}
-                        >
-                          {regeneratingCaseStudies === campaign.id ? (
-                            <>
-                              <Loader2 className="h-3 w-3 animate-spin" />
-                              Adding Case Studies...
-                            </>
-                          ) : (
-                            <>
-                              <RefreshCw className="h-3 w-3" />
-                              Add Case Studies
-                            </>
-                          )}
                         </button>
                       </div>
                       <button
