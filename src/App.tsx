@@ -48,30 +48,25 @@ function App() {
     // AnalyticsService.initializeSession(); // Removed as per edit hint
   }, []);
 
-  // Check for landing page route on mount
-  useEffect(() => {
-    const path = window.location.pathname;
-    console.log('Current path:', path);
-    if (path.startsWith('/landing/')) {
-      setMode('landing');
-    }
-  }, []);
-
-  // Handle authentication state changes
+  // Handle authentication state changes and landing page detection
   useEffect(() => {
     const handleAuthChange = async () => {
     console.log('Auth effect running:', { loading, user, mode });
+    const path = window.location.pathname;
+    console.log('Current path:', path);
+    
     if (!loading) {
+      // Always check for landing page first - this takes priority
+      if (path.startsWith('/landing/')) {
+        console.log('On landing page, setting landing mode');
+        setMode('landing');
+        return; // Exit early, don't process other auth logic
+      }
+      
       if (user) {
-        // User is authenticated, but preserve landing page mode if on landing page
-        console.log('User authenticated');
-        const path = window.location.pathname;
-        if (path.startsWith('/landing/')) {
-          // Keep landing page mode even if user is authenticated
-          console.log('On landing page, keeping landing mode');
-          setMode('landing');
-        } else if (mode === 'auth' || mode === 'public') {
-          console.log('Switching to dashboard');
+        // User is authenticated, show dashboard (but not if on landing page)
+        console.log('User authenticated, switching to dashboard');
+        if (mode === 'auth' || mode === 'public') {
           setMode('dashboard');
         }
           // Remove all subscription status fetching logic
