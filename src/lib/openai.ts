@@ -276,16 +276,17 @@ Generate EXACTLY 3 distinct toolkit sections. Each section must be comprehensive
 
 SECTION TYPES TO USE (NO TABLES, NO REDUNDANT STEP-BY-STEP GUIDES):
 
-- For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of AT LEAST 3-6 items. Each item MUST have a "method_name", a single "pros" string (not an array), and a single "cons" string (not an array). Format exactly like this example:
+- For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of AT LEAST 3-6 items. Each item MUST have a "method_name", a single "pros" string (not an array), a single "cons" string (not an array), and a "case_study" field with a brief real-world example (2-3 sentences). Format exactly like this example:
 
 EXAMPLE PROS AND CONS FORMAT:
 {
   "method_name": "Social Media Marketing",
   "pros": "Offers wide reach and the ability to form a personal connection with prospects.",
-  "cons": "It is time-consuming and requires the regular creation of new content to stay relevant."
+  "cons": "It is time-consuming and requires the regular creation of new content to stay relevant.",
+  "case_study": "Sarah, a fitness coach, tested Instagram vs. Facebook ads for her online program. Instagram brought in 40% more qualified leads at half the cost, but required daily content creation. She now focuses 80% of her efforts on Instagram while using Facebook for retargeting."
 }
 
-For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items. Format exactly like this example:
+For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items. Include a "case_study" field with a brief real-world example showing how this checklist was used successfully (2-3 sentences). Format exactly like this example:
 
 EXAMPLE CHECKLIST FORMAT:
 {
@@ -314,10 +315,11 @@ EXAMPLE CHECKLIST FORMAT:
         "3.3 Iterate and adjust the program based on feedback and results"
       ]
     }
-  ]
+  ],
+  "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs."
 }
 
-For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), and "explanation" (strategy behind the script). For each script, include a real-life example or micro-case study (1-2 sentences) showing the script in action.
+For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), "explanation" (strategy behind the script), and a "case_study" field with a detailed real-world example (2-3 sentences) showing the script in action with specific results. Include specific numbers, outcomes, and context to make it relatable.
 
 For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words. Include a real-life example or case study for at least one mistake.
 
@@ -365,7 +367,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
             "method_name": "Paid Advertising",
             "pros": "Quick results, precise targeting, scalable.",
             "cons": "Can be expensive, requires constant monitoring and adjustment.",
-            "example": "A real-life example or micro-case study (1-2 sentences)",
+            "case_study": "Mike, a B2B consultant, spent $2,000 on LinkedIn ads targeting CFOs. He generated 15 qualified leads in 30 days, with 3 converting to $15K clients. The key was testing 5 different ad copy variations and focusing on pain points rather than features.",
             "template": "A plug-and-play template or swipe file (if applicable)"
           }
         ]
@@ -386,7 +388,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
             ]
           }
         ],
-        "example": "A real-life example or micro-case study (1-2 sentences)",
+        "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs.",
         "template": "A plug-and-play template or swipe file (if applicable)"
       }
     },
@@ -400,7 +402,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
             "trigger": "We can offer you a 20% discount if you sign today.",
             "response": "I appreciate the offer, but I need time to review all terms with my team. Can you put that discount in writing with a 30-day validity period?",
             "explanation": "This deflects pressure tactics while securing the discount for proper evaluation time.",
-            "example": "A real-life example or micro-case study (1-2 sentences)",
+            "case_study": "Lisa, a procurement manager, used this script when negotiating with a software vendor. She secured a 20% discount that was valid for 45 days, giving her team time to evaluate the solution. The vendor later increased the discount to 25% to close the deal.",
             "template": "A plug-and-play template or swipe file (if applicable)"
           }
         ]

@@ -514,6 +514,24 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
             color: #15803d;
           }
           
+          .case-study { 
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            border-left: 4px solid #d97706;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+          }
+          
+          .case-study strong {
+            color: #92400e;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 15px;
+          }
+          
           .cta-block { 
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             color: white;
@@ -745,6 +763,21 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
                 ))}
               </tbody>
             </table>
+            
+            {/* Case Studies for Strategies */}
+            {strategyRows.some((row: any) => row.case_study) && (
+              <div style={{marginTop: '24px'}}>
+                <h3 style={{marginBottom: '16px', color: '#1e293b'}}>📈 Real-World Examples</h3>
+                {strategyRows.map((row: any, idx: number) => (
+                  row.case_study && (
+                    <div key={idx} className="case-study">
+                      <strong>💡 {row.method_name} in Action:</strong>
+                      {row.case_study}
+                    </div>
+                  )
+                ))}
+              </div>
+            )}
           ) : (
             <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
               No strategies found or data missing.
@@ -762,16 +795,26 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           <p style={{textAlign: 'center', marginBottom: '32px'}}>Use this to stay consistent and intentional.</p>
           <div className="checklist-box">
             {checklistPhases.length > 0 ? (
-              checklistPhases.map((phase: any, idx: number) => (
-                <React.Fragment key={idx}>
-                  <h3>{phase.phase_title}</h3>
-                  <ul className="checklist">
-                    {phase.items.map((item: string, i: number) => (
-                      <li key={i}>{item}</li>
-                    ))}
-                  </ul>
-                </React.Fragment>
-              ))
+              <>
+                {checklistPhases.map((phase: any, idx: number) => (
+                  <React.Fragment key={idx}>
+                    <h3>{phase.phase_title}</h3>
+                    <ul className="checklist">
+                      {phase.items.map((item: string, i: number) => (
+                        <li key={i}>{item}</li>
+                      ))}
+                    </ul>
+                  </React.Fragment>
+                ))}
+                
+                {/* Case Study for Checklist */}
+                {checklistPhases.length > 0 && checklistPhases[0]?.case_study && (
+                  <div className="case-study" style={{marginTop: '24px'}}>
+                    <strong>📈 Success Story:</strong>
+                    {checklistPhases[0].case_study}
+                  </div>
+                )}
+              </>
             ) : (
               <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
                 No checklist phases found or data missing.
@@ -785,14 +828,24 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
           <div className="page-header">Step 3 of 3</div>
           <h2>💬 Scripts That Turn Comments Into Clients</h2>
           {scripts.length > 0 ? (
-            scripts.map((scenario: any, idx: number) => (
-              <div className="script" key={idx}>
-                <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
-                <p><strong>You say:</strong></p>
-                <div className="script-dialog">{scenario.response}</div>
-                <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
-              </div>
-            ))
+            <>
+              {scripts.map((scenario: any, idx: number) => (
+                <div className="script" key={idx}>
+                  <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
+                  <p><strong>You say:</strong></p>
+                  <div className="script-dialog">{scenario.response}</div>
+                  <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
+                  
+                  {/* Case Study for Script */}
+                  {scenario.case_study && (
+                    <div className="case-study" style={{marginTop: '12px'}}>
+                      <strong>📈 Real Results:</strong>
+                      {scenario.case_study}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </>
           ) : (
             <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
               No scripts found or data missing.
