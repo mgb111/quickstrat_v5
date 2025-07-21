@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Edit3, CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { ContentOutline } from '../types';
+import UpgradeModal from './UpgradeModal';
 
 interface OutlineReviewProps {
   outline: ContentOutline;
@@ -16,7 +17,7 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
   const [editableOutline, setEditableOutline] = useState<ContentOutline>(outline);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [hasPaid, setHasPaid] = useState(false);
-  const [showPaywall, setShowPaywall] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   // Add Razorpay Checkout redirect after payment
   React.useEffect(() => {
@@ -24,7 +25,7 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
     const params = new URLSearchParams(window.location.search);
     if (params.get('payment') === 'success') {
       setHasPaid(true);
-      setShowPaywall(false);
+      setShowUpgradeModal(false);
     }
   }, []);
 
@@ -40,31 +41,10 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
 
   const handleSubmit = () => {
     if (!hasPaid) {
-      setShowPaywall(true);
+      setShowUpgradeModal(true);
       return;
     }
     onOutlineApproved(editableOutline);
-  };
-
-  const handlePayWithRazorpay = () => {
-    // Open Razorpay Checkout modal with redirect after payment
-    const options = {
-      key: 'rzp_test_6DK6qaeZ98ZTxA', // Replace with your live key in production
-      amount: 4900 * 100, // INR 49.00 in paise
-      currency: 'INR',
-      name: 'Majorbeam',
-      description: 'Premium PDF Access',
-      handler: function (response: any) {
-        // Redirect to same page with payment=success
-        window.location.href = window.location.pathname + '?payment=success';
-      },
-      prefill: {},
-      notes: {},
-      theme: { color: '#3b82f6' }
-    };
-    // @ts-ignore
-    const rzp = new window.Razorpay(options);
-    rzp.open();
   };
 
   const EditableField: React.FC<{
@@ -227,42 +207,36 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
       </div>
 
       <div className="text-center">
-        {/* Paywall logic: only allow PDF generation after payment */}
-        {showPaywall && !hasPaid ? (
-          <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200 text-center max-w-md mx-auto">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Unlock Your PDF</h3>
-            <p className="mb-4 text-lg text-gray-700 font-semibold">Complete your payment to access your PDF.</p>
-            <button
-              onClick={handlePayWithRazorpay}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
-            >
-              Pay with Razorpay
-            </button>
-          </div>
-        ) : (
-          <>
-            <button
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold text-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="animate-spin h-5 w-5 mr-3" />
-                  Generating Your PDF...
-                </>
-              ) : (
-                <>
-                  Generate My PDF
-                  <ArrowRight className="h-5 w-5 ml-2" />
-                </>
-              )}
-            </button>
-            <p className="text-sm text-gray-600 mt-3">
-              AI will expand your outline into a complete, professional lead magnet
-            </p>
-          </>
-        )}
+        <>
+          <button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold text-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin h-5 w-5 mr-3" />
+                Generating Your PDF...
+              </>
+            ) : (
+              <>
+                Generate My PDF
+                <ArrowRight className="h-5 w-5 ml-2" />
+              </>
+            )}
+          </button>
+          <p className="text-sm text-gray-600 mt-3">
+            AI will expand your outline into a complete, professional lead magnet
+          </p>
+        </>
+        <UpgradeModal
+          isOpen={showUpgradeModal && !hasPaid}
+          onClose={() => setShowUpgradeModal(false)}
+          onUpgrade={() => {
+            setHasPaid(true);
+            setShowUpgradeModal(false);
+          }}
+        />
       </div>
     </div>
   );
