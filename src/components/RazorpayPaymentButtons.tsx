@@ -34,7 +34,7 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId,
       name: 'Majorbeam',
       description: purpose || 'Premium Plan',
       order_id: orderId,
-      handler: function () {
+      handler: function (response: any) {
         // TODO: Optionally verify payment on backend
         window.location.href = window.location.pathname + '?payment=success';
       },

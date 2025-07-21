@@ -860,18 +860,18 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
                     )}
                   </div>
                 ) : (
-                  <div className="script" key={idx}>
-                    <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
-                    <p><strong>You say:</strong></p>
-                    <div className="script-dialog">{scenario.response}</div>
-                    <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
-                    {scenario.case_study && (
+                <div className="script" key={idx}>
+                  <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
+                  <p><strong>You say:</strong></p>
+                  <div className="script-dialog">{scenario.response}</div>
+                  <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
+                  {scenario.case_study && (
                       <div className="case-study no-page-break" style={{marginTop: '12px'}}>
-                        <strong>📈 Real Results:</strong>
-                        {scenario.case_study}
-                      </div>
-                    )}
-                  </div>
+                      <strong>📈 Real Results:</strong>
+                      {scenario.case_study}
+                    </div>
+                  )}
+                </div>
                 )
               ))}
             </>
