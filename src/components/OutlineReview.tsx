@@ -18,6 +18,16 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
   const [hasPaid, setHasPaid] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
 
+  // Add Razorpay Checkout redirect after payment
+  React.useEffect(() => {
+    // On mount, check for payment success in URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      setHasPaid(true);
+      setShowPaywall(false);
+    }
+  }, []);
+
   const handleFieldChange = (field: keyof ContentOutline, value: string | string[]) => {
     setEditableOutline(prev => ({ ...prev, [field]: value }));
   };
@@ -37,9 +47,24 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
   };
 
   const handlePayWithRazorpay = () => {
-    // Open Razorpay Checkout (replace with your integration)
-    window.location.href = 'https://rzp.io/rzp/6A0uOxr';
-    // After payment, setHasPaid(true) (in real app, use webhook or URL param)
+    // Open Razorpay Checkout modal with redirect after payment
+    const options = {
+      key: 'rzp_test_6DK6qaeZ98ZTxA', // Replace with your live key in production
+      amount: 4900 * 100, // INR 49.00 in paise
+      currency: 'INR',
+      name: 'Majorbeam',
+      description: 'Premium PDF Access',
+      handler: function (response: any) {
+        // Redirect to same page with payment=success
+        window.location.href = window.location.pathname + '?payment=success';
+      },
+      prefill: {},
+      notes: {},
+      theme: { color: '#3b82f6' }
+    };
+    // @ts-ignore
+    const rzp = new window.Razorpay(options);
+    rzp.open();
   };
 
   const EditableField: React.FC<{
