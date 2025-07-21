@@ -1,6 +1,8 @@
 // Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your Supabase project environment variables before deploying this function.
 // @ts-ignore
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+// @ts-ignore
+Deno.env.set('SUPABASE_FUNCTIONS_VERIFY_JWT', 'false');
 
 serve(async (req) => {
   const corsHeaders = {
