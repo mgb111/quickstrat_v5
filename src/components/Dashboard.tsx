@@ -26,10 +26,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
   const [editJson, setEditJson] = useState('');
   const [editError, setEditError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false); // New state for payment success modal
 
 
   useEffect(() => {
     loadCampaigns();
+    // Check for payment=success in URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      setShowPaymentSuccess(true);
+      // Remove the param from the URL
+      params.delete('payment');
+      window.history.replaceState({}, '', window.location.pathname);
+    }
   }, []);
 
   useEffect(() => {
@@ -400,6 +409,25 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
           {editJson && (
             <PDFGenerator data={JSON.parse(editJson)} />
           )}
+        </div>
+      </Modal>
+      {/* Payment Success Modal */}
+      <Modal
+        isOpen={showPaymentSuccess}
+        onRequestClose={() => setShowPaymentSuccess(false)}
+        contentLabel="Payment Success"
+        className="fixed inset-0 flex items-center justify-center z-50"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"
+      >
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-4 text-green-600">Payment Successful!</h2>
+          <p className="mb-4 text-lg">Your premium features are now unlocked. Enjoy unlimited access!</p>
+          <button
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
+            onClick={() => setShowPaymentSuccess(false)}
+          >
+            Close
+          </button>
         </div>
       </Modal>
     </div>
