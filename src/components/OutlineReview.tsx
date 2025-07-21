@@ -235,6 +235,8 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
           onUpgrade={() => {
             setHasPaid(true);
             setShowUpgradeModal(false);
+            // Immediately continue PDF generation after payment
+            onOutlineApproved(editableOutline);
           }}
         />
       </div>
