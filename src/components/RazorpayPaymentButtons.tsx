@@ -10,9 +10,13 @@ interface RazorpayPaymentButtonsProps {
 const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId, amount, purpose, endpoint }) => {
   const handlePay = async () => {
     // 1. Call backend to create Razorpay order
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || (window && (window as any).SUPABASE_ANON_KEY) || '<your-public-anon-key>';
     const res = await fetch(endpoint || '/functions/v1/create-razorpay-order', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': supabaseAnonKey
+      },
       body: JSON.stringify({ userId, amount, purpose })
     });
     if (!res.ok) {
