@@ -10,6 +10,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
+// Verify Razorpay webhook signature
 function verifySignature(body: string, signature: string, secret: string) {
   const encoder = new TextEncoder();
   const key = encoder.encode(secret);
@@ -40,7 +41,7 @@ serve(async (req) => {
     const secret = Deno.env.get('RAZORPAY_WEBHOOK_SECRET') || '';
     if (!secret) throw new Error('Webhook secret not set');
 
-    // Verify signature
+    // 1. Verify signature
     const valid = await verifySignature(body, signature, secret);
     if (!valid) {
       console.error('Invalid Razorpay webhook signature');
@@ -53,22 +54,19 @@ serve(async (req) => {
     }
 
     const payment = event.payload.payment.entity;
-    // Determine plan based on payment_button_id
-    const paymentButtonId = payment.payment_button_id;
-    let plan: 'monthly' | 'yearly' | null = null;
-    if (paymentButtonId === 'pl_QtIGO5QujXNyrB') {
-      plan = 'monthly';
-    } else if (paymentButtonId === 'pl_QtILq0eW8eEBIs') {
-      plan = 'yearly';
-    }
+    const orderId = payment.order_id;
+    // 2. (TODO) Check that order_id matches a real order in your DB
+    // You should look up the order in your DB and ensure it was created for this user/amount
+    // For now, just log it
+    console.log('Received payment for order_id:', orderId);
+    // Example: const order = await supabase.from('orders').select('*').eq('order_id', orderId).single();
+    // if (!order) { return new Response('Unknown order_id', { status: 400, headers: corsHeaders }); }
+
+    // Determine plan based on payment_button_id (legacy, or use notes/order info for new flow)
     const email = payment.email || (payment.notes && payment.notes.email);
     if (!email) {
       console.error('Missing email in payment entity', payment);
       return new Response('Missing email', { status: 400, headers: corsHeaders });
-    }
-    if (!plan) {
-      console.error('Unknown payment_button_id', paymentButtonId);
-      return new Response('Unknown payment_button_id', { status: 400, headers: corsHeaders });
     }
 
     // Supabase client
@@ -77,17 +75,12 @@ serve(async (req) => {
 
     // Calculate expiry and campaign period
     const now = new Date();
-    let expiry: Date;
-    if (plan === 'monthly') {
-      expiry = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-    } else {
-      expiry = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
-    }
+    const expiry = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
     const subscription_expiry = expiry.toISOString();
     const campaign_count = 0;
     const campaign_count_period = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-    // Update user in Supabase
+    // 3. Only upgrade user if signature is valid and (TODO) order is valid
     const { error } = await supabase
       .from('users')
       .update({
