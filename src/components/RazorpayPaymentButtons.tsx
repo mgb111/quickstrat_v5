@@ -1,42 +1,60 @@
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
+import React from 'react';
 
-serve(async (req) => {
-  try {
-    const { amount, userId, purpose } = await req.json();
+interface RazorpayPaymentButtonsProps {
+  userId: string;
+  amount: number; // in INR
+  purpose?: string;
+  endpoint?: string;
+}
 
-    const key_id = Deno.env.get("RAZORPAY_KEY_ID");
-    const key_secret = Deno.env.get("RAZORPAY_KEY_SECRET");
-
-    if (!key_id || !key_secret) {
-      return new Response("Razorpay keys missing", { status: 500 });
-    }
-
-    const auth = btoa(`${key_id}:${key_secret}`);
-
-    const razorpayRes = await fetch("https://api.razorpay.com/v1/orders", {
-      method: "POST",
+const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId, amount, purpose, endpoint }) => {
+  const handlePay = async () => {
+    // 1. Call backend to create Razorpay order
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5anF0b2p4d3BmbmRybXVzY2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzOTEzMTgsImV4cCI6MjA2Njk2NzMxOH0.Jk30U7VdWdsYcdV1akWIGF5I8FneCJMtSEBmLsoknOU'; // Hardcoded for now
+    const res = await fetch(endpoint || '/functions/v1/create-razorpay-order', {
+      method: 'POST',
       headers: {
-        "Authorization": `Basic ${auth}`,
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${supabaseAnonKey}` // Added Authorization header
       },
-      body: JSON.stringify({
-        amount: amount * 100, // convert to paise
-        currency: "INR",
-        receipt: `${userId}-${Date.now()}`,
-        payment_capture: 1,
-        notes: { userId, purpose }
-      })
+      body: JSON.stringify({ userId, amount, purpose })
     });
-
-    const data = await razorpayRes.json();
-
-    if (!razorpayRes.ok) {
-      return new Response(JSON.stringify(data), { status: razorpayRes.status });
+    if (!res.ok) {
+      alert('Failed to create payment order.');
+      return;
     }
+    const { orderId } = await res.json();
+    // 2. Open Razorpay Checkout
+    // TODO: Use your real Razorpay key here
+    const options = {
+      key: 'rzp_test_6DK6qaeZ98ZTxA', // TODO: Switch to live key for production
+      amount: amount * 100,
+      currency: 'INR',
+      name: 'Majorbeam',
+      description: purpose || 'Premium Plan',
+      order_id: orderId,
+      handler: function (response: any) {
+        // TODO: Optionally verify payment on backend
+        window.location.href = window.location.pathname + '?payment=success';
+      },
+      prefill: {},
+      notes: { userId, purpose },
+      theme: { color: '#3b82f6' }
+    };
+    // @ts-ignore
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
 
-    return new Response(JSON.stringify({ orderId: data.id }), { status: 200 });
-  } catch (err) {
-    console.error(err);
-    return new Response("Server error", { status: 500 });
-  }
-});
+  return (
+    <button
+      onClick={handlePay}
+      className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
+    >
+      Pay with Razorpay
+    </button>
+  );
+};
+
+export default RazorpayPaymentButtons; 
