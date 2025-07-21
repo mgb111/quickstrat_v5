@@ -59,10 +59,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!campaign || !email.trim() || isSubmitting || localSubmitting) return;
+    setError(null);
+    // Enforce paywall BEFORE campaign/PDF generation
+    if (!hasPaid) {
+      setIsSubmitted(true); // Show the paywall section
+      setShowPDF(true);
+      return;
+    }
     setLocalSubmitting(true);
     setIsSubmitting(true);
-    setError(null);
-
     try {
       await CampaignService.captureLead(campaign.id, email.trim());
       setIsSubmitted(true);
