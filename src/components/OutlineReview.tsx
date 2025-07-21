@@ -15,6 +15,8 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
 }) => {
   const [editableOutline, setEditableOutline] = useState<ContentOutline>(outline);
   const [editingField, setEditingField] = useState<string | null>(null);
+  const [hasPaid, setHasPaid] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
 
   const handleFieldChange = (field: keyof ContentOutline, value: string | string[]) => {
     setEditableOutline(prev => ({ ...prev, [field]: value }));
@@ -27,7 +29,17 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
   };
 
   const handleSubmit = () => {
+    if (!hasPaid) {
+      setShowPaywall(true);
+      return;
+    }
     onOutlineApproved(editableOutline);
+  };
+
+  const handlePayWithRazorpay = () => {
+    // Open Razorpay Checkout (replace with your integration)
+    window.location.href = 'https://rzp.io/rzp/6A0uOxr';
+    // After payment, setHasPaid(true) (in real app, use webhook or URL param)
   };
 
   const EditableField: React.FC<{
@@ -186,45 +198,46 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
               ))}
             </div>
           </div>
-
-          {/* CTA */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Proposed Call to Action (CTA)</h3>
-            <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-              <EditableField
-                field="cta"
-                value={editableOutline.cta}
-                placeholder="Enter your call-to-action (25-40 words)"
-                multiline
-                maxLength={300}
-              />
-            </div>
-          </div>
         </div>
       </div>
 
       <div className="text-center">
-        <button
-          onClick={handleSubmit}
-          disabled={isLoading}
-          className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold text-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="animate-spin h-5 w-5 mr-3" />
-              Generating Your PDF...
-            </>
-          ) : (
-            <>
-              Generate My PDF
-              <ArrowRight className="h-5 w-5 ml-2" />
-            </>
-          )}
-        </button>
-        
-        <p className="text-sm text-gray-600 mt-3">
-          AI will expand your outline into a complete, professional lead magnet
-        </p>
+        {/* Paywall logic: only allow PDF generation after payment */}
+        {showPaywall && !hasPaid ? (
+          <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200 text-center max-w-md mx-auto">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Unlock Your PDF</h3>
+            <p className="mb-4 text-lg text-gray-700 font-semibold">Complete your payment to access your PDF.</p>
+            <button
+              onClick={handlePayWithRazorpay}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
+            >
+              Pay with Razorpay
+            </button>
+          </div>
+        ) : (
+          <>
+            <button
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold text-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin h-5 w-5 mr-3" />
+                  Generating Your PDF...
+                </>
+              ) : (
+                <>
+                  Generate My PDF
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </>
+              )}
+            </button>
+            <p className="text-sm text-gray-600 mt-3">
+              AI will expand your outline into a complete, professional lead magnet
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

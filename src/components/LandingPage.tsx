@@ -61,7 +61,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
     e.preventDefault();
     if (!campaign || !email.trim() || isSubmitting || localSubmitting) return;
     setError(null);
-    // Enforce paywall BEFORE campaign/PDF generation
+    // Only trigger paywall when user clicks Generate PDF and has not paid
     if (!hasPaid) {
       setShowPaywall(true);
       return;
@@ -162,7 +162,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
         </div>
 
         {/* Email Capture Form */}
-        {!isSubmitted && !showPaywall ? (
+        {!isSubmitted ? (
           <div className="max-w-md mx-auto">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -179,32 +179,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
                 />
               </div>
-              
               <button
                 type="submit"
-                disabled={isSubmitting || localSubmitting}
                 className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center text-lg"
               >
-                {isSubmitting || localSubmitting ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    {landingPageCopy?.cta_button_text || 'Get Your Free Guide'}
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </>
-                )}
+                {landingPageCopy?.cta_button_text || 'Get Your Free Guide'}
+                <ArrowRight className="ml-2 h-5 w-5" />
               </button>
             </form>
-
             {error && (
               <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-red-800 text-sm">{error}</p>
               </div>
             )}
-
             <p className="mt-4 text-sm text-gray-500 text-center">
               We respect your privacy. Unsubscribe at any time.
             </p>
