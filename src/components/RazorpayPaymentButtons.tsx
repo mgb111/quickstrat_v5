@@ -10,12 +10,13 @@ interface RazorpayPaymentButtonsProps {
 const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId, amount, purpose, endpoint }) => {
   const handlePay = async () => {
     // 1. Call backend to create Razorpay order
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5anF0b2p4d3BmbmRybXVzY2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzOTEzMTgsImV4cCI6MjA2Njk2NzMxOH0.Jk30U7VdWdsYcdV1akWIGF5I8FneCJMtSEBmLsoknOU';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5anF0b2p4d3BmbmRybXVzY2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzOTEzMTgsImV4cCI6MjA2Njk2NzMxOH0.Jk30U7VdWdsYcdV1akWIGF5I8FneCJMtSEBmLsoknOU'; // Hardcoded for now
     const res = await fetch(endpoint || '/functions/v1/create-razorpay-order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': supabaseAnonKey
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${supabaseAnonKey}` // Added Authorization header
       },
       body: JSON.stringify({ userId, amount, purpose })
     });
