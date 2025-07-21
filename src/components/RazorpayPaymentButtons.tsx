@@ -4,12 +4,13 @@ interface RazorpayPaymentButtonsProps {
   userId: string;
   amount: number; // in INR
   purpose?: string;
+  endpoint?: string;
 }
 
-const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId, amount, purpose }) => {
+const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId, amount, purpose, endpoint }) => {
   const handlePay = async () => {
     // 1. Call backend to create Razorpay order
-    const res = await fetch('/functions/v1/create-razorpay-order', {
+    const res = await fetch(endpoint || '/functions/v1/create-razorpay-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, amount, purpose })

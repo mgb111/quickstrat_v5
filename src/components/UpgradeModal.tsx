@@ -119,6 +119,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade,
                   userId={userId}
                   amount={plan.price}
                   purpose="Premium Plan"
+                  endpoint="https://uyjqtojxwpfndrmuscag.supabase.co/functions/v1/create-razorpay-order"
                 />
               )}
             </div>
