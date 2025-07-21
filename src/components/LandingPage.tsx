@@ -18,13 +18,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
   const [localSubmitting, setLocalSubmitting] = useState(false);
   const [hasPaid, setHasPaid] = useState(false);
 
-  // Dodo Payments integration
-  const DODO_PAYMENT_LINK = 'https://test.checkout.dodopayments.com/buy/pdt_k2F91xWDkSnYM91DKXXMG?quantity=1';
+  // Razorpay Payment Link integration
+  const RAZORPAY_PAYMENT_LINK = 'https://rzp.io/rzp/6A0uOxr';
 
-  const handlePayWithDodo = () => {
-    // Redirect to Dodo Payments checkout
-    window.location.href = DODO_PAYMENT_LINK;
-    // After payment, Dodo should redirect back to your app with a success indicator (handle this in your app)
+  const handlePayWithRazorpay = () => {
+    // Redirect to Razorpay Payment Link
+    window.location.href = RAZORPAY_PAYMENT_LINK;
+    // After payment, Razorpay should redirect back to your app with a success indicator (handle this in your app)
   };
 
   useEffect(() => {
@@ -45,6 +45,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
     loadCampaign();
   }, [campaignSlug]);
 
+  // IMPORTANT: Set the Razorpay Payment Link's redirect/return URL to your app with ?payment=success
+  // Example: https://yourdomain.com/landing-page?payment=success
+  // This is handled in the useEffect below:
   useEffect(() => {
     // Check for payment success in URL (e.g., ?payment=success)
     const params = new URLSearchParams(window.location.search);
@@ -224,10 +227,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
                   <div className="text-center">
                     <p className="mb-4 text-lg text-gray-700 font-semibold">Unlock this PDF by completing your payment.</p>
                     <button
-                      onClick={handlePayWithDodo}
+                      onClick={handlePayWithRazorpay}
                       className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
                     >
-                      Pay with Dodo
+                      Pay with Razorpay
                     </button>
                   </div>
                 ) : (

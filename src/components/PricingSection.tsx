@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Check, Crown, Star } from 'lucide-react';
 import { SubscriptionService } from '../lib/subscriptionService';
 import RazorpayPaymentButtons from './RazorpayPaymentButtons';
+import { supabase } from '../lib/supabase';
 
 interface PricingSectionProps {
   onLogin: () => void;
@@ -10,6 +11,12 @@ interface PricingSectionProps {
 const PricingSection: React.FC<PricingSectionProps> = ({
   onLogin
 }) => {
+  const [userId, setUserId] = useState<string | null>(null);
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUserId(user?.id || null);
+    });
+  }, []);
   const pricing = SubscriptionService.getPricing();
 
   return (
@@ -103,7 +110,9 @@ const PricingSection: React.FC<PricingSectionProps> = ({
 
             {/* Always show Razorpay payment button for the selected billing cycle */}
             <div className="flex justify-center mt-6">
-              <RazorpayPaymentButtons billingCycle="monthly" />
+              {userId && (
+                <RazorpayPaymentButtons userId={userId} amount={49} purpose="Premium Plan" />
+              )}
             </div>
           </div>
         </div>

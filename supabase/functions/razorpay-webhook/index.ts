@@ -1,3 +1,4 @@
+// Use this function as your Razorpay webhook handler for payment.captured events.
 // @ts-ignore
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 // @ts-ignore

@@ -31,13 +31,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [hasPaid, setHasPaid] = useState(false);
 
-  // Dodo Payments integration
-  const DODO_PAYMENT_LINK = 'https://test.checkout.dodopayments.com/buy/pdt_k2F91xWDkSnYM91DKXXMG?quantity=1';
+  // Razorpay Payment Link integration
+  const RAZORPAY_PAYMENT_LINK = 'https://rzp.io/rzp/6A0uOxr';
 
-  const handlePayWithDodo = () => {
-    // Redirect to Dodo Payments checkout
-    window.location.href = DODO_PAYMENT_LINK;
-    // After payment, Dodo should redirect back to your app with a success indicator (handle this in your app)
+  const handlePayWithRazorpay = () => {
+    // Redirect to Razorpay Payment Link
+    window.location.href = RAZORPAY_PAYMENT_LINK;
+    // After payment, Razorpay should redirect back to your app with a success indicator (handle this in your app)
   };
 
   const copyToClipboard = (text: string) => {
@@ -49,6 +49,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
     setEmailSubmitted(true);
   };
 
+  // IMPORTANT: Set the Razorpay Payment Link's redirect/return URL to your app with ?payment=success
+  // Example: https://yourdomain.com/landing-page?payment=success
+  // This is handled in the useEffect below:
   useEffect(() => {
     // Check for payment success in URL (e.g., ?payment=success)
     const params = new URLSearchParams(window.location.search);
