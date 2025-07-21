@@ -271,8 +271,20 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
               {pdfError ? `⚠️ ${pdfError}` : '✅ Email submitted! Your guide is ready below.'}
             </p>
           </div>
-          
-          {pdfContent && <PDFGenerator data={pdfContent} />}
+          {/* Paywall enforcement: Only show PDF if hasPaid is true */}
+          {!hasPaid ? (
+            <div className="text-center">
+              <p className="mb-4 text-lg text-gray-700 font-semibold">Unlock this PDF by completing your payment.</p>
+              <button
+                onClick={handlePayWithRazorpay}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
+              >
+                Pay with Razorpay
+              </button>
+            </div>
+          ) : (
+            pdfContent && <PDFGenerator data={pdfContent} />
+          )}
         </div>
       )}
 
