@@ -25,7 +25,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade,
 
   const handlePaymentSuccess = (paymentId: string, plan: string, billing: string) => {
     console.log('Payment successful:', { paymentId, plan, billing });
-    onUpgrade('premium', billing as 'monthly' | 'yearly');
+    onUpgrade('premium', 'monthly'); // Only 'monthly' supported here
   };
 
   const handlePaymentError = (error: any) => {
@@ -119,7 +119,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade,
                   userId={userId}
                   amount={plan.price}
                   purpose="Premium Plan"
-                  endpoint="https://uyjqtojxwpfndrmuscag.supabase.co/functions/v1/create-razorpay-order"
+                  endpoint="/functions/v1/create-razorpay-order" // TODO: Ensure this is correct for your deployment
                 />
               )}
             </div>

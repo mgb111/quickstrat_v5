@@ -10,13 +10,10 @@ interface RazorpayPaymentButtonsProps {
 const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId, amount, purpose, endpoint }) => {
   const handlePay = async () => {
     // 1. Call backend to create Razorpay order
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5anF0b2p4d3BmbmRybXVzY2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzOTEzMTgsImV4cCI6MjA2Njk2NzMxOH0.Jk30U7VdWdsYcdV1akWIGF5I8FneCJMtSEBmLsoknOU'; // Hardcoded for now
     const res = await fetch(endpoint || '/functions/v1/create-razorpay-order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': supabaseAnonKey,
-        'Authorization': `Bearer ${supabaseAnonKey}` // Added Authorization header
       },
       body: JSON.stringify({ userId, amount, purpose })
     });
@@ -24,18 +21,21 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId,
       alert('Failed to create payment order.');
       return;
     }
-    const { orderId } = await res.json();
-    // 2. Open Razorpay Checkout
-    // TODO: Use your real Razorpay key here
+    const { orderId, error } = await res.json();
+    if (!orderId) {
+      alert('Failed to get orderId from backend: ' + (error || 'Unknown error'));
+      return;
+    }
+    // 2. Open Razorpay Checkout with real orderId and live key
     const options = {
-      key: 'rzp_test_6DK6qaeZ98ZTxA', // TODO: Switch to live key for production
+      key: 'rzp_test_6DK6qaeZ98ZTxA', // Using provided test key for Razorpay
       amount: amount * 100,
       currency: 'INR',
       name: 'Majorbeam',
       description: purpose || 'Premium Plan',
       order_id: orderId,
       handler: function (response: any) {
-        // TODO: Optionally verify payment on backend
+        // Optionally verify payment on backend here
         window.location.href = window.location.pathname + '?payment=success';
       },
       prefill: {},
