@@ -13,16 +13,20 @@ const ALLOWED_PURPOSES = ['premium_plan', 'subscription', 'donation'];
 function createResponse(
   body: any,
   status: number = 200,
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
+  reqOrigin?: string
 ): Response {
+  // Dynamically set CORS origin for credentials support
+  const allowOrigin = reqOrigin || '*';
   const defaultHeaders = {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowOrigin,
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS, GET, PUT, DELETE',
     'Access-Control-Max-Age': '86400', // 24 hours
+    'Access-Control-Allow-Credentials': 'true', // For future-proofing
+    'Vary': 'Origin', // For cache safety
   };
-
   return new Response(
     JSON.stringify(body),
     {
@@ -55,16 +59,24 @@ function validateRequest(body: any): { valid: boolean; error?: string } {
 
 // Main server handler
 serve(async (req) => {
+  const reqOrigin = req.headers.get('origin') || '*';
+  console.log(`[create-razorpay-order] Incoming request:`, {
+    method: req.method,
+    origin: reqOrigin
+  });
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return createResponse({}, 204);
+    // Always respond with all CORS headers and no body
+    return createResponse({}, 204, {}, reqOrigin);
   }
 
   // Only allow POST requests
   if (req.method !== 'POST') {
     return createResponse(
       { error: 'Method Not Allowed' },
-      405
+      405,
+      {},
+      reqOrigin
     );
   }
 
@@ -74,7 +86,9 @@ serve(async (req) => {
       console.error('Razorpay API credentials not configured');
       return createResponse(
         { error: 'Server configuration error' },
-        500
+        500,
+        {},
+        reqOrigin
       );
     }
 
@@ -85,7 +99,9 @@ serve(async (req) => {
     } catch (e) {
       return createResponse(
         { error: 'Invalid JSON payload' },
-        400
+        400,
+        {},
+        reqOrigin
       );
     }
 
@@ -94,7 +110,9 @@ serve(async (req) => {
     if (!validation.valid) {
       return createResponse(
         { error: validation.error },
-        400
+        400,
+        {},
+        reqOrigin
       );
     }
 
@@ -139,7 +157,9 @@ serve(async (req) => {
           error: 'Payment processing failed',
           details: responseData.error?.description || 'Could not create order'
         },
-        500
+        500,
+        {},
+        reqOrigin
       );
     }
 
@@ -150,7 +170,7 @@ serve(async (req) => {
       amount: responseData.amount / 100, // Convert back to currency units
       currency: responseData.currency,
       status: responseData.status
-    });
+    }, 200, {}, reqOrigin);
 
   } catch (error) {
     console.error('[create-razorpay-order] Unexpected error:', error);
@@ -160,7 +180,9 @@ serve(async (req) => {
         error: 'Internal server error',
         message: error.message 
       },
-      500
+      500,
+      {},
+      reqOrigin
     );
   }
 });

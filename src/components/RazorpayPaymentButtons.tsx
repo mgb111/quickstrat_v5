@@ -59,7 +59,7 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId,
     while (retries <= maxRetries) {
       try {
         // 1. Call backend to create Razorpay order
-        const apiUrl = endpoint || 'https://uyjqtojxwpfndrmuscag.supabase.co/functions/v1/create-razorpay-order';
+        const apiUrl = endpoint || import.meta.env.VITE_RAZORPAY_ORDER_ENDPOINT || 'https://uyjqtojxwpfndrmuscag.supabase.co/functions/v1/create-razorpay-order';
         console.log('Calling Razorpay endpoint:', apiUrl);
         let response: Response;
         try {
@@ -79,10 +79,20 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId,
             await new Promise(res => setTimeout(res, 1000 * retries));
             continue;
           }
-          setErrorMsg('Network error or CORS issue while connecting to payment server. Please check your connection, disable adblockers, and try again. If the problem persists, contact support.');
+          setErrorMsg(
+            'Network error or CORS issue while connecting to payment server.\n' +
+            '1. Make sure you are not blocking third-party cookies or cross-site tracking.\n' +
+            '2. Disable adblockers or privacy extensions for this site.\n' +
+            '3. If you are using Brave, Chrome, or Firefox, try in Incognito/Private mode or with shields down.\n' +
+            '4. If on localhost, ensure your Supabase function URL is correct and reachable.\n' +
+            'If the problem persists, contact support and include a screenshot of your browser console.'
+          );
           setLoading(false);
           return;
         }
+        // Log for diagnostics
+        console.log('Response status:', response.status);
+        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
         let responseData: any = {};
         try {
           responseData = await response.json();
@@ -91,11 +101,18 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId,
         }
         console.log('Razorpay order response:', responseData);
         if (!response.ok) {
-          throw new Error(responseData?.error || 'Failed to create payment order');
+          if (response.status === 401 || response.status === 403) {
+            setErrorMsg('Authentication or permission error (401/403). Please log out and log in again, or contact support.');
+            setLoading(false);
+            return;
+          }
+          throw new Error(responseData?.error || `Failed to create payment order (status ${response.status})`);
         }
         const { orderId, error: orderError } = responseData;
         if (!orderId) {
-          throw new Error(orderError || 'Failed to get orderId from backend');
+          setErrorMsg('Payment server did not return a valid orderId. Please try again or contact support.');
+          setLoading(false);
+          return;
         }
         if (!window.Razorpay) {
           throw new Error('Razorpay SDK not loaded. Please try again.');
