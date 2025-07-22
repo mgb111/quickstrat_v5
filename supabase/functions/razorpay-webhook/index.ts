@@ -53,6 +53,9 @@ serve(async (req) => {
     }
     console.log("[Webhook] Signature validated");
 
+    // Log full parsed body for debugging
+    console.log('[Webhook] Full parsed body:', JSON.stringify(parsedBody));
+
     // Event type check
     const eventType = parsedBody.event;
     if (eventType !== "payment.captured") {
@@ -62,6 +65,7 @@ serve(async (req) => {
 
     // Extract payment entity
     const payment = parsedBody?.payload?.payment?.entity;
+    console.log('[Webhook] Extracted payment entity:', payment);
     if (!payment) {
       console.error("[Webhook] Missing payment entity in payload");
       return new Response("Missing payment entity", { status: 400, headers: corsHeaders });
@@ -69,6 +73,7 @@ serve(async (req) => {
 
     // Extract email (from payment.email or payment.notes.email)
     const email = payment.email || (payment.notes && payment.notes.email);
+    console.log('[Webhook] Extracted email:', email);
     if (!email) {
       console.error("[Webhook] Missing email in payment", { payment });
       return new Response("Missing email", { status: 400, headers: corsHeaders });
@@ -95,7 +100,7 @@ serve(async (req) => {
     // Upsert user plan in Supabase (guaranteed upgrade)
     let upsertError = null;
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('users')
         .upsert({
           email,
@@ -103,7 +108,9 @@ serve(async (req) => {
           subscription_expiry,
           campaign_count,
           campaign_count_period,
-        }, { onConflict: 'email' });
+        }, { onConflict: 'email' })
+        .select();
+      console.log('[Webhook] Upsert result:', data, error);
       if (error) {
         upsertError = error;
         throw error;
