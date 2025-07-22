@@ -3,6 +3,13 @@ import { Copy, ExternalLink, MessageCircle, Download, Mail } from 'lucide-react'
 import { CampaignOutput } from '../types/index';
 import PDFGenerator from './PDFGenerator';
 import EmailCapture from './EmailCapture';
+import { createClient } from '@supabase/supabase-js';
+import Modal from 'react-modal';
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 interface ResultsDisplayProps {
   results: CampaignOutput;
@@ -30,14 +37,51 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [hasPaid, setHasPaid] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   // Razorpay Payment Link integration
   const RAZORPAY_PAYMENT_LINK = 'https://rzp.io/rzp/6A0uOxr';
 
+  useEffect(() => {
+    // Get user email on mount
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUserEmail(user?.email || null);
+    });
+  }, []);
+
+  useEffect(() => {
+    // Check for payment success in URL (legacy fallback)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      setHasPaid(true);
+    }
+  }, []);
+
+  const pollPlan = async (email: string) => {
+    setIsVerifying(true);
+    for (let i = 0; i < 10; i++) {
+      const { data } = await supabase
+        .from('users')
+        .select('plan')
+        .eq('email', email)
+        .single();
+      if (data?.plan === 'premium') {
+        setHasPaid(true);
+        setIsVerifying(false);
+        return;
+      }
+      await new Promise(res => setTimeout(res, 2000));
+    }
+    setIsVerifying(false);
+    // Optionally show error if not upgraded after polling
+  };
+
   const handlePayWithRazorpay = () => {
     // Redirect to Razorpay Payment Link
     window.location.href = RAZORPAY_PAYMENT_LINK;
-    // After payment, Razorpay should redirect back to your app with a success indicator (handle this in your app)
+    // After payment, poll plan if we have email
+    if (userEmail) pollPlan(userEmail);
   };
 
   const copyToClipboard = (text: string) => {
@@ -45,20 +89,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
   };
 
   const handleEmailSubmitted = () => {
-    console.log('Email submitted successfully');
     setEmailSubmitted(true);
   };
-
-  // IMPORTANT: Set the Razorpay Payment Link's redirect/return URL to your app with ?payment=success
-  // Example: https://yourdomain.com/landing-page?payment=success
-  // This is handled in the useEffect below:
-  useEffect(() => {
-    // Check for payment success in URL (e.g., ?payment=success)
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success') {
-      setHasPaid(true);
-    }
-  }, []);
 
   // Process PDF content
   const processPdfContent = () => {
@@ -287,6 +319,14 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
           )}
         </div>
       )}
+
+      {/* Payment Verification Modal */}
+      <Modal isOpen={isVerifying} ariaHideApp={false}>
+        <div className="p-8 text-center">
+          <h2 className="text-xl font-semibold mb-2">Verifying payment...</h2>
+          <p className="mb-4">Please wait while we confirm your payment. This may take a few seconds.</p>
+        </div>
+      </Modal>
 
       {/* Campaign Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full place-items-center">
