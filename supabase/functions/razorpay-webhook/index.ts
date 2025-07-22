@@ -23,8 +23,9 @@ serve(async (req) => {
 
     if (!secret) throw new Error('Webhook secret not set');
 
-    // ✅ Correct HMAC verification using hex digest
-    const expectedSignature = createHmac("sha256", secret).update(body).toString();
+    // ✅ Correct signature verification
+    const expectedSignature = createHmac("sha256", secret).update(body).digest("hex");
+
     if (expectedSignature !== signature) {
       console.error("Invalid signature");
       return new Response("Invalid signature", { status: 400, headers: corsHeaders });
@@ -37,7 +38,6 @@ serve(async (req) => {
     }
 
     const payment = event.payload.payment.entity;
-    const orderId = payment.order_id;
     const email = payment.email || (payment.notes && payment.notes.email);
 
     if (!email) {
@@ -45,9 +45,10 @@ serve(async (req) => {
       return new Response("Missing email", { status: 400, headers: corsHeaders });
     }
 
-    // Supabase client
-    // @ts-ignore
-    const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
 
     const now = new Date();
     const expiry = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -71,6 +72,7 @@ serve(async (req) => {
     }
 
     return new Response("OK", { status: 200, headers: corsHeaders });
+
   } catch (err) {
     console.error("Webhook error:", err);
     return new Response("Webhook error", { status: 500, headers: corsHeaders });
