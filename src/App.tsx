@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, ArrowLeft, BarChart3, Plus, User, Lock, Crown } from 'lucide-react';
+import { Toaster } from 'react-hot-toast';
+import { Zap, ArrowLeft, BarChart3, Plus, User, Lock } from 'lucide-react';
 import CampaignForm from './components/CampaignForm';
 import ConceptSelection from './components/ConceptSelection';
 import OutlineReview from './components/OutlineReview';
@@ -471,6 +472,7 @@ function App() {
   // Render wizard
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <Toaster position="top-center" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <header className="text-center mb-8 sm:mb-12">
           <div className="flex justify-center mb-4">

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { User, Mail, Calendar, Settings, LogOut, Edit, Save, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import PaymentButton from './PaymentButton';
+import { Toaster } from 'react-hot-toast';
 
 const UserProfile: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -43,6 +45,7 @@ const UserProfile: React.FC = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
+      <Toaster position="top-right" />
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Profile</h2>
         <button
@@ -152,8 +155,16 @@ const UserProfile: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <div className="mt-8 pt-6 border-t border-gray-200">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Upgrade Your Account</h3>
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-600 mb-3">Upgrade to Premium and unlock all features</p>
+          <PaymentButton className="w-full justify-center py-2.5" />
+        </div>
+      </div>
     </div>
   );
 };
 
-export default UserProfile; 
+export default UserProfile;
