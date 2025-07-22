@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Copy, ExternalLink, MessageCircle, Download, Mail } from 'lucide-react';
 import { CampaignOutput } from '../types/index';
 import PDFGenerator from './PDFGenerator';
+import { SubscriptionService, SubscriptionStatus } from '../lib/subscriptionService';
 import EmailCapture from './EmailCapture';
 import { createClient } from '@supabase/supabase-js';
 import Modal from 'react-modal';
@@ -36,52 +37,27 @@ function getSuggestedSubreddits(niche: string): string[] {
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, userName, problemStatement, desiredOutcome, onCampaignCreated }) => {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
-  const [hasPaid, setHasPaid] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-
-  // Razorpay Payment Link integration
-  const RAZORPAY_PAYMENT_LINK = 'https://rzp.io/rzp/6A0uOxr';
+  const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [loadingSub, setLoadingSub] = useState(false);
 
   useEffect(() => {
-    // Get user email on mount
+    // Get user ID on mount
     supabase.auth.getUser().then(({ data: { user } }) => {
-      setUserEmail(user?.email || null);
+      setUserId(user?.id || null);
+      if (user?.id) fetchSubscription(user.id);
     });
   }, []);
 
-  useEffect(() => {
-    // Check for payment success in URL (legacy fallback)
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success') {
-      setHasPaid(true);
-    }
-  }, []);
-
-  const pollPlan = async (email: string) => {
-    setIsVerifying(true);
-    for (let i = 0; i < 10; i++) {
-      const { data } = await supabase
-        .from('users')
-        .select('plan')
-        .eq('email', email)
-        .single();
-      if (data?.plan === 'premium') {
-        setHasPaid(true);
-        setIsVerifying(false);
-        return;
-      }
-      await new Promise(res => setTimeout(res, 2000));
-    }
-    setIsVerifying(false);
-    // Optionally show error if not upgraded after polling
+  const fetchSubscription = async (uid: string) => {
+    setLoadingSub(true);
+    const sub = await SubscriptionService.getUserSubscription(uid);
+    setSubscription(sub);
+    setLoadingSub(false);
   };
 
-  const handlePayWithRazorpay = () => {
-    // Redirect to Razorpay Payment Link
-    window.location.href = RAZORPAY_PAYMENT_LINK;
-    // After payment, poll plan if we have email
-    if (userEmail) pollPlan(userEmail);
+  const handleUpgrade = async () => {
+    if (userId) await fetchSubscription(userId);
   };
 
   const copyToClipboard = (text: string) => {
@@ -91,6 +67,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
   const handleEmailSubmitted = () => {
     setEmailSubmitted(true);
   };
+
+  // Compute canGeneratePDF
+  const canGeneratePDF = subscription
+    ? subscription.plan === 'premium' || subscription.usedCampaigns < subscription.monthlyCampaignLimit
+    : false;
 
   // Process PDF content
   const processPdfContent = () => {
@@ -303,25 +284,29 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
               {pdfError ? `⚠️ ${pdfError}` : '✅ Email submitted! Your guide is ready below.'}
             </p>
           </div>
-          {/* Paywall enforcement: Only show PDF if hasPaid is true */}
-          {!hasPaid ? (
+          {/* Paywall enforcement: Only show PDF if eligible */}
+          {(!canGeneratePDF || loadingSub) ? (
             <div className="text-center">
-              <p className="mb-4 text-lg text-gray-700 font-semibold">Unlock this PDF by completing your payment.</p>
-              <button
-                onClick={handlePayWithRazorpay}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
-              >
-                Pay with Razorpay
-              </button>
+              <p className="mb-4 text-lg text-gray-700 font-semibold">
+                {loadingSub ? 'Checking your subscription...' : 'You have reached your free campaign limit or need to upgrade to premium to download the PDF.'}
+              </p>
+              {/* PDFGenerator will handle showing the UpgradeModal and paywall */}
+              {pdfContent && (
+                <PDFGenerator
+                  data={pdfContent}
+                  canGeneratePDF={canGeneratePDF}
+                  onUpgrade={handleUpgrade}
+                />
+              )}
             </div>
           ) : (
-            pdfContent && <PDFGenerator data={pdfContent} />
+            pdfContent && <PDFGenerator data={pdfContent} canGeneratePDF={canGeneratePDF} onUpgrade={handleUpgrade} />
           )}
         </div>
       )}
 
       {/* Payment Verification Modal */}
-      <Modal isOpen={isVerifying} ariaHideApp={false}>
+      <Modal isOpen={false} ariaHideApp={false}>
         <div className="p-8 text-center">
           <h2 className="text-xl font-semibold mb-2">Verifying payment...</h2>
           <p className="mb-4">Please wait while we confirm your payment. This may take a few seconds.</p>

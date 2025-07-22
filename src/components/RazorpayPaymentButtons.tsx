@@ -16,7 +16,15 @@ interface RazorpayPaymentButtonsProps {
   endpoint?: string;
 }
 
-const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId, amount, purpose, endpoint }) => {
+interface RazorpayPaymentButtonsProps {
+  userId: string;
+  amount: number;
+  purpose?: string;
+  endpoint?: string;
+  onPaymentUpgradeSuccess?: (user: any) => void;
+}
+
+const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId, amount, purpose, endpoint, onPaymentUpgradeSuccess }) => {
   // Load Razorpay script on component mount
   useEffect(() => {
     const loadRazorpay = () => {
@@ -77,9 +85,32 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId,
         name: 'Majorbeam',
         description: purpose || 'Premium Plan',
         order_id: orderId,
-        handler: function (response: any) {
+        handler: async function (response: any) {
           console.log('Payment successful:', response);
-          window.location.href = `${window.location.pathname}?payment=success&payment_id=${response.razorpay_payment_id}`;
+          // Call backend to upgrade user after payment
+          try {
+            const upgradeRes = await fetch('https://uyjqtojxwpfndrmuscag.supabase.co/functions/v1/upgrade-user-after-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                userId,
+                paymentId: response.razorpay_payment_id,
+                orderId: response.razorpay_order_id
+              })
+            });
+            const upgradeData = await upgradeRes.json();
+            if (!upgradeRes.ok || !upgradeData.success) {
+              alert('Payment succeeded, but failed to upgrade your account. Please contact support.');
+              return;
+            }
+            // Notify parent to refresh subscription state and close modal
+            if (typeof onPaymentUpgradeSuccess === 'function') {
+              onPaymentUpgradeSuccess(upgradeData.user);
+            }
+          } catch (e) {
+            alert('Payment succeeded, but backend upgrade failed. Please contact support.');
+            return;
+          }
         },
         prefill: {
           name: 'Customer Name', // You can prefill these from user data

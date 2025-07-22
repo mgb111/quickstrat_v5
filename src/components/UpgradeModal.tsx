@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Crown, Check, Star } from 'lucide-react';
+import { X, Crown, Check } from 'lucide-react';
 import { SubscriptionService } from '../lib/subscriptionService';
 import RazorpayPaymentButtons from './RazorpayPaymentButtons';
 import { supabase } from '../lib/supabase';
@@ -12,8 +12,9 @@ interface UpgradeModalProps {
   onPaymentError?: (error: any) => void;
 }
 
-const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade, onPaymentSuccess, onPaymentError }) => {
+const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade }) => {
   const [userId, setUserId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   React.useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUserId(user?.id || null);
@@ -22,16 +23,6 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade,
   const plan = SubscriptionService.getPricing().premium['monthly'];
   
   if (!isOpen) return null;
-
-  const handlePaymentSuccess = (paymentId: string, plan: string, billing: string) => {
-    console.log('Payment successful:', { paymentId, plan, billing });
-    onUpgrade('premium', 'monthly'); // Only 'monthly' supported here
-  };
-
-  const handlePaymentError = (error: any) => {
-    console.error('Payment failed:', error);
-    // You can add error handling here, like showing a toast notification
-  };
 
   if (!plan) {
     return (
@@ -118,8 +109,15 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onUpgrade,
                 <RazorpayPaymentButtons
                   userId={userId}
                   amount={plan.price}
-                  purpose="Premium Plan"
-                  endpoint="/functions/v1/create-razorpay-order" // TODO: Ensure this is correct for your deployment
+                  purpose="premium_plan"
+                  endpoint={"https://uyjqtojxwpfndrmuscag.supabase.co/functions/v1/create-razorpay-order"}
+                  onPaymentUpgradeSuccess={async (user) => {
+                    setLoading(true);
+                    await SubscriptionService.getUserSubscription(user.id);
+                    onClose();
+                    if (onUpgrade) onUpgrade('premium', 'monthly');
+                    setLoading(false);
+                  }}
                 />
               )}
             </div>

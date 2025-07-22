@@ -3,12 +3,25 @@ import React, { useRef } from 'react';
 import { PDFContent } from '../types';
 import html2pdf from 'html2pdf.js';
 
+import UpgradeModal from './UpgradeModal';
+
 interface PDFGeneratorProps {
   data: PDFContent;
+  canGeneratePDF?: boolean;
+  onUpgrade?: () => void;
 }
 
-const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
+const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, canGeneratePDF = true, onUpgrade }) => {
   const pdfRef = useRef<HTMLDivElement>(null);
+  const [showPaywall, setShowPaywall] = React.useState(false);
+
+  const tryDownloadPDF = async () => {
+    if (!canGeneratePDF) {
+      setShowPaywall(true);
+      return;
+    }
+    handleDownloadPDF();
+  };
 
   // Debug logging to understand the data structure
   console.log('PDFGenerator received data:', data);
@@ -908,10 +921,20 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data }) => {
       
       {/* Download Buttons (outside PDF export area) */}
       <div className="download-buttons">
-        <button onClick={handleDownloadPDF} className="download-btn">
+        <button onClick={tryDownloadPDF} className="download-btn">
           Download as PDF
         </button>
       </div>
+      {showPaywall && (
+        <UpgradeModal
+          isOpen={showPaywall}
+          onClose={() => setShowPaywall(false)}
+          onUpgrade={() => {
+            setShowPaywall(false);
+            if (onUpgrade) onUpgrade();
+          }}
+        />
+      )}
     </div>
   );
 };
