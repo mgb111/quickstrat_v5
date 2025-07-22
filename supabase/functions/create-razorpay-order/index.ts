@@ -14,19 +14,29 @@ function createResponse(
   body: any,
   status: number = 200,
   headers: Record<string, string> = {},
-  reqOrigin?: string
+  reqOrigin?: string,
+  reqMethod?: string
 ): Response {
-  // Dynamically set CORS origin for credentials support
-  const allowOrigin = reqOrigin || '*';
+  // Always echo the request's Origin header for credentials; never use "*" if credentials are used
+  let allowOrigin = '*';
+  if (reqOrigin && reqOrigin !== 'null') {
+    allowOrigin = reqOrigin;
+  } else if (typeof Deno !== 'undefined' && Deno.env.get('FRONTEND_ORIGIN')) {
+    allowOrigin = Deno.env.get('FRONTEND_ORIGIN');
+  } else {
+    allowOrigin = 'https://majorbeam.com'; // fallback to your prod domain
+  }
   const defaultHeaders = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': allowOrigin,
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS, GET, PUT, DELETE',
-    'Access-Control-Max-Age': '86400', // 24 hours
-    'Access-Control-Allow-Credentials': 'true', // For future-proofing
-    'Vary': 'Origin', // For cache safety
+    'Access-Control-Max-Age': '86400',
+    'Access-Control-Allow-Credentials': 'true',
+    'Vary': 'Origin',
   };
+  // Log CORS diagnostics
+  console.log(`[CORS] ${reqMethod || ''} | Origin: ${reqOrigin} | Allow-Origin: ${allowOrigin}`);
   return new Response(
     JSON.stringify(body),
     {
@@ -59,7 +69,7 @@ function validateRequest(body: any): { valid: boolean; error?: string } {
 
 // Main server handler
 serve(async (req) => {
-  const reqOrigin = req.headers.get('origin') || '*';
+  const reqOrigin = req.headers.get('origin') || undefined;
   console.log(`[create-razorpay-order] Incoming request:`, {
     method: req.method,
     origin: reqOrigin
@@ -67,7 +77,7 @@ serve(async (req) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     // Always respond with all CORS headers and no body
-    return createResponse({}, 204, {}, reqOrigin);
+    return createResponse({}, 204, {}, reqOrigin, req.method);
   }
 
   // Only allow POST requests
@@ -76,7 +86,8 @@ serve(async (req) => {
       { error: 'Method Not Allowed' },
       405,
       {},
-      reqOrigin
+      reqOrigin,
+      req.method
     );
   }
 
@@ -88,7 +99,8 @@ serve(async (req) => {
         { error: 'Server configuration error' },
         500,
         {},
-        reqOrigin
+        reqOrigin,
+        req.method
       );
     }
 
@@ -101,7 +113,8 @@ serve(async (req) => {
         { error: 'Invalid JSON payload' },
         400,
         {},
-        reqOrigin
+        reqOrigin,
+        req.method
       );
     }
 
@@ -112,7 +125,8 @@ serve(async (req) => {
         { error: validation.error },
         400,
         {},
-        reqOrigin
+        reqOrigin,
+        req.method
       );
     }
 
@@ -159,7 +173,8 @@ serve(async (req) => {
         },
         500,
         {},
-        reqOrigin
+        reqOrigin,
+        req.method
       );
     }
 
@@ -170,7 +185,7 @@ serve(async (req) => {
       amount: responseData.amount / 100, // Convert back to currency units
       currency: responseData.currency,
       status: responseData.status
-    }, 200, {}, reqOrigin);
+    }, 200, {}, reqOrigin, req.method);
 
   } catch (error) {
     console.error('[create-razorpay-order] Unexpected error:', error);
@@ -182,7 +197,8 @@ serve(async (req) => {
       },
       500,
       {},
-      reqOrigin
+      reqOrigin,
+      req.method
     );
   }
 });
