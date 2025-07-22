@@ -3,7 +3,8 @@ import React, { useRef } from 'react';
 import { PDFContent } from '../types';
 import html2pdf from 'html2pdf.js';
 
-import UpgradeModal from './UpgradeModal';
+import PaywallOverlay from './PaywallOverlay';
+import { Toaster } from 'react-hot-toast';
 
 interface PDFGeneratorProps {
   data: PDFContent;
@@ -13,11 +14,9 @@ interface PDFGeneratorProps {
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, canGeneratePDF = true, onUpgrade }) => {
   const pdfRef = useRef<HTMLDivElement>(null);
-  const [showPaywall, setShowPaywall] = React.useState(false);
 
   const tryDownloadPDF = async () => {
     if (!canGeneratePDF) {
-      setShowPaywall(true);
       return;
     }
     handleDownloadPDF();
@@ -920,21 +919,22 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, canGeneratePDF = true
       </div>
       
       {/* Download Buttons (outside PDF export area) */}
-      <div className="download-buttons">
-        <button onClick={tryDownloadPDF} className="download-btn">
+      <div className="download-buttons relative">
+        <button
+          onClick={tryDownloadPDF}
+          className={`download-btn ${!canGeneratePDF ? 'opacity-50 blur-[2px] pointer-events-none' : ''}`}
+          disabled={!canGeneratePDF}
+        >
           Download as PDF
         </button>
+        {!canGeneratePDF && (
+          <PaywallOverlay
+            price="$49"
+            className="!static !rounded-none !border-0"
+          />
+        )}
       </div>
-      {showPaywall && (
-        <UpgradeModal
-          isOpen={showPaywall}
-          onClose={() => setShowPaywall(false)}
-          onUpgrade={() => {
-            setShowPaywall(false);
-            if (onUpgrade) onUpgrade();
-          }}
-        />
-      )}
+      <Toaster position="top-center" />
     </div>
   );
 };
