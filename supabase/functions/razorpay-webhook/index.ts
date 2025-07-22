@@ -92,27 +92,27 @@ serve(async (req) => {
     const campaign_count = 0;
     const campaign_count_period = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-    // Update user plan in Supabase
-    let updateError = null;
+    // Upsert user plan in Supabase (guaranteed upgrade)
+    let upsertError = null;
     try {
       const { error } = await supabase
         .from('users')
-        .update({
+        .upsert({
+          email,
           plan: 'premium',
           subscription_expiry,
           campaign_count,
           campaign_count_period,
-        })
-        .eq('email', email);
+        }, { onConflict: 'email' });
       if (error) {
-        updateError = error;
+        upsertError = error;
         throw error;
       }
     } catch (err) {
-      console.error("[Webhook] Failed to update user in Supabase", { email, err });
-      return new Response("Failed to update user", { status: 500, headers: corsHeaders });
+      console.error("[Webhook] Failed to upsert user in Supabase", { email, err });
+      return new Response("Failed to upsert user", { status: 500, headers: corsHeaders });
     }
-    console.log(`[Webhook] User upgraded to premium: ${email}`);
+    console.log(`[Webhook] User upgraded to premium (upserted): ${email}`);
 
     // Success response
     return new Response("OK", { status: 200, headers: corsHeaders });
