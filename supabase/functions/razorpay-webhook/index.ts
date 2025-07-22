@@ -45,7 +45,8 @@ serve(async (req) => {
       console.error("[Webhook] Webhook secret not set");
       return new Response("Webhook secret not set", { status: 500, headers: corsHeaders });
     }
-    const expectedSignature = createHmac("sha256", secret).update(body).toString();
+    // Correct signature verification
+    const expectedSignature = createHmac("sha256", secret).update(body).digest("hex");
     if (expectedSignature !== signature) {
       console.error("[Webhook] Invalid signature", { expectedSignature, signature });
       return new Response("Invalid signature", { status: 400, headers: corsHeaders });
@@ -115,6 +116,7 @@ serve(async (req) => {
 
     // Success response
     return new Response("OK", { status: 200, headers: corsHeaders });
+
   } catch (err) {
     // Log all errors
     console.error("[Webhook] Unhandled error:", err);
