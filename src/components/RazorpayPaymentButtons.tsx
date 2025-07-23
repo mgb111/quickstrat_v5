@@ -55,6 +55,7 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
     setLoading(true);
     let retries = 0;
     const maxRetries = 2;
+    let lastError: any = null;
 
     while (retries <= maxRetries) {
       try {
@@ -65,19 +66,41 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
         
         console.log('Calling Razorpay endpoint:', apiUrl);
         
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId, amount, purpose }),
-          credentials: 'include'
-        });
+        let response: Response;
+        try {
+          response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({ 
+              userId, 
+              amount, 
+              purpose,
+              currency: 'USD' // Ensure backend knows we're using USD
+            }),
+            credentials: 'include',
+            mode: 'cors'
+          });
+        } catch (err) {
+          lastError = err;
+          console.error('Network error during fetch:', err);
+          throw new Error('Network request failed. Please check your internet connection and try again.');
+        }
 
+        // Log response status and headers for debugging
+        console.log('Response status:', response.status, response.statusText);
+        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+        
         let responseData: any = {};
         try {
-          responseData = await response.json();
+          const responseText = await response.text();
+          console.log('Raw response:', responseText);
+          responseData = responseText ? JSON.parse(responseText) : {};
         } catch (e) {
           console.error('Failed to parse response JSON:', e);
-          responseData = {};
+          throw new Error('Invalid response from server. Please try again later.');
         }
 
         if (!response.ok) {
@@ -97,10 +120,13 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
         }
 
         // 2. Open Razorpay Checkout
+        // Ensure amount is in the smallest currency unit (cents for USD)
+        const amountInCents = Math.round(amount * 100);
+        
         const rzp = new window.Razorpay({
           key: 'rzp_test_6DK6qaeZ98ZTxA', // Using test key
-          amount: amount * 100,
-          currency: 'INR',
+          amount: amountInCents,
+          currency: 'USD',
           name: 'Majorbeam',
           description: purpose,
           order_id: orderId,
@@ -140,7 +166,7 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
         // Final error after retries
         let message = 'Payment error: ';
         if (error?.name === 'TypeError' && /fetch/i.test(error.message)) {
-          message = 'Network error. Please check your connection and try again.';
+          message = 'Network error. Please check your connection, disable ad-blockers, and ensure you have a stable internet connection. If the problem persists, try again later or contact support.';
         } else {
           message += error?.message || 'An unknown error occurred.';
         }
@@ -169,7 +195,7 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
           loading ? 'opacity-60 cursor-not-allowed' : ''
         }`}
       >
-        {loading ? 'Processing...' : `Unlock PDF Export (₹${amount})`}
+        {loading ? 'Processing...' : `Unlock PDF Export ($${amount})`}
       </button>
     </div>
   );
