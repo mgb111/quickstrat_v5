@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 declare global {
   interface Window {
@@ -11,16 +11,22 @@ declare global {
 
 interface RazorpayPaymentButtonsProps {
   userId: string;
-  amount: number; // in INR
+  amount?: number; // in INR, defaults to 9 for PDF unlock
   purpose?: string;
   endpoint?: string;
   onPaymentSuccess?: (response: any) => void;
 }
 
-const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId, amount = 9, purpose, endpoint, onPaymentSuccess }) => {
-  // Robust error state for UI/diagnostics
-  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(false);
+const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({
+  userId,
+  amount = 9, // Default to $9 for PDF unlock
+  purpose = 'pdf_unlock',
+  endpoint,
+  onPaymentSuccess
+}) => {
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
   // Load Razorpay script on component mount
   useEffect(() => {
     const loadRazorpay = () => {
@@ -40,7 +46,8 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId,
         document.body.appendChild(script);
       });
     };
-    loadRazorpay().catch(() => {});
+    
+    loadRazorpay().catch(console.error);
   }, []);
 
   const handlePay = async () => {
@@ -48,76 +55,58 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId,
     setLoading(true);
     let retries = 0;
     const maxRetries = 2;
-    let lastError: any = null;
+
     while (retries <= maxRetries) {
       try {
         // 1. Call backend to create Razorpay order
-        const apiUrl = endpoint || import.meta.env.VITE_RAZORPAY_ORDER_ENDPOINT || 'https://uyjqtojxwpfndrmuscag.supabase.co/functions/v1/create-razorpay-order';
+        const apiUrl = endpoint || 
+          import.meta.env.VITE_RAZORPAY_ORDER_ENDPOINT || 
+          'https://uyjqtojxwpfndrmuscag.supabase.co/functions/v1/create-razorpay-order';
+        
         console.log('Calling Razorpay endpoint:', apiUrl);
-        let response: Response;
-        try {
-          response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId, amount, purpose }),
-            credentials: 'include'
-          });
-        } catch (err) {
-          // Network/CORS error
-          lastError = err;
-          if (retries < maxRetries) {
-            retries++;
-            await new Promise(res => setTimeout(res, 1000 * retries));
-            continue;
-          }
-          setErrorMsg(
-            'Network error or CORS issue while connecting to payment server.\n' +
-            '1. Make sure you are not blocking third-party cookies or cross-site tracking.\n' +
-            '2. Disable adblockers or privacy extensions for this site.\n' +
-            '3. If you are using Brave, Chrome, or Firefox, try in Incognito/Private mode or with shields down.\n' +
-            '4. If on localhost, ensure your Supabase function URL is correct and reachable.\n' +
-            'If the problem persists, contact support and include a screenshot of your browser console.'
-          );
-          setLoading(false);
-          return;
-        }
+        
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, amount, purpose }),
+          credentials: 'include'
+        });
+
         let responseData: any = {};
         try {
           responseData = await response.json();
         } catch (e) {
+          console.error('Failed to parse response JSON:', e);
           responseData = {};
         }
+
         if (!response.ok) {
           if (response.status === 401 || response.status === 403) {
-            setErrorMsg('Authentication or permission error (401/403). Please log out and log in again, or contact support.');
-            setLoading(false);
-            return;
+            throw new Error('Authentication or permission error. Please log out and log in again.');
           }
           throw new Error(responseData?.error || `Failed to create payment order (status ${response.status})`);
         }
+
         const { orderId } = responseData;
         if (!orderId) {
-          setErrorMsg('Payment server did not return a valid orderId. Please try again or contact support.');
-          setLoading(false);
-          return;
+          throw new Error('Payment server did not return a valid order ID');
         }
+
         if (!window.Razorpay) {
-          throw new Error('Razorpay SDK not loaded. Please try again.');
+          throw new Error('Payment processor not available. Please try again.');
         }
-        // 2. Open Razorpay Checkout with real orderId and live key
-        const options = {
-          key: 'rzp_test_6DK6qaeZ98ZTxA', // Using provided test key for Razorpay
+
+        // 2. Open Razorpay Checkout
+        const rzp = new window.Razorpay({
+          key: 'rzp_test_6DK6qaeZ98ZTxA', // Using test key
           amount: amount * 100,
           currency: 'INR',
           name: 'Majorbeam',
-          description: purpose || 'pdf_unlock',
+          description: purpose,
           order_id: orderId,
-          handler: async (response: any) => {
-            if (typeof onPaymentSuccess === 'function') {
-              onPaymentSuccess(response);
-            }
+          handler: (response: any) => {
+            console.log('Payment successful:', response);
+            if (onPaymentSuccess) onPaymentSuccess(response);
           },
           prefill: {
             name: 'Customer Name',
@@ -126,181 +115,43 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId,
           },
           notes: { userId, purpose },
           theme: { color: '#3b82f6' }
-        };
-        const rzp = new window.Razorpay(options);
-        rzp.on('payment.failed', (response: any) => {
-          setErrorMsg(`Payment failed: ${response.error?.description || 'Unknown error'}`);
-          alert(`Payment failed: ${response.error?.description || 'Unknown error'}`);
         });
-        rzp.open();
-        setLoading(false);
-        return;
-      } catch (error: any) {
-        lastError = error;
-        if (retries < maxRetries) {
-          retries++;
-          await new Promise(res => setTimeout(res, 1000 * retries));
-          continue;
-        }
-        let msg = 'Payment error: ';
-        if (error?.name === 'TypeError' && /fetch/i.test(error.message)) {
-          msg += 'Network or CORS error. Please check your connection, disable adblockers, and try again.';
-        } else {
-          msg += error?.message || 'An unknown error occurred.';
-        }
-        setErrorMsg(msg);
-        alert(msg);
-        setLoading(false);
-        return;
-      }
-    }
-    setLoading(false);
-  };
 
-  return (
-    <div className="space-y-3">
-      {errorMsg && (
-        <div className="bg-red-100 border border-red-300 text-red-700 rounded p-2 text-sm">
-          {errorMsg}
-        </div>
-      )}
-      <button
-      try {
-        // 1. Call backend to create Razorpay order
-        const apiUrl = endpoint || import.meta.env.VITE_RAZORPAY_ORDER_ENDPOINT || 'https://uyjqtojxwpfndrmuscag.supabase.co/functions/v1/create-razorpay-order';
-        console.log('Calling Razorpay endpoint:', apiUrl);
-        let response: Response;
-        try {
-          response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId, amount, purpose }),
-            credentials: 'include'
-          });
-        } catch (err) {
-          // Network/CORS error
-          lastError = err;
-          if (retries < maxRetries) {
-            retries++;
-            await new Promise(res => setTimeout(res, 1000 * retries));
-            continue;
-          }
-          setErrorMsg(
-            'Network error or CORS issue while connecting to payment server.\n' +
-            '1. Make sure you are not blocking third-party cookies or cross-site tracking.\n' +
-            '2. Disable adblockers or privacy extensions for this site.\n' +
-            '3. If you are using Brave, Chrome, or Firefox, try in Incognito/Private mode or with shields down.\n' +
-            '4. If on localhost, ensure your Supabase function URL is correct and reachable.\n' +
-            'If the problem persists, contact support and include a screenshot of your browser console.'
-          );
-          setLoading(false);
-          return;
-        }
-        // Log for diagnostics
-        console.log('Response status:', response.status);
-        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-        let responseData: any = {};
-        try {
-          responseData = await response.json();
-        } catch (e) {
-          responseData = {};
-        }
-        console.log('Razorpay order response:', responseData);
-        if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            setErrorMsg('Authentication or permission error (401/403). Please log out and log in again, or contact support.');
-            setLoading(false);
-            return;
-          }
-          throw new Error(responseData?.error || `Failed to create payment order (status ${response.status})`);
-        }
-        const { orderId, error: orderError } = responseData;
-        if (!orderId) {
-          setErrorMsg('Payment server did not return a valid orderId. Please try again or contact support.');
-          setLoading(false);
-          return;
-        }
-        if (!window.Razorpay) {
-          throw new Error('Razorpay SDK not loaded. Please try again.');
-        }
-        // 2. Open Razorpay Checkout with real orderId and live key
-        const options = {
-          key: 'rzp_test_6DK6qaeZ98ZTxA', // Using provided test key for Razorpay
-          amount: amount * 100,
-          currency: 'INR',
-          name: 'Majorbeam',
-          description: purpose || 'pdf_unlock',
-          order_id: orderId,
-          handler: async (response: any) => {
-            console.log('Payment successful:', response);
-            if (typeof onPaymentSuccess === 'function') {
-              onPaymentSuccess(response);
-            }
-          },
-          prefill: {
-            name: 'Customer Name', // You can prefill these from user data
-            email: 'customer@example.com',
-            contact: '+919999999999'
-          },
-          notes: { userId, purpose },
-          theme: { color: '#3b82f6' }
-        };
-        
-        const rzp = new window.Razorpay(options);
-        
         rzp.on('payment.failed', (response: any) => {
+          const errorMsg = `Payment failed: ${response.error?.description || 'Unknown error'}`;
           console.error('Payment failed:', response.error);
-          setErrorMsg(`Payment failed: ${response.error?.description || 'Unknown error'}`);
-          alert(`Payment failed: ${response.error?.description || 'Unknown error'}`);
+          setErrorMsg(errorMsg);
+          alert(errorMsg);
         });
+
         rzp.open();
         setLoading(false);
         return;
-            alert('Payment succeeded, but backend upgrade failed. Please contact support.');
-            return;
-          }
-        },
-        prefill: {
-          name: 'Customer Name', // You can prefill these from user data
-          email: 'customer@example.com',
-          contact: '+919999999999'
-        },
-        notes: { userId, purpose },
-        theme: { color: '#3b82f6' }
-      };
-      
-      const rzp = new window.Razorpay(options);
-      
-      rzp.on('payment.failed', (response: any) => {
-        console.error('Payment failed:', response.error);
-        setErrorMsg(`Payment failed: ${response.error?.description || 'Unknown error'}`);
-        alert(`Payment failed: ${response.error?.description || 'Unknown error'}`);
-      });
-      rzp.open();
-      setLoading(false);
-      return;
+
       } catch (error: any) {
-        lastError = error;
+        console.error('Payment error:', error);
+        
         if (retries < maxRetries) {
           retries++;
-          await new Promise(res => setTimeout(res, 1000 * retries));
+          await new Promise(resolve => setTimeout(resolve, 1000 * retries));
           continue;
         }
+        
         // Final error after retries
-        let msg = 'Payment error: ';
+        let message = 'Payment error: ';
         if (error?.name === 'TypeError' && /fetch/i.test(error.message)) {
-          msg += 'Network or CORS error. Please check your connection, disable adblockers, and try again.';
+          message = 'Network error. Please check your connection and try again.';
         } else {
-          msg += error?.message || 'An unknown error occurred.';
+          message += error?.message || 'An unknown error occurred.';
         }
-        setErrorMsg(msg);
-        alert(msg);
+        
+        setErrorMsg(message);
+        alert(message);
         setLoading(false);
         return;
       }
     }
+    
     setLoading(false);
   };
 
@@ -313,10 +164,12 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId,
       )}
       <button
         onClick={handlePay}
-        className={`px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
         disabled={loading}
+        className={`px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition ${
+          loading ? 'opacity-60 cursor-not-allowed' : ''
+        }`}
       >
-        {loading ? 'Processing...' : 'Unlock PDF Export ($9)'}
+        {loading ? 'Processing...' : `Unlock PDF Export (₹${amount})`}
       </button>
     </div>
   );
