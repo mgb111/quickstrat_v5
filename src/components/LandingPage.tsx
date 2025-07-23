@@ -3,7 +3,6 @@ import { Check, Download, ArrowRight } from 'lucide-react';
 import { Campaign } from '../types';
 import { CampaignService } from '../lib/campaignService';
 import PDFGenerator from './PDFGenerator';
-import PaywallOverlay from './PaywallOverlay';
 
 interface LandingPageProps {
   campaignSlug: string;
@@ -17,8 +16,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
   const [error, setError] = useState<string | null>(null);
   const [showPDF, setShowPDF] = useState(false);
   const [localSubmitting, setLocalSubmitting] = useState(false);
-  const [showPaywall, setShowPaywall] = useState(false);
-  const [hasPaid, setHasPaid] = useState(false);
+  
+  
 
   useEffect(() => {
     setError(null); // Clear error when slug changes or fetch starts
@@ -38,19 +37,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
     loadCampaign();
   }, [campaignSlug]);
 
-  useEffect(() => {
-    if (!campaign) return;
-    setHasPaid(localStorage.getItem(`pdf_paid_${campaign.id}`) === 'true');
-  }, [campaign]);
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!campaign || !email.trim() || isSubmitting || localSubmitting) return;
     setError(null);
-    if (!hasPaid) {
-      setShowPaywall(true);
-      return;
-    }
+    
     setLocalSubmitting(true);
     setIsSubmitting(true);
     try {
@@ -178,18 +171,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
             </p>
           </div>
         ) : null}
-        {/* Paywall */}
-        {showPaywall && campaign && !hasPaid && (
-          <PaywallOverlay
-            campaignId={campaign.id}
-            onUnlock={() => {
-              setHasPaid(true);
-              setShowPaywall(false);
-            }}
-          />
-        )}
         {/* PDF Download */}
-        {isSubmitted && hasPaid && showPDF && campaign.lead_magnet_content && (
+        {isSubmitted && showPDF && campaign.lead_magnet_content && (
           <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Your Free Guide</h3>
             <PDFGenerator

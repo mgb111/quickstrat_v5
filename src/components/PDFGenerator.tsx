@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { PDFContent } from '../types';
 import html2pdf from 'html2pdf.js';
 
-import PaywallOverlay from './PaywallOverlay';
+
 import { Toaster } from 'react-hot-toast';
 
 interface PDFGeneratorProps {
@@ -13,16 +13,9 @@ interface PDFGeneratorProps {
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId }) => {
   const pdfRef = useRef<HTMLDivElement>(null);
-  const [isPaid, setIsPaid] = React.useState(() => {
-    return localStorage.getItem(`pdf_paid_${campaignId}`) === 'true';
-  });
-  const [showPaywall, setShowPaywall] = React.useState(false);
+  
 
   const tryDownloadPDF = async () => {
-    if (!isPaid) {
-      setShowPaywall(true);
-      return;
-    }
     handleDownloadPDF();
   };
 
@@ -926,25 +919,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId }) => {
       <div className="download-buttons relative">
         <button
           onClick={tryDownloadPDF}
-          className={`download-btn ${!canGeneratePDF ? 'opacity-50 blur-[2px] pointer-events-none' : ''}`}
-          disabled={!canGeneratePDF}
+          className="download-btn"
         >
           Download as PDF
         </button>
-        {showPaywall && (
-          <PaywallOverlay
-            campaignId={campaignId}
-            price="$9"
-            className="!static !rounded-none !border-0"
-            onUnlock={() => {
-              setIsPaid(true);
-              setShowPaywall(false);
-              setTimeout(() => handleDownloadPDF(), 500); // auto-trigger download after unlock
-            }}
-          />
-        )}
       </div>
-      <Toaster position="top-center" />
+      
     </div>
   );
 };
