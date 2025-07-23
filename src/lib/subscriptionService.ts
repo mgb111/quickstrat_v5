@@ -14,46 +14,40 @@ export interface SubscriptionStatus {
 export class SubscriptionService {
   static async getUserSubscription(userId: string): Promise<SubscriptionStatus> {
     try {
-      // Fetch user with new fields
-      const { data: existingUser, error: fetchError } = await supabase
-        .from('users')
-        .select('id, plan, campaign_count, subscription_expiry, campaign_count_period')
-        .eq('id', userId)
-        .maybeSingle();
-
-      if (fetchError) {
-        console.error('Error fetching user subscription:', fetchError);
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) {
+        console.error('No authenticated user found for subscription check.');
         return this.getDefaultSubscription();
       }
 
-      let user = existingUser;
+      // Atomically create user with default values if they don't exist.
+      // onConflict with 'id' and ignoreDuplicates prevents errors if the user already exists.
+      const { error: upsertError } = await supabase
+        .from('users')
+        .upsert(
+          { 
+            id: userId, 
+            email: authUser.email, 
+            plan: 'free', 
+            campaign_count: 0 
+          },
+          { onConflict: 'id', ignoreDuplicates: true }
+        );
 
-      // If user doesn't exist, create them with default values
-      if (!user) {
-        console.log('User not found in users table, creating new user record...');
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        if (!authUser) {
-          console.error('No authenticated user found');
-          return this.getDefaultSubscription();
-        }
-        const { data: newUser, error: createError } = await supabase
-          .from('users')
-          .insert({
-            id: userId,
-            email: authUser.email,
-            plan: 'free',
-            campaign_count: 0,
-            subscription_expiry: null,
-            campaign_count_period: null
-          })
-          .select('id, plan, campaign_count, subscription_expiry, campaign_count_period')
-          .single();
-        if (createError) {
-          console.error('Error creating user record:', createError);
-          return this.getDefaultSubscription();
-        }
-        user = newUser;
-        console.log('Created new user record:', user);
+      if (upsertError) {
+        console.error('Error during user upsert, but proceeding to fetch:', upsertError);
+      }
+
+      // Now, reliably fetch the user record, which is guaranteed to exist.
+      const { data: user, error: fetchError } = await supabase
+        .from('users')
+        .select('id, plan, campaign_count, subscription_expiry, campaign_count_period')
+        .eq('id', userId)
+        .single();
+
+      if (fetchError || !user) {
+        console.error('FATAL: Could not fetch user record after upsert:', fetchError);
+        return this.getDefaultSubscription();
       }
 
       // Map plan to subscription status
@@ -189,7 +183,7 @@ export class SubscriptionService {
   }
 
   // Calculate the cost for extra campaigns (beyond included)
-  static calculateExtraCampaignCost(plan: 'premium', usedCampaigns: number, billingCycle: 'monthly' = 'monthly') {
+  static calculateExtraCampaignCost(usedCampaigns: number) {
     const pricing = this.getPricing().premium.monthly;
     const included = pricing.includedCampaigns;
     const extra = Math.max(0, usedCampaigns - included);
