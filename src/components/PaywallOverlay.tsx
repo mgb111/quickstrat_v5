@@ -2,9 +2,17 @@ import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Lock, Loader2 } from 'lucide-react';
 
-const RAZORPAY_LINK = 'https://rzp.io/r/your-link-here'; // <-- Replace with your actual link
+// TODO: Replace this with your actual Razorpay payment link
+const RAZORPAY_LINK = 'https://rzp.io/r/your-link-here';
 
-export default function PaywallOverlay({ price = '$49', className = '' }: { price?: string; className?: string }) {
+type PaywallOverlayProps = {
+  campaignId: string;
+  price?: string;
+  className?: string;
+  onUnlock?: () => void;
+};
+
+export default function PaywallOverlay({ campaignId, price = '$9', className = '', onUnlock }: PaywallOverlayProps) {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handlePay = () => {
@@ -15,10 +23,13 @@ export default function PaywallOverlay({ price = '$49', className = '' }: { pric
       if (!win || win.closed) {
         clearInterval(poll);
         setIsProcessing(false);
-        toast.success("Thanks! Your account will be upgraded within a few hours. You'll get an email once it's active.", {
-          duration: 8000,
+        // Mark this campaign as paid in localStorage
+        localStorage.setItem(`pdf_paid_${campaignId}`, 'true');
+        toast.success('Payment successful! PDF unlocked for this campaign.', {
+          duration: 6000,
           style: { background: '#10B981', color: '#fff', fontWeight: 'bold' }
         });
+        if (onUnlock) onUnlock();
       }
     }, 700);
   };
@@ -26,11 +37,11 @@ export default function PaywallOverlay({ price = '$49', className = '' }: { pric
   return (
     <div className={`absolute inset-0 z-40 bg-white/80 backdrop-blur flex flex-col items-center justify-center rounded-lg border-2 border-blue-200 ${className}`}>
       <Lock className="w-12 h-12 text-blue-500 mb-4" />
-      <h2 className="text-xl font-bold mb-2">Unlock Full Campaign Access</h2>
+      <h2 className="text-xl font-bold mb-2">Unlock PDF for This Campaign</h2>
       <ul className="mb-4 text-gray-700 text-sm space-y-1">
-        <li>✅ Download full PDF</li>
-        <li>✅ Get emails & social assets</li>
-        <li>✅ Unlock 4 more campaigns</li>
+        <li>✅ Download this campaign's PDF</li>
+        <li>✅ All your campaigns are always saved</li>
+        <li>✅ Only pay for the ones you want to export</li>
       </ul>
       <div className="mb-4 font-semibold text-lg">One-time payment of <span className="text-blue-600">{price}</span></div>
       <button
@@ -48,3 +59,4 @@ export default function PaywallOverlay({ price = '$49', className = '' }: { pric
     </div>
   );
 }
+
