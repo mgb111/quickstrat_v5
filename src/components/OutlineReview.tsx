@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Edit3, CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { ContentOutline } from '../types';
 import UpgradeModal from './UpgradeModal';
+import { CampaignService } from '../lib/campaignService';
 
 interface OutlineReviewProps {
   outline: ContentOutline;
@@ -14,6 +15,29 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
   onOutlineApproved, 
   isLoading = false 
 }) => {
+  // Auto-save campaign draft to user's profile when Step 2 is reached
+  useEffect(() => {
+    let didSave = false;
+    async function saveDraft() {
+      if (didSave) return;
+      didSave = true;
+      try {
+        // Add a status: 'draft' property if possible
+        const draftInput = { ...outline, status: 'draft' };
+        // Output can be empty or partial for draft
+        await CampaignService.createCampaign(draftInput, {});
+        // Optionally, show a toast or log
+        // console.log('Campaign draft saved');
+      } catch (err) {
+        // Optionally log error
+        // console.error('Failed to auto-save campaign draft:', err);
+      }
+    }
+    saveDraft();
+    // Only run on mount or outline change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [outline]);
+
   const [editableOutline, setEditableOutline] = useState<ContentOutline>(outline);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [hasPaid, setHasPaid] = useState(false);
