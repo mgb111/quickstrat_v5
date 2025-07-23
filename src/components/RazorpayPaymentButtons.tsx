@@ -165,16 +165,6 @@ const RazorpayPaymentButtons: React.FC<RazorpayPaymentButtonsProps> = ({ userId,
         </div>
       )}
       <button
-    loadRazorpay().catch(() => {});
-  }, []);
-
-  const handlePay = async () => {
-    setErrorMsg(null);
-    setLoading(true);
-    let retries = 0;
-    const maxRetries = 2;
-    let lastError: any = null;
-    while (retries <= maxRetries) {
       try {
         // 1. Call backend to create Razorpay order
         const apiUrl = endpoint || import.meta.env.VITE_RAZORPAY_ORDER_ENDPOINT || 'https://uyjqtojxwpfndrmuscag.supabase.co/functions/v1/create-razorpay-order';
