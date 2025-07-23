@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Lock, Loader2 } from 'lucide-react';
 
-// TODO: Replace this with your actual Razorpay payment link
-const RAZORPAY_LINK = 'https://rzp.io/r/your-link-here';
+// Razorpay payment link for $9 per campaign
+const RAZORPAY_LINK = 'https://rzp.io/rzp/mtrC39q';
 
 type PaywallOverlayProps = {
   campaignId: string;
@@ -37,13 +37,13 @@ export default function PaywallOverlay({ campaignId, price = '$9', className = '
   return (
     <div className={`absolute inset-0 z-40 bg-white/80 backdrop-blur flex flex-col items-center justify-center rounded-lg border-2 border-blue-200 ${className}`}>
       <Lock className="w-12 h-12 text-blue-500 mb-4" />
-      <h2 className="text-xl font-bold mb-2">Unlock PDF for This Campaign</h2>
+      <h2 className="text-xl font-bold mb-2">Unlock PDF Export ($9)</h2>
       <ul className="mb-4 text-gray-700 text-sm space-y-1">
         <li>✅ Download this campaign's PDF</li>
-        <li>✅ All your campaigns are always saved</li>
-        <li>✅ Only pay for the ones you want to export</li>
+        <li>✅ Campaign is always saved</li>
+        <li>✅ Pay only when you want the PDF</li>
       </ul>
-      <div className="mb-4 font-semibold text-lg">One-time payment of <span className="text-blue-600">{price}</span></div>
+      <div className="mb-4 font-semibold text-lg">One-time payment of <span className="text-blue-600">$9</span></div>
       <button
         onClick={handlePay}
         disabled={isProcessing}
