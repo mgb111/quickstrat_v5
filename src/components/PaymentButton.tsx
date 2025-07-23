@@ -57,7 +57,7 @@ const PaymentButton = ({ className = '' }: { className?: string }) => {
       ) : (
         <>
           <span>💎</span>
-          <span className="ml-2">Upgrade to Premium (₹49)</span>
+          <span className="ml-2">Unlock PDF Export ($9)</span>
         </>
       )}
     </button>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Copy, ExternalLink, MessageCircle, Download, Mail } from 'lucide-react';
+import { Copy, ExternalLink } from 'lucide-react';
 import { CampaignOutput } from '../types/index';
 import PDFGenerator from './PDFGenerator';
 import { SubscriptionService, SubscriptionStatus } from '../lib/subscriptionService';
@@ -70,7 +70,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
 
   // Compute canGeneratePDF
   const canGeneratePDF = subscription
-    ? subscription.plan === 'premium' || subscription.usedCampaigns < subscription.monthlyCampaignLimit
+    ? subscription.plan === 'pdf_unlock' || subscription.usedCampaigns < subscription.monthlyCampaignLimit
     : false;
 
   // Process PDF content
@@ -237,11 +237,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
     emailSubmitted
   });
 
-  // Reddit Copy Section
-  const [redditCopy, setRedditCopy] = useState('');
-  const [showReddit, setShowReddit] = useState(false);
-  const subreddits = getSuggestedSubreddits('');
-
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       <div className="text-center">
@@ -288,7 +283,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
           {(!canGeneratePDF || loadingSub) ? (
             <div className="text-center">
               <p className="mb-4 text-lg text-gray-700 font-semibold">
-                {loadingSub ? 'Checking your subscription...' : 'You have reached your free campaign limit or need to upgrade to premium to download the PDF.'}
+                {loadingSub ? 'Checking your subscription...' : 'You have reached your free campaign limit or need to upgrade to pdf_unlock to download the PDF.'}
               </p>
               {/* PDFGenerator will handle showing the UpgradeModal and paywall */}
               {pdfContent && (
