@@ -3,6 +3,7 @@ import { Check, Download, ArrowRight } from 'lucide-react';
 import { Campaign } from '../types';
 import { CampaignService } from '../lib/campaignService';
 import PDFGenerator from './PDFGenerator';
+import PaywallOverlay from './PaywallOverlay';
 
 interface LandingPageProps {
   campaignSlug: string;
@@ -16,17 +17,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
   const [error, setError] = useState<string | null>(null);
   const [showPDF, setShowPDF] = useState(false);
   const [localSubmitting, setLocalSubmitting] = useState(false);
-  const [hasPaid, setHasPaid] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
-
-  // Razorpay Payment Link integration
-  const RAZORPAY_PAYMENT_LINK = 'https://rzp.io/rzp/6A0uOxr';
-
-  const handlePayWithRazorpay = () => {
-    // Redirect to Razorpay Payment Link
-    window.location.href = RAZORPAY_PAYMENT_LINK;
-    // After payment, Razorpay should redirect back to your app with a success indicator (handle this in your app)
-  };
+  const [hasPaid, setHasPaid] = useState(false);
 
   useEffect(() => {
     setError(null); // Clear error when slug changes or fetch starts
@@ -46,22 +38,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
     loadCampaign();
   }, [campaignSlug]);
 
-  // IMPORTANT: Set the Razorpay Payment Link's redirect/return URL to your app with ?payment=success
-  // Example: https://yourdomain.com/landing-page?payment=success
-  // This is handled in the useEffect below:
   useEffect(() => {
-    // Check for payment success in URL (e.g., ?payment=success)
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success') {
-      setHasPaid(true);
-    }
-  }, []);
+    if (!campaign) return;
+    setHasPaid(localStorage.getItem(`pdf_paid_${campaign.id}`) === 'true');
+  }, [campaign]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!campaign || !email.trim() || isSubmitting || localSubmitting) return;
     setError(null);
-    // Only trigger paywall when user clicks Generate PDF and has not paid
     if (!hasPaid) {
       setShowPaywall(true);
       return;
@@ -135,13 +120,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col items-center justify-center text-center mb-12">
-          {/* Average Leads Statistic */}
-          {/* Remove the block that displays the average leads statistic */}
-
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight mx-auto">
             {landingPageCopy?.headline || campaign.lead_magnet_title || 'Get Your Free Guide'}
           </h1>
-          
           <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
             {landingPageCopy?.subheadline || 'Transform your business with this comprehensive guide'}
           </p>
@@ -198,39 +179,32 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
           </div>
         ) : null}
         {/* Paywall */}
-        {showPaywall && !hasPaid && (
-          <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200 text-center max-w-md mx-auto">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Unlock Your PDF</h3>
-            <p className="mb-4 text-lg text-gray-700 font-semibold">Complete your payment to access your PDF.</p>
-            <button
-              onClick={handlePayWithRazorpay}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
-            >
-              Pay with Razorpay
-            </button>
-          </div>
+        {showPaywall && campaign && !hasPaid && (
+          <PaywallOverlay
+            campaignId={campaign.id}
+            onUnlock={() => {
+              setHasPaid(true);
+              setShowPaywall(false);
+            }}
+          />
         )}
         {/* PDF Download */}
         {isSubmitted && hasPaid && showPDF && campaign.lead_magnet_content && (
           <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Your Free Guide</h3>
-            <PDFGenerator 
+            <PDFGenerator
               data={(() => {
-                // Parse the lead magnet content
                 const parsedContent = typeof campaign.lead_magnet_content === 'string'
                   ? JSON.parse(campaign.lead_magnet_content)
                   : campaign.lead_magnet_content;
-                // Check if structured_content exists and has proper types
                 if (parsedContent.structured_content && parsedContent.structured_content.toolkit_sections) {
                   const hasProperTypes = parsedContent.structured_content.toolkit_sections.some((section: any) => section.type);
                   if (!hasProperTypes) {
                     console.log('Fixing missing types in LandingPage...');
-                    // Fix the types in the existing structured_content
                     const fixedStructuredContent = {
                       ...parsedContent.structured_content,
                       toolkit_sections: parsedContent.structured_content.toolkit_sections.map((section: any) => {
                         let type: 'pros_and_cons_list' | 'checklist' | 'scripts' | undefined = undefined;
-                        // Determine type based on content analysis
                         const content = section.content.toLowerCase();
                         if (content.includes('pros:') && content.includes('cons:')) {
                           type = 'pros_and_cons_list';
@@ -253,6 +227,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
                 }
                 return parsedContent;
               })()}
+              campaignId={campaign.id}
             />
           </div>
         )}
