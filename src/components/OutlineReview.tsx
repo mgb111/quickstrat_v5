@@ -3,6 +3,7 @@ import { Edit3, CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { ContentOutline } from '../types';
 import UpgradeModal from './UpgradeModal';
 import { CampaignService } from '../lib/campaignService';
+import { toast } from 'react-hot-toast';
 
 interface OutlineReviewProps {
   outline: ContentOutline;
@@ -22,14 +23,24 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
       if (didSave) return;
       didSave = true;
       try {
-        // Add a status: 'draft' property if possible
-        const draftInput = { ...outline, status: 'draft' };
-        // Output can be empty or partial for draft
+        // Compose a minimal CampaignInput for draft (add defaults as needed)
+        const draftInput = {
+          name: outline.title || 'Untitled Campaign',
+          brand_name: outline.title || 'Brand',
+          target_audience: outline.target_audience || 'General',
+          niche: outline.niche || 'General',
+          problem_statement: outline.problem_statement || '',
+          desired_outcome: outline.desired_outcome || '',
+          tone: outline.tone || 'professional',
+          position: outline.position || '',
+          outline: outline,
+          status: 'draft'
+        };
         await CampaignService.createCampaign(draftInput, {});
-        // Optionally, show a toast or log
-        // console.log('Campaign draft saved');
+        // Optionally, show a toast
+        // toast.success('Campaign draft saved');
       } catch (err) {
-        // Optionally log error
+        toast.error('Failed to auto-save campaign draft');
         // console.error('Failed to auto-save campaign draft:', err);
       }
     }

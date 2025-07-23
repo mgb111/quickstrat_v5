@@ -29,29 +29,32 @@ export default function PaywallOverlay({
 
   const handlePay = () => {
     if (isProcessing) return;
-    
     setIsProcessing(true);
-    const win = window.open(RAZORPAY_LINK, '_blank', 'noopener,noreferrer');
-    
+    let win: Window | null = null;
+    try {
+      win = window.open(RAZORPAY_LINK, '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      win = null;
+    }
     if (!win) {
-      toast.error('Please allow popups for this site to make a payment');
+      toast.error('Popup blocked! Please allow popups for this site to make a payment.');
       setIsProcessing(false);
       return;
     }
-
+    // Focus the window if possible
+    try { win.focus(); } catch {}
     // Check every second if the payment window is closed
     const paymentCheck = setInterval(() => {
-      if (win.closed) {
+      if (win && win.closed) {
         clearInterval(paymentCheck);
-        // Assume payment was successful if window is closed
         handlePaymentSuccess();
       }
     }, 1000);
-
     // Set a timeout in case the window is closed by the user without payment
     setTimeout(() => {
       clearInterval(paymentCheck);
-      }, 300000); // 5 minutes timeout
+      setIsProcessing(false);
+    }, 300000); // 5 minutes timeout
   };
 
   const handlePaymentSuccess = () => {
