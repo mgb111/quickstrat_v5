@@ -23,27 +23,47 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
       if (didSave) return;
       didSave = true;
       try {
-        // Compose a minimal CampaignInput for draft (add defaults as needed)
+        // Get authenticated user from Supabase
+        const { data: { user } } = await import('../lib/supabase').then(m => m.supabase.auth.getUser());
+        if (!user) {
+          toast.error('You must be logged in to save campaigns.');
+          return;
+        }
+        // Build a complete CampaignInput with all required fields
         const draftInput = {
           name: outline.title || 'Untitled Campaign',
           brand_name: outline.title || 'Brand',
           target_audience: outline.target_audience || 'General',
           niche: outline.niche || 'General',
-          problem_statement: outline.problem_statement || '',
-          desired_outcome: outline.desired_outcome || '',
-          tone: outline.tone || 'professional',
-          position: outline.position || '',
+          problem_statement: outline.introduction || '',
+          desired_outcome: outline.main_value_proposition || '',
+          tone: 'professional',
+          position: '',
+          customer_profile: outline.target_audience || 'General',
           outline: outline,
           status: 'draft'
         };
-        await CampaignService.createCampaign(draftInput, {
-  landing_page: { headline: outline.title || 'Draft Headline' }
-});
-        // Optionally, show a toast
+        // Build a valid CampaignOutput
+        const campaignOutput = {
+          pdf_content: '', // No PDF for draft
+          landing_page: {
+            headline: outline.title || 'Draft Headline',
+            subheadline: outline.main_value_proposition || '',
+            benefit_bullets: [],
+            cta_button_text: 'Download Now'
+          },
+          social_posts: {
+            linkedin: '',
+            twitter: '',
+            instagram: '',
+            reddit: ''
+          }
+        };
+        await CampaignService.createCampaign(draftInput, campaignOutput);
         // toast.success('Campaign draft saved');
       } catch (err) {
+        console.error('Failed to auto-save campaign draft:', err);
         toast.error('Failed to auto-save campaign draft');
-        // console.error('Failed to auto-save campaign draft:', err);
       }
     }
     saveDraft();
