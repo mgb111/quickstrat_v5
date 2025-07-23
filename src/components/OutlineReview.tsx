@@ -36,7 +36,9 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
           outline: outline,
           status: 'draft'
         };
-        await CampaignService.createCampaign(draftInput, {});
+        await CampaignService.createCampaign(draftInput, {
+  landing_page: { headline: outline.title || 'Draft Headline' }
+});
         // Optionally, show a toast
         // toast.success('Campaign draft saved');
       } catch (err) {
