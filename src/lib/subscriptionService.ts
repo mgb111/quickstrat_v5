@@ -49,7 +49,7 @@ export class SubscriptionService {
                 const { data: refetchedUser, error: refetchError } = await supabase
                     .from('users')
                     .select('id, plan, campaign_count, subscription_expiry, campaign_count_period')
-                    .eq('id', userId)
+                    .eq('email', authUser.email)
                     .single();
                 if (refetchError || !refetchedUser) {
                     console.error('FATAL: Failed to refetch user after duplicate error:', refetchError);
