@@ -54,24 +54,55 @@ export class CampaignService {
     // Ensure user exists in public.users table (upsert to handle duplicates)
     console.log('➕ Ensuring user record exists for:', user.id, user.email);
     try {
-      const { data: newUser, error: upsertError } = await supabase
+      // First, try to get the user to see if they exist
+      const { data: existingUser, error: fetchError } = await supabase
         .from('users')
-        .upsert({
-          id: user.id,
-          email: user.email
-        }, {
-          onConflict: 'id',
-          ignoreDuplicates: false
-        })
-        .select()
-        .single();
-      if (upsertError && upsertError.code !== '23505') {
-        throw new Error(`Failed to initialize user profile: ${upsertError.message}`);
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      // If user doesn't exist or there was an error fetching, try to upsert
+      if (fetchError || !existingUser) {
+        console.log('User not found, creating new user record...');
+        const { error: upsertError } = await supabase
+          .from('users')
+          .upsert({
+            id: user.id,
+            email: user.email,
+            plan: 'free',  // Default plan
+            campaign_count: 0
+          }, {
+            onConflict: 'id',
+            ignoreDuplicates: false
+          });
+
+        if (upsertError) {
+          console.error('Error creating/updating user:', upsertError);
+          if (upsertError.code !== '23505') { // Ignore duplicate key errors
+            throw new Error(`Failed to initialize user profile: ${upsertError.message}`);
+          }
+        }
+      } else {
+        console.log('User record already exists, skipping creation');
       }
     } catch (error: any) {
+      // If it's a duplicate key error, we can continue
       if (error.code !== '23505' && !error.message?.includes('duplicate key')) {
+        console.error('Unexpected error ensuring user exists:', error);
         throw error;
       }
+    }
+
+    // Verify the user exists before proceeding with campaign creation
+    const { data: verifiedUser, error: userVerifyError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', user.id)
+      .single();
+
+    if (userVerifyError || !verifiedUser) {
+      console.error('Failed to verify user after upsert attempt:', userVerifyError);
+      throw new Error('Failed to verify user account. Please try again.');
     }
 
     // Generate unique slug
