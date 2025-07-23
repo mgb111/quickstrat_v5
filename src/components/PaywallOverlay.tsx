@@ -12,6 +12,9 @@ type PaywallOverlayProps = {
   onDownloadPDF?: () => void;
 };
 
+// Explicitly use React to prevent build process from stripping it out.
+console.log('Using React version:', React.version);
+
 export default function PaywallOverlay({ 
   campaignId, 
   className = '', 

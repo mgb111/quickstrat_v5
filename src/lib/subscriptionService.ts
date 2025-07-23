@@ -14,39 +14,62 @@ export interface SubscriptionStatus {
 export class SubscriptionService {
   static async getUserSubscription(userId: string): Promise<SubscriptionStatus> {
     try {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (!authUser) {
-        console.error('No authenticated user found for subscription check.');
-        return this.getDefaultSubscription();
-      }
-
-      // Atomically create user with default values if they don't exist.
-      // onConflict with 'id' and ignoreDuplicates prevents errors if the user already exists.
-      const { error: upsertError } = await supabase
-        .from('users')
-        .upsert(
-          { 
-            id: userId, 
-            email: authUser.email, 
-            plan: 'free', 
-            campaign_count: 0 
-          },
-          { onConflict: 'id', ignoreDuplicates: true }
-        );
-
-      if (upsertError) {
-        console.error('Error during user upsert, but proceeding to fetch:', upsertError);
-      }
-
-      // Now, reliably fetch the user record, which is guaranteed to exist.
-      const { data: user, error: fetchError } = await supabase
+      // Use a robust get-or-create pattern to prevent race conditions.
+      let { data: user, error: fetchError } = await supabase
         .from('users')
         .select('id, plan, campaign_count, subscription_expiry, campaign_count_period')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
-      if (fetchError || !user) {
-        console.error('FATAL: Could not fetch user record after upsert:', fetchError);
+      // If the user does not exist, create them.
+      if (!user && !fetchError) {
+        console.log('User not found, creating new user record...');
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) {
+          console.error('No authenticated user found, cannot create user.');
+          return this.getDefaultSubscription();
+        }
+
+        const { data: newUser, error: createError } = await supabase
+          .from('users')
+          .insert({
+            id: userId,
+            email: authUser.email,
+            plan: 'free',
+            campaign_count: 0,
+          })
+          .select('id, plan, campaign_count, subscription_expiry, campaign_count_period')
+          .single();
+        
+        if (createError) {
+            console.error('Error creating user record:', createError);
+            // If it's a duplicate key error, another process likely created it. We can try fetching again.
+            if (createError.code === '23505') {
+                console.log('Duplicate user error, re-fetching user record...');
+                const { data: refetchedUser, error: refetchError } = await supabase
+                    .from('users')
+                    .select('id, plan, campaign_count, subscription_expiry, campaign_count_period')
+                    .eq('id', userId)
+                    .single();
+                if (refetchError || !refetchedUser) {
+                    console.error('FATAL: Failed to refetch user after duplicate error:', refetchError);
+                    return this.getDefaultSubscription();
+                }
+                user = refetchedUser;
+            } else {
+                return this.getDefaultSubscription();
+            }
+        } else {
+            user = newUser;
+            console.log('Successfully created new user record:', user);
+        }
+      } else if (fetchError) {
+        console.error('Error fetching user subscription:', fetchError);
+        return this.getDefaultSubscription();
+      }
+
+      if (!user) {
+        console.error('FATAL: User record is null after get-or-create logic.');
         return this.getDefaultSubscription();
       }
 
