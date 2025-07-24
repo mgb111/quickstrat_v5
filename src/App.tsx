@@ -205,6 +205,10 @@ function App() {
       // Add debug logs for campaign creation
       console.log('Attempting to create campaign...');
       try {
+        const { data: { user } } = await import('./lib/supabase').then(m => m.supabase.auth.getUser());
+        if (user && user.id) {
+          await import('./lib/subscriptionService').then(({ SubscriptionService }) => SubscriptionService.getUserSubscription(user.id));
+        }
         await import('./lib/campaignService').then(({ CampaignService }) => CampaignService.createCampaign(wizardState.input!, finalOutput));
         console.log('Campaign creation call finished');
       } catch (campaignError) {

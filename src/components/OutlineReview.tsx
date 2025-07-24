@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Edit3, CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { ContentOutline } from '../types';
+import PaymentModal from './PaymentButton';
 
 
 interface OutlineReviewProps {
@@ -19,6 +20,7 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
   const [editingField, setEditingField] = useState<string | null>(null);
   const [hasPaid, setHasPaid] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   // Add Razorpay Checkout redirect after payment
   React.useEffect(() => {
@@ -41,7 +43,7 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
   };
 
   const handleSubmit = () => {
-    onOutlineApproved(editableOutline);
+    setShowPaymentModal(true);
   };
 
   const EditableField: React.FC<{
@@ -227,6 +229,13 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
           </p>
         </>
       </div>
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => {
+          setShowPaymentModal(false);
+          onOutlineApproved(editableOutline);
+        }}
+      />
     </div>
   );
 };
