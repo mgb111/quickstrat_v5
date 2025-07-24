@@ -199,195 +199,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-2 sm:p-4 md:p-6 overflow-x-hidden">
-      {/* Header */}
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-        <p className="text-gray-600 text-base sm:text-lg">Manage your lead generation campaigns</p>
-      </div>
-
-      {/* Campaigns */}
-      {campaigns.length === 0 ? (
-        <div className="text-center py-8 sm:py-12">
-          <div className="bg-gray-50 rounded-lg p-4 sm:p-8 max-w-md mx-auto">
-            <FileText className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No campaigns yet</h3>
-            <p className="text-gray-600 mb-4 text-sm sm:text-base">Create your first campaign to start generating leads</p>
-            <button
-              onClick={onNewCampaign}
-              className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 text-base sm:text-lg"
-            >
-              Create Campaign
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
-          {/* Campaign List */}
-          <div className="lg:col-span-1 mb-4 lg:mb-0">
-            <div className="bg-white rounded-lg shadow">
-              <div className="p-4 sm:p-6 border-b border-gray-200">
-                <h2 className="text-base sm:text-lg font-semibold text-gray-900">Campaigns</h2>
-              </div>
-              <div className="divide-y divide-gray-200">
-                {campaigns.map((campaign) => (
-                  <div
-                    key={campaign.id}
-                    className={`p-3 sm:p-4 cursor-pointer hover:bg-gray-50 ${
-                      selectedCampaign?.id === campaign.id ? 'bg-blue-50 border-r-2 border-blue-500' : ''
-                    }`}
-                    onClick={() => setSelectedCampaign(campaign)}
-                  >
-                    <div className="flex justify-between items-start gap-2">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-gray-900 truncate text-base sm:text-lg">{campaign.name}</h3>
-                        <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                          {campaign.lead_count} leads
-                        </p>
-                        <p className="text-xs text-gray-400 mt-1">
-                          {new Date(campaign.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <button
-                          className="text-blue-600 hover:underline text-xs"
-                          onClick={e => { e.stopPropagation(); setViewPdfCampaign(campaign); }}
-                        >
-                          View PDF
-                        </button>
-                        <button
-                          className="text-green-600 hover:underline text-xs"
-                          onClick={e => { e.stopPropagation(); handleEditClick(campaign); }}
-                        >
-                          Edit PDF
-                        </button>
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          copyLandingPageUrl(campaign.landing_page_slug);
-                        }}
-                        className="text-gray-400 hover:text-gray-600 p-2 rounded-full flex-shrink-0"
-                        title="Copy landing page URL"
-                      >
-                        <Copy className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Campaign Details */}
-          {selectedCampaign && (
-            <div className="lg:col-span-2 space-y-6 overflow-x-hidden">
-              {/* Campaign Stats */}
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Overview</h3>
-                <div className="flex justify-center">
-                  <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 mx-auto mb-2" />
-                    <p className="text-xl sm:text-2xl font-bold text-blue-600">{selectedCampaign.lead_count}</p>
-                    <p className="text-xs sm:text-sm text-gray-600">Total Leads</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Leads List */}
-              <div className="bg-white rounded-lg shadow">
-                <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-                  <h3 className="text-lg font-semibold text-gray-900">Recent Leads</h3>
-                  <button
-                    onClick={exportLeads}
-                    className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Export CSV
-                  </button>
-                </div>
-                <div className="divide-y divide-gray-200">
-                  {isLoadingLeads ? (
-                    <div className="p-6 text-center">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                      <p className="text-gray-600">Loading leads...</p>
-                    </div>
-                  ) : leads.length === 0 ? (
-                    <div className="p-6 text-center text-gray-500">
-                      No leads captured yet
-                    </div>
-                  ) : (
-                    leads.map((lead) => (
-                      <div key={lead.id} className="p-4 flex justify-between items-center">
-                        <div>
-                          <p className="font-medium text-gray-900">{lead.email}</p>
-                          <p className="text-sm text-gray-500">
-                            Captured {new Date(lead.captured_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => copyLandingPageUrl(selectedCampaign.landing_page_slug)}
-                          className="text-gray-400 hover:text-gray-600"
-                          title="Copy landing page URL"
-                        >
-                          <Copy className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              {/* Campaign Settings */}
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Settings</h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Landing Page URL
-                    </label>
-                    <div className="flex">
-                      <input
-                        type="text"
-                        value={`${window.location.origin}/landing/${selectedCampaign.landing_page_slug}`}
-                        readOnly
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg bg-gray-50"
-                      />
-                      <button
-                        onClick={() => copyLandingPageUrl(selectedCampaign.landing_page_slug)}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 transition-colors"
-                      >
-                        <Copy className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Lead Magnet Title
-                    </label>
-                    <p className="text-gray-900">{selectedCampaign.lead_magnet_title || 'Not set'}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-      <h3 className="text-lg font-semibold mb-2">Completed Campaigns</h3>
-      {completedCampaigns.length === 0 ? (
-        <div className="text-gray-500">No completed campaigns yet.</div>
-      ) : (
-        <ul className="divide-y divide-gray-200 bg-white rounded-lg p-4">
-          {completedCampaigns.map(campaign => (
-            <li key={campaign.id} className="py-3 flex items-center justify-between">
-              <span className="font-medium text-gray-900">{campaign.name}</span>
-              <span className="text-xs text-green-600">Completed</span>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Navigation or tab bar would be here if present */}
       {draftCampaigns.length > 0 && (
-        <div className="mt-8">
+        <div className="mb-8">
           <h3 className="text-lg font-semibold mb-2">Draft Campaigns</h3>
           <ul className="divide-y divide-gray-200 bg-yellow-50 rounded-lg p-4">
             {draftCampaigns.map(campaign => (
@@ -404,6 +219,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
             ))}
           </ul>
         </div>
+      )}
+      <h3 className="text-lg font-semibold mb-2">Completed Campaigns</h3>
+      {completedCampaigns.length === 0 ? (
+        <div className="text-gray-500">No completed campaigns yet.</div>
+      ) : (
+        <ul className="divide-y divide-gray-200 bg-white rounded-lg p-4">
+          {completedCampaigns.map(campaign => (
+            <li key={campaign.id} className="py-3 flex items-center justify-between">
+              <span className="font-medium text-gray-900">{campaign.name}</span>
+              <span className="text-xs text-green-600">Completed</span>
+            </li>
+          ))}
+        </ul>
       )}
       {/* View PDF Modal */}
       <Modal
