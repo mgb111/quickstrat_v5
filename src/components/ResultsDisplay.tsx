@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Copy, ExternalLink } from 'lucide-react';
 import { CampaignOutput } from '../types/index';
 import PDFGenerator from './PDFGenerator';
-import { SubscriptionService, SubscriptionStatus } from '../lib/subscriptionService';
-import EmailCapture from './EmailCapture';
 import { createClient } from '@supabase/supabase-js';
 import Modal from 'react-modal';
 
@@ -37,28 +35,14 @@ function getSuggestedSubreddits(niche: string): string[] {
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, userName, problemStatement, desiredOutcome, onCampaignCreated }) => {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
-  const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [loadingSub, setLoadingSub] = useState(false);
 
   useEffect(() => {
     // Get user ID on mount
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUserId(user?.id || null);
-      if (user?.id) fetchSubscription(user.id);
     });
   }, []);
-
-  const fetchSubscription = async (uid: string) => {
-    setLoadingSub(true);
-    const sub = await SubscriptionService.getUserSubscription(uid);
-    setSubscription(sub);
-    setLoadingSub(false);
-  };
-
-  const handleUpgrade = async () => {
-    if (userId) await fetchSubscription(userId);
-  };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -67,11 +51,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
   const handleEmailSubmitted = () => {
     setEmailSubmitted(true);
   };
-
-  // Compute canGeneratePDF
-  const canGeneratePDF = subscription
-    ? subscription.plan === 'pdf_unlock' || subscription.usedCampaigns < subscription.monthlyCampaignLimit
-    : false;
 
   // Process PDF content
   const processPdfContent = () => {
@@ -279,24 +258,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
               {pdfError ? `⚠️ ${pdfError}` : '✅ Email submitted! Your guide is ready below.'}
             </p>
           </div>
-          {/* Paywall enforcement: Only show PDF if eligible */}
-          {(!canGeneratePDF || loadingSub) ? (
-            <div className="text-center">
-              <p className="mb-4 text-lg text-gray-700 font-semibold">
-                {loadingSub ? 'Checking your subscription...' : 'You have reached your free campaign limit or need to upgrade to pdf_unlock to download the PDF.'}
-              </p>
-              {/* PDFGenerator will handle showing the UpgradeModal and paywall */}
-              {pdfContent && (
-                <PDFGenerator
-                  data={pdfContent}
-                  canGeneratePDF={canGeneratePDF}
-                  onUpgrade={handleUpgrade}
-                />
-              )}
-            </div>
-          ) : (
-            pdfContent && <PDFGenerator data={pdfContent} canGeneratePDF={canGeneratePDF} onUpgrade={handleUpgrade} />
-          )}
+          {pdfContent && <PDFGenerator data={pdfContent} />}
         </div>
       )}
 

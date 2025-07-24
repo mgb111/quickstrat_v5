@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Edit3, CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { ContentOutline } from '../types';
-import UpgradeModal from './UpgradeModal';
 
 
 interface OutlineReviewProps {
@@ -42,10 +41,6 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
   };
 
   const handleSubmit = () => {
-    if (!hasPaid) {
-      setShowUpgradeModal(true);
-      return;
-    }
     onOutlineApproved(editableOutline);
   };
 
@@ -231,16 +226,6 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
             AI will expand your outline into a complete, professional lead magnet
           </p>
         </>
-        <UpgradeModal
-          isOpen={showUpgradeModal && !hasPaid}
-          onClose={() => setShowUpgradeModal(false)}
-          onUpgrade={() => {
-            setHasPaid(true);
-            setShowUpgradeModal(false);
-            // Immediately continue PDF generation after payment
-            onOutlineApproved(editableOutline);
-          }}
-        />
       </div>
     </div>
   );

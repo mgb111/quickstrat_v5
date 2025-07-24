@@ -1,67 +1,44 @@
-import { useState } from 'react';
-import { toast } from 'react-hot-toast';
-import { Loader2 } from 'lucide-react';
+import React from 'react';
 
-const PaymentButton = ({ className = '' }: { className?: string }) => {
-  const [isProcessing, setIsProcessing] = useState(false);
+interface PaymentModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-  const handlePayment = () => {
-    if (isProcessing) return;
-    
-    setIsProcessing(true);
-    
-    // Open Razorpay payment link
-    const paymentWindow = window.open(
-      'https://rzp.io/rzp/mtrC39q',
-      '_blank',
-      'noopener,noreferrer'
-    );
+const RAZORPAY_LINK = 'https://rzp.io/rzp/mtrC39q';
 
-    // Check if payment was completed
-    const checkPayment = setInterval(() => {
-      if (!paymentWindow || paymentWindow.closed) {
-        clearInterval(checkPayment);
-        setIsProcessing(false);
-        toast.success('Payment successful! Your premium access is being processed.', { 
-          duration: 8000,
-          style: {
-            background: '#10B981',
-            color: '#ffffff',
-            padding: '16px',
-            borderRadius: '8px',
-            maxWidth: '100%',
-          }
-        });
-      }
-    }, 1000);
+const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const onFocus = () => {
+      onClose();
+    };
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [isOpen, onClose]);
 
-    // Cleanup
-    return () => clearInterval(checkPayment);
-  };
+  if (!isOpen) return null;
 
   return (
-    <button
-      onClick={handlePayment}
-      disabled={isProcessing}
-      className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center justify-center ${
-        isProcessing 
-          ? 'bg-blue-400 cursor-not-allowed' 
-          : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-md'
-      } ${className}`}
-    >
-      {isProcessing ? (
-        <>
-          <Loader2 className="animate-spin mr-2 h-4 w-4" />
-          Processing...
-        </>
-      ) : (
-        <>
-          <span>💎</span>
-          <span className="ml-2">Unlock PDF Export ($9)</span>
-        </>
-      )}
-    </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full flex flex-col items-center">
+        <h2 className="text-xl font-bold mb-4">Unlock PDF Export</h2>
+        <p className="mb-6 text-gray-700 text-center">To download your PDF, please complete a one-time payment.</p>
+        <button
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition mb-4"
+          onClick={() => window.open(RAZORPAY_LINK, '_blank', 'noopener,noreferrer')}
+        >
+          Pay with Razorpay
+        </button>
+        <button
+          className="text-blue-600 hover:underline text-sm"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
   );
 };
 
-export default PaymentButton;
+export default PaymentModal;
