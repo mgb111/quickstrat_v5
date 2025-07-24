@@ -148,6 +148,60 @@ export class CampaignService {
     return data;
   }
 
+  // Save or update a campaign draft up to outline-review
+  static async saveDraftCampaign({ input, concepts, selectedConcept, outline }: {
+    input: CampaignInput,
+    concepts?: any,
+    selectedConcept?: any,
+    outline?: any
+  }): Promise<any> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Authentication required to save campaign drafts');
+    // Try to find an existing draft for this user and input (by name/brand_name)
+    const { data: existing, error: fetchError } = await supabase
+      .from('campaigns')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('status', 'draft')
+      .eq('name', input.brand_name)
+      .maybeSingle();
+    const draftData = {
+      user_id: user.id,
+      name: input.brand_name,
+      customer_profile: input.customer_profile || input.target_audience || 'General',
+      problem_statement: input.problem_statement,
+      desired_outcome: input.desired_outcome,
+      status: 'draft',
+      lead_magnet_title: null,
+      lead_magnet_content: null,
+      landing_page_copy: null,
+      social_posts: null,
+      outline: outline ? JSON.stringify(outline) : null,
+      concepts: concepts ? JSON.stringify(concepts) : null,
+      selected_concept: selectedConcept ? JSON.stringify(selectedConcept) : null
+    };
+    if (existing && existing.id) {
+      // Update existing draft
+      const { data, error } = await supabase
+        .from('campaigns')
+        .update(draftData)
+        .eq('id', existing.id)
+        .select()
+        .single();
+      if (error) throw new Error('Failed to update draft: ' + error.message);
+      return data;
+    } else {
+      // Insert new draft
+      const { data, error } = await supabase
+        .from('campaigns')
+        .insert([draftData])
+        .select()
+        .single();
+      if (error) throw new Error('Failed to save draft: ' + error.message);
+      return data;
+    }
+  }
+
   // Get all campaigns for the current user
   static async getCampaigns(): Promise<Campaign[]> {
     const { data: { user } } = await supabase.auth.getUser();
@@ -279,120 +333,3 @@ export class CampaignService {
     const csvHeader = 'Email,Captured At\n';
     const csvRows = leads.map(lead => 
       `"${lead.email}","${new Date(lead.captured_at).toISOString()}"`
-    ).join('\n');
-    
-    return csvHeader + csvRows;
-  }
-
-  // Mark email as sent
-  static async markEmailSent(email: string, campaignId: string): Promise<void> {
-    const { error } = await supabase
-      .from('emails')
-      .update({ email_sent: true })
-      .eq('email', email)
-      .eq('campaign_id', campaignId);
-
-    if (error) {
-      console.error('Email update error:', error);
-      throw new Error(`Failed to mark email as sent: ${error.message}`);
-    }
-  }
-
-  // Mark PDF as downloaded
-  static async markPDFDownloaded(email: string, campaignId: string): Promise<void> {
-    const { error } = await supabase
-      .from('emails')
-      .update({ pdf_downloaded: true })
-      .eq('email', email)
-      .eq('campaign_id', campaignId);
-
-    if (error) {
-      console.error('PDF update error:', error);
-      throw new Error(`Failed to mark PDF as downloaded: ${error.message}`);
-    }
-  }
-
-  // Get campaign statistics
-  static async getCampaignStats(campaignId: string) {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      // For demo purposes, get stats without user verification
-      // Get lead count
-      const { count: leadCount } = await supabase
-        .from('leads')
-        .select('*', { count: 'exact', head: true })
-        .eq('campaign_id', campaignId);
-
-      // Get email stats
-      const { count: emailCount } = await supabase
-        .from('emails')
-        .select('*', { count: 'exact', head: true })
-        .eq('campaign_id', campaignId);
-
-      const { count: sentEmailCount } = await supabase
-        .from('emails')
-        .select('*', { count: 'exact', head: true })
-        .eq('campaign_id', campaignId)
-        .eq('email_sent', true);
-
-      const { count: pdfDownloadCount } = await supabase
-        .from('emails')
-        .select('*', { count: 'exact', head: true })
-        .eq('campaign_id', campaignId)
-        .eq('pdf_downloaded', true);
-
-      return {
-        totalLeads: leadCount || 0,
-        totalEmails: emailCount || 0,
-        emailsSent: sentEmailCount || 0,
-        pdfsDownloaded: pdfDownloadCount || 0,
-        conversionRate: emailCount ? ((pdfDownloadCount || 0) / emailCount * 100).toFixed(1) : '0'
-      };
-    }
-
-    // Verify the campaign belongs to the user
-    const { data: campaign } = await supabase
-      .from('campaigns')
-      .select('id')
-      .eq('id', campaignId)
-      .eq('user_id', user.id)
-      .single();
-
-    if (!campaign) {
-      throw new Error('Campaign not found or access denied');
-    }
-
-    // Get lead count
-    const { count: leadCount } = await supabase
-      .from('leads')
-      .select('*', { count: 'exact', head: true })
-      .eq('campaign_id', campaignId);
-
-    // Get email stats
-    const { count: emailCount } = await supabase
-      .from('emails')
-      .select('*', { count: 'exact', head: true })
-      .eq('campaign_id', campaignId);
-
-    const { count: sentEmailCount } = await supabase
-      .from('emails')
-      .select('*', { count: 'exact', head: true })
-      .eq('campaign_id', campaignId)
-      .eq('email_sent', true);
-
-    const { count: pdfDownloadCount } = await supabase
-      .from('emails')
-      .select('*', { count: 'exact', head: true })
-      .eq('campaign_id', campaignId)
-      .eq('pdf_downloaded', true);
-
-    return {
-      totalLeads: leadCount || 0,
-      totalEmails: emailCount || 0,
-      emailsSent: sentEmailCount || 0,
-      pdfsDownloaded: pdfDownloadCount || 0,
-      conversionRate: emailCount ? ((pdfDownloadCount || 0) / emailCount * 100).toFixed(1) : '0'
-    };
-  }
-} 
