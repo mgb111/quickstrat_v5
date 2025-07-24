@@ -11,7 +11,7 @@ import PublicLandingPage from './components/PublicLandingPage';
 import Auth from './components/Auth/Auth';
 import UserProfile from './components/UserProfile';
 import { useAuth } from './contexts/AuthContext';
-import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, PDFCustomization } from './types/index';
+import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, PDFCustomization, Campaign } from './types/index';
 import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
 import LoadingSpinner from './components/LoadingSpinner';
 import { CampaignService } from './lib/campaignService';
@@ -366,6 +366,29 @@ function App() {
     }
   }, [wizardState.input, wizardState.concepts, wizardState.selectedConcept, wizardState.outline]);
 
+  // Resume a draft campaign from the dashboard
+  const resumeDraftCampaign = (draft: Campaign) => {
+    setWizardState({
+      stage: (draft as any).outline ? 'outline-review' : (draft as any).selected_concept ? 'concept-selection' : 'input',
+      input: (draft as any).input || {
+        name: draft.name,
+        brand_name: draft.name,
+        target_audience: draft.customer_profile,
+        niche: '',
+        problem_statement: draft.problem_statement,
+        desired_outcome: draft.desired_outcome,
+        tone: '',
+        position: ''
+      },
+      concepts: (draft as any).concepts ? JSON.parse((draft as any).concepts) : null,
+      selectedConcept: (draft as any).selected_concept ? JSON.parse((draft as any).selected_concept) : null,
+      outline: (draft as any).outline ? JSON.parse((draft as any).outline) : null,
+      finalOutput: null,
+      customization: null
+    });
+    setMode('wizard');
+  };
+
   // Show loading while checking authentication
   if (loading) {
     console.log('Showing loading spinner...');
@@ -483,7 +506,10 @@ function App() {
             </div>
           </div>
         </header>
-        <Dashboard onNewCampaign={handleNewCampaign} />
+        <Dashboard
+          onNewCampaign={handleNewCampaign}
+          onResumeDraft={resumeDraftCampaign}
+        />
       </div>
     );
   }

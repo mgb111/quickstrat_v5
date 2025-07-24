@@ -9,9 +9,10 @@ import Modal from 'react-modal';
 
 interface DashboardProps {
   onNewCampaign: () => void;
+  onResumeDraft?: (draft: Campaign) => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -370,6 +371,25 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
               </div>
             </div>
           )}
+        </div>
+      )}
+      {draftCampaigns.length > 0 && (
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold mb-2">Draft Campaigns</h3>
+          <ul className="divide-y divide-gray-200 bg-yellow-50 rounded-lg p-4">
+            {draftCampaigns.map(campaign => (
+              <li key={campaign.id} className="py-3 flex items-center justify-between">
+                <span className="font-medium text-yellow-800">{campaign.name}</span>
+                <button
+                  className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-semibold"
+                  onClick={() => onResumeDraft && onResumeDraft(campaign)}
+                >
+                  Resume
+                </button>
+                <span className="text-xs text-yellow-600">Draft</span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
       {/* View PDF Modal */}
