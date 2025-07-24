@@ -14,6 +14,7 @@ import { useAuth } from './contexts/AuthContext';
 import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, PDFCustomization } from './types/index';
 import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
 import LoadingSpinner from './components/LoadingSpinner';
+import { CampaignService } from './lib/campaignService';
 
 type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile';
 
@@ -350,6 +351,20 @@ function App() {
       </div>
     );
   };
+
+  // Auto-save draft at every step if input is present
+  useEffect(() => {
+    if (wizardState.input) {
+      CampaignService.saveDraftCampaign({
+        input: wizardState.input,
+        concepts: wizardState.concepts,
+        selectedConcept: wizardState.selectedConcept,
+        outline: wizardState.outline
+      }).catch((err) => {
+        console.error('Failed to auto-save campaign draft:', err);
+      });
+    }
+  }, [wizardState.input, wizardState.concepts, wizardState.selectedConcept, wizardState.outline]);
 
   // Show loading while checking authentication
   if (loading) {
