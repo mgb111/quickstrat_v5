@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Copy, ExternalLink } from 'lucide-react';
+import { Copy, ExternalLink, Mail } from 'lucide-react';
 import { CampaignOutput } from '../types/index';
 import PDFGenerator from './PDFGenerator';
+import EmailCapture from './EmailCapture';
 import { createClient } from '@supabase/supabase-js';
 import Modal from 'react-modal';
 
@@ -258,7 +259,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
               {pdfError ? `⚠️ ${pdfError}` : '✅ Email submitted! Your guide is ready below.'}
             </p>
           </div>
-          {pdfContent && <PDFGenerator data={pdfContent} />}
+          {pdfContent && <PDFGenerator data={pdfContent} campaignId={''} />}
         </div>
       )}
 
