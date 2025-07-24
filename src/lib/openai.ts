@@ -227,7 +227,9 @@ Return JSON in this exact format:
 export async function generatePdfContent(input: CampaignInput, outline: ContentOutline): Promise<PDFContent> {
   const client = getOpenAIClient();
 
-  try {    const prompt = `You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const prompt = `You are an expert instructional designer. Generate a visually engaging, actionable lead magnet PDF for a business audience. Use clear, concise, non-generic language and practical frameworks. Make it feel premium and branded for Majorbeam.
 
 USER CONTEXT:
 Niche: ${input.niche}
@@ -235,389 +237,226 @@ Target Audience: ${input.target_audience}
 Tone: ${input.tone}
 Brand Name: ${input.brand_name}
 Position/Title: ${input.position || ''}
-Selected Concept: A lead magnet about ${outline.title}.
+Selected Concept: ${outline.title}.
 
----
+Include these sections:
+1. Title Page: title (8-12 words), subtitle (10-15 words), and a visible 'Majorbeam' brand mention.
+2. Introduction: 60-100 words, engaging, mention the brand and founder, state the problem and what the reader will get.
+3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - include a real, specific, non-placeholder case_study (1-2 sentences).
+4. Toolkit Section 2: (different type from section 1) - include a real, specific, non-placeholder case_study (1-2 sentences).
+5. Call to Action: 1-2 sentences, urgent, benefit-driven, and personalized to the brand. Mention 'Majorbeam' and encourage the next step.
 
-PERSONALIZED FOUNDER INTRODUCTION:
-Before the toolkit, write a short, authentic introduction in the founder’s voice. Use these details:
-- Name: ${input.name}
-- Position/Title: ${input.position || ''}
-- Brand/company: ${input.brand_name}
-- Customer problem: ${input.problem_statement}
-- Desired outcome: ${input.desired_outcome}
-If position/title is provided, use it in the intro (e.g., "I'm [Name], [Position] at [Brand]"). The intro should sound like the founder is speaking directly to the reader, sharing why they built this and what the reader will achieve. Make it authentic, concise, and motivating. Return this as a field called founder_intro in the JSON.
-
----
-
-CORE PRINCIPLES (NON-NEGOTIABLE):
-VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or structured content) to fill a standard document page. Sparse pages with single paragraphs are forbidden.
-
-STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, and structured content—to enhance readability and ensure pages are full.
-
-EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what."
-
-NO SELLING: The content must be 100% educational and brand-agnostic.
-
-CRITICAL REDUNDANCY RULE: If you include a checklist section, DO NOT create a separate "step-by-step guide" section. The checklist is the superior implementation tool and should be the sole guide. Avoid redundancy at all costs.
-
-THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
-
-1. Title Page (layout: "centered"):
-Title: A sharp, specific headline (8-12 words).
-Subtitle: A powerful subtitle that makes a quantifiable promise (10-15 words).
-
-2. Introduction Page (layout: "filled"):
-Title: A clear, engaging title for the introduction (e.g., "Why This Toolkit Will Change Your Approach").
-Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what tangible tools they will receive. This length is required to properly fill the page.
-
-3. The Toolkit Sections (layout: "filled"):
-Generate EXACTLY 3 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. The content for each tool must be detailed and expanded.
-
-SECTION TYPES TO USE (NO TABLES, NO REDUNDANT STEP-BY-STEP GUIDES):
-
-- For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of AT LEAST 3-6 items. Each item MUST have a "method_name", a single "pros" string (not an array), a single "cons" string (not an array), and a "case_study" field with a brief real-world example (2-3 sentences). Format exactly like this example:
-
-EXAMPLE PROS AND CONS FORMAT:
-{
-  "method_name": "Social Media Marketing",
-  "pros": "Offers wide reach and the ability to form a personal connection with prospects.",
-  "cons": "It is time-consuming and requires the regular creation of new content to stay relevant.",
-  "case_study": "Sarah, a fitness coach, tested Instagram vs. Facebook ads for her online program. Instagram brought in 40% more qualified leads at half the cost, but required daily content creation. She now focuses 80% of her efforts on Instagram while using Facebook for retargeting."
-}
-
-For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items. Include a "case_study" field with a brief real-world example showing how this checklist was used successfully (2-3 sentences). Format exactly like this example:
-
-EXAMPLE CHECKLIST FORMAT:
-{
-  "phases": [
-    {
-      "phase_title": "Phase A: Initial Assessment",
-      "items": [
-        "1.1 Identify the training needs that can be addressed using VR",
-        "1.2 Estimate the number of users who will need access to VR training",
-        "1.3 Calculate the budget available for VR training implementation"
-      ]
-    },
-    {
-      "phase_title": "Phase B: Vendor Evaluation", 
-      "items": [
-        "2.1 Compare various VR training platforms based on features and cost",
-        "2.2 Evaluate the scalability and flexibility of each platform",
-        "2.3 Consider the support and training provided by the vendor"
-      ]
-    },
-    {
-      "phase_title": "Phase C: Implementation and Monitoring",
-      "items": [
-        "3.1 Implement a pilot project to test the effectiveness of the chosen platform",
-        "3.2 Measure the ROI of the VR training program", 
-        "3.3 Iterate and adjust the program based on feedback and results"
-      ]
-    }
-  ],
-  "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs."
-}
-
-For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), "explanation" (strategy behind the script), and a "case_study" field with a detailed real-world example (2-3 sentences) showing the script in action with specific results. Include specific numbers, outcomes, and context to make it relatable.
-
-For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words. Include a real-life example or case study for at least one mistake.
-
-IMPORTANT: DO NOT USE "step_by_by_step_guide" type if you already have a checklist. The checklist serves as the implementation guide and creating both would be redundant.
-
-4. Call to Action Page (layout: "centered"):
-Title: A clear, action-oriented title (e.g., "Your Next Step").
-Content: Write a custom, relevant call-to-action for this campaign. The CTA should reference the brand name (${input.brand_name}) and the lead magnet topic (${outline.title}), and encourage the reader to take a next step relevant to their business (such as booking a call, downloading more resources, or contacting support). Make it actionable, specific, bold, urgent, and benefit-driven. Do NOT use a generic or unrelated CTA.
-
-5. For each toolkit section, if possible, include a plug-and-play template or swipe file for the user to use immediately.
-
-6. Use sharp, actionable language—avoid generic advice. Add at least one real-life example or micro-case study per strategy or script.
-
-FINAL GUARDRAIL AND SELF-CORRECTION: Before generating the JSON, you MUST verify your own output against the mandatory instructions.
-1. Is the content for each page dense enough?
-2. Does the checklist contain 8-12 items across 2-3 phases?
-3. Are there exactly 3 toolkit sections with no redundancy?
-4. Is the CTA custom, relevant, and tailored to the brand and lead magnet topic?
-5. Have you avoided creating both a checklist AND a step-by-step guide?
-6. Have you included at least one real-life example or micro-case study per strategy or script?
-7. Have you included a plug-and-play template or swipe file where possible?
-If any answer is no, you MUST rewrite that section to fully comply before providing the final output.
-
-RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+Return JSON in this format:
 {
   "founder_intro": "...",
-  "title_page": {
-    "layout": "centered",
-    "title": "The VR Vendor Negotiation Toolkit",
-    "subtitle": "A 3-Part Guide to Cut Costs and Secure a Future-Proof Contract."
-  },
-  "introduction_page": {
-    "layout": "filled",
-    "title": "Your Strongest Position is a Prepared One",
-    "content": "That complex VR vendor contract is likely hiding thousands in unnecessary costs. Many L&D leaders overpay for bloated feature sets they'll never use and enter into inflexible agreements they later regret. This toolkit provides the specific, actionable resources—a tech glossary, an action checklist, negotiation scripts, and sample contract clauses—to help you negotiate from a position of power, cut costs, and secure a flexible, future-proof partnership. Use these tools to prepare for your next vendor call and ensure you get maximum value for your investment."
-  },
+  "title_page": { "layout": "centered", "title": "...", "subtitle": "...", "brand": "Majorbeam" },
+  "introduction_page": { "layout": "filled", "title": "...", "content": "..." },
   "toolkit_sections": [
-    {
-      "layout": "filled",
-      "type": "pros_and_cons_list",
-      "title": "Section 1: Social Media Marketing Strategies Overview",
-      "content": {
-        "items": [
-          {
-            "method_name": "Paid Advertising",
-            "pros": "Quick results, precise targeting, scalable.",
-            "cons": "Can be expensive, requires constant monitoring and adjustment.",
-            "case_study": "Mike, a B2B consultant, spent $2,000 on LinkedIn ads targeting CFOs. He generated 15 qualified leads in 30 days, with 3 converting to $15K clients. The key was testing 5 different ad copy variations and focusing on pain points rather than features.",
-            "template": "A plug-and-play template or swipe file (if applicable)"
-          }
-        ]
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "checklist",
-      "title": "Section 2: Cost-Effectiveness Checklist",
-      "content": {
-        "phases": [
-          {
-            "phase_title": "Phase A: Initial Assessment",
-            "items": [
-              "1.1 Identify the training needs that can be addressed using VR",
-              "1.2 Estimate the number of users who will need access to VR training",
-              "1.3 Calculate the budget available for VR training implementation"
-            ]
-          }
-        ],
-        "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs.",
-        "template": "A plug-and-play template or swipe file (if applicable)"
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "scripts",
-      "title": "Section 3: Negotiation Scripts That Work",
-      "content": {
-        "scenarios": [
-          {
-            "trigger": "We can offer you a 20% discount if you sign today.",
-            "response": "I appreciate the offer, but I need time to review all terms with my team. Can you put that discount in writing with a 30-day validity period?",
-            "explanation": "This deflects pressure tactics while securing the discount for proper evaluation time.",
-            "case_study": "Lisa, a procurement manager, used this script when negotiating with a software vendor. She secured a 20% discount that was valid for 45 days, giving her team time to evaluate the solution. The vendor later increased the discount to 25% to close the deal.",
-            "template": "A plug-and-play template or swipe file (if applicable)"
-          }
-        ]
-      }
-    }
+    { "layout": "filled", "type": "checklist" | "scripts" | "pros_and_cons_list", "title": "...", "content": { ... }, "case_study": "..." },
+    { "layout": "filled", "type": "checklist" | "scripts" | "pros_and_cons_list", "title": "...", "content": { ... }, "case_study": "..." }
   ],
-  "cta_page": {
-    "layout": "centered",
-    "title": "Your Next Step",
-    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and lead magnet topic."
-  }
+  "cta_page": { "layout": "centered", "title": "...", "content": "..." }
 }`;
 
-    const res = await client.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: Generate EXACTLY 3 toolkit sections. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc. DO NOT create both checklist and step-by-step guide to avoid redundancy. Use the exact CTA text provided.' },
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.7,
-      max_tokens: 4500
-    });
+      const res = await client.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: 'You are an expert instructional designer. Output strictly valid JSON as defined.' },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500
+      });
 
-    if (!res.choices?.[0]?.message?.content) {
-      throw new Error('Empty response received from OpenAI API');
-    }
-
-    const content = res.choices[0].message.content;
-    const parsed = JSON.parse(content);
-
-    // Validate the response structure
-    if (!parsed.founder_intro || !parsed.title_page || !parsed.introduction_page || !Array.isArray(parsed.toolkit_sections) || !parsed.cta_page) {
-      throw new Error('Invalid response format from OpenAI API - missing required pages');
-    }
-
-    // Validate title page
-    if (!parsed.title_page.title || !parsed.title_page.subtitle || parsed.title_page.layout !== 'centered') {
-      throw new Error('Invalid title page format');
-    }
-
-    // Validate introduction page
-    if (!parsed.introduction_page.title || !parsed.introduction_page.content || parsed.introduction_page.layout !== 'filled') {
-      throw new Error('Invalid introduction page format');
-    }
-
-    // Validate toolkit sections (EXACTLY 3 sections required for A+ document)
-    if (parsed.toolkit_sections.length !== 3) {
-      throw new Error('Must have exactly 3 toolkit sections for A+ document quality');
-    }
-
-    // Additional validation: pros_and_cons_list must have at least 3 items
-    const prosConsSection = parsed.toolkit_sections.find((section: any) => section.type === 'pros_and_cons_list');
-    if (prosConsSection && prosConsSection.content && Array.isArray(prosConsSection.content.items)) {
-      if (prosConsSection.content.items.length < 3) {
-        throw new Error('Pros and cons section must have at least 3 items');
+      if (!res.choices?.[0]?.message?.content) {
+        throw new Error('Empty response received from OpenAI API');
       }
-    }
 
-    // Check for redundancy - ensure no step-by-step guide if checklist exists
-    const hasChecklist = parsed.toolkit_sections.some((section: any) => section.type === 'checklist');
-    const hasStepByStep = parsed.toolkit_sections.some((section: any) => section.type === 'step_by_step_guide');
-    
-    if (hasChecklist && hasStepByStep) {
-      throw new Error('Document contains redundant sections: both checklist and step-by-step guide. Remove redundancy for A+ quality.');
-    }
+      const content = res.choices[0].message.content;
+      const parsed = JSON.parse(content);
 
-    // Validate each toolkit section with improved validation
-    for (const section of parsed.toolkit_sections) {
-      if (!section.title || !section.type || section.layout !== 'filled') {
-        throw new Error('Each toolkit section must have title, type, and filled layout');
+      // Validate the response structure
+      if (!parsed.founder_intro || !parsed.title_page || !parsed.introduction_page || !Array.isArray(parsed.toolkit_sections) || !parsed.cta_page) {
+        throw new Error('Invalid response format from OpenAI API - missing required pages');
       }
+
+      // Validate title page
+      if (!parsed.title_page.title || !parsed.title_page.subtitle || parsed.title_page.layout !== 'centered') {
+        throw new Error('Invalid title page format');
+      }
+
+      // Validate introduction page
+      if (!parsed.introduction_page.title || !parsed.introduction_page.content || parsed.introduction_page.layout !== 'filled') {
+        throw new Error('Invalid introduction page format');
+      }
+
+      // Validate toolkit sections (EXACTLY 3 sections required for A+ document)
+      if (parsed.toolkit_sections.length !== 2) { // Changed from 3 to 2
+        throw new Error('Must have exactly 2 toolkit sections for A+ document quality');
+      }
+
+      // Additional validation: pros_and_cons_list must have at least 3 items
+      const prosConsSection = parsed.toolkit_sections.find((section: any) => section.type === 'pros_and_cons_list');
+      if (prosConsSection && prosConsSection.content && Array.isArray(prosConsSection.content.items)) {
+        if (prosConsSection.content.items.length < 3) {
+          throw new Error('Pros and cons section must have at least 3 items');
+        }
+      }
+
+      // Check for redundancy - ensure no step-by-step guide if checklist exists
+      const hasChecklist = parsed.toolkit_sections.some((section: any) => section.type === 'checklist');
+      const hasStepByStep = parsed.toolkit_sections.some((section: any) => section.type === 'step_by_step_guide');
       
-      // Improved validation based on type - NO TABLE VALIDATION
-      switch (section.type) {
-        case 'checklist':
-          if (!section.content?.phases || !Array.isArray(section.content?.phases)) {
-            throw new Error('Checklist section must have phases array');
-          }
-          if (section.content.phases.length < 1) {
-            throw new Error('Checklist section must have at least 1 phase');
-          }
-          break;
-        case 'scripts':
-          // Handle both old and new format for scripts
-          if (section.content?.scenarios && Array.isArray(section.content.scenarios)) {
-            // New format with scenarios array
-            if (section.content.scenarios.length < 2) {
-              throw new Error('Scripts section must have at least 2 scenarios');
+      if (hasChecklist && hasStepByStep) {
+        throw new Error('Document contains redundant sections: both checklist and step-by-step guide. Remove redundancy for A+ quality.');
+      }
+
+      // Validate each toolkit section with improved validation
+      for (const section of parsed.toolkit_sections) {
+        if (!section.title || !section.type || section.layout !== 'filled') {
+          throw new Error('Each toolkit section must have title, type, and filled layout');
+        }
+        
+        // Improved validation based on type - NO TABLE VALIDATION
+        switch (section.type) {
+          case 'checklist':
+            if (!section.content?.phases || !Array.isArray(section.content?.phases)) {
+              throw new Error('Checklist section must have phases array');
             }
-            // Validate each scenario has required fields
-            for (const scenario of section.content.scenarios) {
-              if (!scenario.trigger || !scenario.response || !scenario.explanation) {
-                throw new Error('Each script scenario must have trigger, response, and explanation fields');
+            if (section.content.phases.length < 1) {
+              throw new Error('Checklist section must have at least 1 phase');
+            }
+            break;
+          case 'scripts':
+            // Handle both old and new format for scripts
+            if (section.content?.scenarios && Array.isArray(section.content.scenarios)) {
+              // New format with scenarios array
+              if (section.content.scenarios.length < 2) {
+                throw new Error('Scripts section must have at least 2 scenarios');
+              }
+              // Validate each scenario has required fields
+              for (const scenario of section.content.scenarios) {
+                if (!scenario.trigger || !scenario.response || !scenario.explanation) {
+                  throw new Error('Each script scenario must have trigger, response, and explanation fields');
+                }
+              }
+            } else if (Array.isArray(section.content)) {
+              // Old format - convert to new format
+              console.warn('Converting old scripts format to new format');
+              section.content = {
+                scenarios: section.content.map((script: any, index: number) => ({
+                  trigger: script.trigger || `Scenario ${index + 1} trigger`,
+                  response: script.response || `Scenario ${index + 1} response`,
+                  explanation: script.explanation || `Strategy for scenario ${index + 1}`
+                }))
+              };
+            } else {
+              throw new Error('Scripts section must have scenarios array');
+            }
+            break;
+          case 'mistakes_to_avoid':
+            if (!section.content?.mistakes || !Array.isArray(section.content?.mistakes)) {
+              throw new Error('Mistakes section must have mistakes array');
+            }
+            if (section.content.mistakes.length < 3) {
+              throw new Error('Mistakes section must have at least 3 mistakes');
+            }
+            break;
+          case 'pros_and_cons_list':
+            if (!section.content?.items || !Array.isArray(section.content?.items)) {
+              throw new Error('Pros and cons section must have items array');
+            }
+            if (section.content.items.length < 3) {
+              throw new Error('Pros and cons section must have at least 3 items');
+            }
+            // Validate each item has required structure with single strings (not arrays)
+            for (const item of section.content.items) {
+              if (!item.method_name || typeof item.pros !== 'string' || typeof item.cons !== 'string') {
+                throw new Error('Each pros and cons item must have method_name, pros (single string), and cons (single string)');
               }
             }
-          } else if (Array.isArray(section.content)) {
-            // Old format - convert to new format
-            console.warn('Converting old scripts format to new format');
-            section.content = {
-              scenarios: section.content.map((script: any, index: number) => ({
-                trigger: script.trigger || `Scenario ${index + 1} trigger`,
-                response: script.response || `Scenario ${index + 1} response`,
-                explanation: script.explanation || `Strategy for scenario ${index + 1}`
-              }))
-            };
-          } else {
-            throw new Error('Scripts section must have scenarios array');
-          }
-          break;
-        case 'mistakes_to_avoid':
-          if (!section.content?.mistakes || !Array.isArray(section.content?.mistakes)) {
-            throw new Error('Mistakes section must have mistakes array');
-          }
-          if (section.content.mistakes.length < 3) {
-            throw new Error('Mistakes section must have at least 3 mistakes');
-          }
-          break;
-        case 'pros_and_cons_list':
-          if (!section.content?.items || !Array.isArray(section.content?.items)) {
-            throw new Error('Pros and cons section must have items array');
-          }
-          if (section.content.items.length < 3) {
-            throw new Error('Pros and cons section must have at least 3 items');
-          }
-          // Validate each item has required structure with single strings (not arrays)
+            break;
+          case 'step_by_step_guide':
+            if (!section.content?.steps || !Array.isArray(section.content?.steps)) {
+              throw new Error('Step by step guide section must have steps array');
+            }
+            if (section.content.steps.length < 3) {
+              throw new Error('Step by step guide section must have at least 3 steps');
+            }
+            break;
+        }
+      }
+
+      // Strict validation: Ensure every toolkit section has a non-empty case_study
+      for (const section of parsed.toolkit_sections) {
+        if (section.type === 'pros_and_cons_list' && section.content?.items) {
           for (const item of section.content.items) {
-            if (!item.method_name || typeof item.pros !== 'string' || typeof item.cons !== 'string') {
-              throw new Error('Each pros and cons item must have method_name, pros (single string), and cons (single string)');
+            if (!item.case_study || typeof item.case_study !== 'string' || item.case_study.trim().length < 10) {
+              throw new Error('Every pros_and_cons_list item must have a non-empty case_study.');
             }
           }
-          break;
-        case 'step_by_step_guide':
-          if (!section.content?.steps || !Array.isArray(section.content?.steps)) {
-            throw new Error('Step by step guide section must have steps array');
+        }
+        if (section.type === 'checklist' && section.content) {
+          if (!section.content.case_study || typeof section.content.case_study !== 'string' || section.content.case_study.trim().length < 10) {
+            throw new Error('Checklist section must have a non-empty case_study.');
           }
-          if (section.content.steps.length < 3) {
-            throw new Error('Step by step guide section must have at least 3 steps');
-          }
-          break;
-      }
-    }
-
-    // Strict validation: Ensure every toolkit section has a non-empty case_study
-    for (const section of parsed.toolkit_sections) {
-      if (section.type === 'pros_and_cons_list' && section.content?.items) {
-        for (const item of section.content.items) {
-          if (!item.case_study || typeof item.case_study !== 'string' || item.case_study.trim().length < 10) {
-            throw new Error('Every pros_and_cons_list item must have a non-empty case_study.');
+        }
+        if (section.type === 'scripts' && section.content?.scenarios) {
+          for (const scenario of section.content.scenarios) {
+            if (!scenario.case_study || typeof scenario.case_study !== 'string' || scenario.case_study.trim().length < 10) {
+              throw new Error('Every script scenario must have a non-empty case_study.');
+            }
           }
         }
       }
-      if (section.type === 'checklist' && section.content) {
-        if (!section.content.case_study || typeof section.content.case_study !== 'string' || section.content.case_study.trim().length < 10) {
-          throw new Error('Checklist section must have a non-empty case_study.');
-        }
+
+      // Validate CTA page
+      if (!parsed.cta_page.title || !parsed.cta_page.content || parsed.cta_page.layout !== 'centered') {
+        throw new Error('Invalid CTA page format');
       }
-      if (section.type === 'scripts' && section.content?.scenarios) {
-        for (const scenario of section.content.scenarios) {
-          if (!scenario.case_study || typeof scenario.case_study !== 'string' || scenario.case_study.trim().length < 10) {
-            throw new Error('Every script scenario must have a non-empty case_study.');
-          }
-        }
+
+      // Convert the new layout-focused format to the existing PDFContent format
+      const sections = [
+        {
+          title: parsed.introduction_page.title,
+          content: parsed.introduction_page.content
+        },
+        ...parsed.toolkit_sections.map((section: any) => ({
+          title: section.title,
+          content: formatLayoutSectionContent(section)
+        }))
+      ];
+
+      // Return the structured content for better PDF formatting
+      return {
+        founder_intro: parsed.founder_intro,
+        title: parsed.title_page.title,
+        introduction: parsed.title_page.subtitle,
+        sections: sections,
+        cta: parsed.cta_page.content,
+        structured_content: parsed,
+        founderName: input.name || '',
+        brandName: input.brand_name || '',
+        problemStatement: input.problem_statement || '',
+        desiredOutcome: input.desired_outcome || ''
+      };
+    } catch (err: any) {
+      const retriable =
+        err.message?.includes('timeout') ||
+        err.message?.includes('Empty response') ||
+        err.message?.includes('JSON') ||
+        err.message?.includes('Invalid response format') ||
+        err.message?.includes('Must have exactly 3 toolkit sections') ||
+        err.message?.includes('Checklist section must have phases array') ||
+        err.message?.includes('Scripts section must have scenarios array');
+      if (attempt < 3 && retriable) {
+        console.warn(`PDF generation failed (attempt ${attempt}): ${err.message}. Retrying...`);
+        continue;
       }
+      throw err;
     }
-
-    // Validate CTA page
-    if (!parsed.cta_page.title || !parsed.cta_page.content || parsed.cta_page.layout !== 'centered') {
-      throw new Error('Invalid CTA page format');
-    }
-
-    // Convert the new layout-focused format to the existing PDFContent format
-    const sections = [
-      {
-        title: parsed.introduction_page.title,
-        content: parsed.introduction_page.content
-      },
-      ...parsed.toolkit_sections.map((section: any) => ({
-        title: section.title,
-        content: formatLayoutSectionContent(section)
-      }))
-    ];
-
-    // Return the structured content for better PDF formatting
-    return {
-      founder_intro: parsed.founder_intro,
-      title: parsed.title_page.title,
-      introduction: parsed.title_page.subtitle,
-      sections: sections,
-      cta: parsed.cta_page.content,
-      structured_content: parsed,
-      founderName: input.name || '',
-      brandName: input.brand_name || '',
-      problemStatement: input.problem_statement || '',
-      desiredOutcome: input.desired_outcome || ''
-    };
-  } catch (err: any) {
-    console.error('OpenAI API Error:', {
-      message: err.message,
-      status: err.status,
-      code: err.code,
-      type: err.type
-    });
-
-    if (err.code === 'rate_limit_exceeded') {
-      throw new Error('Rate limit exceeded. Please wait a moment and try again.');
-    } else if (err.code === 'invalid_api_key') {
-      throw new Error('Invalid OpenAI API key. Please check your .env file.');
-    } else if (err.message.includes('timeout')) {
-      throw new Error('Request timed out. The content generation is taking longer than expected. Please try again.');
-    } else if (err.message.includes('JSON')) {
-      throw new Error('Failed to process the PDF content. Please try again.');
-    }
-
-    throw new Error(`Failed to generate PDF content: ${err.message}`);
   }
+  throw new Error('Failed to generate PDF content after 3 attempts.');
 }
 
 // Helper function to format layout-focused section content into readable format
