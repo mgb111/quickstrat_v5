@@ -242,8 +242,8 @@ Selected Concept: ${outline.title}.
 Include these sections:
 1. Title Page: title (8-12 words), subtitle (10-15 words), and a visible 'Majorbeam' brand mention.
 2. Introduction: 60-100 words, engaging, mention the brand and founder, state the problem and what the reader will get.
-3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - include a real, specific, non-placeholder case_study (1-2 sentences).
-4. Toolkit Section 2: (different type from section 1) - include a real, specific, non-placeholder case_study (1-2 sentences).
+3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - If checklist, the content MUST be an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. Include a real, specific, non-placeholder case_study (1-2 sentences).
+4. Toolkit Section 2: (different type from section 1) - If checklist, the content MUST be an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. Include a real, specific, non-placeholder case_study (1-2 sentences).
 5. Call to Action: 1-2 sentences, urgent, benefit-driven, and personalized to the brand. Mention 'Majorbeam' and encourage the next step.
 
 Return JSON in this format:
@@ -274,6 +274,26 @@ Return JSON in this format:
 
       const content = res.choices[0].message.content;
       const parsed = JSON.parse(content);
+
+      // Fallback: If a checklist section's content is a flat array, wrap it in a single phase
+      if (Array.isArray(parsed.toolkit_sections)) {
+        parsed.toolkit_sections = parsed.toolkit_sections.map((section: any) => {
+          if (section.type === 'checklist' && Array.isArray(section.content)) {
+            return {
+              ...section,
+              content: {
+                phases: [
+                  {
+                    phase_title: 'Checklist',
+                    items: section.content
+                  }
+                ]
+              }
+            };
+          }
+          return section;
+        });
+      }
 
       // Validate the response structure
       if (!parsed.founder_intro || !parsed.title_page || !parsed.introduction_page || !Array.isArray(parsed.toolkit_sections) || !parsed.cta_page) {
