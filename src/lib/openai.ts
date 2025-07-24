@@ -229,7 +229,7 @@ export async function generatePdfContent(input: CampaignInput, outline: ContentO
 
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const prompt = `You are an expert instructional designer. Generate a simple, visually engaging lead magnet PDF for a business audience. Use clear, concise, non-generic language. Make it feel premium and branded for Majorbeam.
+      const prompt = `You are an expert instructional designer. Generate a visually engaging, actionable lead magnet PDF for a business audience. Use clear, concise, non-generic language. Make it feel premium and branded for Majorbeam.
 
 USER CONTEXT:
 Niche: ${input.niche}
@@ -241,9 +241,10 @@ Selected Concept: ${outline.title}.
 
 Include these sections:
 1. Title Page: title (8-12 words), subtitle (10-15 words), and a visible 'Majorbeam' brand mention.
-2. Introduction: 40-80 words, mention the brand and founder, state the problem and what the reader will get.
-3. Toolkit Section: (any type: checklist, scripts, or pros_and_cons_list) - content can be a string, array, or object. Include a real, specific, non-placeholder case_study (1-2 sentences).
-4. Call to Action: 1-2 sentences, urgent, benefit-driven, and personalized to the brand. Mention 'Majorbeam' and encourage the next step.
+2. Introduction: 60-100 words, mention the brand and founder, state the problem and what the reader will get.
+3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - at least 2 items/scenarios, each with a real, specific, non-placeholder case_study (1-2 sentences).
+4. Toolkit Section 2: (different type from section 1) - at least 2 items/scenarios, each with a real, specific, non-placeholder case_study (1-2 sentences).
+5. Call to Action: 1-2 sentences, urgent, benefit-driven, and personalized to the brand. Mention 'Majorbeam' and encourage the next step.
 
 Return JSON in this format:
 {
@@ -251,19 +252,20 @@ Return JSON in this format:
   "title_page": { "layout": "centered", "title": "...", "subtitle": "...", "brand": "Majorbeam" },
   "introduction_page": { "layout": "filled", "title": "...", "content": "..." },
   "toolkit_sections": [
-    { "layout": "filled", "type": "checklist" | "scripts" | "pros_and_cons_list", "title": "...", "content": "..." | [ ... ] | { ... }, "case_study": "..." }
+    { "layout": "filled", "type": "checklist" | "scripts" | "pros_and_cons_list", "title": "...", "content": { ... }, "case_study": "..." },
+    { "layout": "filled", "type": "checklist" | "scripts" | "pros_and_cons_list", "title": "...", "content": { ... }, "case_study": "..." }
   ],
   "cta_page": { "layout": "centered", "title": "...", "content": "..." }
 }`;
 
       const res = await client.chat.completions.create({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4',
         messages: [
           { role: 'system', content: 'You are an expert instructional designer. Output strictly valid JSON as defined.' },
           { role: 'user', content: prompt }
         ],
         temperature: 0.7,
-        max_tokens: 1000
+        max_tokens: 2000
       });
 
       if (!res.choices?.[0]?.message?.content) {
@@ -286,13 +288,25 @@ Return JSON in this format:
         });
       }
 
-      // Accept any structure for toolkit section content, do not throw errors for missing phases/scenarios
-      // Only require the main fields to exist
+      // Require all main fields and at least 2 toolkit sections
       if (!parsed.title_page || !parsed.introduction_page || !Array.isArray(parsed.toolkit_sections) || !parsed.cta_page) {
         throw new Error('Invalid response format from OpenAI API - missing required pages');
       }
-      if (parsed.toolkit_sections.length < 1) {
-        throw new Error('Must have at least 1 toolkit section');
+      if (parsed.toolkit_sections.length < 2) {
+        throw new Error('Must have at least 2 toolkit sections');
+      }
+      // Require at least 2 items/scenarios in each toolkit section
+      for (const section of parsed.toolkit_sections) {
+        if (section.type === 'checklist' && section.content?.phases && Array.isArray(section.content.phases)) {
+          const totalItems = section.content.phases.reduce((sum: number, phase: any) => sum + (Array.isArray(phase.items) ? phase.items.length : 0), 0);
+          if (totalItems < 2) throw new Error('Checklist section must have at least 2 items');
+        }
+        if (section.type === 'scripts' && section.content?.scenarios && Array.isArray(section.content.scenarios)) {
+          if (section.content.scenarios.length < 2) throw new Error('Scripts section must have at least 2 scenarios');
+        }
+        if (section.type === 'pros_and_cons_list' && section.content?.items && Array.isArray(section.content.items)) {
+          if (section.content.items.length < 2) throw new Error('Pros and cons section must have at least 2 items');
+        }
       }
 
       // Return the structured content for better PDF formatting
