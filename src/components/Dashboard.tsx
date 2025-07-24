@@ -84,8 +84,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
       setIsLoadingStats(true);
       const statsData = await CampaignService.getCampaignStats(campaignId);
       setStats(statsData);
-    } catch {
-      setError('Failed to load statistics');
+    } catch (err: any) {
+      setError(
+        err?.message?.includes('permission denied')
+          ? 'Permission denied: You do not have access to this campaign’s statistics. Please check your account or contact support.'
+          : 'Failed to load statistics: ' + (err?.message || 'Unknown error')
+      );
+      console.error('Failed to load statistics:', err);
     } finally {
       setIsLoadingStats(false);
     }
