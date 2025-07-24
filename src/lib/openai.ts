@@ -229,7 +229,7 @@ export async function generatePdfContent(input: CampaignInput, outline: ContentO
 
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const prompt = `You are an expert instructional designer. Generate a visually engaging, actionable lead magnet PDF for a business audience. Use clear, concise, non-generic language and practical frameworks. Make it feel premium and branded for Majorbeam.
+      const prompt = `You are an expert instructional designer. Generate a simple, visually engaging lead magnet PDF for a business audience. Use clear, concise, non-generic language. Make it feel premium and branded for Majorbeam.
 
 USER CONTEXT:
 Niche: ${input.niche}
@@ -241,10 +241,9 @@ Selected Concept: ${outline.title}.
 
 Include these sections:
 1. Title Page: title (8-12 words), subtitle (10-15 words), and a visible 'Majorbeam' brand mention.
-2. Introduction: 60-100 words, engaging, mention the brand and founder, state the problem and what the reader will get.
-3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - If checklist, the content MUST be an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. Include a real, specific, non-placeholder case_study (1-2 sentences).
-4. Toolkit Section 2: (different type from section 1) - If checklist, the content MUST be an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. Include a real, specific, non-placeholder case_study (1-2 sentences).
-5. Call to Action: 1-2 sentences, urgent, benefit-driven, and personalized to the brand. Mention 'Majorbeam' and encourage the next step.
+2. Introduction: 40-80 words, mention the brand and founder, state the problem and what the reader will get.
+3. Toolkit Section: (any type: checklist, scripts, or pros_and_cons_list) - content can be a string, array, or object. Include a real, specific, non-placeholder case_study (1-2 sentences).
+4. Call to Action: 1-2 sentences, urgent, benefit-driven, and personalized to the brand. Mention 'Majorbeam' and encourage the next step.
 
 Return JSON in this format:
 {
@@ -252,8 +251,7 @@ Return JSON in this format:
   "title_page": { "layout": "centered", "title": "...", "subtitle": "...", "brand": "Majorbeam" },
   "introduction_page": { "layout": "filled", "title": "...", "content": "..." },
   "toolkit_sections": [
-    { "layout": "filled", "type": "checklist" | "scripts" | "pros_and_cons_list", "title": "...", "content": { ... }, "case_study": "..." },
-    { "layout": "filled", "type": "checklist" | "scripts" | "pros_and_cons_list", "title": "...", "content": { ... }, "case_study": "..." }
+    { "layout": "filled", "type": "checklist" | "scripts" | "pros_and_cons_list", "title": "...", "content": "..." | [ ... ] | { ... }, "case_study": "..." }
   ],
   "cta_page": { "layout": "centered", "title": "...", "content": "..." }
 }`;
@@ -265,7 +263,7 @@ Return JSON in this format:
           { role: 'user', content: prompt }
         ],
         temperature: 0.7,
-        max_tokens: 1500
+        max_tokens: 1000
       });
 
       if (!res.choices?.[0]?.message?.content) {
@@ -275,184 +273,43 @@ Return JSON in this format:
       const content = res.choices[0].message.content;
       const parsed = JSON.parse(content);
 
-      // Fallback: If a checklist section's content is a flat array, wrap it in a single phase
+      // Fallback: If a checklist or scripts section's content is a flat array, wrap it in a simple object
       if (Array.isArray(parsed.toolkit_sections)) {
         parsed.toolkit_sections = parsed.toolkit_sections.map((section: any) => {
-          if (section.type === 'checklist' && Array.isArray(section.content)) {
+          if ((section.type === 'checklist' || section.type === 'scripts') && Array.isArray(section.content)) {
             return {
               ...section,
-              content: {
-                phases: [
-                  {
-                    phase_title: 'Checklist',
-                    items: section.content
-                  }
-                ]
-              }
+              content: { items: section.content }
             };
           }
           return section;
         });
       }
 
-      // Validate the response structure
-      if (!parsed.founder_intro || !parsed.title_page || !parsed.introduction_page || !Array.isArray(parsed.toolkit_sections) || !parsed.cta_page) {
+      // Accept any structure for toolkit section content, do not throw errors for missing phases/scenarios
+      // Only require the main fields to exist
+      if (!parsed.title_page || !parsed.introduction_page || !Array.isArray(parsed.toolkit_sections) || !parsed.cta_page) {
         throw new Error('Invalid response format from OpenAI API - missing required pages');
       }
-
-      // Validate title page
-      if (!parsed.title_page.title || !parsed.title_page.subtitle || parsed.title_page.layout !== 'centered') {
-        throw new Error('Invalid title page format');
+      if (parsed.toolkit_sections.length < 1) {
+        throw new Error('Must have at least 1 toolkit section');
       }
-
-      // Validate introduction page
-      if (!parsed.introduction_page.title || !parsed.introduction_page.content || parsed.introduction_page.layout !== 'filled') {
-        throw new Error('Invalid introduction page format');
-      }
-
-      // Validate toolkit sections (EXACTLY 3 sections required for A+ document)
-      if (parsed.toolkit_sections.length !== 2) { // Changed from 3 to 2
-        throw new Error('Must have exactly 2 toolkit sections for A+ document quality');
-      }
-
-      // Additional validation: pros_and_cons_list must have at least 3 items
-      const prosConsSection = parsed.toolkit_sections.find((section: any) => section.type === 'pros_and_cons_list');
-      if (prosConsSection && prosConsSection.content && Array.isArray(prosConsSection.content.items)) {
-        if (prosConsSection.content.items.length < 3) {
-          throw new Error('Pros and cons section must have at least 3 items');
-        }
-      }
-
-      // Check for redundancy - ensure no step-by-step guide if checklist exists
-      const hasChecklist = parsed.toolkit_sections.some((section: any) => section.type === 'checklist');
-      const hasStepByStep = parsed.toolkit_sections.some((section: any) => section.type === 'step_by_step_guide');
-      
-      if (hasChecklist && hasStepByStep) {
-        throw new Error('Document contains redundant sections: both checklist and step-by-step guide. Remove redundancy for A+ quality.');
-      }
-
-      // Validate each toolkit section with improved validation
-      for (const section of parsed.toolkit_sections) {
-        if (!section.title || !section.type || section.layout !== 'filled') {
-          throw new Error('Each toolkit section must have title, type, and filled layout');
-        }
-        
-        // Improved validation based on type - NO TABLE VALIDATION
-        switch (section.type) {
-          case 'checklist':
-            if (!section.content?.phases || !Array.isArray(section.content?.phases)) {
-              throw new Error('Checklist section must have phases array');
-            }
-            if (section.content.phases.length < 1) {
-              throw new Error('Checklist section must have at least 1 phase');
-            }
-            break;
-          case 'scripts':
-            // Handle both old and new format for scripts
-            if (section.content?.scenarios && Array.isArray(section.content.scenarios)) {
-              // New format with scenarios array
-              if (section.content.scenarios.length < 2) {
-                throw new Error('Scripts section must have at least 2 scenarios');
-              }
-              // Validate each scenario has required fields
-              for (const scenario of section.content.scenarios) {
-                if (!scenario.trigger || !scenario.response || !scenario.explanation) {
-                  throw new Error('Each script scenario must have trigger, response, and explanation fields');
-                }
-              }
-            } else if (Array.isArray(section.content)) {
-              // Old format - convert to new format
-              console.warn('Converting old scripts format to new format');
-              section.content = {
-                scenarios: section.content.map((script: any, index: number) => ({
-                  trigger: script.trigger || `Scenario ${index + 1} trigger`,
-                  response: script.response || `Scenario ${index + 1} response`,
-                  explanation: script.explanation || `Strategy for scenario ${index + 1}`
-                }))
-              };
-            } else {
-              throw new Error('Scripts section must have scenarios array');
-            }
-            break;
-          case 'mistakes_to_avoid':
-            if (!section.content?.mistakes || !Array.isArray(section.content?.mistakes)) {
-              throw new Error('Mistakes section must have mistakes array');
-            }
-            if (section.content.mistakes.length < 3) {
-              throw new Error('Mistakes section must have at least 3 mistakes');
-            }
-            break;
-          case 'pros_and_cons_list':
-            if (!section.content?.items || !Array.isArray(section.content?.items)) {
-              throw new Error('Pros and cons section must have items array');
-            }
-            if (section.content.items.length < 3) {
-              throw new Error('Pros and cons section must have at least 3 items');
-            }
-            // Validate each item has required structure with single strings (not arrays)
-            for (const item of section.content.items) {
-              if (!item.method_name || typeof item.pros !== 'string' || typeof item.cons !== 'string') {
-                throw new Error('Each pros and cons item must have method_name, pros (single string), and cons (single string)');
-              }
-            }
-            break;
-          case 'step_by_step_guide':
-            if (!section.content?.steps || !Array.isArray(section.content?.steps)) {
-              throw new Error('Step by step guide section must have steps array');
-            }
-            if (section.content.steps.length < 3) {
-              throw new Error('Step by step guide section must have at least 3 steps');
-            }
-            break;
-        }
-      }
-
-      // Strict validation: Ensure every toolkit section has a non-empty case_study
-      for (const section of parsed.toolkit_sections) {
-        if (section.type === 'pros_and_cons_list' && section.content?.items) {
-          for (const item of section.content.items) {
-            if (!item.case_study || typeof item.case_study !== 'string' || item.case_study.trim().length < 10) {
-              throw new Error('Every pros_and_cons_list item must have a non-empty case_study.');
-            }
-          }
-        }
-        if (section.type === 'checklist' && section.content) {
-          if (!section.content.case_study || typeof section.content.case_study !== 'string' || section.content.case_study.trim().length < 10) {
-            throw new Error('Checklist section must have a non-empty case_study.');
-          }
-        }
-        if (section.type === 'scripts' && section.content?.scenarios) {
-          for (const scenario of section.content.scenarios) {
-            if (!scenario.case_study || typeof scenario.case_study !== 'string' || scenario.case_study.trim().length < 10) {
-              throw new Error('Every script scenario must have a non-empty case_study.');
-            }
-          }
-        }
-      }
-
-      // Validate CTA page
-      if (!parsed.cta_page.title || !parsed.cta_page.content || parsed.cta_page.layout !== 'centered') {
-        throw new Error('Invalid CTA page format');
-      }
-
-      // Convert the new layout-focused format to the existing PDFContent format
-      const sections = [
-        {
-          title: parsed.introduction_page.title,
-          content: parsed.introduction_page.content
-        },
-        ...parsed.toolkit_sections.map((section: any) => ({
-          title: section.title,
-          content: formatLayoutSectionContent(section)
-        }))
-      ];
 
       // Return the structured content for better PDF formatting
       return {
         founder_intro: parsed.founder_intro,
         title: parsed.title_page.title,
         introduction: parsed.title_page.subtitle,
-        sections: sections,
+        sections: [
+          {
+            title: parsed.introduction_page.title,
+            content: parsed.introduction_page.content
+          },
+          ...parsed.toolkit_sections.map((section: any) => ({
+            title: section.title,
+            content: typeof section.content === 'string' ? section.content : JSON.stringify(section.content)
+          }))
+        ],
         cta: parsed.cta_page.content,
         structured_content: parsed,
         founderName: input.name || '',
@@ -465,10 +322,7 @@ Return JSON in this format:
         err.message?.includes('timeout') ||
         err.message?.includes('Empty response') ||
         err.message?.includes('JSON') ||
-        err.message?.includes('Invalid response format') ||
-        err.message?.includes('Must have exactly 3 toolkit sections') ||
-        err.message?.includes('Checklist section must have phases array') ||
-        err.message?.includes('Scripts section must have scenarios array');
+        err.message?.includes('Invalid response format');
       if (attempt < 3 && retriable) {
         console.warn(`PDF generation failed (attempt ${attempt}): ${err.message}. Retrying...`);
         continue;
