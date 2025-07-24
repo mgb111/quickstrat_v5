@@ -1,4 +1,4 @@
-# LeadGen Machine 🚀
+# Majorbeam 🚀
 
 A comprehensive lead generation system with AI-powered content creation, hosted landing pages, automated email delivery, and lead management dashboard.
 
@@ -49,7 +49,7 @@ VITE_OPENAI_API_KEY=your_openai_api_key
 # Email Service Configuration (Choose one provider)
 VITE_EMAIL_PROVIDER=mock
 VITE_FROM_EMAIL=noreply@yourdomain.com
-VITE_FROM_NAME=LeadGen Machine
+VITE_FROM_NAME=Majorbeam
 
 # For SendGrid
 # VITE_EMAIL_PROVIDER=sendgrid

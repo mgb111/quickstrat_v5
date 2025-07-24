@@ -1,4 +1,4 @@
-# 🧪 LeadGen Machine - Complete Test Checklist
+# 🧪 Majorbeam - Complete Test Checklist
 
 ## **Prerequisites**
 - ✅ App running on http://localhost:5176/

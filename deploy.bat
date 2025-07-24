@@ -1,5 +1,5 @@
 @echo off
-echo 🚀 LeadGen Machine Deployment Script
+echo 🚀 Majorbeam Deployment Script
 echo =====================================
 
 REM Check if Node.js is installed
@@ -80,7 +80,7 @@ echo 2. Update the EmailService class in src/lib/emailService.ts
 echo 3. Configure email templates and automation rules
 echo.
 
-echo 🎉 Setup complete! Your LeadGen Machine is ready to deploy.
+echo 🎉 Setup complete! Your Majorbeam is ready to deploy.
 echo.
 echo Next steps:
 echo 1. Update .env with your API keys

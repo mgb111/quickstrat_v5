@@ -481,7 +481,7 @@ function App() {
             </div>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-gray-900 mb-4">
-            LeadGen <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Machine</span>
+            Majorbeam
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
             Transform customer problems into focused, high-value lead magnets with AI assistance
