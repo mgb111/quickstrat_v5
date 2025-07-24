@@ -260,13 +260,13 @@ Return JSON in this format:
 }`;
 
       const res = await client.chat.completions.create({
-        model: 'gpt-3.5-turbo', // switched to 3.5-turbo for PDF
+        model: 'gpt-4',
         messages: [
           { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: Generate EXACTLY 3 toolkit sections. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc. DO NOT create both checklist and step-by-step guide to avoid redundancy. Use the exact CTA text provided.' },
           { role: 'user', content: prompt }
         ],
         temperature: 0.7,
-        max_tokens: 2048
+        max_tokens: 4500
       });
 
       if (!res.choices?.[0]?.message?.content) {
