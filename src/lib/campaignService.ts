@@ -350,4 +350,36 @@ export class CampaignService {
     ).join('\n');
     return csvHeader + csvRows;
   }
+
+  // Get campaign statistics for dashboard
+  static async getCampaignStats(campaignId: string) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      throw new Error('Authentication required to view statistics');
+    }
+    // Verify the campaign belongs to the user
+    const { data: campaign } = await supabase
+      .from('campaigns')
+      .select('id')
+      .eq('id', campaignId)
+      .eq('user_id', user.id)
+      .single();
+    if (!campaign) {
+      throw new Error('Campaign not found or access denied');
+    }
+    // Get lead count
+    const { count: leadCount } = await supabase
+      .from('leads')
+      .select('*', { count: 'exact', head: true })
+      .eq('campaign_id', campaignId);
+    // Get email count
+    const { count: emailCount } = await supabase
+      .from('emails')
+      .select('*', { count: 'exact', head: true })
+      .eq('campaign_id', campaignId);
+    return {
+      totalLeads: leadCount || 0,
+      totalEmails: emailCount || 0
+    };
+  }
 } // End of CampaignService class
