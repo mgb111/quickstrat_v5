@@ -157,6 +157,8 @@ export class CampaignService {
   }): Promise<any> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Authentication required to save campaign drafts');
+    // Ensure user exists in users table before saving draft
+    await SubscriptionService.getUserSubscription(user.id);
     // Generate a unique slug for the draft
     const slug = `draft-${user.id}-${Date.now()}`;
     // Try to find an existing draft for this user and input (by name/brand_name)
