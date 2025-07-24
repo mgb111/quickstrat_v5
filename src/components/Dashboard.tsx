@@ -251,7 +251,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
                   </button>
                   <button
                     className="px-3 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 text-xs font-semibold"
-                    onClick={() => copyLandingPageUrl(campaign.landing_page_slug)}
+                    onClick={() => window.open(`${window.location.origin}/landing/${campaign.landing_page_slug}`, '_blank')}
                   >
                     Landing Page
                   </button>
