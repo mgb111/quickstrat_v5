@@ -46,16 +46,18 @@ export class SubscriptionService {
             // If it's a duplicate key error, another process likely created it. We can try fetching again.
             if (createError.code === '23505') {
                 console.log('Duplicate user error, re-fetching user record...');
-                const { data: refetchedUser, error: refetchError } = await supabase
+                const { data: refetchedUsers, error: refetchError } = await supabase
                     .from('users')
                     .select('id, plan, campaign_count, subscription_expiry, campaign_count_period')
-                    .eq('email', authUser.email)
-                    .single();
-                if (refetchError || !refetchedUser) {
+                    .eq('email', authUser.email);
+                if (refetchError || !refetchedUsers || refetchedUsers.length === 0) {
                     console.error('FATAL: Failed to refetch user after duplicate error:', refetchError);
                     return this.getDefaultSubscription();
                 }
-                user = refetchedUser;
+                if (refetchedUsers.length > 1) {
+                    console.warn('Multiple users found with the same email. Using the first one.');
+                }
+                user = refetchedUsers[0];
             } else {
                 return this.getDefaultSubscription();
             }
