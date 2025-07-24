@@ -333,3 +333,7 @@ export class CampaignService {
     const csvHeader = 'Email,Captured At\n';
     const csvRows = leads.map(lead => 
       `"${lead.email}","${new Date(lead.captured_at).toISOString()}"`
+    ).join('\n');
+    return csvHeader + csvRows;
+  }
+} // End of CampaignService class
