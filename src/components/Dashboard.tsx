@@ -373,8 +373,21 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
           )}
         </div>
       )}
+      <h3 className="text-lg font-semibold mb-2">Completed Campaigns</h3>
+      {completedCampaigns.length === 0 ? (
+        <div className="text-gray-500">No completed campaigns yet.</div>
+      ) : (
+        <ul className="divide-y divide-gray-200 bg-white rounded-lg p-4">
+          {completedCampaigns.map(campaign => (
+            <li key={campaign.id} className="py-3 flex items-center justify-between">
+              <span className="font-medium text-gray-900">{campaign.name}</span>
+              <span className="text-xs text-green-600">Completed</span>
+            </li>
+          ))}
+        </ul>
+      )}
       {draftCampaigns.length > 0 && (
-        <div className="mb-8">
+        <div className="mt-8">
           <h3 className="text-lg font-semibold mb-2">Draft Campaigns</h3>
           <ul className="divide-y divide-gray-200 bg-yellow-50 rounded-lg p-4">
             {draftCampaigns.map(campaign => (
