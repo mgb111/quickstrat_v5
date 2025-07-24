@@ -65,8 +65,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
   };
 
   // Separate drafts and completed campaigns
-  const draftCampaigns = campaigns.filter(c => c.status === 'draft');
-  const completedCampaigns = campaigns.filter(c => c.status !== 'draft');
+  const draftCampaigns = campaigns.filter(c => !c.lead_magnet_content);
+  const completedCampaigns = campaigns.filter(c => c.lead_magnet_content);
 
   const loadLeads = async (campaignId: string) => {
     try {
@@ -227,7 +227,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
         <ul className="divide-y divide-gray-200 bg-white rounded-lg p-4">
           {completedCampaigns.map(campaign => (
             <li key={campaign.id} className="py-3 flex items-center justify-between">
-              <span className="font-medium text-gray-900">{campaign.name}</span>
+              <button
+                className="font-medium text-blue-700 hover:underline focus:outline-none"
+                onClick={() => setViewPdfCampaign(campaign)}
+                title="View PDF"
+              >
+                {campaign.name}
+              </button>
               <span className="text-xs text-green-600">Completed</span>
             </li>
           ))}
@@ -247,6 +253,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
             data={typeof viewPdfCampaign.lead_magnet_content === 'string'
               ? JSON.parse(viewPdfCampaign.lead_magnet_content)
               : viewPdfCampaign.lead_magnet_content}
+            campaignId={''}
           />
         )}
       </Modal>
@@ -277,7 +284,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
         <div className="mt-8">
           <h3 className="font-bold mb-2">Live PDF Preview</h3>
           {editJson && (
-            <PDFGenerator data={JSON.parse(editJson)} />
+            <PDFGenerator data={JSON.parse(editJson)} campaignId={''} />
           )}
         </div>
       </Modal>
