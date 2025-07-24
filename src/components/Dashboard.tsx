@@ -63,6 +63,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign }) => {
     }
   };
 
+  // Separate drafts and completed campaigns
+  const draftCampaigns = campaigns.filter(c => c.status === 'draft');
+  const completedCampaigns = campaigns.filter(c => c.status !== 'draft');
+
   const loadLeads = async (campaignId: string) => {
     try {
       setIsLoadingLeads(true);
