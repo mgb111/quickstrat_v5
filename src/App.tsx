@@ -12,7 +12,7 @@ import Auth from './components/Auth/Auth';
 import UserProfile from './components/UserProfile';
 import { useAuth } from './contexts/AuthContext';
 import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, PDFCustomization, Campaign } from './types/index';
-import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
+import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign, robustGeneratePdfContent, generateLandingPageCopy, generateSocialPosts } from './lib/openai';
 import LoadingSpinner from './components/LoadingSpinner';
 import { CampaignService } from './lib/campaignService';
 
@@ -200,7 +200,15 @@ function App() {
     setError(null);
 
     try {
-      let finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
+      // Use robust PDF content generation with retries for real case studies
+      const pdf_content = await robustGeneratePdfContent(wizardState.input!, finalOutline);
+      const landing_page = await generateLandingPageCopy(wizardState.input!, finalOutline);
+      const social_posts = await generateSocialPosts(wizardState.input!, finalOutline);
+      let finalOutput = {
+        pdf_content,
+        landing_page,
+        social_posts
+      };
       console.log('✅ Final campaign generated:', finalOutput);
       
       // Add debug logs for campaign creation

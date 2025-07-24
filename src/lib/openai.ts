@@ -241,8 +241,8 @@ Selected Concept: ${outline.title}.
 Include these sections:
 1. Title Page: title (8-12 words), subtitle (10-15 words), and a visible 'Majorbeam' logo or brand mention.
 2. Introduction: 80-120 words, engaging, mention the brand and founder, state the problem and what the reader will get.
-3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - if checklist, ALWAYS return an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. If scripts, ALWAYS return an object with a 'scenarios' array, where each scenario has 'trigger', 'response', and 'explanation'. Do not return a flat array. At least 5 bullet points, actionable, detailed, practical, with a real-world example and clear subheadings.
-4. Toolkit Section 2: (different type from section 1) - if checklist, ALWAYS return an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. If scripts, ALWAYS return an object with a 'scenarios' array, where each scenario has 'trigger', 'response', and 'explanation'. Do not return a flat array. At least 5 bullet points, actionable, detailed, practical, with a real-world example and clear subheadings.
+3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - if checklist, ALWAYS return an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. If scripts, ALWAYS return an object with a 'scenarios' array, where each scenario has 'trigger', 'response', and 'explanation'. Do not return a flat array. For every checklist, pros_and_cons_list, and script scenario, you MUST include a real, specific, non-placeholder case_study (at least 20 words) describing a real or plausible business use or outcome. Do NOT use generic or placeholder text. If you cannot think of a real example, invent a plausible one.
+4. Toolkit Section 2: (different type from section 1) - if checklist, ALWAYS return an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. If scripts, ALWAYS return an object with a 'scenarios' array, where each scenario has 'trigger', 'response', and 'explanation'. Do not return a flat array. For every checklist, pros_and_cons_list, and script scenario, you MUST include a real, specific, non-placeholder case_study (at least 20 words) describing a real or plausible business use or outcome. Do NOT use generic or placeholder text. If you cannot think of a real example, invent a plausible one.
 5. Call to Action: 1-2 sentences, urgent, benefit-driven, and personalized to the brand. Mention 'Majorbeam' and encourage the next step.
 
 Return JSON in this format:
@@ -387,20 +387,20 @@ Return JSON in this format:
     for (const section of parsed.toolkit_sections) {
       if (section.type === 'pros_and_cons_list' && section.content?.items) {
         for (const item of section.content.items) {
-          if (!item.case_study || typeof item.case_study !== 'string' || item.case_study.trim().length < 10) {
-            throw new Error('Every pros_and_cons_list item must have a non-empty case_study.');
+          if (!item.case_study || typeof item.case_study !== 'string' || item.case_study.trim().length < 20) {
+            throw new Error('Every pros_and_cons_list item must have a real, specific, non-placeholder case_study of at least 20 words.');
           }
         }
       }
       if (section.type === 'checklist' && section.content) {
-        if (!section.content.case_study || typeof section.content.case_study !== 'string' || section.content.case_study.trim().length < 10) {
-          throw new Error('Checklist section must have a non-empty case_study.');
+        if (!section.content.case_study || typeof section.content.case_study !== 'string' || section.content.case_study.trim().length < 20) {
+          throw new Error('Checklist section must have a real, specific, non-placeholder case_study of at least 20 words.');
         }
       }
       if (section.type === 'scripts' && section.content?.scenarios) {
         for (const scenario of section.content.scenarios) {
-          if (!scenario.case_study || typeof scenario.case_study !== 'string' || scenario.case_study.trim().length < 10) {
-            throw new Error('Every script scenario must have a non-empty case_study.');
+          if (!scenario.case_study || typeof scenario.case_study !== 'string' || scenario.case_study.trim().length < 20) {
+            throw new Error('Every script scenario must have a real, specific, non-placeholder case_study of at least 20 words.');
           }
         }
       }
@@ -456,6 +456,21 @@ Return JSON in this format:
 
     throw new Error(`Failed to generate PDF content: ${err.message}`);
   }
+}
+
+export async function robustGeneratePdfContent(input: CampaignInput, outline: ContentOutline): Promise<PDFContent> {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const pdfContent = await generatePdfContent(input, outline);
+      // If no error was thrown, all case studies are valid
+      return pdfContent;
+    } catch (err) {
+      if (attempt === 2) throw err;
+      // Optionally, log and retry
+      console.warn('Retrying PDF generation due to missing/invalid case_study...', err);
+    }
+  }
+  throw new Error('Failed to generate PDF with valid case studies after multiple attempts.');
 }
 
 // Helper function to format layout-focused section content into readable format
@@ -713,7 +728,7 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
   try {
     // Generate content sequentially instead of in parallel for better error handling
     console.log('Starting PDF content generation...');
-    const pdf_content = await generatePdfContent(input, outline).catch(err => {
+    const pdf_content = await robustGeneratePdfContent(input, outline).catch(err => {
       console.error('PDF Generation Error:', err);
       throw new Error(`PDF Generation Failed: ${err.message}`);
     });
