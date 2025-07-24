@@ -241,8 +241,8 @@ Selected Concept: ${outline.title}.
 Include these sections:
 1. Title Page: title (8-12 words), subtitle (10-15 words), and a visible 'Majorbeam' logo or brand mention.
 2. Introduction: 80-120 words, engaging, mention the brand and founder, state the problem and what the reader will get.
-3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - if checklist, ALWAYS return an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. At least 5 bullet points, actionable, detailed, practical, with a real-world example and clear subheadings.
-4. Toolkit Section 2: (different type from section 1) - if checklist, ALWAYS return an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. At least 5 bullet points, actionable, detailed, practical, with a real-world example and clear subheadings.
+3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - if checklist, ALWAYS return an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. If scripts, ALWAYS return an object with a 'scenarios' array, where each scenario has 'trigger', 'response', and 'explanation'. Do not return a flat array. At least 5 bullet points, actionable, detailed, practical, with a real-world example and clear subheadings.
+4. Toolkit Section 2: (different type from section 1) - if checklist, ALWAYS return an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. If scripts, ALWAYS return an object with a 'scenarios' array, where each scenario has 'trigger', 'response', and 'explanation'. Do not return a flat array. At least 5 bullet points, actionable, detailed, practical, with a real-world example and clear subheadings.
 5. Call to Action: 1-2 sentences, urgent, benefit-driven, and personalized to the brand. Mention 'Majorbeam' and encourage the next step.
 
 Return JSON in this format:
@@ -337,30 +337,17 @@ Return JSON in this format:
           }
           break;
         case 'scripts':
-          // Handle both old and new format for scripts
-          if (section.content?.scenarios && Array.isArray(section.content.scenarios)) {
-            // New format with scenarios array
-            if (section.content.scenarios.length < 2) {
-              throw new Error('Scripts section must have at least 2 scenarios');
-            }
-            // Validate each scenario has required fields
-            for (const scenario of section.content.scenarios) {
-              if (!scenario.trigger || !scenario.response || !scenario.explanation) {
-                throw new Error('Each script scenario must have trigger, response, and explanation fields');
-              }
-            }
-          } else if (Array.isArray(section.content)) {
-            // Old format - convert to new format
-            console.warn('Converting old scripts format to new format');
+          // Fallback: if content is a flat array, wrap in a scenarios array
+          if (!section.content?.scenarios && Array.isArray(section.content)) {
             section.content = {
-              scenarios: section.content.map((script: any, index: number) => ({
-                trigger: script.trigger || `Scenario ${index + 1} trigger`,
-                response: script.response || `Scenario ${index + 1} response`,
-                explanation: script.explanation || `Strategy for scenario ${index + 1}`
-              }))
+              scenarios: section.content
             };
-          } else {
+          }
+          if (!section.content?.scenarios || !Array.isArray(section.content.scenarios)) {
             throw new Error('Scripts section must have scenarios array');
+          }
+          if (section.content.scenarios.length < 1) {
+            throw new Error('Scripts section must have at least 1 scenario');
           }
           break;
         case 'mistakes_to_avoid':
