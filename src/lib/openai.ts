@@ -241,8 +241,8 @@ Selected Concept: ${outline.title}.
 Include these sections:
 1. Title Page: title (8-12 words), subtitle (10-15 words), and a visible 'Majorbeam' logo or brand mention.
 2. Introduction: 80-120 words, engaging, mention the brand and founder, state the problem and what the reader will get.
-3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - at least 5 bullet points, actionable, detailed, practical, with a real-world example and clear subheadings.
-4. Toolkit Section 2: (different type from section 1) - at least 5 bullet points, actionable, detailed, practical, with a real-world example and clear subheadings.
+3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - if checklist, ALWAYS return an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. At least 5 bullet points, actionable, detailed, practical, with a real-world example and clear subheadings.
+4. Toolkit Section 2: (different type from section 1) - if checklist, ALWAYS return an object with a 'phases' array, where each phase has a 'phase_title' and an 'items' array of bullet points. Do not return a flat array. At least 5 bullet points, actionable, detailed, practical, with a real-world example and clear subheadings.
 5. Call to Action: 1-2 sentences, urgent, benefit-driven, and personalized to the brand. Mention 'Majorbeam' and encourage the next step.
 
 Return JSON in this format:
@@ -315,11 +315,21 @@ Return JSON in this format:
       if (!section.title || !section.type || section.layout !== 'filled') {
         throw new Error('Each toolkit section must have title, type, and filled layout');
       }
-      
       // Improved validation based on type - NO TABLE VALIDATION
       switch (section.type) {
         case 'checklist':
-          if (!section.content?.phases || !Array.isArray(section.content?.phases)) {
+          // Fallback: if content is a flat array, wrap in a single phase
+          if (!section.content?.phases && Array.isArray(section.content)) {
+            section.content = {
+              phases: [
+                {
+                  phase_title: 'Checklist',
+                  items: section.content
+                }
+              ]
+            };
+          }
+          if (!section.content?.phases || !Array.isArray(section.content.phases)) {
             throw new Error('Checklist section must have phases array');
           }
           if (section.content.phases.length < 1) {
