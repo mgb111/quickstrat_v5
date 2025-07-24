@@ -226,15 +226,51 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
       ) : (
         <ul className="divide-y divide-gray-200 bg-white rounded-lg p-4">
           {completedCampaigns.map(campaign => (
-            <li key={campaign.id} className="py-3 flex items-center justify-between">
-              <button
-                className="font-medium text-blue-700 hover:underline focus:outline-none"
-                onClick={() => setViewPdfCampaign(campaign)}
-                title="View PDF"
-              >
-                {campaign.name}
-              </button>
-              <span className="text-xs text-green-600">Completed</span>
+            <li key={campaign.id} className="py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <button
+                  className="font-medium text-blue-700 hover:underline focus:outline-none text-lg"
+                  onClick={() => setViewPdfCampaign(campaign)}
+                  title="View PDF"
+                >
+                  {campaign.name}
+                </button>
+                <div className="text-xs text-green-600 mt-1">Completed</div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <button
+                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-xs font-semibold"
+                    onClick={() => setViewPdfCampaign(campaign)}
+                  >
+                    View PDF
+                  </button>
+                  <button
+                    className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded hover:bg-yellow-200 text-xs font-semibold"
+                    onClick={() => handleEditClick(campaign)}
+                  >
+                    Edit PDF
+                  </button>
+                  <button
+                    className="px-3 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 text-xs font-semibold"
+                    onClick={() => copyLandingPageUrl(campaign.landing_page_slug)}
+                  >
+                    Landing Page
+                  </button>
+                  <button
+                    className="px-3 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200 text-xs font-semibold"
+                    onClick={exportLeads}
+                  >
+                    Export Leads
+                  </button>
+                </div>
+                <div className="mt-2 text-xs text-gray-600">
+                  Leads: {leads.length} {isLoadingLeads && <span className="ml-2 text-blue-500">Loading...</span>}
+                  {stats && (
+                    <>
+                      {' '}| Emails: {stats.totalEmails ?? 0}
+                    </>
+                  )}
+                </div>
+              </div>
             </li>
           ))}
         </ul>
