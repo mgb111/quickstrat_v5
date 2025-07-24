@@ -157,6 +157,8 @@ export class CampaignService {
   }): Promise<any> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Authentication required to save campaign drafts');
+    // Generate a unique slug for the draft
+    const slug = `draft-${user.id}-${Date.now()}`;
     // Try to find an existing draft for this user and input (by name/brand_name)
     const { data: existing, error: fetchError } = await supabase
       .from('campaigns')
@@ -178,7 +180,8 @@ export class CampaignService {
       social_posts: null,
       outline: outline ? JSON.stringify(outline) : null,
       concepts: concepts ? JSON.stringify(concepts) : null,
-      selected_concept: selectedConcept ? JSON.stringify(selectedConcept) : null
+      selected_concept: selectedConcept ? JSON.stringify(selectedConcept) : null,
+      landing_page_slug: slug // Always set a slug for drafts
     };
     if (existing && existing.id) {
       // Update existing draft
