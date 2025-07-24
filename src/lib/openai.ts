@@ -266,7 +266,7 @@ Return JSON in this format:
           { role: 'user', content: prompt }
         ],
         temperature: 0.7,
-        max_tokens: 4500
+        max_tokens: 2048
       });
 
       if (!res.choices?.[0]?.message?.content) {
