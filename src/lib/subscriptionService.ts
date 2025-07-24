@@ -50,14 +50,24 @@ export class SubscriptionService {
                     .from('users')
                     .select('id, plan, campaign_count, subscription_expiry, campaign_count_period')
                     .eq('email', authUser.email);
-                if (refetchError || !refetchedUsers || refetchedUsers.length === 0) {
-                    console.error('FATAL: Failed to refetch user after duplicate error:', refetchError);
-                    return this.getDefaultSubscription();
+                if (!Array.isArray(refetchedUsers) || refetchedUsers.length === 0 || refetchError) {
+                    // Fallback: try fetching by user id
+                    const { data: userById, error: userByIdError } = await supabase
+                        .from('users')
+                        .select('id, plan, campaign_count, subscription_expiry, campaign_count_period')
+                        .eq('id', userId)
+                        .maybeSingle();
+                    if (!userById || userByIdError) {
+                        console.error('FATAL: Failed to refetch user after duplicate error (by email and id)', refetchError, userByIdError);
+                        return this.getDefaultSubscription();
+                    }
+                    user = userById;
+                } else {
+                    if (refetchedUsers.length > 1) {
+                        console.warn('Multiple users found with the same email. Using the first one.');
+                    }
+                    user = refetchedUsers[0];
                 }
-                if (refetchedUsers.length > 1) {
-                    console.warn('Multiple users found with the same email. Using the first one.');
-                }
-                user = refetchedUsers[0];
             } else {
                 return this.getDefaultSubscription();
             }

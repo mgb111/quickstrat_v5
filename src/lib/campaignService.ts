@@ -159,6 +159,15 @@ export class CampaignService {
     if (!user) throw new Error('Authentication required to save campaign drafts');
     // Ensure user exists in users table before saving draft
     await SubscriptionService.getUserSubscription(user.id);
+    // Final explicit check: confirm user id exists in users table
+    const { data: userCheck, error: userCheckError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (!userCheck || userCheckError) {
+      throw new Error('User record not found in users table. Aborting draft save to prevent foreign key error.');
+    }
     // Generate a unique slug for the draft
     const slug = `draft-${user.id}-${Date.now()}`;
     // Try to find an existing draft for this user and input (by name/brand_name)
