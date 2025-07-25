@@ -216,7 +216,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
   };
 
   return (
-    <div className="pdf-preview-container">
+    <div className="pdf-preview-container pdf-mode">
       <div className="pdf-preview-box" ref={pdfRef}>
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -656,6 +656,15 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           .script > *:last-child,
           .cta-block > *:last-child {
             margin-bottom: 0;
+          }
+
+          /* PDF-specific: reduce top padding in all major boxes for PDF output only */
+          .pdf-mode .checklist-box,
+          .pdf-mode .pro-tip,
+          .pdf-mode .case-study,
+          .pdf-mode .script,
+          .pdf-mode .cta-block {
+            padding-top: 12px !important;
           }
           
           @media print { 
