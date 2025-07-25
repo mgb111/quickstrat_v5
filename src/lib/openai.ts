@@ -229,7 +229,7 @@ export async function generatePdfContent(input: CampaignInput, outline: ContentO
 
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const prompt = `You are an expert instructional designer. Generate a visually engaging, actionable lead magnet PDF for a business audience. Use clear, concise, non-generic language. Make it feel premium and branded for Majorbeam.
+      const prompt = `You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
 
 USER CONTEXT:
 Niche: ${input.niche}
@@ -237,25 +237,185 @@ Target Audience: ${input.target_audience}
 Tone: ${input.tone}
 Brand Name: ${input.brand_name}
 Position/Title: ${input.position || ''}
-Selected Concept: ${outline.title}.
+Selected Concept: A lead magnet about ${outline.title}.
 
-Include these sections:
-1. Title Page: title (8-12 words), subtitle (10-15 words), and a visible 'Majorbeam' brand mention.
-2. Introduction: 60-100 words, mention the brand and founder, state the problem and what the reader will get.
-3. Toolkit Section 1: (type: checklist, scripts, or pros_and_cons_list) - at least 2 items/scenarios, each with a real, specific, non-placeholder case_study (1-2 sentences).
-4. Toolkit Section 2: (different type from section 1) - at least 2 items/scenarios, each with a real, specific, non-placeholder case_study (1-2 sentences).
-5. Call to Action: 1-2 sentences, urgent, benefit-driven, and personalized to the brand. Mention 'Majorbeam' and encourage the next step.
+---
 
-Return JSON in this format:
+PERSONALIZED FOUNDER INTRODUCTION:
+Before the toolkit, write a short, authentic introduction in the founder’s voice. Use these details:
+- Name: ${input.name}
+- Position/Title: ${input.position || ''}
+- Brand/company: ${input.brand_name}
+- Customer problem: ${input.problem_statement}
+- Desired outcome: ${input.desired_outcome}
+If position/title is provided, use it in the intro (e.g., "I'm [Name], [Position] at [Brand]"). The intro should sound like the founder is speaking directly to the reader, sharing why they built this and what the reader will achieve. Make it authentic, concise, and motivating. Return this as a field called founder_intro in the JSON.
+
+---
+
+CORE PRINCIPLES (NON-NEGOTIABLE):
+VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or structured content) to fill a standard document page. Sparse pages with single paragraphs are forbidden.
+
+STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, and structured content—to enhance readability and ensure pages are full.
+
+EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what."
+
+NO SELLING: The content must be 100% educational and brand-agnostic.
+
+CRITICAL REDUNDANCY RULE: If you include a checklist section, DO NOT create a separate "step-by-step guide" section. The checklist is the superior implementation tool and should be the sole guide. Avoid redundancy at all costs.
+
+THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+
+1. Title Page (layout: "centered"):
+Title: A sharp, specific headline (8-12 words).
+Subtitle: A powerful subtitle that makes a quantifiable promise (10-15 words).
+
+2. Introduction Page (layout: "filled"):
+Title: A clear, engaging title for the introduction (e.g., "Why This Toolkit Will Change Your Approach").
+Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what tangible tools they will receive. This length is required to properly fill the page.
+
+3. The Toolkit Sections (layout: "filled"):
+Generate EXACTLY 3 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. The content for each tool must be detailed and expanded.
+
+SECTION TYPES TO USE (NO TABLES, NO REDUNDANT STEP-BY-STEP GUIDES):
+
+- For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of AT LEAST 3-6 items. Each item MUST have a "method_name", a single "pros" string (not an array), a single "cons" string (not an array), and a "case_study" field with a brief real-world example (2-3 sentences). Format exactly like this example:
+
+EXAMPLE PROS AND CONS FORMAT:
+{
+  "method_name": "Social Media Marketing",
+  "pros": "Offers wide reach and the ability to form a personal connection with prospects.",
+  "cons": "It is time-consuming and requires the regular creation of new content to stay relevant.",
+  "case_study": "Sarah, a fitness coach, tested Instagram vs. Facebook ads for her online program. Instagram brought in 40% more qualified leads at half the cost, but required daily content creation. She now focuses 80% of her efforts on Instagram while using Facebook for retargeting."
+}
+
+For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items. Include a "case_study" field with a brief real-world example showing how this checklist was used successfully (2-3 sentences). Format exactly like this example:
+
+EXAMPLE CHECKLIST FORMAT:
+{
+  "phases": [
+    {
+      "phase_title": "Phase A: Initial Assessment",
+      "items": [
+        "1.1 Identify the training needs that can be addressed using VR",
+        "1.2 Estimate the number of users who will need access to VR training",
+        "1.3 Calculate the budget available for VR training implementation"
+      ]
+    },
+    {
+      "phase_title": "Phase B: Vendor Evaluation", 
+      "items": [
+        "2.1 Compare various VR training platforms based on features and cost",
+        "2.2 Evaluate the scalability and flexibility of each platform",
+        "2.3 Consider the support and training provided by the vendor"
+      ]
+    },
+    {
+      "phase_title": "Phase C: Implementation and Monitoring",
+      "items": [
+        "3.1 Implement a pilot project to test the effectiveness of the chosen platform",
+        "3.2 Measure the ROI of the VR training program", 
+        "3.3 Iterate and adjust the program based on feedback and results"
+      ]
+    }
+  ],
+  "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs."
+}
+
+For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), "explanation" (strategy behind the script), and a "case_study" field with a detailed real-world example (2-3 sentences) showing the script in action with specific results. Include specific numbers, outcomes, and context to make it relatable.
+
+For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words. Include a real-life example or case study for at least one mistake.
+
+IMPORTANT: DO NOT USE "step_by_by_step_guide" type if you already have a checklist. The checklist serves as the implementation guide and creating both would be redundant.
+
+4. Call to Action Page (layout: "centered"):
+Title: A clear, action-oriented title (e.g., "Your Next Step").
+Content: Write a custom, relevant call-to-action for this campaign. The CTA should reference the brand name (${input.brand_name}) and the lead magnet topic (${outline.title}), and encourage the reader to take a next step relevant to their business (such as booking a call, downloading more resources, or contacting support). Make it actionable, specific, bold, urgent, and benefit-driven. Do NOT use a generic or unrelated CTA.
+
+5. For each toolkit section, if possible, include a plug-and-play template or swipe file for the user to use immediately.
+
+6. Use sharp, actionable language—avoid generic advice. Add at least one real-life example or micro-case study per strategy or script.
+
+FINAL GUARDRAIL AND SELF-CORRECTION: Before generating the JSON, you MUST verify your own output against the mandatory instructions.
+1. Is the content for each page dense enough?
+2. Does the checklist contain 8-12 items across 2-3 phases?
+3. Are there exactly 3 toolkit sections with no redundancy?
+4. Is the CTA custom, relevant, and tailored to the brand and lead magnet topic?
+5. Have you avoided creating both a checklist AND a step-by-step guide?
+6. Have you included at least one real-life example or micro-case study per strategy or script?
+7. Have you included a plug-and-play template or swipe file where possible?
+If any answer is no, you MUST rewrite that section to fully comply before providing the final output.
+
+RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 {
   "founder_intro": "...",
-  "title_page": { "layout": "centered", "title": "...", "subtitle": "...", "brand": "Majorbeam" },
-  "introduction_page": { "layout": "filled", "title": "...", "content": "..." },
+  "title_page": {
+    "layout": "centered",
+    "title": "The VR Vendor Negotiation Toolkit",
+    "subtitle": "A 3-Part Guide to Cut Costs and Secure a Future-Proof Contract."
+  },
+  "introduction_page": {
+    "layout": "filled",
+    "title": "Your Strongest Position is a Prepared One",
+    "content": "That complex VR vendor contract is likely hiding thousands in unnecessary costs. Many L&D leaders overpay for bloated feature sets they'll never use and enter into inflexible agreements they later regret. This toolkit provides the specific, actionable resources—a tech glossary, an action checklist, negotiation scripts, and sample contract clauses—to help you negotiate from a position of power, cut costs, and secure a flexible, future-proof partnership. Use these tools to prepare for your next vendor call and ensure you get maximum value for your investment."
+  },
   "toolkit_sections": [
-    { "layout": "filled", "type": "checklist" | "scripts" | "pros_and_cons_list", "title": "...", "content": { ... }, "case_study": "..." },
-    { "layout": "filled", "type": "checklist" | "scripts" | "pros_and_cons_list", "title": "...", "content": { ... }, "case_study": "..." }
+    {
+      "layout": "filled",
+      "type": "pros_and_cons_list",
+      "title": "Section 1: Social Media Marketing Strategies Overview",
+      "content": {
+        "items": [
+          {
+            "method_name": "Paid Advertising",
+            "pros": "Quick results, precise targeting, scalable.",
+            "cons": "Can be expensive, requires constant monitoring and adjustment.",
+            "case_study": "Mike, a B2B consultant, spent $2,000 on LinkedIn ads targeting CFOs. He generated 15 qualified leads in 30 days, with 3 converting to $15K clients. The key was testing 5 different ad copy variations and focusing on pain points rather than features.",
+            "template": "A plug-and-play template or swipe file (if applicable)"
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "checklist",
+      "title": "Section 2: Cost-Effectiveness Checklist",
+      "content": {
+        "phases": [
+          {
+            "phase_title": "Phase A: Initial Assessment",
+            "items": [
+              "1.1 Identify the training needs that can be addressed using VR",
+              "1.2 Estimate the number of users who will need access to VR training",
+              "1.3 Calculate the budget available for VR training implementation"
+            ]
+          }
+        ],
+        "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs.",
+        "template": "A plug-and-play template or swipe file (if applicable)"
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "scripts",
+      "title": "Section 3: Negotiation Scripts That Work",
+      "content": {
+        "scenarios": [
+          {
+            "trigger": "We can offer you a 20% discount if you sign today.",
+            "response": "I appreciate the offer, but I need time to review all terms with my team. Can you put that discount in writing with a 30-day validity period?",
+            "explanation": "This deflects pressure tactics while securing the discount for proper evaluation time.",
+            "case_study": "Lisa, a procurement manager, used this script when negotiating with a software vendor. She secured a 20% discount that was valid for 45 days, giving her team time to evaluate the solution. The vendor later increased the discount to 25% to close the deal.",
+            "template": "A plug-and-play template or swipe file (if applicable)"
+          }
+        ]
+      }
+    }
   ],
-  "cta_page": { "layout": "centered", "title": "...", "content": "..." }
+  "cta_page": {
+    "layout": "centered",
+    "title": "Your Next Step",
+    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and lead magnet topic."
+  }
 }`;
 
       const res = await client.chat.completions.create({
