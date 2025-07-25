@@ -954,6 +954,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
                 await SubscriptionService.getUserSubscription(user.id);
               }
               setPaymentComplete(true);
+              window.location.reload(); // Force full reload to get latest user/subscription state
             }
           }}
         />
