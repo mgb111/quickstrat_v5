@@ -641,6 +641,22 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(30, 41, 59, 0.4);
           }
+
+          /* Fix uneven top/bottom spacing in all major boxes */
+          .checklist-box > *:first-child,
+          .pro-tip > *:first-child,
+          .case-study > *:first-child,
+          .script > *:first-child,
+          .cta-block > *:first-child {
+            margin-top: 0;
+          }
+          .checklist-box > *:last-child,
+          .pro-tip > *:last-child,
+          .case-study > *:last-child,
+          .script > *:last-child,
+          .cta-block > *:last-child {
+            margin-bottom: 0;
+          }
           
           @media print { 
             .pdf-preview-container {
