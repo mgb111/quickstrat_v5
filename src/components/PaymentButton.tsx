@@ -24,13 +24,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     if (!isOpen) return;
     const onFocus = () => {
       // Ask user if payment was completed
-      setTimeout(() => {
-        if (window.confirm('Did you complete the payment successfully?')) {
-          onClose(true);
-        } else {
-          onClose(false);
-        }
-      }, 200);
+      if (window.confirm('Did you complete the payment successfully?')) {
+        onClose(true);
+      } else {
+        onClose(false);
+      }
     };
     window.addEventListener('focus', onFocus);
     return () => window.removeEventListener('focus', onFocus);

@@ -6,6 +6,8 @@ import html2pdf from 'html2pdf.js';
 
 import { Toaster } from 'react-hot-toast';
 import PaymentModal from './PaymentButton';
+import { supabase } from '../lib/supabase';
+import { SubscriptionService } from '../lib/subscriptionService';
 
 interface PDFGeneratorProps {
   data: PDFContent;
@@ -943,9 +945,16 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
       {requirePayment && (
         <PaymentModal
           isOpen={showPaymentModal}
-          onClose={(paymentSuccess = false) => {
+          onClose={async (paymentSuccess = false) => {
             setShowPaymentModal(false);
-            if (paymentSuccess) setPaymentComplete(true);
+            if (paymentSuccess) {
+              // Refresh subscription status after payment
+              const { data: { user } } = await supabase.auth.getUser();
+              if (user && user.id) {
+                await SubscriptionService.getUserSubscription(user.id);
+              }
+              setPaymentComplete(true);
+            }
           }}
         />
       )}
