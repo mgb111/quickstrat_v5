@@ -3,7 +3,6 @@ import React, { useRef, useState } from 'react';
 import { PDFContent } from '../types';
 import html2pdf from 'html2pdf.js';
 
-
 import { Toaster } from 'react-hot-toast';
 import PaymentModal from './PaymentButton';
 import { supabase } from '../lib/supabase';
@@ -12,16 +11,15 @@ import { SubscriptionService } from '../lib/subscriptionService';
 interface PDFGeneratorProps {
   data: PDFContent;
   campaignId: string;
-  requirePayment?: boolean; // New prop to control paywall
+  requirePayment?: boolean;
 }
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePayment = false }) => {
   const pdfRef = useRef<HTMLDivElement>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentComplete, setPaymentComplete] = useState(false);
-  const [downloadedAfterPayment, setDownloadedAfterPayment] = useState(false); // Prevent double download
+  const [downloadedAfterPayment, setDownloadedAfterPayment] = useState(false);
 
-  // When payment is completed, trigger PDF download
   React.useEffect(() => {
     if (requirePayment && paymentComplete && !downloadedAfterPayment) {
       setDownloadedAfterPayment(true);
@@ -37,7 +35,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
     handleDownloadPDF();
   };
 
-  // Debug logging to understand the data structure
+  // Debug logging
   console.log('PDFGenerator received data:', data);
   console.log('Structured content:', data.structured_content);
 
@@ -49,28 +47,11 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
   const mainTitle = structured?.title_page?.title || '';
   const subtitle = structured?.title_page?.subtitle || '';
   
-  // Directly extract toolkit sections, with type guards
   const toolkit_sections = structured?.toolkit_sections || [];
-  console.log('Toolkit sections found:', toolkit_sections.length);
-  console.log('Toolkit sections:', toolkit_sections);
-  
-  // Log each section's structure
-  toolkit_sections.forEach((section: any, index: number) => {
-    console.log(`Section ${index + 1}:`, {
-      title: section.title,
-      type: section.type,
-      content: section.content,
-      layout: section.layout
-    });
-  });
   
   const strategySection = toolkit_sections.find((s: any) => s.type === 'pros_and_cons_list');
   const checklistSection = toolkit_sections.find((s: any) => s.type === 'checklist');
   const scriptsSection = toolkit_sections.find((s: any) => s.type === 'scripts');
-  
-  console.log('Strategy section:', strategySection);
-  console.log('Checklist section:', checklistSection);
-  console.log('Scripts section:', scriptsSection);
   
   // Extract data with better error handling
   const strategyRows = (strategySection && 
@@ -99,16 +80,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
     : (scriptsSection && typeof scriptsSection.content === 'string')
     ? parseScriptsFromString(scriptsSection.content)
     : [];
-    
-  console.log('Strategy rows:', strategyRows.length);
-  console.log('Checklist phases:', checklistPhases.length);
-  console.log('Scripts:', scripts.length);
-  
-  // Debug case studies
-  console.log('Strategy case studies:', strategyRows.filter((row: any) => row.case_study).length);
-  console.log('Checklist case study:', checklistSection?.content && typeof checklistSection.content === 'object' && 'case_study' in checklistSection.content ? checklistSection.content.case_study : 'None');
-  console.log('Script case studies:', scripts.filter((script: any) => script.case_study).length);
-  
+
   // Helper functions to parse string content
   function parseProsAndConsFromString(content: string): any[] {
     const items: any[] = [];
@@ -118,7 +90,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
     for (const line of lines) {
       const trimmedLine = line.trim();
       if (trimmedLine.match(/^\d+\./)) {
-        // New item starting
         if (currentItem.method_name) {
           items.push(currentItem);
         }
@@ -200,7 +171,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
 
   const handleDownloadPDF = async () => {
     if (!pdfRef.current) return;
-    // Use static import
     const container = pdfRef.current;
     html2pdf()
       .set({
@@ -246,7 +216,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           .page {
             background-color: white;
             width: 100%;
-            padding: 48px 40px;
+            padding: 40px;
             box-sizing: border-box;
             position: relative;
             display: flex;
@@ -274,41 +244,42 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             letter-spacing: 0.5px;
           }
           
+          /* Typography - Clean and consistent */
           h1 { 
-            font-size: 36px;
+            font-size: 32px;
             color: #1e293b;
-            font-weight: 900;
-            margin: 0 0 12px 0;
-            line-height: 1.1;
+            font-weight: 800;
+            margin: 0 0 16px 0;
+            line-height: 1.2;
             text-align: center;
           }
           
           h2 { 
-            font-size: 28px;
-            color: #334155;
-            font-weight: 800;
-            border-bottom: 3px solid #3b82f6;
-            padding-bottom: 12px;
-            margin: 32px 0 24px 0;
+            font-size: 24px;
+            color: #1e293b;
+            font-weight: 700;
+            margin: 0 0 24px 0;
             text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3b82f6;
           }
           
           h3 { 
-            font-size: 20px;
-            color: #475569;
-            font-weight: 700;
-            margin: 24px 0 16px 0;
+            font-size: 18px;
+            color: #374151;
+            font-weight: 600;
+            margin: 20px 0 12px 0;
+            line-height: 1.3;
           }
           
           p, li { 
-            font-size: 16px;
+            font-size: 15px;
             line-height: 1.6;
-            color: #334155;
-            margin: 0 0 16px 0;
+            color: #374151;
+            margin: 0 0 12px 0;
             word-wrap: break-word;
             word-break: break-word;
             overflow-wrap: break-word;
-            hyphens: auto;
           }
           
           a { 
@@ -318,37 +289,38 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           }
           
           .subtitle { 
-            font-size: 18px;
-            font-weight: 600;
-            color: #64748b;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6b7280;
             margin: 0 0 8px 0;
             text-align: center;
           }
           
           .toolkit-credit { 
             font-style: italic;
-            color: #94a3b8;
-            margin: 0 0 40px 0;
+            color: #9ca3af;
+            margin: 0 0 32px 0;
             text-align: center;
             font-size: 14px;
           }
           
+          /* Welcome Page */
           .welcome-header { 
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
           }
           
           .welcome-header .logo { 
             font-weight: 800;
-            font-size: 24px;
+            font-size: 20px;
             color: #1e293b;
             text-transform: uppercase;
             letter-spacing: 1px;
           }
           
           .welcome-intro { 
-            font-size: 16px;
-            margin-bottom: 32px;
+            font-size: 15px;
+            margin-bottom: 24px;
             text-align: center;
             max-width: 600px;
             margin-left: auto;
@@ -363,96 +335,113 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           }
           
           .welcome-list li { 
-            padding-left: 32px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="%233b82f6" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>');
+            padding: 8px 0 8px 32px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%233b82f6" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>');
             background-repeat: no-repeat;
-            background-position: left center;
-            background-size: 20px;
-            margin-bottom: 12px;
+            background-position: left 10px;
+            background-size: 16px;
+            margin-bottom: 8px;
           }
           
+          /* Learn Container */
           .learn-container { 
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 24px;
-            margin-top: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
             text-align: center;
           }
           
           .learn-item { 
-            padding: 32px 24px;
+            padding: 24px 16px;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            transition: all 0.3s ease;
-          }
-          
-          .learn-item:hover {
-            border-color: #3b82f6;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 140px;
           }
           
           .learn-item .icon { 
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 32px;
+            margin-bottom: 12px;
             display: block;
           }
           
           .learn-item h3 { 
             margin: 0 0 8px 0;
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 600;
             color: #1e293b;
           }
           
           .learn-item p {
             margin: 0;
-            font-size: 14px;
-            color: #64748b;
-            line-height: 1.5;
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.4;
           }
           
+          /* Consistent Box Styling */
+          .content-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+            display: flex;
+            flex-direction: column;
+          }
+          
+          .content-box > *:first-child {
+            margin-top: 0 !important;
+          }
+          
+          .content-box > *:last-child {
+            margin-bottom: 0 !important;
+          }
+          
+          /* Pro Tip */
           .pro-tip { 
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            background: #dbeafe;
             border: 1px solid #93c5fd;
             border-left: 4px solid #3b82f6;
-            padding: 20px 24px;
-            margin-top: 32px;
             border-radius: 8px;
-            font-size: 16px;
+            padding: 16px 20px;
+            margin: 16px 0;
           }
           
           .pro-tip strong {
-            color: #1e40af;
+            color: #1d4ed8;
           }
           
+          /* Strategy Table */
           .strategy-table { 
             width: 100%;
             border-collapse: collapse;
-            margin-top: 24px;
+            margin: 16px 0;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
           }
           
           .strategy-table th, .strategy-table td { 
-            padding: 16px;
+            padding: 12px 16px;
             text-align: left;
             border-bottom: 1px solid #e5e7eb;
             vertical-align: top;
             word-wrap: break-word;
-            word-break: break-word;
-            hyphens: auto;
-            max-width: 0;
-            overflow-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.5;
           }
           
           .strategy-table th { 
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: #3b82f6;
             color: white;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
           }
@@ -461,21 +450,18 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             background-color: #f8fafc;
           }
           
-          .strategy-table tr:hover {
-            background-color: #f1f5f9;
-          }
-          
           .strategy-table td:first-child { 
-            font-weight: 700;
+            font-weight: 600;
             color: #1e293b;
           }
           
+          /* Checklist */
           .checklist-box { 
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            padding: 18px;
-            border-radius: 12px;
-            border: 2px solid #e5e7eb;
-            margin-top: 16px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin: 16px 0;
           }
           
           .checklist { 
@@ -485,74 +471,72 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           }
           
           .checklist li { 
-            font-size: 13px;
+            font-size: 14px;
             margin-bottom: 8px;
             display: flex;
             align-items: flex-start;
-            line-height: 1.35;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
+            line-height: 1.5;
           }
           
           .checklist li::before { 
             content: '☐';
             font-size: 16px;
-            margin-right: 8px;
+            margin-right: 12px;
             color: #3b82f6;
-            margin-top: 2px;
+            margin-top: 1px;
             flex-shrink: 0;
           }
           
+          /* Scripts */
           .script { 
-            margin-bottom: 32px;
-            padding: 14px 16px;
-            background: #fafafa;
-            border-radius: 10px;
-            border: 1px solid #e5e7eb;
-            font-size: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
           }
           
           .script h3 { 
-            border-bottom: none;
-            margin-top: 0;
+            margin: 0 0 16px 0;
             color: #1e293b;
             font-size: 16px;
+            font-weight: 600;
           }
           
           .script-dialog { 
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            border-radius: 14px 14px 14px 5px;
-            padding: 12px 16px;
-            position: relative;
-            font-style: italic;
+            background: #dbeafe;
             border: 1px solid #93c5fd;
-            margin: 10px 0;
-            font-size: 13px;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 12px 0;
+            font-style: italic;
+            font-size: 14px;
+            line-height: 1.5;
           }
           
           .script-why { 
-            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-            padding: 10px 14px;
-            border-radius: 7px;
-            margin-top: 10px;
-            font-size: 12px;
+            background: #dcfce7;
             border: 1px solid #86efac;
             border-left: 4px solid #22c55e;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-size: 13px;
+            line-height: 1.5;
           }
           
           .script-why strong {
             color: #15803d;
           }
           
+          /* Case Studies */
           .case-study { 
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 1px solid #f59e0b;
-            border-left: 4px solid #d97706;
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
             padding: 16px 20px;
             margin: 16px 0;
-            border-radius: 8px;
             font-size: 14px;
             line-height: 1.5;
           }
@@ -561,16 +545,18 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             color: #92400e;
             display: block;
             margin-bottom: 8px;
-            font-size: 15px;
+            font-size: 14px;
+            font-weight: 600;
           }
           
+          /* CTA Block */
           .cta-block { 
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             color: white;
             text-align: center;
-            padding: 48px 32px;
-            border-radius: 12px;
-            margin-top: 32px;
+            padding: 32px 24px;
+            border-radius: 8px;
+            margin: 16px 0;
           }
           
           .cta-block h2 { 
@@ -581,33 +567,25 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           
           .cta-block p {
             color: #cbd5e1;
-            font-size: 16px;
-            margin-bottom: 24px;
+            font-size: 15px;
+            margin-bottom: 20px;
           }
           
           .cta-button { 
             display: inline-block;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: #3b82f6;
             color: white;
-            padding: 16px 32px;
-            margin: 12px 8px;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 12px 24px;
+            margin: 8px;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-          }
-          
-          .cta-button:hover { 
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
           }
           
           .cta-email { 
-            margin-top: 24px;
-            font-size: 14px;
+            margin-top: 20px;
+            font-size: 13px;
           }
           
           .cta-email a { 
@@ -615,6 +593,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             text-decoration: underline;
           }
           
+          /* Download Buttons */
           .download-buttons {
             display: flex;
             justify-content: center;
@@ -625,7 +604,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           
           .download-btn {
             padding: 16px 32px;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: #1e293b;
             color: white;
             border: none;
             border-radius: 8px;
@@ -633,72 +612,51 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.3);
           }
           
           .download-btn:hover {
-            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+            background: #0f172a;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 41, 59, 0.4);
-          }
-
-          /* Fix uneven top/bottom spacing in all major boxes */
-          .checklist-box > *:first-child,
-          .pro-tip > *:first-child,
-          .case-study > *:first-child,
-          .script > *:first-child,
-          .cta-block > *:first-child {
-            margin-top: 0;
-          }
-          .checklist-box > *:last-child,
-          .pro-tip > *:last-child,
-          .case-study > *:last-child,
-          .script > *:last-child,
-          .cta-block > *:last-child {
-            margin-bottom: 0;
-          }
-
-          /* PDF-specific: reduce top padding in all major boxes for PDF output only */
-          .pdf-mode .checklist-box,
-          .pdf-mode .pro-tip,
-          .pdf-mode .case-study,
-          .pdf-mode .script,
-          .pdf-mode .cta-block {
-            padding-top: 12px !important;
           }
           
-          /* PDF-specific: advanced fix for top/bottom padding in all major boxes */
-          .pdf-mode .checklist-box,
+          /* Error States */
+          .error-message {
+            text-align: center;
+            color: #dc2626;
+            padding: 32px;
+            background: #fef2f2;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+            margin: 16px 0;
+          }
+
+          /* PDF Specific Optimizations */
+          .pdf-mode .content-box,
           .pdf-mode .pro-tip,
           .pdf-mode .case-study,
           .pdf-mode .script,
+          .pdf-mode .checklist-box,
           .pdf-mode .cta-block {
-            padding-top: 4px !important;
-            padding-bottom: 20px !important;
-            line-height: 1.4 !important;
+            page-break-inside: avoid;
           }
-          .pdf-mode .checklist-box > *:first-child,
-          .pdf-mode .pro-tip > *:first-child,
-          .pdf-mode .case-study > *:first-child,
-          .pdf-mode .script > *:first-child,
-          .pdf-mode .cta-block > *:first-child {
-            margin-top: 0 !important;
-            padding-top: 0 !important;
+
+          /* Smaller text for strategy page to fit better */
+          .strategy-page-small {
+            font-size: 13px;
           }
-          .pdf-mode .checklist-box > *:last-child,
-          .pdf-mode .pro-tip > *:last-child,
-          .pdf-mode .case-study > *:last-child,
-          .pdf-mode .script > *:last-child,
-          .pdf-mode .cta-block > *:last-child {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
+          
+          .strategy-page-small h2 {
+            font-size: 20px;
           }
-          /* Target strong/h3 as first child for extra control */
-          .pdf-mode .case-study strong:first-child,
-          .pdf-mode .pro-tip strong:first-child,
-          .pdf-mode .script h3:first-child {
-            margin-top: 0 !important;
-            padding-top: 0 !important;
+          
+          .strategy-page-small h3 {
+            font-size: 16px;
+          }
+          
+          .strategy-page-small .strategy-table th,
+          .strategy-page-small .strategy-table td {
+            font-size: 12px;
+            padding: 10px 12px;
           }
           
           @media print { 
@@ -730,12 +688,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               padding: 12px;
             }
             
-            .pdf-preview-box {
-              border-radius: 8px;
-            }
-            
             .page {
-              padding: 32px 24px;
+              padding: 24px 20px;
             }
             
             h1 {
@@ -743,7 +697,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             h2 {
-              font-size: 24px;
+              font-size: 22px;
             }
             
             .learn-container {
@@ -751,40 +705,21 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               gap: 16px;
             }
             
-            .strategy-table {
-              font-size: 14px;
-            }
-            
             .strategy-table th,
             .strategy-table td {
-              padding: 12px 8px;
+              padding: 8px 10px;
+              font-size: 13px;
             }
             
             .cta-block {
-              padding: 32px 24px;
+              padding: 24px 20px;
             }
             
             .cta-button {
               display: block;
-              margin: 12px auto;
+              margin: 12px auto 8px auto;
               width: fit-content;
             }
-          }
-          .script-dialog, .script-why {
-            page-break-inside: avoid;
-          }
-          .script-dialog {
-            padding: 20px;
-            border-radius: 20px 20px 20px 5px;
-            background-color: #e3f2fd;
-            font-style: italic;
-            margin-top: 12px;
-          }
-          .strategy-page-small {
-            font-size: 14px;
-          }
-          .strategy-page-small * {
-            font-size: 14px !important;
           }
         `}</style>
 
@@ -796,7 +731,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           <h1>{mainTitle}</h1>
           <p className="subtitle">{subtitle}</p>
           <p className="toolkit-credit">A QuickStrat AI Toolkit</p>
-          {/* Personalized founder-style introduction */}
+          
           <div className="welcome-intro">
             {data.founder_intro ? (
               <p>{data.founder_intro}</p>
@@ -813,7 +748,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           </div>
         </div>
 
-        {/* Page 2: What You'll Learn (static) */}
+        {/* Page 2: What You'll Learn */}
         <div className="page">
           <div className="page-header">What You'll Learn</div>
           <h2>🚀 What You'll Learn</h2>
@@ -837,7 +772,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           </div>
         </div>
 
-        {/* Step 1: Strategy Table (robust) */}
+        {/* Step 1: Strategy Table */}
         <div className="page strategy-page-small">
           <div className="page-header">Step 1 of 3</div>
           <h2>📊 Strategy Showdown: What Actually Works?</h2>
@@ -864,25 +799,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               
               {/* Case Studies for Strategies */}
               {strategyRows.some((row: any) => row.case_study) && (
-                <div style={{marginTop: '24px'}}>
+                <div style={{marginTop: '20px'}}>
                   <h3 style={{marginBottom: '16px', color: '#1e293b'}}>📈 Real-World Examples</h3>
                   {strategyRows.map((row: any, idx: number) => (
                     row.case_study && (
-                      <div
-                        key={idx}
-                        className="case-study no-page-break"
-                        style={{
-                          paddingTop: 4,
-                          paddingBottom: 20,
-                          lineHeight: 1.4,
-                          borderRadius: 8,
-                          margin: '16px 0',
-                          background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-                          border: '1px solid #f59e0b',
-                          borderLeft: '4px solid #d97706',
-                        }}
-                      >
-                        <strong style={{ marginTop: 0, paddingTop: 0, display: 'block' }}>💡 {row.method_name} in Action:</strong>
+                      <div key={idx} className="case-study">
+                        <strong>💡 {row.method_name} in Action:</strong>
                         {row.case_study}
                       </div>
                     )
@@ -891,7 +813,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               )}
             </>
           ) : (
-            <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
+            <div className="error-message">
               No strategies found or data missing.
             </div>
           )}
@@ -900,129 +822,78 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           </div>
         </div>
 
-        {/* Step 2: Checklist (robust) */}
+        {/* Step 2: Checklist */}
         <div className="page">
           <div className="page-header">Step 2 of 3</div>
           <h2>✅ The Social Media Checklist</h2>
-          <p style={{textAlign: 'center', marginBottom: '32px'}}>Use this to stay consistent and intentional.</p>
-          <div className="checklist-box">
-            {checklistPhases.length > 0 ? (
-              <>
-                {checklistPhases.map((phase: any, idx: number) => (
-                  <React.Fragment key={idx}>
-                    <h3>{phase.phase_title}</h3>
-                    <ul className="checklist">
-                      {phase.items.map((item: string, i: number) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </React.Fragment>
-                ))}
-                
-                {/* Case Study for Checklist */}
-                {checklistSection?.content && 
-                 typeof checklistSection.content === 'object' && 
-                 'case_study' in checklistSection.content && 
-                 checklistSection.content.case_study && (
-                  <div className="case-study no-page-break" style={{marginTop: '24px'}}>
-                    <strong>📈 Success Story:</strong>
-                    {checklistSection.content.case_study}
-                  </div>
-                )}
-              </>
-            ) : (
-              <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
-                No checklist phases found or data missing.
-              </div>
-            )}
-          </div>
+          <p style={{textAlign: 'center', marginBottom: '24px'}}>Use this to stay consistent and intentional.</p>
+          
+          {checklistPhases.length > 0 ? (
+            <div className="checklist-box">
+              {checklistPhases.map((phase: any, idx: number) => (
+                <React.Fragment key={idx}>
+                  <h3>{phase.phase_title}</h3>
+                  <ul className="checklist">
+                    {phase.items.map((item: string, i: number) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </React.Fragment>
+              ))}
+              
+              {/* Case Study for Checklist */}
+              {checklistSection?.content && 
+               typeof checklistSection.content === 'object' && 
+               'case_study' in checklistSection.content && 
+               checklistSection.content.case_study && (
+                <div className="case-study" style={{marginTop: '20px'}}>
+                  <strong>📈 Success Story:</strong>
+                  {checklistSection.content.case_study}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="error-message">
+              No checklist phases found or data missing.
+            </div>
+          )}
         </div>
 
-        {/* Step 3: Scripts (robust) */}
+        {/* Step 3: Scripts */}
         <div className="page">
           <div className="page-header">Step 3 of 3</div>
           <h2>💬 Scripts That Turn Comments Into Clients</h2>
           {scripts.length > 0 ? (
             <>
               {scripts.map((scenario: any, idx: number) => (
-                idx === 2 ? (
-                  <div className="script no-page-break" key={idx} style={{ pageBreakBefore: 'always' }}>
-                    <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
-                    <p><strong>You say:</strong></p>
-                    <div className="script-dialog">{scenario.response}</div>
-                    <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
-                    {scenario.case_study && (
-                      <div className="case-study no-page-break" style={{marginTop: '12px'}}>
-                        <strong>📈 Real Results:</strong>
-                        {scenario.case_study}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                <div
-                  className="script"
-                  key={idx}
-                  style={{
-                    paddingTop: 4,
-                    paddingBottom: 20,
-                    lineHeight: 1.4,
-                    borderRadius: 8,
-                    margin: '16px 0',
-                    background: '#fafafa',
-                    border: '1px solid #e5e7eb',
-                    fontSize: 14,
-                  }}
-                >
-                  <h3 style={{ marginTop: 0, paddingTop: 0, color: '#1e293b', fontSize: 16 }}>Scenario {idx + 1}: {scenario.trigger}</h3>
+                <div key={idx} className="script">
+                  <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
                   <p><strong>You say:</strong></p>
                   <div className="script-dialog">{scenario.response}</div>
-                  <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
+                  <div className="script-why">
+                    <strong>✅ Why it works:</strong> {scenario.explanation}
+                  </div>
                   {scenario.case_study && (
-                    <div
-                      className="case-study no-page-break"
-                      style={{
-                        paddingTop: 4,
-                        paddingBottom: 20,
-                        lineHeight: 1.4,
-                        borderRadius: 8,
-                        margin: '16px 0',
-                        background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-                        border: '1px solid #f59e0b',
-                        borderLeft: '4px solid #d97706',
-                      }}
-                    >
-                      <strong style={{ marginTop: 0, paddingTop: 0, display: 'block' }}>📈 Real Results:</strong>
+                    <div className="case-study">
+                      <strong>📈 Real Results:</strong>
                       {scenario.case_study}
                     </div>
                   )}
                 </div>
-                )
               ))}
             </>
           ) : (
-            <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
+            <div className="error-message">
               No scripts found or data missing.
             </div>
           )}
         </div>
 
-        {/* Page 6: CTA (dynamic) */}
+        {/* Page 6: CTA */}
         <div className="page">
-          <div
-            className="cta-block no-page-break"
-            style={{
-              paddingTop: 4,
-              paddingBottom: 20,
-              lineHeight: 1.4,
-              borderRadius: 8,
-              margin: '16px 0',
-              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-              color: 'white',
-              textAlign: 'center',
-            }}
-          >
-            <h2 style={{ marginTop: 0, paddingTop: 0, color: 'white', border: 'none', marginBottom: 16 }}>{ctaTitle}</h2>
-            <p style={{ color: '#cbd5e1', fontSize: 16, marginBottom: 24 }}>{ctaContent}</p>
+          <div className="cta-block">
+            <h2>{ctaTitle}</h2>
+            <p>{ctaContent}</p>
             {bookingLink && (
               <a href={bookingLink} target="_blank" rel="noopener noreferrer" className="cta-button">
                 🎯 Book a free Strategy Session
@@ -1042,28 +913,25 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
         </div>
       </div>
       
-      {/* Download Buttons (outside PDF export area) */}
-      <div className="download-buttons relative">
-        <button
-          onClick={tryDownloadPDF}
-          className="download-btn"
-        >
+      {/* Download Buttons */}
+      <div className="download-buttons">
+        <button onClick={tryDownloadPDF} className="download-btn">
           Download as PDF
         </button>
       </div>
+      
       {requirePayment && (
         <PaymentModal
           isOpen={showPaymentModal}
           onClose={async (paymentSuccess = false) => {
             setShowPaymentModal(false);
             if (paymentSuccess) {
-              // Refresh subscription status after payment
               const { data: { user } } = await supabase.auth.getUser();
               if (user && user.id) {
                 await SubscriptionService.getUserSubscription(user.id);
               }
               setPaymentComplete(true);
-              window.location.reload(); // Force full reload to get latest user/subscription state
+              window.location.reload();
             }
           }}
         />
