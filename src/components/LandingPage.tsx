@@ -50,6 +50,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
       await CampaignService.captureLead(campaign.id, email.trim());
       setIsSubmitted(true);
       setShowPDF(true);
+      // Reload the dashboard if open, or just reload the window to update counters
+      setTimeout(() => {
+        if (window.opener && !window.opener.closed) {
+          window.opener.location.reload();
+        }
+        // Optionally, close the landing page window after reload
+        // window.close();
+      }, 500);
     } catch (err: any) {
       console.error('Failed to submit email:', err);
       if (err && err.message) {
