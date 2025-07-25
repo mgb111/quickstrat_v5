@@ -38,7 +38,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             {/* Logo */}
             <div className="flex items-center">
               <div className="flex items-center">
-                <div className="bg-gradient-to-r from-gray-200 to-gray-700 w-8 h-8 rounded-lg flex items-center justify-center mr-3">
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 w-8 h-8 rounded-lg flex items-center justify-center mr-3">
                   <Zap className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-xl font-bold text-gray-900">Majorbeam</span>
@@ -120,7 +120,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 overflow-hidden pt-16">
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-700"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium mb-8">
@@ -194,8 +194,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             </div>
 
             <div className="text-center">
-              <div className="bg-gray-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Target className="w-8 h-8 text-gray-700" />
+              <div className="bg-green-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Target className="w-8 h-8 text-green-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Builds Trust Before You Even Meet</h3>
               <p className="text-gray-600 leading-relaxed">
@@ -204,8 +204,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             </div>
 
             <div className="text-center">
-              <div className="bg-gray-200 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <TrendingUp className="w-8 h-8 text-gray-700" />
+              <div className="bg-purple-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <TrendingUp className="w-8 h-8 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Grows Your Email List Automatically</h3>
               <p className="text-gray-600 leading-relaxed">
@@ -231,9 +231,9 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
               </svg>
               
-              <div className="bg-gray-100 p-6 rounded-xl">
-                <h5 className="font-bold text-gray-800 mb-2 text-lg">Result:</h5>
-                <p className="text-gray-700 font-medium">
+              <div className="bg-green-100 p-6 rounded-xl">
+                <h5 className="font-bold text-green-800 mb-2 text-lg">Result:</h5>
+                <p className="text-green-700 font-medium">
                   15+ leads per lead magnet for the average user
                 </p>
               </div>
@@ -276,8 +276,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             </div>
 
             <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
-              <div className="bg-gray-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
-                <Users className="w-6 h-6 text-gray-700" />
+              <div className="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                <Users className="w-6 h-6 text-green-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Fully Personalized Content</h3>
               <p className="text-gray-600">
@@ -286,8 +286,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             </div>
 
             <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
-              <div className="bg-gray-200 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
-                <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-purple-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                 </svg>
               </div>
@@ -298,8 +298,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             </div>
 
             <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
-              <div className="bg-gray-200 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
-                <Zap className="w-6 h-6 text-gray-500" />
+              <div className="bg-yellow-100 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                <Zap className="w-6 h-6 text-yellow-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">No Design Skills Required</h3>
               <p className="text-gray-600">
@@ -348,11 +348,11 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
               <div className="text-gray-600">Lead Magnets Created</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-gray-700 mb-2">15+</div>
+              <div className="text-4xl font-bold text-green-600 mb-2">15+</div>
               <div className="text-gray-600">Leads Per Lead Magnet</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-gray-700 mb-2">6 Min</div>
+              <div className="text-4xl font-bold text-purple-600 mb-2">6 Min</div>
               <div className="text-gray-600">Average Creation Time</div>
             </div>
           </div>
