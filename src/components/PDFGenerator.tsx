@@ -1,934 +1,359 @@
 // @ts-ignore: No types for html2pdf.js
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { PDFContent } from '../types';
-import html2pdf from 'html2pdf.js';
-
+import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Font, Link } from '@react-pdf/renderer';
 
 import { Toaster } from 'react-hot-toast';
 import PaymentModal from './PaymentButton';
 import { supabase } from '../lib/supabase';
 import { SubscriptionService } from '../lib/subscriptionService';
 
+// Register font (optional, for Inter or fallback)
+Font.register({
+  family: 'Inter',
+  fonts: [
+    { src: 'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTcviYw.woff2' },
+    { src: 'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTcviYw.woff2', fontWeight: 700 },
+  ],
+});
+
+const styles = StyleSheet.create({
+  page: {
+    backgroundColor: '#fff',
+    padding: 24,
+    fontFamily: 'Inter',
+    fontSize: 12,
+    color: '#334155',
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100%',
+  },
+  header: {
+    textAlign: 'center',
+    marginBottom: 12,
+    fontWeight: 700,
+    fontSize: 18,
+    color: '#1e293b',
+  },
+  subtitle: {
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#64748b',
+    marginBottom: 8,
+    fontWeight: 600,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: 700,
+    color: '#334155',
+    margin: '18px 0 8px 0',
+    textAlign: 'center',
+    borderBottom: '2px solid #3b82f6',
+    paddingBottom: 4,
+  },
+  text: {
+    marginBottom: 8,
+    lineHeight: 1.5,
+  },
+  table: {
+    width: '100%',
+    marginVertical: 8,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    flexDirection: 'column',
+  },
+  tableRow: {
+    flexDirection: 'row',
+  },
+  tableCell: {
+    flex: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#e5e7eb',
+    padding: 6,
+    fontSize: 11,
+  },
+  tableHeader: {
+    backgroundColor: '#3b82f6',
+    color: 'white',
+    fontWeight: 700,
+    fontSize: 11,
+    padding: 6,
+  },
+  checklistPhase: {
+    fontWeight: 700,
+    color: '#1e293b',
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  checklistItem: {
+    marginLeft: 12,
+    marginBottom: 2,
+    fontSize: 11,
+  },
+  scriptBlock: {
+    backgroundColor: '#fafafa',
+    borderRadius: 6,
+    border: '1px solid #e5e7eb',
+    padding: 8,
+    marginBottom: 10,
+  },
+  scriptDialog: {
+    backgroundColor: '#dbeafe',
+    borderRadius: 6,
+    padding: 6,
+    fontStyle: 'italic',
+    marginVertical: 4,
+    fontSize: 11,
+  },
+  scriptWhy: {
+    backgroundColor: '#dcfce7',
+    borderRadius: 6,
+    padding: 6,
+    fontSize: 10,
+    marginTop: 4,
+  },
+  caseStudy: {
+    backgroundColor: '#fef3c7',
+    borderLeft: '4px solid #d97706',
+    padding: 6,
+    marginVertical: 6,
+    fontSize: 10,
+  },
+  ctaBlock: {
+    backgroundColor: '#1e293b',
+    color: 'white',
+    textAlign: 'center',
+    padding: 16,
+    borderRadius: 8,
+    marginTop: 18,
+  },
+  ctaButton: {
+    backgroundColor: '#3b82f6',
+    color: 'white',
+    padding: 8,
+    borderRadius: 6,
+    fontWeight: 600,
+    margin: 4,
+    textDecoration: 'none',
+    fontSize: 12,
+    // display: 'inline-block', // Remove, not supported
+  },
+  ctaEmail: {
+    marginTop: 10,
+    fontSize: 10,
+    color: '#cbd5e1',
+  },
+});
+
 interface PDFGeneratorProps {
   data: PDFContent;
   campaignId: string;
-  requirePayment?: boolean; // New prop to control paywall
+  requirePayment?: boolean;
 }
 
-const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePayment = false }) => {
-  const pdfRef = useRef<HTMLDivElement>(null);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [paymentComplete, setPaymentComplete] = useState(false);
-  const [downloadedAfterPayment, setDownloadedAfterPayment] = useState(false); // Prevent double download
-
-  // When payment is completed, trigger PDF download
-  React.useEffect(() => {
-    if (requirePayment && paymentComplete && !downloadedAfterPayment) {
-      setDownloadedAfterPayment(true);
-      handleDownloadPDF();
-    }
-  }, [requirePayment, paymentComplete, downloadedAfterPayment]);
-
-  const tryDownloadPDF = async () => {
-    if (requirePayment && !paymentComplete) {
-      setShowPaymentModal(true);
-      return;
-    }
-    handleDownloadPDF();
-  };
-
-  // Debug logging to understand the data structure
-  console.log('PDFGenerator received data:', data);
-  console.log('Structured content:', data.structured_content);
-
-  // Direct mapping from backend data
+const PDFDocument = ({ data }: { data: PDFContent }) => {
   const structured = data.structured_content;
   const companyName = (structured?.title_page && 'brand_name' in structured.title_page)
     ? (structured.title_page as any).brand_name || 'QuickStrat'
     : 'QuickStrat';
   const mainTitle = structured?.title_page?.title || '';
   const subtitle = structured?.title_page?.subtitle || '';
-  
-  // Directly extract toolkit sections, with type guards
   const toolkit_sections = structured?.toolkit_sections || [];
-  console.log('Toolkit sections found:', toolkit_sections.length);
-  console.log('Toolkit sections:', toolkit_sections);
-  
-  // Log each section's structure
-  toolkit_sections.forEach((section: any, index: number) => {
-    console.log(`Section ${index + 1}:`, {
-      title: section.title,
-      type: section.type,
-      content: section.content,
-      layout: section.layout
-    });
-  });
-  
   const strategySection = toolkit_sections.find((s: any) => s.type === 'pros_and_cons_list');
   const checklistSection = toolkit_sections.find((s: any) => s.type === 'checklist');
   const scriptsSection = toolkit_sections.find((s: any) => s.type === 'scripts');
-  
-  console.log('Strategy section:', strategySection);
-  console.log('Checklist section:', checklistSection);
-  console.log('Scripts section:', scriptsSection);
-  
-  // Extract data with better error handling
-  const strategyRows = (strategySection && 
-    typeof strategySection.content === 'object' && 
-    strategySection.content !== null && 
-    'items' in strategySection.content)
-    ? (strategySection.content as any).items || [] 
-    : (strategySection && typeof strategySection.content === 'string')
-    ? parseProsAndConsFromString(strategySection.content)
+  const strategyRows = (strategySection && typeof strategySection.content === 'object' && strategySection.content !== null && 'items' in strategySection.content)
+    ? (strategySection.content as any).items || []
     : [];
-    
-  const checklistPhases = (checklistSection && 
-    typeof checklistSection.content === 'object' && 
-    checklistSection.content !== null && 
-    'phases' in checklistSection.content)
-    ? (checklistSection.content as any).phases || [] 
-    : (checklistSection && typeof checklistSection.content === 'string')
-    ? parseChecklistFromString(checklistSection.content)
+  const checklistPhases = (checklistSection && typeof checklistSection.content === 'object' && checklistSection.content !== null && 'phases' in checklistSection.content)
+    ? (checklistSection.content as any).phases || []
     : [];
-    
-  const scripts = (scriptsSection && 
-    typeof scriptsSection.content === 'object' && 
-    scriptsSection.content !== null && 
-    'scenarios' in scriptsSection.content)
-    ? (scriptsSection.content as any).scenarios || [] 
-    : (scriptsSection && typeof scriptsSection.content === 'string')
-    ? parseScriptsFromString(scriptsSection.content)
+  const scripts = (scriptsSection && typeof scriptsSection.content === 'object' && scriptsSection.content !== null && 'scenarios' in scriptsSection.content)
+    ? (scriptsSection.content as any).scenarios || []
     : [];
-    
-  console.log('Strategy rows:', strategyRows.length);
-  console.log('Checklist phases:', checklistPhases.length);
-  console.log('Scripts:', scripts.length);
-  
-  // Debug case studies
-  console.log('Strategy case studies:', strategyRows.filter((row: any) => row.case_study).length);
-  console.log('Checklist case study:', checklistSection?.content && typeof checklistSection.content === 'object' && 'case_study' in checklistSection.content ? checklistSection.content.case_study : 'None');
-  console.log('Script case studies:', scripts.filter((script: any) => script.case_study).length);
-  
-  // Helper functions to parse string content
-  function parseProsAndConsFromString(content: string): any[] {
-    const items: any[] = [];
-    const lines = content.split('\n');
-    let currentItem: any = {};
-    
-    for (const line of lines) {
-      const trimmedLine = line.trim();
-      if (trimmedLine.match(/^\d+\./)) {
-        // New item starting
-        if (currentItem.method_name) {
-          items.push(currentItem);
-        }
-        currentItem = { method_name: trimmedLine.replace(/^\d+\.\s*/, '') };
-      } else if (trimmedLine.startsWith('Pros:')) {
-        currentItem.pros = trimmedLine.replace('Pros:', '').trim();
-      } else if (trimmedLine.startsWith('Cons:')) {
-        currentItem.cons = trimmedLine.replace('Cons:', '').trim();
-      }
-    }
-    
-    if (currentItem.method_name) {
-      items.push(currentItem);
-    }
-    
-    return items;
-  }
-  
-  function parseChecklistFromString(content: string): any[] {
-    const phases: any[] = [];
-    const lines = content.split('\n');
-    let currentPhase: any = null;
-    
-    for (const line of lines) {
-      const trimmedLine = line.trim();
-      if (trimmedLine.startsWith('Phase')) {
-        if (currentPhase) {
-          phases.push(currentPhase);
-        }
-        currentPhase = {
-          phase_title: trimmedLine,
-          items: []
-        };
-      } else if (trimmedLine.match(/^\d+\.\d+/) && currentPhase) {
-        currentPhase.items.push(trimmedLine);
-      }
-    }
-    
-    if (currentPhase) {
-      phases.push(currentPhase);
-    }
-    
-    return phases;
-  }
-  
-  function parseScriptsFromString(content: string): any[] {
-    const scenarios: any[] = [];
-    const lines = content.split('\n');
-    let currentScenario: any = {};
-    
-    for (const line of lines) {
-      const trimmedLine = line.trim();
-      if (trimmedLine.startsWith('Scenario')) {
-        if (currentScenario.trigger) {
-          scenarios.push(currentScenario);
-        }
-        currentScenario = {};
-      } else if (trimmedLine.startsWith('When they say:')) {
-        currentScenario.trigger = trimmedLine.replace('When they say:', '').replace(/"/g, '').trim();
-      } else if (trimmedLine.startsWith('You say:')) {
-        currentScenario.response = trimmedLine.replace('You say:', '').replace(/"/g, '').trim();
-      } else if (trimmedLine.startsWith('Strategy:')) {
-        currentScenario.explanation = trimmedLine.replace('Strategy:', '').trim();
-      }
-    }
-    
-    if (currentScenario.trigger) {
-      scenarios.push(currentScenario);
-    }
-    
-    return scenarios;
-  }
-  
   const ctaTitle = structured?.cta_page?.title || '';
   const ctaContent = structured?.cta_page?.content || '';
   const bookingLink = data?.bookingLink || '';
   const website = data?.website || '';
   const supportEmail = data?.supportEmail || '';
 
-  const handleDownloadPDF = async () => {
-    if (!pdfRef.current) return;
-    // Use static import
-    const container = pdfRef.current;
-    html2pdf()
-      .set({
-        margin: 0,
-        filename: 'lead-magnet.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'] }
-      })
-      .from(container)
-      .save();
+  return (
+    <Document>
+      {/* Page 1: Welcome */}
+      <Page style={styles.page}>
+        <Text style={styles.header}>{companyName}</Text>
+        <Text style={styles.sectionTitle}>{mainTitle}</Text>
+        <Text style={styles.subtitle}>{subtitle}</Text>
+        <Text style={styles.text}>A QuickStrat AI Toolkit</Text>
+        <View style={{ marginTop: 12 }}>
+          {data.founder_intro ? (
+            <Text style={styles.text}>{data.founder_intro}</Text>
+          ) : (
+            data.founderName && data.brandName && data.problemStatement && data.desiredOutcome && (
+              <>
+                <Text style={styles.text}>Hi, I'm {data.founderName}, founder of {data.brandName}. I didn't start out with a tool—I started with a problem.</Text>
+                <Text style={styles.text}>I was {data.problemStatement}.</Text>
+                <Text style={styles.text}>So I built something for myself: {data.brandName}.</Text>
+                <Text style={styles.text}>It worked. Now {data.desiredOutcome}.</Text>
+              </>
+            )
+          )}
+        </View>
+      </Page>
+      {/* Page 2: What You'll Learn */}
+      <Page style={styles.page}>
+        <Text style={styles.sectionTitle}>🚀 What You'll Learn</Text>
+        <Text style={styles.text}>The 3-Step Lead Magnet System</Text>
+        <View style={{ marginTop: 8 }}>
+          <Text style={styles.text}>🧠 Pick Your Strategy: Understand what works (and what drains your time).</Text>
+          <Text style={styles.text}>✅ Follow the Checklist: Nail the daily actions that drive results.</Text>
+          <Text style={styles.text}>💬 Use Proven Scripts: Say the right thing when people show interest.</Text>
+        </View>
+      </Page>
+      {/* Step 1: Strategy Table */}
+      <Page style={styles.page}>
+        <Text style={styles.sectionTitle}>📊 Strategy Showdown: What Actually Works?</Text>
+        {strategyRows.length > 0 ? (
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Strategy</Text>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Pros</Text>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Cons</Text>
+            </View>
+            {strategyRows.map((row: any, idx: number) => (
+              <View style={styles.tableRow} key={idx}>
+                <Text style={styles.tableCell}>{row.method_name}</Text>
+                <Text style={styles.tableCell}>{row.pros}</Text>
+                <Text style={styles.tableCell}>{row.cons}</Text>
+              </View>
+            ))}
+          </View>
+        ) : (
+          <Text style={{ color: '#ef4444', backgroundColor: '#fef2f2', padding: 10, borderRadius: 6, border: '1px solid #fecaca', textAlign: 'center' }}>
+            No strategies found or data missing.
+          </Text>
+        )}
+        {strategyRows.some((row: any) => row.case_study) && (
+          <View style={styles.caseStudy}>
+            <Text>📈 Real-World Examples</Text>
+            {strategyRows.map((row: any, idx: number) => (
+              row.case_study && (
+                <Text key={idx} style={styles.text}><Text style={{ fontWeight: 700 }}>{row.method_name} in Action:</Text> {row.case_study}</Text>
+              )
+            ))}
+          </View>
+        )}
+        <Text style={{ ...styles.text, backgroundColor: '#dbeafe', borderLeft: '4px solid #3b82f6', padding: 6, borderRadius: 6, marginTop: 10 }}>
+          💡 Pro Tip: Pick 1–2 strategies and go deep. Don't spread yourself thin.
+        </Text>
+      </Page>
+      {/* Step 2: Checklist */}
+      <Page style={styles.page}>
+        <Text style={styles.sectionTitle}>✅ The Social Media Checklist</Text>
+        <Text style={styles.text}>Use this to stay consistent and intentional.</Text>
+        {checklistPhases.length > 0 ? (
+          checklistPhases.map((phase: any, idx: number) => (
+            <View key={idx}>
+              <Text style={styles.checklistPhase}>{phase.phase_title}</Text>
+              {phase.items.map((item: string, i: number) => (
+                <Text key={i} style={styles.checklistItem}>☐ {item}</Text>
+              ))}
+            </View>
+          ))
+        ) : (
+          <Text style={{ color: '#ef4444', backgroundColor: '#fef2f2', padding: 10, borderRadius: 6, border: '1px solid #fecaca', textAlign: 'center' }}>
+            No checklist phases found or data missing.
+          </Text>
+        )}
+        {checklistSection?.content && typeof checklistSection.content === 'object' && 'case_study' in checklistSection.content && checklistSection.content.case_study && (
+          <View style={styles.caseStudy}>
+            <Text>📈 Success Story: {checklistSection.content.case_study}</Text>
+          </View>
+        )}
+      </Page>
+      {/* Step 3: Scripts (grouped 3 per page) */}
+      {scripts.length > 0 ? (
+        Array.from({ length: Math.ceil(scripts.length / 3) }).map((_, pageIdx) => (
+          <Page style={styles.page} key={`script-page-${pageIdx}`}>
+            <Text style={styles.sectionTitle}>💬 Scripts That Turn Comments Into Clients</Text>
+            {scripts.slice(pageIdx * 3, pageIdx * 3 + 3).map((scenario: any, idx: number) => (
+              <View style={styles.scriptBlock} key={idx}>
+                <Text style={{ fontWeight: 700 }}>Scenario {pageIdx * 3 + idx + 1}: {scenario.trigger}</Text>
+                <Text style={styles.scriptDialog}>{scenario.response}</Text>
+                <Text style={styles.scriptWhy}>✅ <Text style={{ fontWeight: 700 }}>Why it works:</Text> {scenario.explanation}</Text>
+                {scenario.case_study && (
+                  <View style={styles.caseStudy}>
+                    <Text>📈 Real Results: {scenario.case_study}</Text>
+                  </View>
+                )}
+              </View>
+            ))}
+          </Page>
+        ))
+      ) : (
+        <Page style={styles.page}>
+          <Text style={styles.sectionTitle}>💬 Scripts That Turn Comments Into Clients</Text>
+          <Text style={{ color: '#ef4444', backgroundColor: '#fef2f2', padding: 10, borderRadius: 6, border: '1px solid #fecaca', textAlign: 'center' }}>
+            No scripts found or data missing.
+          </Text>
+        </Page>
+      )}
+      {/* CTA Page */}
+      <Page style={styles.page}>
+        <View style={styles.ctaBlock}>
+          <Text style={{ fontWeight: 700, fontSize: 14 }}>{ctaTitle}</Text>
+          <Text style={{ marginBottom: 8 }}>{ctaContent}</Text>
+          {bookingLink && (
+            <Link src={bookingLink} style={styles.ctaButton}>
+              🎯 Book a free Strategy Session
+            </Link>
+          )}
+          {website && (
+            <Link src={website} style={styles.ctaButton}>
+              🌐 Explore the tool
+            </Link>
+          )}
+          {supportEmail && (
+            <Text style={styles.ctaEmail}>
+              📧 Questions? <Link src={`mailto:${supportEmail}`}>{supportEmail}</Link>
+            </Text>
+          )}
+        </View>
+      </Page>
+    </Document>
+  );
+};
+
+const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePayment = false }) => {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentComplete, setPaymentComplete] = useState(false);
+
+  const tryDownloadPDF = async () => {
+    if (requirePayment && !paymentComplete) {
+      setShowPaymentModal(true);
+      return;
+    }
+    // No-op: download handled by PDFDownloadLink
   };
 
   return (
     <div className="pdf-preview-container">
-      <div className="pdf-preview-box" ref={pdfRef}>
-        <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-          
-          .pdf-preview-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f8fafc;
-            padding: 20px;
-            min-height: 100vh;
-          }
-          
-          .pdf-preview-box {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
-            max-width: 800px;
-            width: 100%;
-            padding: 0;
-            margin: 0 auto;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            overflow: hidden;
-          }
-          
-          .page {
-            background-color: white;
-            width: 100%;
-            padding: 32px 20px; /* reduced for density */
-            box-sizing: border-box;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            page-break-after: always;
-            border-bottom: 1px solid #e5e7eb;
-            min-height: 500px;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-          }
-          
-          .page:last-child { 
-            page-break-after: avoid; 
-            border-bottom: none; 
-          }
-          
-          .page-header { 
-            position: absolute;
-            top: 12px;
-            right: 18px;
-            font-size: 11px;
-            color: #64748b;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-          
-          h1 { 
-            font-size: 30px;
-            color: #1e293b;
-            font-weight: 900;
-            margin: 0 0 10px 0;
-            line-height: 1.1;
-            text-align: center;
-          }
-          
-          h2 { 
-            font-size: 22px;
-            color: #334155;
-            font-weight: 800;
-            border-bottom: 2px solid #3b82f6;
-            padding-bottom: 8px;
-            margin: 24px 0 18px 0;
-            text-align: center;
-          }
-          
-          h3 { 
-            font-size: 16px;
-            color: #475569;
-            font-weight: 700;
-            margin: 18px 0 12px 0;
-          }
-          
-          p, li { 
-            font-size: 14px;
-            line-height: 1.5;
-            color: #334155;
-            margin: 0 0 12px 0;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
-          }
-          
-          a { 
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-          }
-          
-          .subtitle { 
-            font-size: 15px;
-            font-weight: 600;
-            color: #64748b;
-            margin: 0 0 6px 0;
-            text-align: center;
-          }
-          
-          .toolkit-credit { 
-            font-style: italic;
-            color: #94a3b8;
-            margin: 0 0 24px 0;
-            text-align: center;
-            font-size: 12px;
-          }
-          
-          .welcome-header { 
-            text-align: center;
-            margin-bottom: 24px;
-          }
-          
-          .welcome-header .logo { 
-            font-weight: 800;
-            font-size: 20px;
-            color: #1e293b;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-          }
-          
-          .welcome-intro { 
-            font-size: 14px;
-            margin-bottom: 24px;
-            text-align: center;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-          }
-          
-          .welcome-list { 
-            list-style: none;
-            padding-left: 0;
-            max-width: 500px;
-            margin: 0 auto;
-          }
-          
-          .welcome-list li { 
-            padding-left: 28px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="%233b82f6" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>');
-            background-repeat: no-repeat;
-            background-position: left center;
-            background-size: 18px;
-            margin-bottom: 10px;
-          }
-          
-          .learn-container { 
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 18px;
-            margin-top: 24px;
-            text-align: center;
-          }
-          
-          .learn-item { 
-            padding: 20px 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            transition: all 0.3s ease;
-            page-break-inside: avoid;
-          }
-          
-          .learn-item .icon { 
-            font-size: 32px;
-            margin-bottom: 10px;
-            display: block;
-          }
-          
-          .learn-item h3 { 
-            margin: 0 0 6px 0;
-            font-size: 15px;
-            font-weight: 700;
-            color: #1e293b;
-          }
-          
-          .learn-item p {
-            margin: 0;
-            font-size: 12px;
-            color: #64748b;
-            line-height: 1.5;
-          }
-          
-          .pro-tip { 
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            border: 1px solid #93c5fd;
-            border-left: 4px solid #3b82f6;
-            padding: 12px 14px;
-            margin-top: 18px;
-            border-radius: 8px;
-            font-size: 13px;
-            page-break-inside: avoid;
-          }
-          
-          .pro-tip strong {
-            color: #1e40af;
-          }
-          
-          .strategy-table { 
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 18px;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
-            font-size: 13px;
-            page-break-inside: avoid;
-          }
-          
-          .strategy-table th, .strategy-table td { 
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-            vertical-align: top;
-            word-wrap: break-word;
-            word-break: break-word;
-            hyphens: auto;
-            max-width: 0;
-            overflow-wrap: break-word;
-          }
-          
-          .strategy-table th { 
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-          
-          .strategy-table tr:nth-child(even) { 
-            background-color: #f8fafc;
-          }
-          
-          .strategy-table tr:hover {
-            background-color: #f1f5f9;
-          }
-          
-          .strategy-table td:first-child { 
-            font-weight: 700;
-            color: #1e293b;
-          }
-          
-          .checklist-box { 
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            padding: 12px;
-            border-radius: 10px;
-            border: 2px solid #e5e7eb;
-            margin-top: 10px;
-            page-break-inside: avoid;
-          }
-          
-          .checklist { 
-            list-style: none;
-            padding-left: 0;
-            margin: 0;
-          }
-          
-          .checklist li { 
-            font-size: 12px;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: flex-start;
-            line-height: 1.35;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
-          }
-          
-          .checklist li::before { 
-            content: '☐';
-            font-size: 14px;
-            margin-right: 6px;
-            color: #3b82f6;
-            margin-top: 2px;
-            flex-shrink: 0;
-          }
-          
-          .script { 
-            margin-bottom: 18px;
-            padding: 10px 12px;
-            background: #fafafa;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            font-size: 12px;
-            page-break-inside: avoid;
-          }
-          
-          .script h3 { 
-            border-bottom: none;
-            margin-top: 0;
-            color: #1e293b;
-            font-size: 13px;
-          }
-          
-          .script-dialog { 
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            border-radius: 12px 12px 12px 5px;
-            padding: 8px 10px;
-            position: relative;
-            font-style: italic;
-            border: 1px solid #93c5fd;
-            margin: 8px 0;
-            font-size: 12px;
-            page-break-inside: avoid;
-          }
-          
-          .script-why { 
-            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-            padding: 7px 10px;
-            border-radius: 7px;
-            margin-top: 7px;
-            font-size: 11px;
-            border: 1px solid #86efac;
-            border-left: 4px solid #22c55e;
-            page-break-inside: avoid;
-          }
-          
-          .script-why strong {
-            color: #15803d;
-          }
-          
-          .case-study { 
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 1px solid #f59e0b;
-            border-left: 4px solid #d97706;
-            padding: 10px 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            font-size: 12px;
-            line-height: 1.5;
-            page-break-inside: avoid;
-          }
-          
-          .case-study strong {
-            color: #92400e;
-            display: block;
-            margin-bottom: 6px;
-            font-size: 12px;
-          }
-          
-          .cta-block { 
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: white;
-            text-align: center;
-            padding: 28px 16px;
-            border-radius: 10px;
-            margin-top: 18px;
-            page-break-inside: avoid;
-          }
-          
-          .cta-block h2 { 
-            color: white;
-            border: none;
-            margin-bottom: 10px;
-          }
-          
-          .cta-block p {
-            color: #cbd5e1;
-            font-size: 13px;
-            margin-bottom: 14px;
-          }
-          
-          .cta-button { 
-            display: inline-block;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            padding: 10px 18px;
-            margin: 8px 4px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-          }
-          
-          .cta-button:hover { 
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
-          }
-          
-          .cta-email { 
-            margin-top: 14px;
-            font-size: 11px;
-          }
-          
-          .cta-email a { 
-            color: #94a3b8;
-            text-decoration: underline;
-          }
-          
-          .download-buttons {
-            display: flex;
-            justify-content: center;
-            padding: 18px;
-            background: #f8fafc;
-            border-top: 1px solid #e5e7eb;
-          }
-          
-          .download-btn {
-            padding: 10px 18px;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
-          }
-          
-          .download-btn:hover {
-            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 41, 59, 0.3);
-          }
-          
-          @media print { 
-            .pdf-preview-container {
-              background: white;
-              padding: 0;
-            }
-            .pdf-preview-box {
-              box-shadow: none;
-              border-radius: 0;
-            }
-            .page { 
-              margin: 0;
-              padding: 24px;
-              box-shadow: none;
-              page-break-after: always;
-              border: none;
-            }
-            .page:last-child { 
-              page-break-after: avoid;
-            }
-            .download-buttons {
-              display: none;
-            }
-          }
-          
-          @media (max-width: 768px) {
-            .pdf-preview-container {
-              padding: 8px;
-            }
-            
-            .pdf-preview-box {
-              border-radius: 8px;
-            }
-            
-            .page {
-              padding: 18px 8px;
-            }
-            
-            h1 {
-              font-size: 20px;
-            }
-            
-            h2 {
-              font-size: 16px;
-            }
-            
-            .learn-container {
-              grid-template-columns: 1fr;
-              gap: 10px;
-            }
-            
-            .strategy-table {
-              font-size: 11px;
-            }
-            
-            .strategy-table th,
-            .strategy-table td {
-              padding: 7px 4px;
-            }
-            
-            .cta-block {
-              padding: 14px 8px;
-            }
-            
-            .cta-button {
-              display: block;
-              margin: 8px auto;
-              width: fit-content;
-            }
-          }
-          .script-dialog, .script-why, .case-study, .strategy-table, .checklist-box, .pro-tip, .cta-block {
-            page-break-inside: avoid;
-          }
-        `}</style>
-
-        {/* Page 1: Welcome */}
-        <div className="page" id="pdf-content">
-          <div className="welcome-header">
-            <div className="logo">{companyName}</div>
-          </div>
-          <h1>{mainTitle}</h1>
-          <p className="subtitle">{subtitle}</p>
-          <p className="toolkit-credit">A QuickStrat AI Toolkit</p>
-          {/* Personalized founder-style introduction */}
-          <div className="welcome-intro">
-            {data.founder_intro ? (
-              <p>{data.founder_intro}</p>
-            ) : (
-              data.founderName && data.brandName && data.problemStatement && data.desiredOutcome && (
-                <>
-                  <p>Hi, I'm {data.founderName}, founder of {data.brandName}. I didn't start out with a tool—I started with a problem.</p>
-                  <p>I was {data.problemStatement}.</p>
-                  <p>So I built something for myself: {data.brandName}.</p>
-                  <p>It worked. Now {data.desiredOutcome}.</p>
-                </>
-              )
-            )}
-          </div>
-        </div>
-
-        {/* Page 2: What You'll Learn (static) */}
-        <div className="page">
-          <div className="page-header">What You'll Learn</div>
-          <h2>🚀 What You'll Learn</h2>
-          <h3>The 3-Step Lead Magnet System</h3>
-          <div className="learn-container">
-            <div className="learn-item">
-              <div className="icon">🧠</div>
-              <h3>Pick Your Strategy</h3>
-              <p>Understand what works (and what drains your time).</p>
-            </div>
-            <div className="learn-item">
-              <div className="icon">✅</div>
-              <h3>Follow the Checklist</h3>
-              <p>Nail the daily actions that drive results.</p>
-            </div>
-            <div className="learn-item">
-              <div className="icon">💬</div>
-              <h3>Use Proven Scripts</h3>
-              <p>Say the right thing when people show interest.</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Step 1: Strategy Table (robust) */}
-        <div className="page strategy-page-small">
-          <div className="page-header">Step 1 of 3</div>
-          <h2>📊 Strategy Showdown: What Actually Works?</h2>
-          {strategyRows.length > 0 ? (
-            <>
-              <table className="strategy-table">
-                <thead>
-                  <tr>
-                    <th>Strategy</th>
-                    <th>Pros</th>
-                    <th>Cons</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {strategyRows.map((row: any, idx: number) => (
-                    <tr key={idx}>
-                      <td><strong>{row.method_name}</strong></td>
-                      <td>{row.pros}</td>
-                      <td>{row.cons}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              
-              {/* Case Studies for Strategies */}
-              {strategyRows.some((row: any) => row.case_study) && (
-                <div style={{marginTop: '24px'}}>
-                  <h3 style={{marginBottom: '16px', color: '#1e293b'}}>📈 Real-World Examples</h3>
-                  {strategyRows.map((row: any, idx: number) => (
-                    row.case_study && (
-                      <div key={idx} className="case-study no-page-break">
-                        <strong>💡 {row.method_name} in Action:</strong>
-                        {row.case_study}
-                      </div>
-                    )
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
-              No strategies found or data missing.
-            </div>
-          )}
-          <div className="pro-tip">
-            <strong>💡 Pro Tip:</strong> Pick 1–2 strategies and go deep. Don't spread yourself thin.
-          </div>
-        </div>
-
-        {/* Step 2: Checklist (robust) */}
-        <div className="page">
-          <div className="page-header">Step 2 of 3</div>
-          <h2>✅ The Social Media Checklist</h2>
-          <p style={{textAlign: 'center', marginBottom: '32px'}}>Use this to stay consistent and intentional.</p>
-          <div className="checklist-box">
-            {checklistPhases.length > 0 ? (
-              <>
-                {checklistPhases.map((phase: any, idx: number) => (
-                  <React.Fragment key={idx}>
-                    <h3>{phase.phase_title}</h3>
-                    <ul className="checklist">
-                      {phase.items.map((item: string, i: number) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </React.Fragment>
-                ))}
-                
-                {/* Case Study for Checklist */}
-                {checklistSection?.content && 
-                 typeof checklistSection.content === 'object' && 
-                 'case_study' in checklistSection.content && 
-                 checklistSection.content.case_study && (
-                  <div className="case-study no-page-break" style={{marginTop: '24px'}}>
-                    <strong>📈 Success Story:</strong>
-                    {checklistSection.content.case_study}
-                  </div>
-                )}
-              </>
-            ) : (
-              <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
-                No checklist phases found or data missing.
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Step 3: Scripts (robust) */}
-        {/* Render scripts in groups of 3 per page for better page breaks */}
-        {(() => {
-          if (!scripts.length) {
-            return (
-              <div className="page">
-                <div className="page-header">Step 3 of 3</div>
-                <h2>💬 Scripts That Turn Comments Into Clients</h2>
-                <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
-                  No scripts found or data missing.
-                </div>
-              </div>
-            );
-          }
-          const pages = [];
-          for (let i = 0; i < scripts.length; i += 3) {
-            pages.push(
-              <div className="page" key={`script-page-${i/3}`}>
-                <div className="page-header">Step 3 of 3</div>
-                <h2>💬 Scripts That Turn Comments Into Clients</h2>
-                {scripts.slice(i, i + 3).map((scenario: any, idx: number) => (
-                  <div className="script" key={i + idx}>
-                    <h3>Scenario {i + idx + 1}: {scenario.trigger}</h3>
-                    <p><strong>You say:</strong></p>
-                    <div className="script-dialog">{scenario.response}</div>
-                    <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
-                    {scenario.case_study && (
-                      <div className="case-study no-page-break" style={{marginTop: '12px'}}>
-                        <strong>📈 Real Results:</strong>
-                        {scenario.case_study}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            );
-          }
-          return pages;
-        })()}
-
-        {/* Page 6: CTA (dynamic) */}
-        <div className="page">
-          <div className="cta-block no-page-break">
-            <h2>{ctaTitle}</h2>
-            <p>{ctaContent}</p>
-            {bookingLink && (
-              <a href={bookingLink} target="_blank" rel="noopener noreferrer" className="cta-button">
-                🎯 Book a free Strategy Session
-              </a>
-            )}
-            {website && (
-              <a href={website} target="_blank" rel="noopener noreferrer" className="cta-button">
-                🌐 Explore the tool
-              </a>
-            )}
-            {supportEmail && (
-              <p className="cta-email">
-                📧 Questions? <a href={`mailto:${supportEmail}`}>{supportEmail}</a>
-              </p>
-            )}
-          </div>
-        </div>
+      <div className="pdf-preview-box">
+        {/* Optionally, render a preview here using HTML or react-pdf's PDFViewer */}
       </div>
-      
-      {/* Download Buttons (outside PDF export area) */}
       <div className="download-buttons relative">
-        <button
-          onClick={tryDownloadPDF}
-          className="download-btn"
+        <PDFDownloadLink
+          document={<PDFDocument data={data} />}
+          fileName="lead-magnet.pdf"
         >
-          Download as PDF
-        </button>
+          {({ loading }) =>
+            loading
+              ? <span>Preparing PDF...</span>
+              : <button className="download-btn" onClick={tryDownloadPDF}>Download as PDF</button>
+          }
+        </PDFDownloadLink>
       </div>
       {requirePayment && (
         <PaymentModal
@@ -942,7 +367,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
                 await SubscriptionService.getUserSubscription(user.id);
               }
               setPaymentComplete(true);
-              window.location.reload(); // Force full reload to get latest user/subscription state
+              window.location.reload();
             }
           }}
         />
