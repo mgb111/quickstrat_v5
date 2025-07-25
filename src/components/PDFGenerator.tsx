@@ -17,6 +17,15 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
   const pdfRef = useRef<HTMLDivElement>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentComplete, setPaymentComplete] = useState(false);
+  const [downloadedAfterPayment, setDownloadedAfterPayment] = useState(false); // Prevent double download
+
+  // When payment is completed, trigger PDF download
+  React.useEffect(() => {
+    if (requirePayment && paymentComplete && !downloadedAfterPayment) {
+      setDownloadedAfterPayment(true);
+      handleDownloadPDF();
+    }
+  }, [requirePayment, paymentComplete, downloadedAfterPayment]);
 
   const tryDownloadPDF = async () => {
     if (requirePayment && !paymentComplete) {
