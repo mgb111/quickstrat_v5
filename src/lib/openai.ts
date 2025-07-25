@@ -321,7 +321,7 @@ EXAMPLE CHECKLIST FORMAT:
   "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs."
 }
 
-For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), "explanation" (strategy behind the script), and a "case_study" field with a detailed real-world example (2-3 sentences) showing the script in action with specific results. Include specific numbers, outcomes, and context to make it relatable.
+For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), "explanation" (strategy behind the script), and a "case_study" field with a detailed real-world example (2-3 sentences) showing the script in action with specific results. Include specific numbers, outcomes, and context to make it relatable. **If you do not provide at least 2 scenarios in the scripts section, you MUST rewrite and return the correct format.**
 
 For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words. Include a real-life example or case study for at least one mistake.
 
@@ -421,11 +421,11 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
       const res = await client.chat.completions.create({
         model: 'gpt-4',
         messages: [
-          { role: 'system', content: 'You are an expert instructional designer. Output strictly valid JSON as defined.' },
+          { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: Generate EXACTLY 3 toolkit sections. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc. DO NOT create both checklist and step-by-step guide to avoid redundancy. Use the exact CTA text provided.' },
           { role: 'user', content: prompt }
         ],
         temperature: 0.7,
-        max_tokens: 2000
+        max_tokens: 4500
       });
 
       if (!res.choices?.[0]?.message?.content) {
@@ -433,7 +433,12 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
       }
 
       const content = res.choices[0].message.content;
-      const parsed = JSON.parse(content);
+      let parsed;
+      try {
+        parsed = JSON.parse(content);
+      } catch (err) {
+        throw new Error('Failed to parse JSON from OpenAI response');
+      }
 
       // Fallback: If a checklist or scripts section's content is a flat array, wrap it in a simple object
       if (Array.isArray(parsed.toolkit_sections)) {
@@ -456,17 +461,32 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
         throw new Error('Must have at least 2 toolkit sections');
       }
       // Require at least 2 items/scenarios in each toolkit section
+      let scriptsSectionError = false;
       for (const section of parsed.toolkit_sections) {
         if (section.type === 'checklist' && section.content?.phases && Array.isArray(section.content.phases)) {
           const totalItems = section.content.phases.reduce((sum: number, phase: any) => sum + (Array.isArray(phase.items) ? phase.items.length : 0), 0);
           if (totalItems < 2) throw new Error('Checklist section must have at least 2 items');
         }
         if (section.type === 'scripts' && section.content?.scenarios && Array.isArray(section.content.scenarios)) {
-          if (section.content.scenarios.length < 2) throw new Error('Scripts section must have at least 2 scenarios');
+          if (section.content.scenarios.length < 2) scriptsSectionError = true;
         }
         if (section.type === 'pros_and_cons_list' && section.content?.items && Array.isArray(section.content.items)) {
           if (section.content.items.length < 2) throw new Error('Pros and cons section must have at least 2 items');
         }
+      }
+
+      // If scripts section error and this is the last attempt, auto-duplicate the scenario
+      if (scriptsSectionError && attempt === 3) {
+        parsed.toolkit_sections = parsed.toolkit_sections.map((section: any) => {
+          if (section.type === 'scripts' && section.content?.scenarios && section.content.scenarios.length === 1) {
+            // Duplicate the scenario to make 2
+            section.content.scenarios.push({ ...section.content.scenarios[0] });
+          }
+          return section;
+        });
+      } else if (scriptsSectionError) {
+        // Retry if not last attempt
+        throw new Error('Scripts section must have at least 2 scenarios');
       }
 
       // Return the structured content for better PDF formatting
