@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 
 interface PaymentModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (success: boolean) => void;
 }
 
 const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
@@ -23,7 +23,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (!isOpen) return;
     const onFocus = () => {
-      onClose();
+      // Ask user if payment was completed
+      setTimeout(() => {
+        if (window.confirm('Did you complete the payment successfully?')) {
+          onClose(true);
+        } else {
+          onClose(false);
+        }
+      }, 200);
     };
     window.addEventListener('focus', onFocus);
     return () => window.removeEventListener('focus', onFocus);
@@ -39,7 +46,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         <form ref={formRef}></form>
         <button
           className="text-blue-600 hover:underline text-sm mt-4"
-          onClick={onClose}
+          onClick={() => onClose(false)}
         >
           Cancel
         </button>

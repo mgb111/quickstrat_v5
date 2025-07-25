@@ -943,9 +943,9 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
       {requirePayment && (
         <PaymentModal
           isOpen={showPaymentModal}
-          onClose={() => {
+          onClose={(paymentSuccess = false) => {
             setShowPaymentModal(false);
-            setPaymentComplete(true);
+            if (paymentSuccess) setPaymentComplete(true);
           }}
         />
       )}
