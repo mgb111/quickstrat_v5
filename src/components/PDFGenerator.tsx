@@ -235,514 +235,57 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
   };
 
   return (
-    <div className="pdf-preview-container">
+    <div className="pdf-preview-container" style={{ background: '#f8fafc', minHeight: '100vh', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <div
         className="pdf-preview-box"
         ref={pdfRef}
-        style={{ background: '#fff', overflow: 'hidden' }}
+        style={{
+          background: '#fff',
+          overflow: 'hidden',
+          width: 794, // A4 width at 96dpi
+          minHeight: '1123px', // A4 height at 96dpi
+          margin: '32px auto',
+          borderRadius: 12,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06)',
+          fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif",
+          position: 'relative',
+        }}
       >
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-          
-          .pdf-preview-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f8fafc;
-            padding: 20px;
-            min-height: 100vh;
-          }
-          
-          .pdf-preview-box {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
-            max-width: 800px;
-            width: 100%;
-            padding: 0;
-            margin: 0 auto;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            overflow: hidden;
-          }
-          
-          .page {
-            background-color: white;
-            width: 100%;
-            padding: 32px 20px; /* reduced for density */
-            box-sizing: border-box;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            page-break-after: always;
-            border-bottom: 1px solid #e5e7eb;
-            min-height: 500px;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-          }
-          
-          .page:last-child { 
-            page-break-after: avoid; 
-            border-bottom: none; 
-          }
-          
-          .page-header { 
-            position: absolute;
-            top: 12px;
-            right: 18px;
-            font-size: 11px;
-            color: #64748b;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-          
-          h1 { 
-            font-size: 30px;
-            color: #1e293b;
-            font-weight: 900;
-            margin: 0 0 10px 0;
-            line-height: 1.1;
-            text-align: center;
-          }
-          
-          h2 { 
-            font-size: 22px;
-            color: #334155;
-            font-weight: 800;
-            border-bottom: 2px solid #3b82f6;
-            padding-bottom: 8px;
-            margin: 24px 0 18px 0;
-            text-align: center;
-          }
-          
-          h3 { 
-            font-size: 16px;
-            color: #475569;
-            font-weight: 700;
-            margin: 18px 0 12px 0;
-          }
-          
-          p, li { 
-            font-size: 14px;
-            line-height: 1.5;
-            color: #334155;
-            margin: 0 0 12px 0;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
-          }
-          
-          a { 
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-          }
-          
-          .subtitle { 
-            font-size: 15px;
-            font-weight: 600;
-            color: #64748b;
-            margin: 0 0 6px 0;
-            text-align: center;
-          }
-          
-          .toolkit-credit { 
-            font-style: italic;
-            color: #94a3b8;
-            margin: 0 0 24px 0;
-            text-align: center;
-            font-size: 12px;
-          }
-          
-          .welcome-header { 
-            text-align: center;
-            margin-bottom: 24px;
-          }
-          
-          .welcome-header .logo { 
-            font-weight: 800;
-            font-size: 20px;
-            color: #1e293b;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-          }
-          
-          .welcome-intro { 
-            font-size: 14px;
-            margin-bottom: 24px;
-            text-align: center;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-          }
-          
-          .welcome-list { 
-            list-style: none;
-            padding-left: 0;
-            max-width: 500px;
-            margin: 0 auto;
-          }
-          
-          .welcome-list li { 
-            padding-left: 28px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="%233b82f6" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>');
-            background-repeat: no-repeat;
-            background-position: left center;
-            background-size: 18px;
-            margin-bottom: 10px;
-          }
-          
-          .learn-container { 
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 18px;
-            margin-top: 24px;
-            text-align: center;
-          }
-          
-          .learn-item { 
-            padding: 20px 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            transition: all 0.3s ease;
-            page-break-inside: avoid;
-          }
-          
-          .learn-item .icon { 
-            font-size: 32px;
-            margin-bottom: 10px;
-            display: block;
-          }
-          
-          .learn-item h3 { 
-            margin: 0 0 6px 0;
-            font-size: 15px;
-            font-weight: 700;
-            color: #1e293b;
-          }
-          
-          .learn-item p {
-            margin: 0;
-            font-size: 12px;
-            color: #64748b;
-            line-height: 1.5;
-          }
-          
-          .pro-tip { 
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            border: 1px solid #93c5fd;
-            border-left: 4px solid #3b82f6;
-            padding: 12px 14px;
-            margin-top: 18px;
-            border-radius: 8px;
-            font-size: 13px;
-            page-break-inside: avoid;
-          }
-          
-          .pro-tip strong {
-            color: #1e40af;
-          }
-          
-          .strategy-table { 
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 18px;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
-            font-size: 13px;
-            page-break-inside: avoid;
-          }
-          
-          .strategy-table th, .strategy-table td { 
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-            vertical-align: top;
-            word-wrap: break-word;
-            word-break: break-word;
-            hyphens: auto;
-            max-width: 0;
-            overflow-wrap: break-word;
-          }
-          
-          .strategy-table th { 
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-          
-          .strategy-table tr:nth-child(even) { 
-            background-color: #f8fafc;
-          }
-          
-          .strategy-table tr:hover {
-            background-color: #f1f5f9;
-          }
-          
-          .strategy-table td:first-child { 
-            font-weight: 700;
-            color: #1e293b;
-          }
-          
-          .checklist-box { 
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            padding: 12px;
-            border-radius: 10px;
-            border: 2px solid #e5e7eb;
-            margin-top: 10px;
-            page-break-inside: avoid;
-          }
-          
-          .checklist { 
-            list-style: none;
-            padding-left: 0;
-            margin: 0;
-          }
-          
-          .checklist li { 
-            font-size: 12px;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: flex-start;
-            line-height: 1.35;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
-          }
-          
-          .checklist li::before { 
-            content: '☐';
-            font-size: 14px;
-            margin-right: 6px;
-            color: #3b82f6;
-            margin-top: 2px;
-            flex-shrink: 0;
-          }
-          
-          .script { 
-            margin-bottom: 18px;
-            padding: 10px 12px;
-            background: #fafafa;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            font-size: 12px;
-            page-break-inside: avoid;
-          }
-          
-          .script h3 { 
-            border-bottom: none;
-            margin-top: 0;
-            color: #1e293b;
-            font-size: 13px;
-          }
-          
-          .script-dialog { 
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            border-radius: 12px 12px 12px 5px;
-            padding: 8px 10px;
-            position: relative;
-            font-style: italic;
-            border: 1px solid #93c5fd;
-            margin: 8px 0;
-            font-size: 12px;
-            page-break-inside: avoid;
-          }
-          
-          .script-why { 
-            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-            padding: 7px 10px;
-            border-radius: 7px;
-            margin-top: 7px;
-            font-size: 11px;
-            border: 1px solid #86efac;
-            border-left: 4px solid #22c55e;
-            page-break-inside: avoid;
-          }
-          
-          .script-why strong {
-            color: #15803d;
-          }
-          
-          .case-study { 
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 1px solid #f59e0b;
-            border-left: 4px solid #d97706;
-            padding: 10px 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            font-size: 12px;
-            line-height: 1.5;
-            page-break-inside: avoid;
-          }
-          
-          .case-study strong {
-            color: #92400e;
-            display: block;
-            margin-bottom: 6px;
-            font-size: 12px;
-          }
-          
-          .cta-block { 
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: white;
-            text-align: center;
-            padding: 28px 16px;
-            border-radius: 10px;
-            margin-top: 18px;
-            page-break-inside: avoid;
-          }
-          
-          .cta-block h2 { 
-            color: white;
-            border: none;
-            margin-bottom: 10px;
-          }
-          
-          .cta-block p {
-            color: #cbd5e1;
-            font-size: 13px;
-            margin-bottom: 14px;
-          }
-          
-          .cta-button { 
-            display: inline-block;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            padding: 10px 18px;
-            margin: 8px 4px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-          }
-          
-          .cta-button:hover { 
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
-          }
-          
-          .cta-email { 
-            margin-top: 14px;
-            font-size: 11px;
-          }
-          
-          .cta-email a { 
-            color: #94a3b8;
-            text-decoration: underline;
-          }
-          
-          .download-buttons {
-            display: flex;
-            justify-content: center;
-            padding: 18px;
-            background: #f8fafc;
-            border-top: 1px solid #e5e7eb;
-          }
-          
-          .download-btn {
-            padding: 10px 18px;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
-          }
-          
-          .download-btn:hover {
-            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 41, 59, 0.3);
-          }
-          
-          @media print { 
-            .pdf-preview-container {
-              background: white;
-              padding: 0;
-            }
-            .pdf-preview-box {
-              box-shadow: none;
-              border-radius: 0;
-            }
-            .page { 
-              margin: 0;
-              padding: 24px;
-              box-shadow: none;
-              page-break-after: always;
-              border: none;
-            }
-            .page:last-child { 
-              page-break-after: avoid;
-            }
-            .download-buttons {
-              display: none;
-            }
-          }
-          
-          @media (max-width: 768px) {
-            .pdf-preview-container {
-              padding: 8px;
-            }
-            
-            .pdf-preview-box {
-              border-radius: 8px;
-            }
-            
-            .page {
-              padding: 18px 8px;
-            }
-            
-            h1 {
-              font-size: 20px;
-            }
-            
-            h2 {
-              font-size: 16px;
-            }
-            
-            .learn-container {
-              grid-template-columns: 1fr;
-              gap: 10px;
-            }
-            
-            .strategy-table {
-              font-size: 11px;
-            }
-            
-            .strategy-table th,
-            .strategy-table td {
-              padding: 7px 4px;
-            }
-            
-            .cta-block {
-              padding: 14px 8px;
-            }
-            
-            .cta-button {
-              display: block;
-              margin: 8px auto;
-              width: fit-content;
-            }
-          }
-          .script-dialog, .script-why, .case-study, .strategy-table, .checklist-box, .pro-tip, .cta-block {
-            page-break-inside: avoid;
-          }
+          .pdf-preview-box { width: 794px !important; min-height: 1123px; background: #fff; overflow: hidden; }
+          .page { width: 100%; min-height: 1000px; background: #fff; box-sizing: border-box; padding: 40px 48px 60px 48px; margin: 0; position: relative; display: flex; flex-direction: column; page-break-after: always; border-bottom: 1px solid #e5e7eb; }
+          .page:last-child { page-break-after: avoid; border-bottom: none; }
+          .header { display: flex; align-items: center; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px; margin-bottom: 24px; }
+          .logo { font-weight: 800; font-size: 24px; color: #1e293b; text-transform: uppercase; letter-spacing: 1px; margin-right: 16px; }
+          .doc-title { font-size: 20px; font-weight: 700; color: #334155; }
+          .footer { position: absolute; left: 0; right: 0; bottom: 24px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e5e7eb; padding-top: 8px; }
+          .section-divider { height: 2px; background: #e5e7eb; margin: 32px 0; border-radius: 1px; }
+          h1 { font-size: 32px; color: #1e293b; font-weight: 900; margin: 0 0 16px 0; line-height: 1.1; text-align: center; }
+          h2 { font-size: 22px; color: #334155; font-weight: 800; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; margin: 24px 0 18px 0; text-align: center; }
+          h3 { font-size: 16px; color: #475569; font-weight: 700; margin: 18px 0 12px 0; }
+          p, li { font-size: 15px; line-height: 1.6; color: #334155; margin: 0 0 12px 0; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; hyphens: auto; }
+          a { color: #3b82f6; text-decoration: none; font-weight: 500; }
+          .subtitle { font-size: 16px; font-weight: 600; color: #64748b; margin: 0 0 8px 0; text-align: center; }
+          .toolkit-credit { font-style: italic; color: #94a3b8; margin: 0 0 24px 0; text-align: center; font-size: 13px; }
+          .pro-tip, .case-study, .script-dialog, .script-why, .cta-block, .checklist-box, .strategy-table { page-break-inside: avoid; }
+          .pro-tip { background: #e0f2fe; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 8px; font-size: 14px; margin: 18px 0; }
+          .case-study { background: #fef9c3; border-left: 4px solid #f59e0b; padding: 10px 14px; border-radius: 8px; font-size: 14px; margin: 12px 0; }
+          .cta-block { background: #1e293b; color: #fff; text-align: center; padding: 28px 16px; border-radius: 10px; margin-top: 18px; }
+          .cta-block h2 { color: #fff; border: none; margin-bottom: 10px; }
+          .cta-block p { color: #cbd5e1; font-size: 14px; margin-bottom: 14px; }
+          .cta-button { display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #fff; padding: 10px 18px; margin: 8px 4px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(59,130,246,0.2); }
+          .cta-button:hover { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); }
+          .download-buttons { display: flex; justify-content: center; padding: 18px; background: #f8fafc; border-top: 1px solid #e5e7eb; }
+          .download-btn { padding: 10px 18px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(30,41,59,0.2); }
+          .download-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         `}</style>
-
+        {/* Header with logo and title */}
+        <div className="header">
+          <div className="logo">{companyName}</div>
+          <div className="doc-title">{mainTitle || 'Lead Magnet Toolkit'}</div>
+        </div>
+        {/* Main content pages */}
         {/* Page 1: Welcome */}
         <div className="page" id="pdf-content">
           <div className="welcome-header">
@@ -942,10 +485,13 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             )}
           </div>
         </div>
+        {/* Footer with page number and contact (optional) */}
+        <div className="footer">
+          Page 1 | {website ? <a href={website}>{website}</a> : 'quickstrat.ai'}
+        </div>
       </div>
-      
       {/* Download Buttons (outside PDF export area) */}
-      <div className="download-buttons relative">
+      <div className="download-buttons relative" style={{ width: 794, margin: '0 auto' }}>
         <button
           onClick={tryDownloadPDF}
           className="download-btn"
