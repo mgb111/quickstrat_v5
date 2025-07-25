@@ -8,16 +8,16 @@ export default {
       },
       colors: {
         blue: {
-          50: '#f8f5ff',      // lightest purple
-          100: '#f3e8ff',     // lavender
-          200: '#e0c3fc',     // light purple
-          300: '#b388ff',     // purple
-          400: '#ff80bf',     // pink
-          500: '#80d8ff',     // cyan
-          600: '#7c4dff',     // deep purple
-          700: '#00bcd4',     // teal/cyan
-          800: '#ff4081',     // hot pink
-          900: '#12005e',     // deep indigo
+          50: '#fafbfc',      // lightest gray
+          100: '#f4f5f7',     // very light gray
+          200: '#e5e7eb',     // light gray
+          300: '#d1d5db',     // gray
+          400: '#9ca3af',     // medium gray
+          500: '#6b7280',     // dark gray
+          600: '#4b5563',     // darker gray
+          700: '#374151',     // even darker gray
+          800: '#1f2937',     // near-black
+          900: '#111827',     // almost black
         }
       }
     },
