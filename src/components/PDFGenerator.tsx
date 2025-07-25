@@ -10,16 +10,19 @@ import PaymentModal from './PaymentButton';
 interface PDFGeneratorProps {
   data: PDFContent;
   campaignId: string;
+  requirePayment?: boolean; // New prop to control paywall
 }
 
-const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId }) => {
+const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePayment = false }) => {
   const pdfRef = useRef<HTMLDivElement>(null);
-  // Remove payment modal/paywall state
-  // const [showPaymentModal, setShowPaymentModal] = useState(false);
-  // const [paymentComplete, setPaymentComplete] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentComplete, setPaymentComplete] = useState(false);
 
-  // Download PDF directly, no paywall
   const tryDownloadPDF = async () => {
+    if (requirePayment && !paymentComplete) {
+      setShowPaymentModal(true);
+      return;
+    }
     handleDownloadPDF();
   };
 
@@ -928,7 +931,15 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId }) => {
           Download as PDF
         </button>
       </div>
-      {/* PaymentModal removed: no paywall for download */}
+      {requirePayment && (
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => {
+            setShowPaymentModal(false);
+            setPaymentComplete(true);
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -290,6 +290,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
               ? JSON.parse(viewPdfCampaign.lead_magnet_content)
               : viewPdfCampaign.lead_magnet_content}
             campaignId={''}
+            requirePayment={true}
           />
         )}
       </Modal>

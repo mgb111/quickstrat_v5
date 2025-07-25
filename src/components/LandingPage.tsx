@@ -210,15 +210,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
                         };
                       })
                     };
-                    return {
-                      ...parsedContent,
-                      structured_content: fixedStructuredContent
-                    };
+                    return { ...parsedContent, structured_content: fixedStructuredContent };
                   }
                 }
                 return parsedContent;
               })()}
               campaignId={campaign.id}
+              requirePayment={false}
             />
           </div>
         )}
