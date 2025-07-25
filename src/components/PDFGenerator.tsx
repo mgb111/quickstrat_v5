@@ -667,6 +667,40 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             padding-top: 12px !important;
           }
           
+          /* PDF-specific: advanced fix for top/bottom padding in all major boxes */
+          .pdf-mode .checklist-box,
+          .pdf-mode .pro-tip,
+          .pdf-mode .case-study,
+          .pdf-mode .script,
+          .pdf-mode .cta-block {
+            padding-top: 4px !important;
+            padding-bottom: 20px !important;
+            line-height: 1.4 !important;
+          }
+          .pdf-mode .checklist-box > *:first-child,
+          .pdf-mode .pro-tip > *:first-child,
+          .pdf-mode .case-study > *:first-child,
+          .pdf-mode .script > *:first-child,
+          .pdf-mode .cta-block > *:first-child {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+          }
+          .pdf-mode .checklist-box > *:last-child,
+          .pdf-mode .pro-tip > *:last-child,
+          .pdf-mode .case-study > *:last-child,
+          .pdf-mode .script > *:last-child,
+          .pdf-mode .cta-block > *:last-child {
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+          }
+          /* Target strong/h3 as first child for extra control */
+          .pdf-mode .case-study strong:first-child,
+          .pdf-mode .pro-tip strong:first-child,
+          .pdf-mode .script h3:first-child {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+          }
+          
           @media print { 
             .pdf-preview-container {
               background: white;
