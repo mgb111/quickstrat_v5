@@ -344,7 +344,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-16">
             <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">10,000+</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">100+</div>
               <div className="text-gray-600">Lead Magnets Created</div>
             </div>
             <div className="text-center">
@@ -352,7 +352,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
               <div className="text-gray-600">Leads Per Lead Magnet</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-purple-600 mb-2">2 Min</div>
+              <div className="text-4xl font-bold text-purple-600 mb-2">6 Min</div>
               <div className="text-gray-600">Average Creation Time</div>
             </div>
           </div>
