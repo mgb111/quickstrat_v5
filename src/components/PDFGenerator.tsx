@@ -868,8 +868,21 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
                   <h3 style={{marginBottom: '16px', color: '#1e293b'}}>📈 Real-World Examples</h3>
                   {strategyRows.map((row: any, idx: number) => (
                     row.case_study && (
-                      <div key={idx} className="case-study no-page-break">
-                        <strong>💡 {row.method_name} in Action:</strong>
+                      <div
+                        key={idx}
+                        className="case-study no-page-break"
+                        style={{
+                          paddingTop: 4,
+                          paddingBottom: 20,
+                          lineHeight: 1.4,
+                          borderRadius: 8,
+                          margin: '16px 0',
+                          background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                          border: '1px solid #f59e0b',
+                          borderLeft: '4px solid #d97706',
+                        }}
+                      >
+                        <strong style={{ marginTop: 0, paddingTop: 0, display: 'block' }}>💡 {row.method_name} in Action:</strong>
                         {row.case_study}
                       </div>
                     )
@@ -946,14 +959,39 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
                     )}
                   </div>
                 ) : (
-                <div className="script" key={idx}>
-                  <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
+                <div
+                  className="script"
+                  key={idx}
+                  style={{
+                    paddingTop: 4,
+                    paddingBottom: 20,
+                    lineHeight: 1.4,
+                    borderRadius: 10,
+                    marginBottom: 32,
+                    background: '#fafafa',
+                    border: '1px solid #e5e7eb',
+                    fontSize: 14,
+                  }}
+                >
+                  <h3 style={{ marginTop: 0, paddingTop: 0, color: '#1e293b', fontSize: 16 }}>Scenario {idx + 1}: {scenario.trigger}</h3>
                   <p><strong>You say:</strong></p>
                   <div className="script-dialog">{scenario.response}</div>
                   <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
                   {scenario.case_study && (
-                      <div className="case-study no-page-break" style={{marginTop: '12px'}}>
-                      <strong>📈 Real Results:</strong>
+                    <div
+                      className="case-study no-page-break"
+                      style={{
+                        paddingTop: 4,
+                        paddingBottom: 20,
+                        lineHeight: 1.4,
+                        borderRadius: 8,
+                        marginTop: 12,
+                        background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                        border: '1px solid #f59e0b',
+                        borderLeft: '4px solid #d97706',
+                      }}
+                    >
+                      <strong style={{ marginTop: 0, paddingTop: 0, display: 'block' }}>📈 Real Results:</strong>
                       {scenario.case_study}
                     </div>
                   )}
@@ -970,9 +1008,21 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
 
         {/* Page 6: CTA (dynamic) */}
         <div className="page">
-          <div className="cta-block no-page-break">
-            <h2>{ctaTitle}</h2>
-            <p>{ctaContent}</p>
+          <div
+            className="cta-block no-page-break"
+            style={{
+              paddingTop: 4,
+              paddingBottom: 20,
+              lineHeight: 1.4,
+              borderRadius: 12,
+              marginTop: 32,
+              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+              color: 'white',
+              textAlign: 'center',
+            }}
+          >
+            <h2 style={{ marginTop: 0, paddingTop: 0, color: 'white', border: 'none', marginBottom: 16 }}>{ctaTitle}</h2>
+            <p style={{ color: '#cbd5e1', fontSize: 16, marginBottom: 24 }}>{ctaContent}</p>
             {bookingLink && (
               <a href={bookingLink} target="_blank" rel="noopener noreferrer" className="cta-button">
                 🎯 Book a free Strategy Session
