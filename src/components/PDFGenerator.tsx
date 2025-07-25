@@ -14,15 +14,12 @@ interface PDFGeneratorProps {
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId }) => {
   const pdfRef = useRef<HTMLDivElement>(null);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [paymentComplete, setPaymentComplete] = useState(false);
-  
+  // Remove payment modal/paywall state
+  // const [showPaymentModal, setShowPaymentModal] = useState(false);
+  // const [paymentComplete, setPaymentComplete] = useState(false);
 
+  // Download PDF directly, no paywall
   const tryDownloadPDF = async () => {
-    if (!paymentComplete) {
-      setShowPaymentModal(true);
-      return;
-    }
     handleDownloadPDF();
   };
 
@@ -931,13 +928,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId }) => {
           Download as PDF
         </button>
       </div>
-      <PaymentModal
-        isOpen={showPaymentModal}
-        onClose={() => {
-          setShowPaymentModal(false);
-          setPaymentComplete(true);
-        }}
-      />
+      {/* PaymentModal removed: no paywall for download */}
     </div>
   );
 };
