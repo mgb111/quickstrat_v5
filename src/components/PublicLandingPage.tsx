@@ -432,10 +432,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <span>Export to multiple formats</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <span>Landing page generation</span>
                 </li>
                 <li className="flex items-start">
