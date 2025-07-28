@@ -912,21 +912,21 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
         {/* Page 6: CTA (dynamic) */}
         <div className="page">
           <div className="cta-block no-page-break">
-            <h2>{ctaTitle}</h2>
-            <p>{ctaContent}</p>
-            {bookingLink && (
-              <a href={bookingLink} target="_blank" rel="noopener noreferrer" className="cta-button">
-                🎯 Book a free Strategy Session
+            <h2>{data.ctaText || ctaTitle}</h2>
+            <p>{data.ctaText || ctaContent}</p>
+            {data.bookingLink && (
+              <a href={data.bookingLink} target="_blank" rel="noopener noreferrer" className="cta-button">
+                🎯 {data.mainAction || 'Book a free Strategy Session'}
               </a>
             )}
-            {website && (
-              <a href={website} target="_blank" rel="noopener noreferrer" className="cta-button">
+            {data.website && (
+              <a href={data.website} target="_blank" rel="noopener noreferrer" className="cta-button">
                 🌐 Explore the tool
               </a>
             )}
-            {supportEmail && (
+            {data.supportEmail && (
               <p className="cta-email">
-                📧 Questions? <a href={`mailto:${supportEmail}`}>{supportEmail}</a>
+                📧 Questions? <a href={`mailto:${data.supportEmail}`}>{data.supportEmail}</a>
               </p>
             )}
           </div>

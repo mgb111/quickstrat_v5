@@ -201,7 +201,7 @@ function App() {
 
     try {
       // Use robust PDF content generation with retries for real case studies
-      const finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
+      const finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline, wizardState.customization || undefined);
       console.log('✅ Final campaign generated:', finalOutput);
       // Add debug logs for campaign creation
       console.log('Attempting to create campaign...');

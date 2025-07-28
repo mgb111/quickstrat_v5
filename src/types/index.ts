@@ -124,6 +124,10 @@ export interface PDFContent {
   bookingLink?: string;
   supportEmail?: string;
   position?: string;
+  // Additional customization fields
+  ctaText?: string;
+  mainAction?: string;
+  font?: string;
 }
 
 export interface CampaignOutput {

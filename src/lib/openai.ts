@@ -7,7 +7,8 @@ import {
   SocialPosts,
   CampaignOutput,
   PDFContent,
-  LandingPageCopy
+  LandingPageCopy,
+  PDFCustomization
 } from '../types/index';
 
 // Get API key from environment variables
@@ -224,7 +225,7 @@ Return JSON in this exact format:
   }
 }
 
-export async function generatePdfContent(input: CampaignInput, outline: ContentOutline): Promise<PDFContent> {
+export async function generatePdfContent(input: CampaignInput, outline: ContentOutline, customization?: PDFCustomization): Promise<PDFContent> {
   const client = getOpenAIClient();
 
   for (let attempt = 1; attempt <= 3; attempt++) {
@@ -509,7 +510,17 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
         founderName: input.name || '',
         brandName: input.brand_name || '',
         problemStatement: input.problem_statement || '',
-        desiredOutcome: input.desired_outcome || ''
+        desiredOutcome: input.desired_outcome || '',
+        // Add customization fields
+        ctaText: customization?.ctaText || parsed.cta_page.content,
+        mainAction: customization?.mainAction || 'Book a Free Strategy Call',
+        bookingLink: customization?.bookingLink || '',
+        website: customization?.website || '',
+        supportEmail: customization?.supportEmail || '',
+        logo: customization?.logo || '',
+        primaryColor: customization?.primaryColor || '#1a365d',
+        secondaryColor: customization?.secondaryColor || '#4a90e2',
+        font: customization?.font || 'Inter'
       };
     } catch (err: any) {
       const retriable =
@@ -776,13 +787,13 @@ Return JSON in this exact format:
   }
 }
 
-export async function generateFinalCampaign(input: CampaignInput, outline: ContentOutline): Promise<CampaignOutput> {
+export async function generateFinalCampaign(input: CampaignInput, outline: ContentOutline, customization?: PDFCustomization): Promise<CampaignOutput> {
   const client = getOpenAIClient();
 
   try {
     // Generate content sequentially instead of in parallel for better error handling
     console.log('Starting PDF content generation...');
-    const pdf_content = await generatePdfContent(input, outline).catch(err => {
+    const pdf_content = await generatePdfContent(input, outline, customization).catch(err => {
       console.error('PDF Generation Error:', err);
       throw new Error(`PDF Generation Failed: ${err.message}`);
     });

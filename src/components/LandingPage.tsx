@@ -194,44 +194,40 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
                     console.log('Fixing missing types in LandingPage...');
                     const fixedStructuredContent = {
                       ...parsedContent.structured_content,
-                      toolkit_sections: parsedContent.structured_content.toolkit_sections.map((section: any) => {
-                        let type: 'pros_and_cons_list' | 'checklist' | 'scripts' | undefined = undefined;
-                        const content = section.content.toLowerCase();
-                        if (content.includes('pros:') && content.includes('cons:')) {
-                          type = 'pros_and_cons_list';
-                        } else if (content.includes('phase') && content.includes('1.') && content.includes('2.')) {
-                          type = 'checklist';
-                        } else if (content.includes('scenario') && content.includes('when they say:') && content.includes('you say:')) {
-                          type = 'scripts';
-                        }
-                        return {
-                          ...section,
-                          type: type
-                        };
-                      })
+                      toolkit_sections: parsedContent.structured_content.toolkit_sections.map((section: any) => ({
+                        ...section,
+                        type: section.title?.toLowerCase().includes('script') ? 'scripts' : 
+                              section.title?.toLowerCase().includes('checklist') ? 'checklist' : 'pros_and_cons_list'
+                      }))
                     };
-                    return { 
-                      ...parsedContent, 
-                      structured_content: fixedStructuredContent,
-                      // Add founder information for old campaigns
-                      founderName: campaign.customer_profile?.split(' ')[0] || 'Your Name',
-                      brandName: campaign.name?.split(' - ')[0] || 'Your Company',
-                      problemStatement: campaign.problem_statement || 'struggling with a business challenge',
-                      desiredOutcome: campaign.desired_outcome || 'achieving your goals'
-                    };
+                    parsedContent.structured_content = fixedStructuredContent;
                   }
                 }
+                
+                // Extract founder information for old campaigns
+                const founderName = campaign.customer_profile?.split(' ')[0] || '';
+                const brandName = campaign.name?.split(' - ')[0] || '';
+                
                 return {
                   ...parsedContent,
-                  // Add founder information for old campaigns
-                  founderName: campaign.customer_profile?.split(' ')[0] || 'Your Name',
-                  brandName: campaign.name?.split(' - ')[0] || 'Your Company',
-                  problemStatement: campaign.problem_statement || 'struggling with a business challenge',
-                  desiredOutcome: campaign.desired_outcome || 'achieving your goals'
+                  founderName: parsedContent.founderName || founderName,
+                  brandName: parsedContent.brandName || brandName,
+                  problemStatement: parsedContent.problemStatement || campaign.problem_statement || '',
+                  desiredOutcome: parsedContent.desiredOutcome || campaign.desired_outcome || '',
+                  // Add customization fields with defaults for old campaigns
+                  ctaText: parsedContent.ctaText || 'Ready to take your business to the next level?',
+                  mainAction: parsedContent.mainAction || 'Book a Free Strategy Call',
+                  bookingLink: parsedContent.bookingLink || '',
+                  website: parsedContent.website || '',
+                  supportEmail: parsedContent.supportEmail || '',
+                  logo: parsedContent.logo || '',
+                  primaryColor: parsedContent.primaryColor || '#1a365d',
+                  secondaryColor: parsedContent.secondaryColor || '#4a90e2',
+                  font: parsedContent.font || 'Inter'
                 };
               })()}
               campaignId={campaign.id}
-              requirePayment={false}
+              requirePayment={true}
             />
           </div>
         )}
