@@ -43,6 +43,22 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
   const [customization, setCustomization] = useState<CustomizationValues>(defaultCustomization);
   const [localLoading, setLocalLoading] = useState(false);
   const [customizationLoading, setCustomizationLoading] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  function isValidUrl(url: string) {
+    if (!url) return true;
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function isValidEmail(email: string) {
+    if (!email) return true;
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +74,19 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
 
   const handleCustomizationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationError(null);
+    if (!isValidUrl(customization.bookingLink)) {
+      setValidationError('Please enter a valid Booking Link URL.');
+      return;
+    }
+    if (!isValidUrl(customization.website)) {
+      setValidationError('Please enter a valid Website URL.');
+      return;
+    }
+    if (!isValidEmail(customization.supportEmail)) {
+      setValidationError('Please enter a valid Support Email.');
+      return;
+    }
     if (!customizationLoading) {
       setCustomizationLoading(true);
       const selectedConcept = concepts.find(c => c.id === selectedConceptId);
@@ -81,6 +110,19 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
   };
 
   const handleSkipCustomization = async () => {
+    setValidationError(null);
+    if (!isValidUrl(defaultCustomization.bookingLink)) {
+      setValidationError('Default Booking Link is invalid.');
+      return;
+    }
+    if (!isValidUrl(defaultCustomization.website)) {
+      setValidationError('Default Website URL is invalid.');
+      return;
+    }
+    if (!isValidEmail(defaultCustomization.supportEmail)) {
+      setValidationError('Default Support Email is invalid.');
+      return;
+    }
     if (!customizationLoading) {
       setCustomizationLoading(true);
       const selectedConcept = concepts.find(c => c.id === selectedConceptId);
@@ -107,7 +149,11 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
             <span className="text-blue-600 font-medium"> You can skip this step and use default settings.</span>
           </p>
         </div>
-
+        {validationError && (
+          <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-center">
+            {validationError}
+          </div>
+        )}
         <form onSubmit={handleCustomizationSubmit} className="space-y-6">
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
