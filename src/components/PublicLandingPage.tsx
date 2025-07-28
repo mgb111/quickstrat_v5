@@ -347,10 +347,10 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Simple, Transparent Pricing
+              Simple, Pay-Per-Use Pricing
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose the plan that fits your lead generation needs
+              Start free. Unlock PDF export for just <span className="font-bold text-blue-600">$9</span> per campaign.
             </p>
           </div>
 
@@ -366,7 +366,11 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
               <ul className="space-y-4 mb-8">
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">1 lead magnet per month</span>
+                  <span className="text-gray-700">Unlimited concept generation</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">Content outline review</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
@@ -374,11 +378,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">PDF download</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">Mobile optimized</span>
+                  <span className="text-gray-700">Preview all content</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
@@ -394,7 +394,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
               </button>
             </div>
 
-            {/* Pro Plan */}
+            {/* PDF Unlock Plan */}
             <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-8 text-white relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 px-4 py-1 text-sm font-semibold rounded-bl-lg">
                 Most Popular
@@ -402,21 +402,21 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
               
               <div className="text-center mb-8">
                 <div className="flex items-center justify-center mb-2">
-                  <Crown className="w-6 h-6 mr-2" />
-                  <h3 className="text-2xl font-bold">Pro</h3>
+                  <Download className="w-6 h-6 mr-2" />
+                  <h3 className="text-2xl font-bold">PDF Unlock</h3>
                 </div>
-                <div className="text-4xl font-bold mb-2">$29</div>
-                <p className="text-blue-100">per month</p>
+                <div className="text-4xl font-bold mb-2">$9</div>
+                <p className="text-blue-100">per campaign</p>
               </div>
               
               <ul className="space-y-4 mb-8">
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <span>Unlimited lead magnets</span>
+                  <span>Professional PDF download</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <span>Advanced personalization</span>
+                  <span>Mobile-optimized design</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
@@ -424,11 +424,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <span>Landing page generation</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <span>Social media posts</span>
+                  <span>Ready-to-use lead magnet</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
@@ -436,11 +432,15 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <span>Analytics dashboard</span>
+                  <span>Export to multiple formats</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <span>Export to multiple formats</span>
+                  <span>Landing page generation</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <span>Lead capture system</span>
                 </li>
               </ul>
               
@@ -449,7 +449,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 className="w-full bg-white text-blue-600 py-3 px-6 rounded-xl font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center"
               >
                 <Sparkles className="w-5 h-5 mr-2" />
-                Start Pro Trial
+                Start Creating Now
               </button>
             </div>
           </div>
