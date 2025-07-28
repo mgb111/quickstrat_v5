@@ -390,12 +390,11 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             .learn-item { 
-              padding: 32px 24px;
+              padding: 32px 24px 37px 24px;
               border: 2px solid #e5e7eb;
               border-radius: 12px;
               background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
               transition: all 0.3s ease;
-              margin-bottom: 5px;
             }
             
             .learn-item:hover {
@@ -428,9 +427,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
               border: 1px solid #93c5fd;
               border-left: 4px solid #3b82f6;
-              padding: 20px 24px;
+              padding: 20px 24px 25px 24px;
               margin-top: 32px;
-              margin-bottom: 5px;
               border-radius: 8px;
               font-size: 16px;
             }
@@ -484,11 +482,10 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             
             .checklist-box { 
               background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-              padding: 18px;
+              padding: 18px 18px 23px 18px;
               border-radius: 12px;
               border: 2px solid #e5e7eb;
               margin-top: 16px;
-              margin-bottom: 5px;
             }
             
             .checklist { 
@@ -519,8 +516,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             .script { 
-              margin-bottom: 37px;
-              padding: 14px 16px;
+              margin-bottom: 32px;
+              padding: 14px 16px 19px 16px;
               background: #fafafa;
               border-radius: 10px;
               border: 1px solid #e5e7eb;
@@ -537,20 +534,19 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             .script-dialog { 
               background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
               border-radius: 14px 14px 14px 5px;
-              padding: 12px 16px;
+              padding: 12px 16px 17px 16px;
               position: relative;
               font-style: italic;
               border: 1px solid #93c5fd;
-              margin: 10px 0 15px 0;
+              margin: 10px 0;
               font-size: 13px;
             }
             
             .script-why { 
               background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-              padding: 10px 14px;
+              padding: 10px 14px 15px 14px;
               border-radius: 7px;
               margin-top: 10px;
-              margin-bottom: 5px;
               font-size: 12px;
               border: 1px solid #86efac;
               border-left: 4px solid #22c55e;
@@ -564,8 +560,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
               border: 1px solid #f59e0b;
               border-left: 4px solid #d97706;
-              padding: 16px 20px;
-              margin: 16px 0 21px 0;
+              padding: 16px 20px 21px 20px;
+              margin: 16px 0;
               border-radius: 8px;
               font-size: 14px;
               line-height: 1.5;
