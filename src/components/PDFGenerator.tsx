@@ -4,7 +4,7 @@ import { PDFContent } from '../types';
 import html2pdf from 'html2pdf.js';
 
 
-import { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import PaymentModal from './PaymentButton';
 import { supabase } from '../lib/supabase';
 import { SubscriptionService } from '../lib/subscriptionService';
@@ -25,7 +25,15 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
   React.useEffect(() => {
     if (requirePayment && paymentComplete && !downloadedAfterPayment) {
       setDownloadedAfterPayment(true);
-      handleDownloadPDF();
+      // Show success toast
+      toast.success('Payment successful! Starting PDF download...', {
+        duration: 4000,
+        icon: '✅',
+      });
+      // Small delay to let user see success message
+      setTimeout(() => {
+        handleDownloadPDF();
+      }, 500);
     }
   }, [requirePayment, paymentComplete, downloadedAfterPayment]);
 
@@ -206,19 +214,41 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
 
   const handleDownloadPDF = async () => {
     if (!pdfRef.current) return;
-    // Use static import
-    const container = pdfRef.current;
-    html2pdf()
-      .set({
-        margin: 0,
-        filename: 'lead-magnet.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'] }
-      })
-      .from(container)
-      .save();
+    
+    // Show loading toast
+    const loadingToast = toast.loading('Generating PDF...', {
+      duration: 3000,
+    });
+    
+    try {
+      // Use static import
+      const container = pdfRef.current;
+      await html2pdf()
+        .set({
+          margin: 0,
+          filename: 'lead-magnet.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: ['css', 'legacy'] }
+        })
+        .from(container)
+        .save();
+      
+      // Dismiss loading toast and show success
+      toast.dismiss(loadingToast);
+      toast.success('PDF downloaded successfully!', {
+        duration: 3000,
+        icon: '📄',
+      });
+    } catch (error) {
+      // Dismiss loading toast and show error
+      toast.dismiss(loadingToast);
+      toast.error('Failed to generate PDF. Please try again.', {
+        duration: 4000,
+      });
+      console.error('PDF generation error:', error);
+    }
   };
 
   return (
@@ -226,6 +256,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
       className="pdf-root"
       style={{ fontFamily: font }}
     >
+      <Toaster position="top-right" />
       <div className="pdf-preview-container">
         <div className="pdf-preview-box" ref={pdfRef}>
           <style>{`
@@ -1066,11 +1097,17 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
         
         {/* Download Buttons (outside PDF export area) */}
         <div className="download-buttons relative">
+          {paymentComplete && requirePayment && (
+            <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-center">
+              <div className="text-green-600 font-semibold mb-2">✅ Payment Successful!</div>
+              <div className="text-green-700 text-sm">Your PDF download will start automatically...</div>
+            </div>
+          )}
           <button
             onClick={tryDownloadPDF}
             className="download-btn"
           >
-            Download as PDF
+            {paymentComplete && requirePayment ? 'Download PDF Again' : 'Download as PDF'}
           </button>
         </div>
         {requirePayment && (
@@ -1085,7 +1122,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
                   await SubscriptionService.getUserSubscription(user.id);
                 }
                 setPaymentComplete(true);
-                window.location.reload(); // Force full reload to get latest user/subscription state
+                // Remove the jarring page reload - let the useEffect handle the download
               }
             }}
           />
