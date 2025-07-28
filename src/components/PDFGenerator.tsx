@@ -932,7 +932,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             <div className="page">
               <div className="cta-block no-page-break">
                 <h2>{data.ctaText || ctaTitle}</h2>
-                <p>{data.ctaText || ctaContent}</p>
+                <p>{data.cta || data.structured_content?.cta_page?.content || ctaContent}</p>
                 {data.bookingLink && (
                   <a href={data.bookingLink} target="_blank" rel="noopener noreferrer" className="cta-button">
                     🎯 {data.mainAction || 'Book a free Strategy Session'}
@@ -945,7 +945,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
                 )}
                 {data.supportEmail && (
                   <p className="cta-email">
-                    �� Questions? <a href={`mailto:${data.supportEmail}`}>{data.supportEmail}</a>
+                    📧 Questions? <a href={`mailto:${data.supportEmail}`}>{data.supportEmail}</a>
                   </p>
                 )}
               </div>
