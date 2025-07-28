@@ -210,10 +210,25 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
                         };
                       })
                     };
-                    return { ...parsedContent, structured_content: fixedStructuredContent };
+                    return { 
+                      ...parsedContent, 
+                      structured_content: fixedStructuredContent,
+                      // Add founder information for old campaigns
+                      founderName: campaign.customer_profile?.split(' ')[0] || 'Your Name',
+                      brandName: campaign.name?.split(' - ')[0] || 'Your Company',
+                      problemStatement: campaign.problem_statement || 'struggling with a business challenge',
+                      desiredOutcome: campaign.desired_outcome || 'achieving your goals'
+                    };
                   }
                 }
-                return parsedContent;
+                return {
+                  ...parsedContent,
+                  // Add founder information for old campaigns
+                  founderName: campaign.customer_profile?.split(' ')[0] || 'Your Name',
+                  brandName: campaign.name?.split(' - ')[0] || 'Your Company',
+                  problemStatement: campaign.problem_statement || 'struggling with a business challenge',
+                  desiredOutcome: campaign.desired_outcome || 'achieving your goals'
+                };
               })()}
               campaignId={campaign.id}
               requirePayment={false}
