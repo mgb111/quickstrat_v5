@@ -484,16 +484,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             </div>
           </div>
 
-          {/* Money Back Guarantee */}
-          <div className="mt-12 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 text-center">
-            <div className="flex items-center justify-center mb-4">
-              <Check className="w-8 h-8 text-green-600 mr-3" />
-              <h3 className="text-2xl font-bold text-gray-900">30-Day Money-Back Guarantee</h3>
-            </div>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Not satisfied? Get a full refund within 30 days. No questions asked. We're confident you'll love Majorbeam.
-            </p>
-          </div>
         </div>
       </section>
 
