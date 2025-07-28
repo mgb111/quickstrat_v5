@@ -455,15 +455,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             <h3 className="text-2xl font-bold text-gray-900 mb-8">What's Included in Every Plan</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
               <div className="text-center">
-                <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Zap className="w-6 h-6 text-blue-600" />
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-2">AI-Powered Content</h4>
-                <p className="text-gray-600 text-sm">
-                  Personalized content based on your expertise and target audience
-                </p>
-              </div>
-              <div className="text-center">
                 <div className="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <FileText className="w-6 h-6 text-green-600" />
                 </div>
@@ -479,6 +470,15 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 <h4 className="font-semibold text-gray-900 mb-2">Lead Capture</h4>
                 <p className="text-gray-600 text-sm">
                   Built-in email capture to grow your list automatically
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Zap className="w-6 h-6 text-blue-600" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Landing Pages</h4>
+                <p className="text-gray-600 text-sm">
+                  Custom landing pages to capture leads and grow your audience
                 </p>
               </div>
             </div>
