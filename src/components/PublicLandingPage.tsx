@@ -527,7 +527,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 "Majorbeam helped me create a professional lead magnet in minutes. I generated 100+ qualified leads in my first month with just 5 campaigns!"
               </p>
               <div className="font-semibold text-gray-900">Sarah Chen</div>
-              <div className="text-gray-600 text-sm">Business Coach</div>
+              <div className="text-gray-600 text-sm">Solopreneur</div>
             </div>
 
             <div className="bg-gray-50 p-6 rounded-xl">
