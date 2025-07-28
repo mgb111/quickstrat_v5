@@ -579,7 +579,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             {[
               {
                 question: "How long does it actually take to create a lead magnet?",
-                answer: "Most users complete their personalized lead magnet in under 2 minutes. You simply fill out a quick form with your name, brand details, and target audience information, then instantly preview and download your professional PDF guide."
+                answer: "Most users complete their personalized lead magnet in under 6 minutes. You simply fill out a quick form with your name, brand details, and target audience information, then instantly preview and download your professional PDF guide."
               },
               {
                 question: "What's included in each lead magnet?",
@@ -603,7 +603,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
               },
               {
                 question: "How is this different from using templates?",
-                answer: "Unlike generic templates that make you look like everyone else, Majorbeam creates truly personalized content based on your specific business, expertise, and audience. Each guide includes your unique voice, strategies, and branding—not cookie-cutter content that screams \"template.\""
+                answer: "Unlike generic templates that make you look like everyone else, Majorbeam creates truly personalized content based on your specific business, expertise, and audience. Each guide includes your unique voice, strategies, and branding—not cookie-cutter content that screams \"template.\" Plus, you get custom landing pages and built-in lead capture systems to turn visitors into subscribers automatically."
               },
               {
                 question: "What results can I expect?",
