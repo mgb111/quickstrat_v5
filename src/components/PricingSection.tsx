@@ -16,7 +16,7 @@ const PricingSection: React.FC<PricingSectionProps> = ({
             Simple, Transparent Pricing
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Start free. Unlock PDF export for just <span className="font-bold text-blue-600">$9</span> per campaign.
+            Start free. Unlock PDF export for just <span className="font-bold text-blue-600">$19</span> per campaign.
           </p>
         </div>
 

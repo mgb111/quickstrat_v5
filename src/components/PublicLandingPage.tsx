@@ -350,7 +350,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
               Simple, Pay-Per-Use Pricing
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Start free. Unlock PDF export for just <span className="font-bold text-blue-600">$9</span> per campaign.
+              Start free. Unlock PDF export for just <span className="font-bold text-blue-600">$19</span> per campaign.
             </p>
           </div>
 
@@ -405,7 +405,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                   <Download className="w-6 h-6 mr-2" />
                   <h3 className="text-2xl font-bold">PDF Unlock</h3>
                 </div>
-                <div className="text-4xl font-bold mb-2">$9</div>
+                <div className="text-4xl font-bold mb-2">$19</div>
                 <p className="text-blue-100">per campaign</p>
               </div>
               
