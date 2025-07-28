@@ -207,7 +207,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
     founderName: userName || '',
     brandName: brandName || '',
     problemStatement: problemStatement || '',
-    desiredOutcome: desiredOutcome || ''
+    desiredOutcome: desiredOutcome || '',
+    founder_intro: typeof results.pdf_content === 'object' && results.pdf_content ? (results.pdf_content as any).founder_intro : undefined
   } : null;
 
   console.log('ResultsDisplay render:', { 
