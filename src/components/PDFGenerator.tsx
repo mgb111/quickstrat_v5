@@ -382,18 +382,11 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             .learn-item { 
-              padding: 32px 24px;
-              border: 2px solid #e5e7eb;
-              border-radius: 12px;
-              background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-              transition: all 0.3s ease;
+              padding: 32px 0;
+              margin-bottom: 24px;
             }
             
-            .learn-item:hover {
-              border-color: #3b82f6;
-              transform: translateY(-2px);
-              box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
-            }
+
             
             .learn-item .icon { 
               font-size: 48px;
@@ -416,12 +409,9 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             .pro-tip { 
-              background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-              border: 1px solid #93c5fd;
               border-left: 4px solid #3b82f6;
-              padding: 20px 24px;
+              padding: 20px 0;
               margin-top: 32px;
-              border-radius: 8px;
               font-size: 16px;
             }
             
@@ -473,10 +463,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             .checklist-box { 
-              background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-              padding: 18px;
-              border-radius: 12px;
-              border: 2px solid #e5e7eb;
+              padding: 18px 0;
               margin-top: 16px;
             }
             
@@ -509,10 +496,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             
             .script { 
               margin-bottom: 32px;
-              padding: 14px 16px;
-              background: #fafafa;
-              border-radius: 10px;
-              border: 1px solid #e5e7eb;
+              padding: 14px 0;
               font-size: 14px;
             }
             
@@ -524,23 +508,17 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             .script-dialog { 
-              background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-              border-radius: 14px 14px 14px 5px;
-              padding: 12px 16px;
+              padding: 12px 0;
               position: relative;
               font-style: italic;
-              border: 1px solid #93c5fd;
               margin: 10px 0;
               font-size: 13px;
             }
             
             .script-why { 
-              background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-              padding: 10px 14px;
-              border-radius: 7px;
+              padding: 10px 0;
               margin-top: 10px;
               font-size: 12px;
-              border: 1px solid #86efac;
               border-left: 4px solid #22c55e;
             }
             
@@ -549,12 +527,9 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             .case-study { 
-              background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-              border: 1px solid #f59e0b;
               border-left: 4px solid #d97706;
-              padding: 16px 20px;
+              padding: 16px 0;
               margin: 16px 0;
-              border-radius: 8px;
               font-size: 14px;
               line-height: 1.5;
             }
@@ -793,11 +768,9 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             .elegant-highlight {
-              background: linear-gradient(120deg, #dbeafe 0%, transparent 100%);
-              padding: 16px 20px;
+              padding: 16px 0;
               margin: 16px 0;
               border-left: 4px solid #3b82f6;
-              border-radius: 0 8px 8px 0;
             }
             
             .elegant-quote {
@@ -837,9 +810,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             
             .elegant-tip {
               margin: 16px 0;
-              padding: 12px 16px;
-              background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-              border-radius: 8px;
+              padding: 12px 0;
               border-left: 4px solid #0ea5e9;
               font-size: 14px;
               color: #0c4a6e;
@@ -852,9 +823,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             
             .elegant-warning {
               margin: 16px 0;
-              padding: 12px 16px;
-              background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-              border-radius: 8px;
+              padding: 12px 0;
               border-left: 4px solid #f59e0b;
               font-size: 14px;
               color: #92400e;
@@ -867,9 +836,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             
             .elegant-success {
               margin: 16px 0;
-              padding: 12px 16px;
-              background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-              border-radius: 8px;
+              padding: 12px 0;
               border-left: 4px solid #22c55e;
               font-size: 14px;
               color: #15803d;
