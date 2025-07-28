@@ -409,7 +409,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             .pro-tip { 
-              border-left: 4px solid #3b82f6;
               padding: 20px 0;
               margin-top: 32px;
               font-size: 16px;
@@ -519,7 +518,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               padding: 10px 0;
               margin-top: 10px;
               font-size: 12px;
-              border-left: 4px solid #22c55e;
             }
             
             .script-why strong {
@@ -527,7 +525,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             .case-study { 
-              border-left: 4px solid #d97706;
               padding: 16px 0;
               margin: 16px 0;
               font-size: 14px;
@@ -770,7 +767,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             .elegant-highlight {
               padding: 16px 0;
               margin: 16px 0;
-              border-left: 4px solid #3b82f6;
             }
             
             .elegant-quote {
@@ -811,7 +807,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             .elegant-tip {
               margin: 16px 0;
               padding: 12px 0;
-              border-left: 4px solid #0ea5e9;
               font-size: 14px;
               color: #0c4a6e;
             }
@@ -824,7 +819,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             .elegant-warning {
               margin: 16px 0;
               padding: 12px 0;
-              border-left: 4px solid #f59e0b;
               font-size: 14px;
               color: #92400e;
             }
@@ -837,7 +831,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             .elegant-success {
               margin: 16px 0;
               padding: 12px 0;
-              border-left: 4px solid #22c55e;
               font-size: 14px;
               color: #15803d;
             }
