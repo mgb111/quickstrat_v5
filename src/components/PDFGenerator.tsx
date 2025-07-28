@@ -44,8 +44,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
   // Direct mapping from backend data
   const structured = data.structured_content;
   const companyName = (structured?.title_page && 'brand_name' in structured.title_page)
-    ? (structured.title_page as any).brand_name || 'QuickStrat'
-    : 'QuickStrat';
+    ? (structured.title_page as any).brand_name || data.brandName || 'Your Brand'
+    : data.brandName || 'Your Brand';
   const mainTitle = structured?.title_page?.title || '';
   const subtitle = structured?.title_page?.subtitle || '';
   
@@ -752,22 +752,9 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             </div>
             <h1>{mainTitle}</h1>
             <p className="subtitle">{subtitle}</p>
-            <p className="toolkit-credit">A QuickStrat AI Toolkit</p>
-            {/* Personalized founder-style introduction */}
-            <div className="welcome-intro">
-              {data.founder_intro ? (
-                <p>{data.founder_intro}</p>
-              ) : (
-                data.founderName && data.brandName && data.problemStatement && data.desiredOutcome && (
-                  <>
-                    <p>Hi, I'm {data.founderName}, founder of {data.brandName}. I didn't start out with a tool—I started with a problem.</p>
-                    <p>I was {data.problemStatement}.</p>
-                    <p>So I built something for myself: {data.brandName}.</p>
-                    <p>It worked. Now {data.desiredOutcome}.</p>
-                  </>
-                )
-              )}
-            </div>
+            <p className="welcome-intro">
+              {data.founder_intro || `Hi, I'm ${data.founderName || 'Your Name'}, ${data.position || 'founder'} of ${data.brandName || 'Your Brand'}. I didn't start out with a tool that could solve ${data.problemStatement || 'your business challenges'}. It took me years of trial and error to figure out what actually works for ${data.desiredOutcome || 'achieving your goals'}. That's why I created this guide—to save you the time and frustration I went through.`}
+            </p>
           </div>
 
           {/* Page 2: What You'll Learn (static) */}
