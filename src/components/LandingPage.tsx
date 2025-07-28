@@ -227,7 +227,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
                 };
               })()}
               campaignId={campaign.id}
-              requirePayment={true}
+              requirePayment={false}
             />
           </div>
         )}
