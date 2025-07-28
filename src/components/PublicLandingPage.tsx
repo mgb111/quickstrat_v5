@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Zap, Users, FileText, TrendingUp, Target, Download, Play, Star, ChevronDown } from 'lucide-react';
+import { Check, Zap, Users, FileText, TrendingUp, Target, Download, Play, Star, ChevronDown, Crown, Sparkles } from 'lucide-react';
 
 interface PublicLandingPageProps {
   onGetStarted: () => void;
@@ -54,6 +54,12 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 Features
               </button>
               <button 
+                onClick={() => scrollToSection('pricing')}
+                className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
+              >
+                Pricing
+              </button>
+              <button 
                 onClick={() => scrollToSection('testimonials')}
                 className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
               >
@@ -94,6 +100,12 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 className="block w-full text-left px-3 py-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
               >
                 Features
+              </button>
+              <button 
+                onClick={() => scrollToSection('pricing')}
+                className="block w-full text-left px-3 py-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
+              >
+                Pricing
               </button>
               <button 
                 onClick={() => scrollToSection('testimonials')}
@@ -330,8 +342,167 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Choose the plan that fits your lead generation needs
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Free Plan */}
+            <div className="bg-white border-2 border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Free</h3>
+                <div className="text-4xl font-bold text-gray-900 mb-2">$0</div>
+                <p className="text-gray-600">Perfect for getting started</p>
+              </div>
+              
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">1 lead magnet per month</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">Basic personalization</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">PDF download</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">Mobile optimized</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">Email support</span>
+                </li>
+              </ul>
+              
+              <button 
+                onClick={onLogin}
+                className="w-full bg-gray-100 text-gray-900 py-3 px-6 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Get Started Free
+              </button>
+            </div>
+
+            {/* Pro Plan */}
+            <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-8 text-white relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 px-4 py-1 text-sm font-semibold rounded-bl-lg">
+                Most Popular
+              </div>
+              
+              <div className="text-center mb-8">
+                <div className="flex items-center justify-center mb-2">
+                  <Crown className="w-6 h-6 mr-2" />
+                  <h3 className="text-2xl font-bold">Pro</h3>
+                </div>
+                <div className="text-4xl font-bold mb-2">$29</div>
+                <p className="text-blue-100">per month</p>
+              </div>
+              
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <span>Unlimited lead magnets</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <span>Advanced personalization</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <span>Custom branding</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <span>Landing page generation</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <span>Social media posts</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <span>Priority support</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <span>Analytics dashboard</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <span>Export to multiple formats</span>
+                </li>
+              </ul>
+              
+              <button 
+                onClick={onLogin}
+                className="w-full bg-white text-blue-600 py-3 px-6 rounded-xl font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center"
+              >
+                <Sparkles className="w-5 h-5 mr-2" />
+                Start Pro Trial
+              </button>
+            </div>
+          </div>
+
+          {/* Pricing Features */}
+          <div className="mt-16 text-center">
+            <h3 className="text-2xl font-bold text-gray-900 mb-8">What's Included in Every Plan</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <div className="text-center">
+                <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Zap className="w-6 h-6 text-blue-600" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">AI-Powered Content</h4>
+                <p className="text-gray-600 text-sm">
+                  Personalized content based on your expertise and target audience
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <FileText className="w-6 h-6 text-green-600" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Professional PDFs</h4>
+                <p className="text-gray-600 text-sm">
+                  Beautiful, mobile-optimized PDFs that establish your authority
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="bg-purple-100 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-6 h-6 text-purple-600" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Lead Capture</h4>
+                <p className="text-gray-600 text-sm">
+                  Built-in email capture to grow your list automatically
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Money Back Guarantee */}
+          <div className="mt-12 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 text-center">
+            <div className="flex items-center justify-center mb-4">
+              <Check className="w-8 h-8 text-green-600 mr-3" />
+              <h3 className="text-2xl font-bold text-gray-900">30-Day Money-Back Guarantee</h3>
+            </div>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Not satisfied? Get a full refund within 30 days. No questions asked. We're confident you'll love Majorbeam.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Social Proof Section */}
-      <section id="testimonials" className="py-20 bg-white">
+      <section id="testimonials" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
