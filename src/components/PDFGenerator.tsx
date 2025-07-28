@@ -704,7 +704,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             
             /* New elegant styling without boxes */
             .elegant-section {
-              margin: 32px 0;
+              margin: 16px 0;
               padding: 0;
             }
             
@@ -716,43 +716,43 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             }
             
             .elegant-title {
-              font-size: 22px;
+              font-size: 20px;
               font-weight: 700;
               color: #1e293b;
-              margin: 24px 0 16px 0;
-              display: flex;
-              align-items: center;
-            }
-            
-            .elegant-subtitle {
-              font-size: 16px;
-              font-weight: 600;
-              color: #475569;
               margin: 16px 0 8px 0;
               display: flex;
               align-items: center;
             }
             
+            .elegant-subtitle {
+              font-size: 15px;
+              font-weight: 600;
+              color: #475569;
+              margin: 8px 0 4px 0;
+              display: flex;
+              align-items: center;
+            }
+            
             .elegant-text {
-              font-size: 16px;
-              line-height: 1.7;
+              font-size: 15px;
+              line-height: 1.5;
               color: #334155;
-              margin: 12px 0;
-              padding-left: 36px;
+              margin: 8px 0;
+              padding-left: 0;
             }
             
             .elegant-list {
               list-style: none;
               padding-left: 0;
-              margin: 16px 0;
+              margin: 8px 0;
             }
             
             .elegant-list li {
-              padding: 8px 0;
-              padding-left: 36px;
+              padding: 4px 0;
+              padding-left: 24px;
               position: relative;
-              font-size: 15px;
-              line-height: 1.6;
+              font-size: 14px;
+              line-height: 1.5;
               color: #334155;
             }
             
@@ -760,21 +760,21 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               content: '✨';
               position: absolute;
               left: 0;
-              top: 8px;
-              font-size: 16px;
+              top: 4px;
+              font-size: 14px;
             }
             
             .elegant-highlight {
-              padding: 16px 0;
-              margin: 16px 0;
+              padding: 8px 0;
+              margin: 8px 0;
             }
             
             .elegant-quote {
               font-style: italic;
               color: #64748b;
-              font-size: 15px;
-              margin: 16px 0;
-              padding-left: 36px;
+              font-size: 14px;
+              margin: 8px 0;
+              padding-left: 24px;
               position: relative;
             }
             
@@ -783,14 +783,14 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               position: absolute;
               left: 0;
               top: 0;
-              font-size: 24px;
+              font-size: 18px;
               color: #3b82f6;
               font-weight: bold;
             }
             
             .elegant-step {
-              margin: 20px 0;
-              padding-left: 36px;
+              margin: 8px 0;
+              padding-left: 24px;
               position: relative;
             }
             
@@ -799,45 +799,58 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               position: absolute;
               left: 0;
               top: 0;
-              font-size: 18px;
+              font-size: 14px;
               color: #3b82f6;
               font-weight: bold;
             }
             
-            .elegant-tip {
-              margin: 16px 0;
-              padding: 12px 0;
+            .elegant-tip, .elegant-warning, .elegant-success {
+              margin: 8px 0;
+              padding: 8px 0;
+              font-size: 13px;
+            }
+            
+            .pro-tip {
+              padding: 8px 0;
+              margin-top: 12px;
               font-size: 14px;
-              color: #0c4a6e;
             }
             
-            .elegant-tip::before {
-              content: '💡';
-              margin-right: 8px;
+            .case-study {
+              padding: 8px 0;
+              margin: 8px 0;
+              font-size: 13px;
+              line-height: 1.5;
             }
             
-            .elegant-warning {
-              margin: 16px 0;
-              padding: 12px 0;
-              font-size: 14px;
-              color: #92400e;
+            .script-dialog {
+              padding: 8px 0;
+              position: relative;
+              font-style: italic;
+              margin: 6px 0;
+              font-size: 13px;
             }
             
-            .elegant-warning::before {
-              content: '⚠️';
-              margin-right: 8px;
+            .script-why {
+              padding: 6px 0;
+              margin-top: 6px;
+              font-size: 12px;
             }
             
-            .elegant-success {
-              margin: 16px 0;
-              padding: 12px 0;
-              font-size: 14px;
-              color: #15803d;
+            .script {
+              margin-bottom: 16px;
+              padding: 8px 0;
+              font-size: 13px;
             }
             
-            .elegant-success::before {
-              content: '✅';
-              margin-right: 8px;
+            .checklist-box {
+              padding: 8px 0;
+              margin-top: 8px;
+            }
+            
+            .learn-item {
+              padding: 16px 0;
+              margin-bottom: 12px;
             }
           `}</style>
 
@@ -857,7 +870,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             </div>
             
             <div className="elegant-section">
-              <p className="elegant-text">
+              <p className="elegant-text" style={{ marginBottom: '48px' }}>
                 {data.founder_intro || `Hi, I'm ${data.founderName || 'Your Name'}, ${data.position || 'founder'} of ${data.brandName || 'Your Brand'}. I didn't start out with a tool that could solve ${data.problemStatement || 'your business challenges'}. It took me years of trial and error to figure out what actually works for ${data.desiredOutcome || 'achieving your goals'}. That's why I created this guide—to save you the time and frustration I went through.`}
               </p>
               
