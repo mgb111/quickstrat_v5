@@ -206,19 +206,117 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
 
   const handleDownloadPDF = async () => {
     if (!pdfRef.current) return;
-    // Use static import
+    
     const container = pdfRef.current;
-    html2pdf()
-      .set({
-        margin: 0,
-        filename: 'lead-magnet.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'] }
-      })
-      .from(container)
-      .save();
+    
+    // 1. Apply PDF-specific styles before generation
+    const pdfStyles = document.createElement('style');
+    pdfStyles.innerHTML = `
+      .pdf-preview-box * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        font-family: 'Inter', Arial, sans-serif !important;
+      }
+      
+      .learn-container {
+        display: block !important;
+      }
+      
+      .learn-item {
+        display: block !important;
+        margin-bottom: 20px !important;
+        float: none !important;
+      }
+    `;
+    document.head.appendChild(pdfStyles);
+    
+    // 2. Wait for fonts to load
+    await document.fonts.ready;
+    
+    // 3. Force layout recalculation
+    container.style.display = 'none';
+    container.offsetHeight; // Trigger reflow
+    container.style.display = 'block';
+    
+    // 4. Generate PDF with optimized settings
+    const options = {
+      margin: [0.5, 0.5, 0.5, 0.5], // Consistent margins
+      filename: 'lead-magnet.pdf',
+      image: { 
+        type: 'jpeg', 
+        quality: 0.95 // Slightly lower for better compatibility
+      },
+      html2canvas: { 
+        scale: 1.5, // Lower scale for consistency
+        useCORS: true,
+        letterRendering: true, // Better text rendering
+        allowTaint: false,
+        backgroundColor: '#ffffff',
+        scrollX: 0,
+        scrollY: 0,
+        width: container.scrollWidth,
+        height: container.scrollHeight
+      },
+      jsPDF: { 
+        unit: 'in', 
+        format: 'a4', 
+        orientation: 'portrait',
+        compress: true
+      },
+      pagebreak: { 
+        mode: ['css', 'legacy'],
+        before: '.page',
+        after: '.page'
+      }
+    };
+    
+    try {
+      await html2pdf()
+        .set(options)
+        .from(container)
+        .save();
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+    } finally {
+      // 5. Clean up
+      document.head.removeChild(pdfStyles);
+    }
+  };
+
+  // Alternative: Use a timeout to ensure everything is rendered
+  const handleDownloadPDFWithDelay = async () => {
+    if (!pdfRef.current) return;
+    
+    // Show loading state
+    const button = document.querySelector('.download-btn') as HTMLButtonElement | null;
+    const originalText = button?.textContent || '';
+    if (button) {
+      button.textContent = 'Generating PDF...';
+      button.disabled = true;
+    }
+    
+    // Wait for all images and fonts to load
+    await new Promise(resolve => {
+      const images = pdfRef.current?.querySelectorAll('img') || [];
+      const imagePromises = Array.from(images).map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(resolve => {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      });
+      
+      Promise.all([document.fonts.ready, ...imagePromises])
+        .then(() => setTimeout(resolve, 500)); // Extra 500ms buffer
+    });
+    
+    await handleDownloadPDF();
+    
+    // Restore button
+    if (button) {
+      button.textContent = originalText;
+      button.disabled = false;
+    }
   };
 
   return (
@@ -943,7 +1041,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
         {/* Download Buttons (outside PDF export area) */}
         <div className="download-buttons relative">
           <button
-            onClick={tryDownloadPDF}
+            onClick={handleDownloadPDFWithDelay} // Use the improved function
             className="download-btn"
           >
             Download as PDF
