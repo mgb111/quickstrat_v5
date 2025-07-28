@@ -299,7 +299,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               font-weight: 800;
               border-bottom: 3px solid #3b82f6;
               padding-bottom: 12px;
-              margin: 32px 0 24px 0;
+              margin: 40px 0 24px 0;
               text-align: center;
             }
             
@@ -307,14 +307,14 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               font-size: 20px;
               color: #475569;
               font-weight: 700;
-              margin: 24px 0 16px 0;
+              margin: 32px 0 20px 0;
             }
             
             p, li { 
               font-size: 16px;
-              line-height: 1.6;
+              line-height: 1.7;
               color: #334155;
-              margin: 0 0 16px 0;
+              margin: 0 0 20px 0;
               word-wrap: break-word;
               word-break: break-word;
               overflow-wrap: break-word;
@@ -517,9 +517,9 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             
             .script { 
               margin-bottom: 32px;
-              padding: 14px 16px;
+              padding: 20px 24px;
               background: #fafafa;
-              border-radius: 10px;
+              border-radius: 12px;
               border: 1px solid #e5e7eb;
               font-size: 14px;
             }
@@ -527,42 +527,51 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             .script h3 { 
               border-bottom: none;
               margin-top: 0;
+              margin-bottom: 16px;
               color: #1e293b;
-              font-size: 16px;
+              font-size: 18px;
+              font-weight: 700;
             }
             
             .script-dialog { 
               background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-              border-radius: 14px 14px 14px 5px;
-              padding: 12px 16px;
+              border-radius: 16px 16px 16px 8px;
+              padding: 20px 24px;
               position: relative;
               font-style: italic;
               border: 1px solid #93c5fd;
-              margin: 10px 0;
-              font-size: 13px;
+              margin: 16px 0;
+              font-size: 15px;
+              line-height: 1.5;
+              color: #1e40af;
             }
             
             .script-why { 
               background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-              padding: 10px 14px;
-              border-radius: 7px;
-              margin-top: 10px;
-              font-size: 12px;
+              padding: 16px 20px;
+              border-radius: 12px;
+              margin-top: 16px;
+              font-size: 13px;
               border: 1px solid #86efac;
               border-left: 4px solid #22c55e;
+              line-height: 1.4;
             }
             
             .script-why strong {
               color: #15803d;
+              display: block;
+              margin-bottom: 8px;
+              font-size: 14px;
+              font-weight: 600;
             }
             
             .case-study { 
               background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
               border: 1px solid #f59e0b;
               border-left: 4px solid #d97706;
-              padding: 16px 20px;
-              margin: 16px 0;
-              border-radius: 8px;
+              padding: 20px 24px;
+              margin: 20px 0;
+              border-radius: 12px;
               font-size: 14px;
               line-height: 1.5;
             }
@@ -570,8 +579,9 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             .case-study strong {
               color: #92400e;
               display: block;
-              margin-bottom: 8px;
-              font-size: 15px;
+              margin-bottom: 12px;
+              font-size: 16px;
+              font-weight: 700;
             }
             
             .cta-block { 
@@ -580,19 +590,20 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               text-align: center;
               padding: 48px 32px;
               border-radius: 12px;
-              margin-top: 32px;
+              margin-top: 40px;
             }
             
             .cta-block h2 { 
               color: white;
               border: none;
-              margin-bottom: 16px;
+              margin-bottom: 20px;
             }
             
             .cta-block p {
               color: #cbd5e1;
               font-size: 16px;
-              margin-bottom: 24px;
+              margin-bottom: 28px;
+              line-height: 1.6;
             }
             
             .cta-button { 
