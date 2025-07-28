@@ -335,14 +335,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
               text-align: center;
             }
             
-            .toolkit-credit { 
-              font-style: italic;
-              color: #94a3b8;
-              margin: 0 0 40px 0;
-              text-align: center;
-              font-size: 14px;
-            }
-            
             .welcome-header { 
               text-align: center;
               margin-bottom: 32px;
@@ -737,6 +729,156 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             .strategy-page-small * {
               font-size: 14px !important;
             }
+            
+            /* New elegant styling without boxes */
+            .elegant-section {
+              margin: 32px 0;
+              padding: 0;
+            }
+            
+            .elegant-icon {
+              font-size: 24px;
+              margin-right: 12px;
+              vertical-align: middle;
+              color: #3b82f6;
+            }
+            
+            .elegant-title {
+              font-size: 22px;
+              font-weight: 700;
+              color: #1e293b;
+              margin: 24px 0 16px 0;
+              display: flex;
+              align-items: center;
+            }
+            
+            .elegant-subtitle {
+              font-size: 16px;
+              font-weight: 600;
+              color: #475569;
+              margin: 16px 0 8px 0;
+              display: flex;
+              align-items: center;
+            }
+            
+            .elegant-text {
+              font-size: 16px;
+              line-height: 1.7;
+              color: #334155;
+              margin: 12px 0;
+              padding-left: 36px;
+            }
+            
+            .elegant-list {
+              list-style: none;
+              padding-left: 0;
+              margin: 16px 0;
+            }
+            
+            .elegant-list li {
+              padding: 8px 0;
+              padding-left: 36px;
+              position: relative;
+              font-size: 15px;
+              line-height: 1.6;
+              color: #334155;
+            }
+            
+            .elegant-list li::before {
+              content: '✨';
+              position: absolute;
+              left: 0;
+              top: 8px;
+              font-size: 16px;
+            }
+            
+            .elegant-highlight {
+              background: linear-gradient(120deg, #dbeafe 0%, transparent 100%);
+              padding: 16px 20px;
+              margin: 16px 0;
+              border-left: 4px solid #3b82f6;
+              border-radius: 0 8px 8px 0;
+            }
+            
+            .elegant-quote {
+              font-style: italic;
+              color: #64748b;
+              font-size: 15px;
+              margin: 16px 0;
+              padding-left: 36px;
+              position: relative;
+            }
+            
+            .elegant-quote::before {
+              content: '"';
+              position: absolute;
+              left: 0;
+              top: 0;
+              font-size: 24px;
+              color: #3b82f6;
+              font-weight: bold;
+            }
+            
+            .elegant-step {
+              margin: 20px 0;
+              padding-left: 36px;
+              position: relative;
+            }
+            
+            .elegant-step::before {
+              content: '→';
+              position: absolute;
+              left: 0;
+              top: 0;
+              font-size: 18px;
+              color: #3b82f6;
+              font-weight: bold;
+            }
+            
+            .elegant-tip {
+              margin: 16px 0;
+              padding: 12px 16px;
+              background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+              border-radius: 8px;
+              border-left: 4px solid #0ea5e9;
+              font-size: 14px;
+              color: #0c4a6e;
+            }
+            
+            .elegant-tip::before {
+              content: '💡';
+              margin-right: 8px;
+            }
+            
+            .elegant-warning {
+              margin: 16px 0;
+              padding: 12px 16px;
+              background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+              border-radius: 8px;
+              border-left: 4px solid #f59e0b;
+              font-size: 14px;
+              color: #92400e;
+            }
+            
+            .elegant-warning::before {
+              content: '⚠️';
+              margin-right: 8px;
+            }
+            
+            .elegant-success {
+              margin: 16px 0;
+              padding: 12px 16px;
+              background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+              border-radius: 8px;
+              border-left: 4px solid #22c55e;
+              font-size: 14px;
+              color: #15803d;
+            }
+            
+            .elegant-success::before {
+              content: '✅';
+              margin-right: 8px;
+            }
           `}</style>
 
           {/* Logo at the top if provided */}
@@ -747,167 +889,176 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
           )}
           {/* Page 1: Welcome */}
           <div className="page" id="pdf-content">
-            <div className="welcome-header">
-              <div className="logo">{companyName}</div>
-            </div>
-            <h1>{mainTitle}</h1>
-            <p className="subtitle">{subtitle}</p>
-            <p className="welcome-intro">
-              {data.founder_intro || `Hi, I'm ${data.founderName || 'Your Name'}, ${data.position || 'founder'} of ${data.brandName || 'Your Brand'}. I didn't start out with a tool that could solve ${data.problemStatement || 'your business challenges'}. It took me years of trial and error to figure out what actually works for ${data.desiredOutcome || 'achieving your goals'}. That's why I created this guide—to save you the time and frustration I went through.`}
-            </p>
-          </div>
-
-          {/* Page 2: What You'll Learn (static) */}
-          <div className="page">
-            <div className="page-header">What You'll Learn</div>
-            <h2>🚀 What You'll Learn</h2>
-            <h3>The 3-Step Lead Magnet System</h3>
-            <div className="learn-container">
-              <div className="learn-item">
-                <div className="icon">🧠</div>
-                <h3>Pick Your Strategy</h3>
-                <p>Understand what works (and what drains your time).</p>
-              </div>
-              <div className="learn-item">
-                <div className="icon">✅</div>
-                <h3>Follow the Checklist</h3>
-                <p>Nail the daily actions that drive results.</p>
-              </div>
-              <div className="learn-item">
-                <div className="icon">💬</div>
-                <h3>Use Proven Scripts</h3>
-                <p>Say the right thing when people show interest.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Step 1: Strategy Table (robust) */}
-          <div className="page strategy-page-small">
             <div className="page-header" style={{ color: primaryColor }}>Step 1 of 3</div>
-            <h2>📊 Strategy Showdown: What Actually Works?</h2>
-            {strategyRows.length > 0 ? (
-              <>
-                <table className="strategy-table">
-                  <thead>
-                    <tr>
-                      <th>Strategy</th>
-                      <th>Pros</th>
-                      <th>Cons</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {strategyRows.map((row: any, idx: number) => (
-                      <tr key={idx}>
-                        <td><strong>{row.method_name}</strong></td>
-                        <td>{row.pros}</td>
-                        <td>{row.cons}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                
-                {/* Case Studies for Strategies */}
-                {strategyRows.some((row: any) => row.case_study) && (
-                  <div style={{marginTop: '24px'}}>
-                    <h3 style={{marginBottom: '16px', color: '#1e293b'}}>📈 Real-World Examples</h3>
-                    {strategyRows.map((row: any, idx: number) => (
-                      row.case_study && (
-                        <div key={idx} className="case-study no-page-break">
-                          <strong>💡 {row.method_name} in Action:</strong>
-                          {row.case_study}
-                        </div>
-                      )
-                    ))}
-                  </div>
-                )}
-              </>
-            ) : (
-              <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
-                No strategies found or data missing.
-              </div>
-            )}
-            <div className="pro-tip">
-              <strong>💡 Pro Tip:</strong> Pick 1–2 strategies and go deep. Don't spread yourself thin.
+            
+            <div className="welcome-header">
+              <h1>{mainTitle}</h1>
+              <p className="subtitle">{subtitle}</p>
+            </div>
+            
+            <div className="elegant-section">
+              <p className="elegant-text">
+                {data.founder_intro || `Hi, I'm ${data.founderName || 'Your Name'}, ${data.position || 'founder'} of ${data.brandName || 'Your Brand'}. I didn't start out with a tool that could solve ${data.problemStatement || 'your business challenges'}. It took me years of trial and error to figure out what actually works for ${data.desiredOutcome || 'achieving your goals'}. That's why I created this guide—to save you the time and frustration I went through.`}
+              </p>
+              
+              <h3 className="elegant-title">
+                <span className="elegant-icon">🎯</span>
+                What You'll Discover
+              </h3>
+              
+              <ul className="elegant-list">
+                <li>Actionable strategies you can implement immediately</li>
+                <li>Proven frameworks that actually work</li>
+                <li>Insider tips from real-world experience</li>
+                <li>Step-by-step processes for guaranteed results</li>
+              </ul>
             </div>
           </div>
 
-          {/* Step 2: Checklist (robust) */}
+          {/* Page 2: What You'll Learn */}
           <div className="page">
             <div className="page-header">Step 2 of 3</div>
-            <h2>✅ The Social Media Checklist</h2>
-            <p style={{textAlign: 'center', marginBottom: '32px'}}>Use this to stay consistent and intentional.</p>
-            <div className="checklist-box">
-              {checklistPhases.length > 0 ? (
-                <>
-                  {checklistPhases.map((phase: any, idx: number) => (
-                    <React.Fragment key={idx}>
-                      <h3>{phase.phase_title}</h3>
-                      <ul className="checklist">
-                        {phase.items.map((item: string, i: number) => (
-                          <li key={i}>{item}</li>
-                        ))}
-                      </ul>
-                    </React.Fragment>
-                  ))}
-                  
-                  {/* Case Study for Checklist */}
-                  {checklistSection?.content && 
-                   typeof checklistSection.content === 'object' && 
-                   'case_study' in checklistSection.content && 
-                   checklistSection.content.case_study && (
-                    <div className="case-study no-page-break" style={{marginTop: '24px'}}>
-                      <strong>📈 Success Story:</strong>
-                      {checklistSection.content.case_study}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
-                  No checklist phases found or data missing.
-                </div>
-              )}
+            <h2>🚀 The 3-Step Lead Magnet System</h2>
+            
+            <div className="elegant-section">
+              <h3 className="elegant-title">
+                <span className="elegant-icon">🧠</span>
+                Step 1: Pick Your Strategy
+              </h3>
+              <p className="elegant-text">Understand what works (and what drains your time) with proven methodologies that have been tested in real-world scenarios.</p>
+              
+              <h3 className="elegant-title">
+                <span className="elegant-icon">✅</span>
+                Step 2: Follow the Checklist
+              </h3>
+              <p className="elegant-text">Nail the daily actions that drive results with our comprehensive action plan designed for maximum efficiency.</p>
+              
+              <h3 className="elegant-title">
+                <span className="elegant-icon">💬</span>
+                Step 3: Use Proven Scripts
+              </h3>
+              <p className="elegant-text">Say the right thing when people show interest with battle-tested scripts that convert prospects into customers.</p>
             </div>
           </div>
 
-          {/* Step 3: Scripts (robust) */}
+          {/* Step 1: Strategy Analysis */}
           <div className="page">
-            <div className="page-header">Step 3 of 3</div>
-            <h2>💬 Scripts That Turn Comments Into Clients</h2>
-            {scripts.length > 0 ? (
-              <>
-                {scripts.map((scenario: any, idx: number) => (
-                  idx === 2 ? (
-                    <div className="script no-page-break" key={idx} style={{ pageBreakBefore: 'always' }}>
-                      <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
-                      <p><strong>You say:</strong></p>
-                      <div className="script-dialog">{scenario.response}</div>
-                      <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
-                      {scenario.case_study && (
-                        <div className="case-study no-page-break" style={{marginTop: '12px'}}>
-                          <strong>📈 Real Results:</strong>
-                          {scenario.case_study}
-                        </div>
-                      )}
+            <div className="page-header" style={{ color: primaryColor }}>Strategy Analysis</div>
+            <h2>📊 Strategy Showdown: What Actually Works?</h2>
+            
+            {strategyRows.length > 0 ? (
+              <div className="elegant-section">
+                {strategyRows.map((row: any, idx: number) => (
+                  <div key={idx} className="elegant-highlight">
+                    <h3 className="elegant-subtitle">
+                      <span className="elegant-icon">🎯</span>
+                      {row.method_name}
+                    </h3>
+                    
+                    <div className="elegant-step">
+                      <strong>✅ Pros:</strong> {row.pros}
                     </div>
-                  ) : (
-                  <div className="script" key={idx}>
-                    <h3>Scenario {idx + 1}: {scenario.trigger}</h3>
-                    <p><strong>You say:</strong></p>
-                    <div className="script-dialog">{scenario.response}</div>
-                    <div className="script-why">✅ <strong>Why it works:</strong> {scenario.explanation}</div>
-                    {scenario.case_study && (
-                        <div className="case-study no-page-break" style={{marginTop: '12px'}}>
-                        <strong>📈 Real Results:</strong>
-                        {scenario.case_study}
+                    
+                    <div className="elegant-step">
+                      <strong>⚠️ Cons:</strong> {row.cons}
+                    </div>
+                    
+                    {row.case_study && (
+                      <div className="elegant-quote">
+                        <strong>💡 Real Example:</strong> {row.case_study}
                       </div>
                     )}
                   </div>
-                  )
                 ))}
-              </>
+                
+                <div className="elegant-tip">
+                  <strong>Pro Tip:</strong> Pick 1–2 strategies and go deep. Don't spread yourself thin.
+                </div>
+              </div>
             ) : (
-              <div style={{textAlign:'center', color: '#ef4444', padding: '40px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca'}}>
-                No scripts found or data missing.
+              <div className="elegant-warning">
+                No strategies found or data missing. Please check your campaign configuration.
+              </div>
+            )}
+          </div>
+
+          {/* Step 2: Checklist */}
+          <div className="page">
+            <div className="page-header">Action Checklist</div>
+            <h2>✅ The Social Media Checklist</h2>
+            <p className="elegant-text" style={{textAlign: 'center', marginBottom: '32px'}}>Use this to stay consistent and intentional.</p>
+            
+            {checklistPhases.length > 0 ? (
+              <div className="elegant-section">
+                {checklistPhases.map((phase: any, idx: number) => (
+                  <div key={idx} className="elegant-highlight">
+                    <h3 className="elegant-title">
+                      <span className="elegant-icon">📋</span>
+                      {phase.phase_title}
+                    </h3>
+                    
+                    <ul className="elegant-list">
+                      {phase.items.map((item: string, i: number) => (
+                        <li key={i}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                
+                {/* Case Study for Checklist */}
+                {checklistSection?.content && 
+                 typeof checklistSection.content === 'object' && 
+                 'case_study' in checklistSection.content && 
+                 checklistSection.content.case_study && (
+                  <div className="elegant-success">
+                    <strong>📈 Success Story:</strong> {checklistSection.content.case_study}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="elegant-warning">
+                No checklist phases found or data missing. Please check your campaign configuration.
+              </div>
+            )}
+          </div>
+
+          {/* Step 3: Scripts */}
+          <div className="page">
+            <div className="page-header">Conversation Scripts</div>
+            <h2>💬 Scripts That Turn Comments Into Clients</h2>
+            
+            {scripts.length > 0 ? (
+              <div className="elegant-section">
+                {scripts.map((scenario: any, idx: number) => (
+                  <div key={idx} className="elegant-highlight">
+                    <h3 className="elegant-title">
+                      <span className="elegant-icon">💬</span>
+                      Scenario {idx + 1}: {scenario.trigger}
+                    </h3>
+                    
+                    <div className="elegant-step">
+                      <strong>You say:</strong>
+                    </div>
+                    
+                    <div className="elegant-quote">
+                      {scenario.response}
+                    </div>
+                    
+                    <div className="elegant-success">
+                      <strong>Why it works:</strong> {scenario.explanation}
+                    </div>
+                    
+                    {scenario.case_study && (
+                      <div className="elegant-tip">
+                        <strong>📈 Real Results:</strong> {scenario.case_study}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="elegant-warning">
+                No scripts found or data missing. Please check your campaign configuration.
               </div>
             )}
           </div>
