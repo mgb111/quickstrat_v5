@@ -71,6 +71,12 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
               >
                 FAQ
               </button>
+              <a 
+                href="/demo"
+                className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
+              >
+                Demo
+              </a>
               <button 
                 onClick={onLogin}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
@@ -119,6 +125,12 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
               >
                 FAQ
               </button>
+              <a 
+                href="/demo"
+                className="block w-full text-left px-3 py-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
+              >
+                Demo
+              </a>
               <button 
                 onClick={onLogin}
                 className="w-full mt-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold"
