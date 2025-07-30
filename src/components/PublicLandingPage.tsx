@@ -153,8 +153,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             </div>
             
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight">
-              Capture At Least
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> 15 Emails Per Campaign</span>
+              Capture Up To
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> 50 Emails Per Lead Magnet</span>
             </h1>
             
             <p className="text-xl lg:text-2xl text-gray-600 mb-12 leading-relaxed max-w-3xl mx-auto">
