@@ -37,7 +37,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
     script.async = true;
-    script.setAttribute('data-payment_button_id', 'pl_QxAh72HwZ2uWn5');
+    script.setAttribute('data-payment_button_id', 'pl_QzFk7otoHrBzkf');
     formRef.current.appendChild(script);
   }, [isOpen]);
 
