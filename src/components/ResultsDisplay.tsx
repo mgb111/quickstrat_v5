@@ -18,6 +18,7 @@ interface ResultsDisplayProps {
   problemStatement?: string;
   desiredOutcome?: string;
   onCampaignCreated?: () => void;
+  requirePayment?: boolean; // New prop to control payment requirement
 }
 
 const subredditSuggestions: Record<string, string[]> = {
@@ -33,7 +34,7 @@ function getSuggestedSubreddits(niche: string): string[] {
   return key ? subredditSuggestions[key] : ['r/Entrepreneur', 'r/smallbusiness'];
 }
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, userName, problemStatement, desiredOutcome, onCampaignCreated }) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, userName, problemStatement, desiredOutcome, onCampaignCreated, requirePayment = true }) => {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -260,7 +261,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
               {pdfError ? `⚠️ ${pdfError}` : '✅ Email submitted! Your guide is ready below.'}
             </p>
           </div>
-          {pdfContent && <PDFGenerator data={pdfContent} campaignId={''} />}
+          {pdfContent && <PDFGenerator data={pdfContent} campaignId={''} requirePayment={requirePayment} />}
         </div>
       )}
 
