@@ -169,10 +169,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                 <Download className="w-5 h-5 mr-2" />
                 Create Your Lead Magnet Now
               </button>
-              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                <Play className="w-5 h-5 mr-2" />
-                Watch 2-Minute Demo
-              </button>
             </div>
             
             <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8 text-sm text-gray-500 px-4">
