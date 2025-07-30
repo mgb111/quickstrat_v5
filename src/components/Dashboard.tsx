@@ -200,21 +200,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* Admin Links */}
-      <div className="mb-6 text-center space-x-4">
-        <a 
-          href="/demo" 
-          className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium"
-        >
-          🎯 Try Demo (Free PDF Download)
-        </a>
-        <a 
-          href="/admin/creator" 
-          className="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium"
-        >
-          🛠️ Admin Creator (Full Access)
-        </a>
-      </div>
+
       
       {/* Navigation or tab bar would be here if present */}
       {draftCampaigns.length > 0 && (
