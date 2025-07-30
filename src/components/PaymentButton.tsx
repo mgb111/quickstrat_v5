@@ -17,6 +17,20 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     setPaymentStatus('pending');
     setPaymentMessage('');
     
+    // Track payment modal opened
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'begin_checkout', {
+        currency: 'INR',
+        value: 49.00,
+        items: [{
+          item_id: 'pdf_download',
+          item_name: 'Lead Magnet PDF',
+          price: 49.00,
+          quantity: 1
+        }]
+      });
+    }
+    
     // Remove any previous script
     formRef.current.innerHTML = '';
     // Create script
@@ -40,6 +54,21 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         setPaymentStatus('success');
         setPaymentMessage('Payment successful! Your PDF is ready to download.');
         
+        // Track payment success with Google Analytics
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'purchase', {
+            transaction_id: Date.now().toString(),
+            value: 49.00,
+            currency: 'INR',
+            items: [{
+              item_id: 'pdf_download',
+              item_name: 'Lead Magnet PDF',
+              price: 49.00,
+              quantity: 1
+            }]
+          });
+        }
+        
         // Auto-close after showing success message
         setTimeout(() => {
           onClose(true);
@@ -53,10 +82,34 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         if (event.data.type === 'razorpay_payment_success') {
           setPaymentStatus('success');
           setPaymentMessage('Payment successful! Your PDF is ready to download.');
+          
+          // Track payment success with Google Analytics
+          if (typeof window !== 'undefined' && (window as any).gtag) {
+            (window as any).gtag('event', 'purchase', {
+              transaction_id: Date.now().toString(),
+              value: 49.00,
+              currency: 'INR',
+              items: [{
+                item_id: 'pdf_download',
+                item_name: 'Lead Magnet PDF',
+                price: 49.00,
+                quantity: 1
+              }]
+            });
+          }
+          
           setTimeout(() => onClose(true), 2000);
         } else if (event.data.type === 'razorpay_payment_failed') {
           setPaymentStatus('failed');
           setPaymentMessage('Payment failed. Please try again.');
+          
+          // Track payment failure with Google Analytics
+          if (typeof window !== 'undefined' && (window as any).gtag) {
+            (window as any).gtag('event', 'payment_failed', {
+              value: 49.00,
+              currency: 'INR'
+            });
+          }
         }
       }
     };
@@ -117,7 +170,22 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
             <form ref={formRef}></form>
             <button
               className="text-blue-600 hover:underline text-sm mt-4"
-              onClick={() => onClose(false)}
+              onClick={() => {
+                // Track payment cancelled
+                if (typeof window !== 'undefined' && (window as any).gtag) {
+                  (window as any).gtag('event', 'remove_from_cart', {
+                    currency: 'INR',
+                    value: 49.00,
+                    items: [{
+                      item_id: 'pdf_download',
+                      item_name: 'Lead Magnet PDF',
+                      price: 49.00,
+                      quantity: 1
+                    }]
+                  });
+                }
+                onClose(false);
+              }}
             >
               Cancel
             </button>

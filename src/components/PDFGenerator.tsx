@@ -241,6 +241,15 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
         duration: 3000,
         icon: '📄',
       });
+      
+      // Track PDF download with Google Analytics
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'download', {
+          method: 'PDF',
+          file_name: 'lead-magnet.pdf',
+          content_type: 'lead_magnet'
+        });
+      }
     } catch (error) {
       // Dismiss loading toast and show error
       toast.dismiss(loadingToast);
