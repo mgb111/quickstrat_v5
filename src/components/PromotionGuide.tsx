@@ -155,28 +155,68 @@ const PromotionGuide: React.FC = () => {
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">r/Entrepreneur</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">1M+ members - Great for business-focused projects</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">r/Entrepreneur</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Great for business-focused projects</p>
+                </div>
+              </div>
+              <a href="https://www.reddit.com/r/Entrepreneur/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Visit subreddit <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">r/SaaS</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">150K+ members - Perfect for SaaS products</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">r/SaaS</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Perfect for SaaS products</p>
+                </div>
+              </div>
+              <a href="https://www.reddit.com/r/SaaS/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Visit subreddit <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">r/SideProject</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">200K+ members - Ideal for side projects and MVPs</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">r/SideProject</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Ideal for side projects and MVPs</p>
+                </div>
+              </div>
+              <a href="https://www.reddit.com/r/SideProject/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Visit subreddit <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">r/startups</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">500K+ members - Startup-focused community</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">r/startups</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Startup-focused community</p>
+                </div>
+              </div>
+              <a href="https://www.reddit.com/r/startups/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Visit subreddit <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">r/growmybusiness</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">100K+ members - Business growth discussions</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">r/growmybusiness</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Business growth discussions</p>
+                </div>
+              </div>
+              <a href="https://www.reddit.com/r/growmybusiness/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Visit subreddit <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
           </div>
         </section>
@@ -337,24 +377,64 @@ const PromotionGuide: React.FC = () => {
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">Online Geniuses</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Large marketing Slack community</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">Online Geniuses</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Large marketing Slack community</p>
+                </div>
+              </div>
+              <a href="https://onlinegeniuses.com/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Join community <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">Indie World</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Discord for indie makers</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">Indie World</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Discord for indie makers</p>
+                </div>
+              </div>
+              <a href="https://discord.gg/indieworld" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Join Discord <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">Founder's Cafe</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Slack for SaaS founders</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">Founder's Cafe</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Slack for SaaS founders</p>
+                </div>
+              </div>
+              <a href="https://founderscafe.io/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Join Slack <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">MegaIndie</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Discord for early-stage launches</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">MegaIndie</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Discord for early-stage launches</p>
+                </div>
+              </div>
+              <a href="https://discord.gg/megaindie" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Join Discord <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">No Code Founders</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Active Slack for nocode</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">No Code Founders</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Active Slack for nocode</p>
+                </div>
+              </div>
+              <a href="https://nocodefounders.com/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Join Slack <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
           </div>
         </section>
@@ -390,12 +470,28 @@ const PromotionGuide: React.FC = () => {
               </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">GitHub Discussions</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">For open-source projects</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">GitHub Discussions</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">For open-source projects</p>
+                </div>
+              </div>
+              <a href="https://github.com/topics/discussions" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Browse discussions <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">Stack Overflow Collectives</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">High-visibility tagging</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">Stack Overflow Collectives</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">High-visibility tagging</p>
+                </div>
+              </div>
+              <a href="https://stackoverflow.com/collectives" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                View collectives <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-4">
@@ -455,12 +551,28 @@ const PromotionGuide: React.FC = () => {
               </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">Foundr</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Collaborate with content team</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">Foundr</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Collaborate with content team</p>
+                </div>
+              </div>
+              <a href="https://foundr.com/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Visit Foundr <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">Substack Discovery</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Organic traction through newsletters</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">Substack Discovery</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Organic traction through newsletters</p>
+                </div>
+              </div>
+              <a href="https://substack.com/discover" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Browse newsletters <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
           </div>
         </section>
@@ -472,24 +584,64 @@ const PromotionGuide: React.FC = () => {
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">ShipFast Feedback</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Private feedback community</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">ShipFast Feedback</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Private feedback community</p>
+                </div>
+              </div>
+              <a href="https://shipfast.co/feedback" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Join community <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">Canny.io</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Capture feedback ideas</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">Canny.io</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Capture feedback ideas</p>
+                </div>
+              </div>
+              <a href="https://canny.io/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Try Canny <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">Featurebase</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Feedback boards</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">Featurebase</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Feedback boards</p>
+                </div>
+              </div>
+              <a href="https://featurebase.app/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Try Featurebase <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">GummySearch</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Find early feedback forums</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">GummySearch</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Find early feedback forums</p>
+                </div>
+              </div>
+              <a href="https://gummysearch.com/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Try GummySearch <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-gray-900 text-lg mb-3">Feedback Fish</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Lightweight integration</p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">Feedback Fish</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Lightweight integration</p>
+                </div>
+              </div>
+              <a href="https://feedback.fish/" target="_blank" rel="noopener noreferrer" 
+                 className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                Try Feedback Fish <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
             </div>
           </div>
         </section>
