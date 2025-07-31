@@ -4,6 +4,7 @@ import App from '../App';
 import AdminUserCampaigns from './AdminUserCampaigns';
 import DemoPage from './DemoPage';
 import AdminLeadMagnetCreator from './AdminLeadMagnetCreator';
+import PromotionGuide from './PromotionGuide';
 
 const AppRouter: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const AppRouter: React.FC = () => {
         <Route path="/admin/users" element={<AdminUserCampaigns />} />
         <Route path="/demo" element={<DemoPage />} />
         <Route path="/admin/creator" element={<AdminLeadMagnetCreator />} />
+        <Route path="/promotion-guide" element={<PromotionGuide />} />
       </Routes>
     </Router>
   );
