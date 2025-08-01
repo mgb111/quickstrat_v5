@@ -195,29 +195,41 @@ const SaaSChecklist: React.FC = () => {
                        </p>
                      </div>
 
-                     {/* Current Score Display */}
-                     <div className={`p-6 rounded-xl border ${scoreMessage.bgColor} ${scoreMessage.borderColor} mb-8`}>
-                       <div className="text-center">
-                         <div className="flex items-center justify-center mb-4">
-                           <Star className="w-6 h-6 mr-2" />
-                           <span className={`text-3xl font-bold ${scoreMessage.color}`}>
-                             You scored {score}/10
-                           </span>
-                         </div>
-                         <h3 className={`text-xl font-semibold mb-3 ${scoreMessage.color}`}>
-                           {scoreMessage.title}
-                         </h3>
-                         <p className="text-gray-700 leading-relaxed">
-                           {scoreMessage.message}
-                         </p>
-                       </div>
-                     </div>
+                                           {/* Welcome Message */}
+                      <div className="p-6 rounded-xl border bg-blue-50 border-blue-200 mb-8">
+                        <div className="text-center">
+                          <div className="flex items-center justify-center mb-4">
+                            <Star className="w-6 h-6 text-blue-600 mr-2" />
+                            <span className="text-2xl font-bold text-blue-600">
+                              Welcome to the SaaS Validation Tool!
+                            </span>
+                          </div>
+                          <p className="text-gray-700 leading-relaxed">
+                            Complete the checklist below to get your personalized validation score. Each item you check will improve your score and help you understand how well-validated your SaaS idea is. Start by checking the items that apply to your idea.
+                          </p>
+                        </div>
+                      </div>
 
-                     {/* Checklist Section */}
-                     <div className="text-center mb-8">
-                       <h3 className="text-xl font-bold text-gray-900 mb-4">Complete the Checklist</h3>
-                       <p className="text-gray-600">Check each item that applies to your idea to improve your score:</p>
-                     </div>
+                                           {/* Live Score Display */}
+                      <div className={`p-4 rounded-xl border ${scoreMessage.bgColor} ${scoreMessage.borderColor} mb-6`}>
+                        <div className="text-center">
+                          <div className="flex items-center justify-center mb-2">
+                            <Star className="w-5 h-5 mr-2" />
+                            <span className={`text-xl font-bold ${scoreMessage.color}`}>
+                              Current Score: {score}/10
+                            </span>
+                          </div>
+                          <p className={`text-sm ${scoreMessage.color} font-medium`}>
+                            {scoreMessage.title}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Checklist Section */}
+                      <div className="text-center mb-8">
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">Complete the Checklist</h3>
+                        <p className="text-gray-600">Check each item that applies to your idea to improve your score:</p>
+                      </div>
 
               <div className="space-y-4 mb-8">
                 <label className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
