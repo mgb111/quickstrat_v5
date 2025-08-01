@@ -160,20 +160,7 @@ const SaaSChecklist: React.FC = () => {
               </p>
             </div>
 
-            {/* Live Score Display */}
-            <div className={`p-4 rounded-xl border ${scoreMessage.bgColor} ${scoreMessage.borderColor} mb-6`}>
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-2">
-                  <Star className="w-5 h-5 mr-2" />
-                  <span className={`text-xl font-bold ${scoreMessage.color}`}>
-                    Current Score: {score}/10
-                  </span>
-                </div>
-                <p className={`text-sm ${scoreMessage.color} font-medium`}>
-                  {scoreMessage.title}
-                </p>
-              </div>
-            </div>
+
 
             {/* Checklist Items */}
             <div className="space-y-4 mb-8">
