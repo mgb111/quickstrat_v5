@@ -69,10 +69,12 @@ const SaaSChecklist: React.FC = () => {
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted, email:', email);
     setIsLoading(true);
     setError(null);
 
     try {
+      console.log('Attempting to save email to Supabase...');
       // Save email to Supabase
       const { error: insertError } = await supabase
         .from('email_captures')
@@ -93,11 +95,13 @@ const SaaSChecklist: React.FC = () => {
         // This allows testing the checklist functionality
       }
 
+      console.log('Setting isSubmitted to true');
       setIsSubmitted(true);
     } catch (err: any) {
       console.error('Email capture error:', err);
       // For now, let's continue even if there's an error
       // This allows testing the checklist functionality
+      console.log('Setting isSubmitted to true despite error');
       setIsSubmitted(true);
     } finally {
       setIsLoading(false);
@@ -174,6 +178,18 @@ const SaaSChecklist: React.FC = () => {
                   className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50"
                 >
                   {isLoading ? 'Loading...' : 'Get My Validation Score'}
+                </button>
+                
+                {/* Test button to bypass email capture */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    console.log('Test button clicked');
+                    setIsSubmitted(true);
+                  }}
+                  className="w-full mt-2 bg-gray-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-600 transition-all duration-300"
+                >
+                  Test: Skip Email (Show Checklist)
                 </button>
                 {error && (
                   <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
