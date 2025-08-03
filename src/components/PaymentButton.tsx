@@ -160,8 +160,32 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full flex flex-col items-center relative">
         {paymentStatus === 'pending' && (
           <>
-            <h2 className="text-xl font-bold mb-4">Unlock PDF Export</h2>
-            <p className="mb-6 text-gray-700 text-center">To download your PDF, please complete a one-time payment.</p>
+            <h2 className="text-xl font-bold mb-4">Complete Your Campaign</h2>
+            <p className="mb-6 text-gray-700 text-center">To finish your campaign and unlock everything, please complete payment.</p>
+            
+            {/* Campaign Value Proposition */}
+            <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+              <h3 className="font-semibold text-blue-900 mb-3 text-center">Your Complete Campaign Includes:</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center text-blue-800">
+                  <span className="mr-2">✅</span>
+                  <span><strong>Professional PDF Lead Magnet</strong> - Ready to download and share</span>
+                </div>
+                <div className="flex items-center text-blue-800">
+                  <span className="mr-2">✅</span>
+                  <span><strong>Landing Page Creation</strong> - Convert visitors into leads</span>
+                </div>
+                <div className="flex items-center text-blue-800">
+                  <span className="mr-2">✅</span>
+                  <span><strong>Email Capture System</strong> - With export functionality</span>
+                </div>
+                <div className="flex items-center text-blue-800">
+                  <span className="mr-2">✅</span>
+                  <span><strong>Complete Campaign Setup</strong> - Ready to launch immediately</span>
+                </div>
+              </div>
+            </div>
+            
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="text-sm text-blue-800">
                 <strong>💡 Tip:</strong> After payment, return to this tab and your PDF will download automatically.
