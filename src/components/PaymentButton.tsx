@@ -168,48 +168,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
             <h2 className="text-xl font-bold mb-4">Upgrade to Premium</h2>
             <p className="mb-6 text-gray-700 text-center">Unlock unlimited campaigns and all premium features</p>
             
-            {/* Billing Cycle Toggle */}
-            <div className="mb-6 w-full">
-              <div className="bg-gray-50 rounded-lg p-1 border border-gray-200">
-                <div className="flex">
-                  <button
-                    onClick={() => setBillingCycle('monthly')}
-                    className={`flex-1 px-4 py-2 rounded-md font-medium transition-colors ${
-                      billingCycle === 'monthly'
-                        ? 'bg-gray-700 text-white'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    Monthly
-                  </button>
-                  <button
-                    onClick={() => setBillingCycle('yearly')}
-                    className={`flex-1 px-4 py-2 rounded-md font-medium transition-colors ${
-                      billingCycle === 'yearly'
-                        ? 'bg-gray-700 text-white'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    Yearly
-                    <span className="ml-1 text-xs text-gray-500">Save 30%</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
             {/* Pricing Display */}
             <div className="mb-6 text-center">
               <div className="text-3xl font-bold text-gray-900 mb-1">
-                ${billingCycle === 'monthly' ? monthlyPrice : yearlyPrice}
+                ${monthlyPrice}
                 <span className="text-lg font-normal text-gray-500">
-                  /{billingCycle === 'monthly' ? 'month' : 'year'}
+                  /month
                 </span>
               </div>
-              {billingCycle === 'yearly' && (
-                <div className="text-sm text-green-600 font-medium">
-                  Save ${(monthlyPrice * 12) - yearlyPrice} per year
-                </div>
-              )}
+              <div className="text-sm text-gray-600 font-medium">
+                for 3 campaigns
+              </div>
             </div>
             
             {/* Plan Features */}
@@ -218,7 +187,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
               <div className="space-y-2 text-sm">
                 <div className="flex items-center text-gray-700">
                   <span className="mr-2">✅</span>
-                  <span><strong>Unlimited Campaigns</strong> - Create as many lead magnets as you want</span>
+                  <span><strong>3 Campaigns</strong> - Create up to 3 complete lead magnet campaigns</span>
                 </div>
                 <div className="flex items-center text-gray-700">
                   <span className="mr-2">✅</span>
@@ -245,10 +214,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
             
             <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg w-full">
               <div className="text-sm text-gray-700">
-                <strong>💡 Tip:</strong> After payment, you'll have unlimited access to all features.
+                <strong>💡 Tip:</strong> After payment, you'll have access to create 3 complete campaigns.
               </div>
             </div>
-            <form ref={formRef}></form>
             <button
               className="text-gray-700 hover:underline text-sm mt-4"
               onClick={() => {
@@ -267,11 +235,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 }
                 onClose(false);
               }}
-            >
-              Cancel
-            </button>
-          </>
-        )}
+                          >
+                Cancel
+              </button>
+            </>
+          )}
+          
+          {/* Payment form - moved to end to avoid interference */}
+          <form ref={formRef} className="hidden"></form>
 
         {paymentStatus === 'processing' && (
           <div className="text-center">

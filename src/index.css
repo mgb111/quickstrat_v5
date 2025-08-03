@@ -218,3 +218,382 @@ p {
 .text-green-600 {
   color: #1a5f3a !important;
 }
+
+/* Override purple and pink gradients with deep green */
+.bg-gradient-to-r.from-purple-500.to-pink-600 {
+  background: linear-gradient(to right, #1a5f3a, #1a5f3a) !important;
+}
+
+.bg-gradient-to-r.from-blue-500.to-purple-600 {
+  background: linear-gradient(to right, #1a5f3a, #1a5f3a) !important;
+}
+
+.hover\:from-blue-600.hover\:to-purple-700:hover {
+  background: linear-gradient(to right, #1a5f3a, #1a5f3a) !important;
+}
+
+/* Override red backgrounds with cream */
+.bg-red-100 {
+  background-color: #fef7e6 !important;
+}
+
+.text-red-700 {
+  color: #000000 !important;
+}
+
+/* Override yellow backgrounds with cream */
+.bg-yellow-50 {
+  background-color: #fef7e6 !important;
+}
+
+.bg-yellow-100 {
+  background-color: #fef7e6 !important;
+}
+
+.text-yellow-800 {
+  color: #000000 !important;
+}
+
+.hover\:bg-yellow-200:hover {
+  background-color: #ffffff !important;
+}
+
+/* Override purple text with deep green */
+.text-purple-600 {
+  color: #1a5f3a !important;
+}
+
+/* Override all hover states */
+.hover\:bg-blue-700:hover {
+  background-color: #1a5f3a !important;
+}
+
+.hover\:bg-gray-200:hover {
+  background-color: #ffffff !important;
+}
+
+.hover\:bg-gray-800:hover {
+  background-color: #1a5f3a !important;
+}
+
+.hover\:text-gray-700:hover {
+  color: #000000 !important;
+}
+
+.hover\:text-gray-900:hover {
+  color: #000000 !important;
+}
+
+.hover\:border-gray-300:hover {
+  border-color: #000000 !important;
+}
+
+/* Override focus states */
+.focus\:ring-blue-500:focus {
+  --tw-ring-color: #1a5f3a !important;
+}
+
+.focus\:border-transparent:focus {
+  border-color: #1a5f3a !important;
+}
+
+/* Override disabled states */
+.disabled\:opacity-50:disabled {
+  opacity: 0.5 !important;
+}
+
+.disabled\:cursor-not-allowed:disabled {
+  cursor: not-allowed !important;
+}
+
+/* Override loading spinners */
+.border-blue-600 {
+  border-color: #1a5f3a !important;
+}
+
+/* Override modal overlays */
+.bg-black.bg-opacity-50 {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Override shadows to use black */
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Override all blue colors with deep green */
+.text-blue-600 {
+  color: #1a5f3a !important;
+}
+
+.text-blue-700 {
+  color: #1a5f3a !important;
+}
+
+.text-blue-800 {
+  color: #1a5f3a !important;
+}
+
+.text-blue-900 {
+  color: #1a5f3a !important;
+}
+
+.bg-blue-50 {
+  background-color: #fef7e6 !important;
+}
+
+.bg-blue-100 {
+  background-color: #fef7e6 !important;
+}
+
+.border-blue-200 {
+  border-color: #000000 !important;
+}
+
+.hover\:text-blue-600:hover {
+  color: #1a5f3a !important;
+}
+
+.hover\:text-blue-700:hover {
+  color: #1a5f3a !important;
+}
+
+.hover\:text-blue-800:hover {
+  color: #1a5f3a !important;
+}
+
+.hover\:bg-blue-50:hover {
+  background-color: #fef7e6 !important;
+}
+
+/* Override all purple colors with deep green */
+.text-purple-600 {
+  color: #1a5f3a !important;
+}
+
+/* Override all indigo colors with deep green */
+.text-indigo-600 {
+  color: #1a5f3a !important;
+}
+
+/* Override all pink colors with deep green */
+.text-pink-600 {
+  color: #1a5f3a !important;
+}
+
+/* Override transition colors */
+.transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke !important;
+}
+
+/* Override all remaining color classes */
+.text-red-500 {
+  color: #000000 !important;
+}
+
+.text-red-600 {
+  color: #000000 !important;
+}
+
+.text-red-800 {
+  color: #000000 !important;
+}
+
+.bg-red-50 {
+  background-color: #fef7e6 !important;
+}
+
+.border-red-200 {
+  border-color: #000000 !important;
+}
+
+.text-orange-100 {
+  color: #ffffff !important;
+}
+
+.text-orange-200 {
+  color: #ffffff !important;
+}
+
+.text-orange-600 {
+  color: #1a5f3a !important;
+}
+
+.bg-orange-500 {
+  background-color: #1a5f3a !important;
+}
+
+.bg-orange-600 {
+  background-color: #1a5f3a !important;
+}
+
+.text-green-100 {
+  color: #ffffff !important;
+}
+
+.text-green-200 {
+  color: #ffffff !important;
+}
+
+.bg-green-50 {
+  background-color: #fef7e6 !important;
+}
+
+.bg-green-500 {
+  background-color: #1a5f3a !important;
+}
+
+.bg-green-600 {
+  background-color: #1a5f3a !important;
+}
+
+.bg-green-700 {
+  background-color: #1a5f3a !important;
+}
+
+.border-green-200 {
+  border-color: #000000 !important;
+}
+
+.text-purple-100 {
+  color: #ffffff !important;
+}
+
+.text-purple-200 {
+  color: #ffffff !important;
+}
+
+.bg-purple-500 {
+  background-color: #1a5f3a !important;
+}
+
+.bg-purple-600 {
+  background-color: #1a5f3a !important;
+}
+
+.bg-purple-50 {
+  background-color: #fef7e6 !important;
+}
+
+.border-purple-200 {
+  border-color: #000000 !important;
+}
+
+/* Override gradient backgrounds */
+.bg-gradient-to-r.from-blue-600.to-purple-600 {
+  background: linear-gradient(to right, #1a5f3a, #1a5f3a) !important;
+}
+
+.bg-gradient-to-r.from-blue-50.to-purple-50 {
+  background: linear-gradient(to right, #fef7e6, #fef7e6) !important;
+}
+
+.bg-gradient-to-r.from-green-50.to-blue-50 {
+  background: linear-gradient(to right, #fef7e6, #fef7e6) !important;
+}
+
+.bg-gradient-to-r.from-blue-500.to-blue-600 {
+  background: linear-gradient(to right, #1a5f3a, #1a5f3a) !important;
+}
+
+.bg-gradient-to-r.from-green-500.to-green-600 {
+  background: linear-gradient(to right, #1a5f3a, #1a5f3a) !important;
+}
+
+.bg-gradient-to-r.from-purple-500.to-purple-600 {
+  background: linear-gradient(to right, #1a5f3a, #1a5f3a) !important;
+}
+
+.bg-gradient-to-r.from-orange-500.to-orange-600 {
+  background: linear-gradient(to right, #1a5f3a, #1a5f3a) !important;
+}
+
+/* Override text colors in gradients */
+.text-blue-100 {
+  color: #ffffff !important;
+}
+
+.text-blue-200 {
+  color: #ffffff !important;
+}
+
+.text-green-100 {
+  color: #ffffff !important;
+}
+
+.text-green-200 {
+  color: #ffffff !important;
+}
+
+.text-purple-100 {
+  color: #ffffff !important;
+}
+
+.text-purple-200 {
+  color: #ffffff !important;
+}
+
+.text-orange-100 {
+  color: #ffffff !important;
+}
+
+.text-orange-200 {
+  color: #ffffff !important;
+}
+
+/* Override border colors */
+.border-yellow-200 {
+  border-color: #000000 !important;
+}
+
+.border-red-200 {
+  border-color: #000000 !important;
+}
+
+/* Override hover states for remaining colors */
+.hover\:bg-gray-100:hover {
+  background-color: #ffffff !important;
+}
+
+.hover\:shadow-lg:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Override remaining color classes */
+.text-gray-800 {
+  color: #000000 !important;
+}
+
+.bg-gray-100 {
+  background-color: #fef7e6 !important;
+}
+
+.border-t-gray-700 {
+  border-top-color: #1a5f3a !important;
+}
+
+.border-b-2 {
+  border-bottom-width: 2px !important;
+}
+
+/* Override LoadingSpinner variant colors */
+.text-blue-600 {
+  color: #1a5f3a !important;
+}
+
+.text-green-600 {
+  color: #1a5f3a !important;
+}
+
+.text-yellow-600 {
+  color: #1a5f3a !important;
+}
+
+.text-red-600 {
+  color: #000000 !important;
+}
+
+/* Override skeleton loading colors */
+.bg-gray-200 {
+  background-color: #ffffff !important;
+}
