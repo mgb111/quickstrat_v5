@@ -10,8 +10,8 @@ const PricingSection: React.FC<PricingSectionProps> = ({
 }) => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
-  const monthlyPrice = 29;
-  const yearlyPrice = 249; // $249 yearly
+  const monthlyPrice = 19;
+  const yearlyPrice = 199; // $199 yearly
 
   return (
     <section id="pricing" className="py-20 bg-gray-50">

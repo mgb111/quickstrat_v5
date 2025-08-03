@@ -78,7 +78,7 @@ export class SaaSPlatform {
     ['premium', {
       id: 'premium',
       name: 'Premium',
-      price: 29,
+      price: 19,
       currency: 'USD',
       features: {
         max_campaigns: -1, // unlimited

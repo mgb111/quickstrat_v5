@@ -11,8 +11,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
-  const monthlyPrice = 29;
-  const yearlyPrice = 249;
+  const monthlyPrice = 19;
+  const yearlyPrice = 199;
 
   const toggleFAQ = (index: number) => {
     setOpenFAQ(openFAQ === index ? null : index);

@@ -9,6 +9,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'processing' | 'success' | 'failed'>('pending');
   const [paymentMessage, setPaymentMessage] = useState('');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+
+  const monthlyPrice = 19;
+  const yearlyPrice = 199;
 
   useEffect(() => {
     if (!isOpen || !formRef.current) return;
@@ -16,16 +20,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     // Reset state when modal opens
     setPaymentStatus('pending');
     setPaymentMessage('');
+    setBillingCycle('monthly');
     
     // Track payment modal opened
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'begin_checkout', {
-        currency: 'INR',
-        value: 49.00,
+        currency: 'USD',
+        value: billingCycle === 'monthly' ? monthlyPrice : yearlyPrice,
         items: [{
-          item_id: 'pdf_download',
-          item_name: 'Lead Magnet PDF',
-          price: 49.00,
+          item_id: 'premium_plan',
+          item_name: `Premium Plan - ${billingCycle === 'monthly' ? 'Monthly' : 'Yearly'}`,
+          price: billingCycle === 'monthly' ? monthlyPrice : yearlyPrice,
           quantity: 1
         }]
       });
@@ -39,7 +44,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
     script.async = true;
     script.setAttribute('data-payment_button_id', 'pl_QzFk7otoHrBzkf');
     formRef.current.appendChild(script);
-  }, [isOpen]);
+  }, [isOpen, billingCycle]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -58,12 +63,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         if (typeof window !== 'undefined' && (window as any).gtag) {
           (window as any).gtag('event', 'purchase', {
             transaction_id: Date.now().toString(),
-            value: 49.00,
-            currency: 'INR',
+            value: billingCycle === 'monthly' ? monthlyPrice : yearlyPrice,
+            currency: 'USD',
             items: [{
-              item_id: 'pdf_download',
-              item_name: 'Lead Magnet PDF',
-              price: 49.00,
+              item_id: 'premium_plan',
+              item_name: `Premium Plan - ${billingCycle === 'monthly' ? 'Monthly' : 'Yearly'}`,
+              price: billingCycle === 'monthly' ? monthlyPrice : yearlyPrice,
               quantity: 1
             }]
           });
@@ -87,12 +92,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           if (typeof window !== 'undefined' && (window as any).gtag) {
             (window as any).gtag('event', 'purchase', {
               transaction_id: Date.now().toString(),
-              value: 49.00,
-              currency: 'INR',
+              value: billingCycle === 'monthly' ? monthlyPrice : yearlyPrice,
+              currency: 'USD',
               items: [{
-                item_id: 'pdf_download',
-                item_name: 'Lead Magnet PDF',
-                price: 49.00,
+                item_id: 'premium_plan',
+                item_name: `Premium Plan - ${billingCycle === 'monthly' ? 'Monthly' : 'Yearly'}`,
+                price: billingCycle === 'monthly' ? monthlyPrice : yearlyPrice,
                 quantity: 1
               }]
             });
@@ -106,8 +111,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           // Track payment failure with Google Analytics
           if (typeof window !== 'undefined' && (window as any).gtag) {
             (window as any).gtag('event', 'payment_failed', {
-              value: 49.00,
-              currency: 'INR'
+              value: billingCycle === 'monthly' ? monthlyPrice : yearlyPrice,
+              currency: 'USD'
             });
           }
         }
@@ -121,7 +126,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       window.removeEventListener('focus', handleFocus);
       window.removeEventListener('message', handleMessage);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, billingCycle]);
 
   const getStatusIcon = () => {
     switch (paymentStatus) {
@@ -157,23 +162,71 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full flex flex-col items-center relative">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full flex flex-col items-center relative">
         {paymentStatus === 'pending' && (
           <>
-            <h2 className="text-xl font-bold mb-4">Complete Your Campaign</h2>
-            <p className="mb-6 text-gray-700 text-center">To finish your campaign and unlock everything, please complete payment.</p>
+            <h2 className="text-xl font-bold mb-4">Upgrade to Premium</h2>
+            <p className="mb-6 text-gray-700 text-center">Unlock unlimited campaigns and all premium features</p>
             
-            {/* Campaign Value Proposition */}
-            <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-              <h3 className="font-semibold text-gray-900 mb-3 text-center">Your Complete Campaign Includes:</h3>
+            {/* Billing Cycle Toggle */}
+            <div className="mb-6 w-full">
+              <div className="bg-gray-50 rounded-lg p-1 border border-gray-200">
+                <div className="flex">
+                  <button
+                    onClick={() => setBillingCycle('monthly')}
+                    className={`flex-1 px-4 py-2 rounded-md font-medium transition-colors ${
+                      billingCycle === 'monthly'
+                        ? 'bg-gray-700 text-white'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    onClick={() => setBillingCycle('yearly')}
+                    className={`flex-1 px-4 py-2 rounded-md font-medium transition-colors ${
+                      billingCycle === 'yearly'
+                        ? 'bg-gray-700 text-white'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Yearly
+                    <span className="ml-1 text-xs text-gray-500">Save 30%</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Pricing Display */}
+            <div className="mb-6 text-center">
+              <div className="text-3xl font-bold text-gray-900 mb-1">
+                ${billingCycle === 'monthly' ? monthlyPrice : yearlyPrice}
+                <span className="text-lg font-normal text-gray-500">
+                  /{billingCycle === 'monthly' ? 'month' : 'year'}
+                </span>
+              </div>
+              {billingCycle === 'yearly' && (
+                <div className="text-sm text-green-600 font-medium">
+                  Save ${(monthlyPrice * 12) - yearlyPrice} per year
+                </div>
+              )}
+            </div>
+            
+            {/* Plan Features */}
+            <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg w-full">
+              <h3 className="font-semibold text-gray-900 mb-3 text-center">Premium Plan Includes:</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center text-gray-700">
                   <span className="mr-2">✅</span>
-                  <span><strong>Professional PDF Lead Magnet</strong> - Ready to download and share</span>
+                  <span><strong>Unlimited Campaigns</strong> - Create as many lead magnets as you want</span>
                 </div>
                 <div className="flex items-center text-gray-700">
                   <span className="mr-2">✅</span>
-                  <span><strong>Landing Page Creation</strong> - Convert visitors into leads</span>
+                  <span><strong>Professional PDF Generation</strong> - Beautiful, branded lead magnets</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <span className="mr-2">✅</span>
+                  <span><strong>Landing Page Creation</strong> - High-converting pages to capture leads</span>
                 </div>
                 <div className="flex items-center text-gray-700">
                   <span className="mr-2">✅</span>
@@ -181,14 +234,18 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 </div>
                 <div className="flex items-center text-gray-700">
                   <span className="mr-2">✅</span>
-                  <span><strong>Complete Campaign Setup</strong> - Ready to launch immediately</span>
+                  <span><strong>Priority Support</strong> - Get help when you need it</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <span className="mr-2">✅</span>
+                  <span><strong>API Access</strong> - Integrate with your existing tools</span>
                 </div>
               </div>
             </div>
             
-            <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+            <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg w-full">
               <div className="text-sm text-gray-700">
-                <strong>💡 Tip:</strong> After payment, return to this tab and your PDF will download automatically.
+                <strong>💡 Tip:</strong> After payment, you'll have unlimited access to all features.
               </div>
             </div>
             <form ref={formRef}></form>
@@ -198,12 +255,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 // Track payment cancelled
                 if (typeof window !== 'undefined' && (window as any).gtag) {
                   (window as any).gtag('event', 'remove_from_cart', {
-                    currency: 'INR',
-                    value: 49.00,
+                    currency: 'USD',
+                    value: billingCycle === 'monthly' ? monthlyPrice : yearlyPrice,
                     items: [{
-                      item_id: 'pdf_download',
-                      item_name: 'Lead Magnet PDF',
-                      price: 49.00,
+                      item_id: 'premium_plan',
+                      item_name: `Premium Plan - ${billingCycle === 'monthly' ? 'Monthly' : 'Yearly'}`,
+                      price: billingCycle === 'monthly' ? monthlyPrice : yearlyPrice,
                       quantity: 1
                     }]
                   });
