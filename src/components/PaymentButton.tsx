@@ -217,6 +217,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 <strong>💡 Tip:</strong> After payment, you'll have access to create 3 complete campaigns.
               </div>
             </div>
+            
+            {/* Payment Button */}
+            <div className="w-full mb-4">
+              <form ref={formRef} className="w-full">
+                {/* Razorpay payment button will be rendered here */}
+              </form>
+            </div>
+            
             <button
               className="text-gray-700 hover:underline text-sm mt-4"
               onClick={() => {
@@ -224,25 +232,24 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
                 if (typeof window !== 'undefined' && (window as any).gtag) {
                   (window as any).gtag('event', 'remove_from_cart', {
                     currency: 'USD',
-                    value: billingCycle === 'monthly' ? monthlyPrice : yearlyPrice,
+                    value: monthlyPrice,
                     items: [{
                       item_id: 'premium_plan',
-                      item_name: `Premium Plan - ${billingCycle === 'monthly' ? 'Monthly' : 'Yearly'}`,
-                      price: billingCycle === 'monthly' ? monthlyPrice : yearlyPrice,
+                      item_name: 'Premium Plan - Monthly',
+                      price: monthlyPrice,
                       quantity: 1
                     }]
                   });
                 }
                 onClose(false);
               }}
-                          >
-                Cancel
-              </button>
+            >
+              Cancel
+            </button>
             </>
           )}
           
-          {/* Payment form - moved to end to avoid interference */}
-          <form ref={formRef} className="hidden"></form>
+
 
         {paymentStatus === 'processing' && (
           <div className="text-center">
