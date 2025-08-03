@@ -2,7 +2,7 @@ import { supabase } from './supabase';
 
 export interface SubscriptionStatus {
   isSubscribed: boolean;
-  plan: 'free' | 'premium' | 'enterprise';
+  plan: 'free' | 'premium';
   canAccessPDF: boolean;
   canAccessUnlimitedCampaigns: boolean;
   monthlyCampaignLimit: number;
@@ -93,9 +93,9 @@ export class SubscriptionService {
 
       return {
         isSubscribed: plan !== 'free' && SubscriptionService.isWithinPaidPeriod(subscriptionExpiry),
-        plan: plan as 'free' | 'premium' | 'enterprise',
+        plan: plan as 'free' | 'premium',
         canAccessPDF: plan !== 'free' && SubscriptionService.isWithinPaidPeriod(subscriptionExpiry),
-        canAccessUnlimitedCampaigns: plan === 'enterprise',
+        canAccessUnlimitedCampaigns: plan === 'premium',
         monthlyCampaignLimit: this.getCampaignLimit(plan),
         usedCampaigns,
         subscriptionExpiry,
@@ -155,9 +155,7 @@ export class SubscriptionService {
       case 'free':
         return 3;
       case 'premium':
-        return 5;
-      case 'enterprise':
-        return 25;
+        return -1; // unlimited
       default:
         return 3;
     }

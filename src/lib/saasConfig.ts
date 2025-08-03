@@ -4,7 +4,7 @@
 export interface SaaSUser {
   id: string;
   email: string;
-  plan: 'free' | 'pro' | 'enterprise';
+  plan: 'free' | 'premium';
   subscription_status: 'active' | 'cancelled' | 'past_due';
   created_at: string;
   last_login: string;
@@ -75,31 +75,10 @@ export class SaaSPlatform {
         storage_gb: 1,
       }
     }],
-    ['pro', {
-      id: 'pro',
-      name: 'Pro',
+    ['premium', {
+      id: 'premium',
+      name: 'Premium',
       price: 29,
-      currency: 'USD',
-      features: {
-        max_campaigns: 10,
-        max_leads_per_month: 500,
-        custom_branding: true,
-        email_sequences: true,
-        analytics: true,
-        api_access: false,
-        priority_support: false,
-      },
-      limits: {
-        campaigns: 10,
-        leads_per_month: 500,
-        emails_per_month: 1000,
-        storage_gb: 5,
-      }
-    }],
-    ['enterprise', {
-      id: 'enterprise',
-      name: 'Enterprise',
-      price: 99,
       currency: 'USD',
       features: {
         max_campaigns: -1, // unlimited

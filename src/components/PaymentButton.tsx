@@ -141,15 +141,15 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
   const getStatusColor = () => {
     switch (paymentStatus) {
       case 'pending':
-        return 'text-blue-600';
+        return 'text-gray-700';
       case 'processing':
-        return 'text-yellow-600';
+        return 'text-gray-700';
       case 'success':
-        return 'text-green-600';
+        return 'text-gray-700';
       case 'failed':
-        return 'text-red-600';
+        return 'text-black';
       default:
-        return 'text-blue-600';
+        return 'text-gray-700';
     }
   };
 
@@ -164,36 +164,36 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
             <p className="mb-6 text-gray-700 text-center">To finish your campaign and unlock everything, please complete payment.</p>
             
             {/* Campaign Value Proposition */}
-            <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
-              <h3 className="font-semibold text-blue-900 mb-3 text-center">Your Complete Campaign Includes:</h3>
+            <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+              <h3 className="font-semibold text-gray-900 mb-3 text-center">Your Complete Campaign Includes:</h3>
               <div className="space-y-2 text-sm">
-                <div className="flex items-center text-blue-800">
+                <div className="flex items-center text-gray-700">
                   <span className="mr-2">✅</span>
                   <span><strong>Professional PDF Lead Magnet</strong> - Ready to download and share</span>
                 </div>
-                <div className="flex items-center text-blue-800">
+                <div className="flex items-center text-gray-700">
                   <span className="mr-2">✅</span>
                   <span><strong>Landing Page Creation</strong> - Convert visitors into leads</span>
                 </div>
-                <div className="flex items-center text-blue-800">
+                <div className="flex items-center text-gray-700">
                   <span className="mr-2">✅</span>
                   <span><strong>Email Capture System</strong> - With export functionality</span>
                 </div>
-                <div className="flex items-center text-blue-800">
+                <div className="flex items-center text-gray-700">
                   <span className="mr-2">✅</span>
                   <span><strong>Complete Campaign Setup</strong> - Ready to launch immediately</span>
                 </div>
               </div>
             </div>
             
-            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="text-sm text-blue-800">
+            <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+              <div className="text-sm text-gray-700">
                 <strong>💡 Tip:</strong> After payment, return to this tab and your PDF will download automatically.
               </div>
             </div>
             <form ref={formRef}></form>
             <button
-              className="text-blue-600 hover:underline text-sm mt-4"
+              className="text-gray-700 hover:underline text-sm mt-4"
               onClick={() => {
                 // Track payment cancelled
                 if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -221,12 +221,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
             <div className="text-4xl mb-4">⏳</div>
             <h2 className="text-xl font-bold mb-2">Processing Payment</h2>
             <p className="text-gray-600">Please wait while we confirm your payment...</p>
-            <div className="mt-4 w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
+            <div className="mt-4 w-8 h-8 border-4 border-gray-200 border-t-gray-700 rounded-full animate-spin mx-auto"></div>
             <div className="mt-4 text-sm text-gray-500">
               If you've completed payment, click below:
             </div>
             <button
-              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+              className="mt-2 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 text-sm"
               onClick={() => {
                 setPaymentStatus('success');
                 setPaymentMessage('Payment successful! Your PDF is ready to download.');
@@ -241,7 +241,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         {paymentStatus === 'success' && (
           <div className="text-center">
             <div className="text-4xl mb-4">✅</div>
-            <h2 className="text-xl font-bold mb-2 text-green-600">Payment Successful!</h2>
+            <h2 className="text-xl font-bold mb-2 text-gray-700">Payment Successful!</h2>
             <p className="text-gray-600">Your PDF is now ready to download.</p>
             <div className="mt-4 text-sm text-gray-500">
               The download will start automatically...
@@ -258,7 +258,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
         {paymentStatus === 'failed' && (
           <div className="text-center">
             <div className="text-4xl mb-4">❌</div>
-            <h2 className="text-xl font-bold mb-2 text-red-600">Payment Failed</h2>
+            <h2 className="text-xl font-bold mb-2 text-black">Payment Failed</h2>
             <p className="text-gray-600">Please try again or contact support if the issue persists.</p>
             <button
               className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"

@@ -186,7 +186,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
+          <p className="text-black mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
@@ -231,16 +231,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
             <li key={campaign.id} className="py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <button
-                  className="font-medium text-blue-700 hover:underline focus:outline-none text-lg"
+                  className="font-medium text-gray-700 hover:underline focus:outline-none text-lg"
                   onClick={() => setViewPdfCampaign(campaign)}
                   title="View PDF"
                 >
                   {campaign.name}
                 </button>
-                <div className="text-xs text-green-600 mt-1">Completed</div>
+                <div className="text-xs text-gray-700 mt-1">Completed</div>
                 <div className="flex flex-wrap gap-2 mt-2">
                   <button
-                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-xs font-semibold"
+                                          className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-xs font-semibold"
                     onClick={() => setViewPdfCampaign(campaign)}
                   >
                     View PDF
@@ -258,14 +258,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
                     Landing Page
                   </button>
                   <button
-                    className="px-3 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200 text-xs font-semibold"
+                                          className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-xs font-semibold"
                     onClick={exportLeads}
                   >
                     Export Leads
                   </button>
                 </div>
                 <div className="mt-2 text-xs text-gray-600">
-                  Leads: {leads.length} {isLoadingLeads && <span className="ml-2 text-blue-500">Loading...</span>}
+                  Leads: {leads.length} {isLoadingLeads && <span className="ml-2 text-gray-700">Loading...</span>}
                   {stats && (
                     <>
                       {' '}| Emails: {stats.totalEmails ?? 0}
@@ -285,7 +285,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
         ariaHideApp={false}
         style={{ content: { maxWidth: 900, margin: 'auto', height: '90vh', overflow: 'auto' } }}
       >
-        <button className="mb-4 text-red-600" onClick={() => setViewPdfCampaign(null)}>Close</button>
+                        <button className="mb-4 text-black" onClick={() => setViewPdfCampaign(null)}>Close</button>
         {viewPdfCampaign && (
           <PDFGenerator
             data={typeof viewPdfCampaign.lead_magnet_content === 'string'
@@ -304,7 +304,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
         ariaHideApp={false}
         style={{ content: { maxWidth: 900, margin: 'auto', height: '90vh', overflow: 'auto' } }}
       >
-        <button className="mb-4 text-red-600" onClick={() => setEditPdfCampaign(null)}>Close</button>
+                        <button className="mb-4 text-black" onClick={() => setEditPdfCampaign(null)}>Close</button>
         <h2 className="text-lg font-bold mb-2">Edit PDF</h2>
         {editPdfCampaign && (
           <PDFEditor
@@ -312,7 +312,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
             onChange={v => setEditJson(JSON.stringify(v))}
           />
         )}
-        {editError && <div className="text-red-600 my-2">{editError}</div>}
+                    {editError && <div className="text-black my-2">{editError}</div>}
         <button
           className="mt-2 px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"
           onClick={handleEditSave}
@@ -336,7 +336,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"
       >
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4 text-green-600">Payment Successful!</h2>
+          <h2 className="text-2xl font-bold mb-4 text-gray-700">Payment Successful!</h2>
           <p className="mb-4 text-lg">Your premium features are now unlocked. Enjoy unlimited access!</p>
           <button
             className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
