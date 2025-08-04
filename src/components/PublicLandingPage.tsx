@@ -562,25 +562,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             {/* Top row - scrolls faster */}
             <div className="flex space-x-6 animate-scroll mb-4">
               <div className="flex space-x-6 flex-shrink-0">
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" alt="Sarah" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Sarah Johnson</div>
-                      <div className="text-sm text-gray-600">Buffer</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Majorbeam helped me create a lead magnet that captured <span className="bg-red-100 px-1 rounded">47 emails in the first week</span>. The AI-generated content was spot-on and saved me hours of work!"
-                  </p>
-                </div>
 
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
                   <div className="flex items-start space-x-3 mb-4">
@@ -589,7 +570,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Michael Chen</div>
-                      <div className="text-sm text-gray-600">Notion</div>
+                      <div className="text-sm text-gray-600">Cipher</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -609,7 +590,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Amanda Rodriguez</div>
-                      <div className="text-sm text-gray-600">Canva</div>
+                      <div className="text-sm text-gray-600">Hypertune</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -629,7 +610,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">David Kim</div>
-                      <div className="text-sm text-gray-600">Figma</div>
+                      <div className="text-sm text-gray-600">Deposure</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -649,7 +630,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Lisa Wang</div>
-                      <div className="text-sm text-gray-600">Slack</div>
+                      <div className="text-sm text-gray-600">Standout</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -669,7 +650,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Alex Thompson</div>
-                      <div className="text-sm text-gray-600">Zapier</div>
+                      <div className="text-sm text-gray-600">Seed Diffusion</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -679,381 +660,95 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                   </div>
                   <p className="text-gray-700 text-sm">
                     "Majorbeam's AI-generated lead magnets save me hours every week and consistently bring in new leads."
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
+                  <div className="flex items-start space-x-3 mb-4">
+                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
+                      <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=40&h=40&fit=crop&crop=face" alt="Maria" className="w-10 h-10 rounded-full object-cover" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">Maria Garcia</div>
+                      <div className="text-sm text-gray-600">TableMint</div>
+                      <div className="flex text-red-400 mt-1">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                          <Star key={i} className="w-4 h-4 fill-current" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    "I grew my newsletter by 500 subscribers in 30 days with Majorbeam's landing pages and email capture."
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
+                  <div className="flex items-start space-x-3 mb-4">
+                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
+                      <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=40&h=40&fit=crop&crop=face" alt="James" className="w-10 h-10 rounded-full object-cover" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">James Wilson</div>
+                      <div className="text-sm text-gray-600">Tenki Cloud</div>
+                      <div className="flex text-red-400 mt-1">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                          <Star key={i} className="w-4 h-4 fill-current" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    "Majorbeam's step-by-step process made it easy to create a lead magnet that actually works."
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
+                  <div className="flex items-start space-x-3 mb-4">
+                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
+                      <img src="https://images.unsplash.com/photo-1548142813-c348350df52b?w=40&h=40&fit=crop&crop=face" alt="Sophie" className="w-10 h-10 rounded-full object-cover" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">Sophie Chen</div>
+                      <div className="text-sm text-gray-600">MacPaw</div>
+                      <div className="flex text-red-400 mt-1">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                          <Star key={i} className="w-4 h-4 fill-current" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    "We used Majorbeam to launch a campaign and saw a 40% increase in email list growth."
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
+                  <div className="flex items-start space-x-3 mb-4">
+                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
+                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Mike" className="w-10 h-10 rounded-full object-cover" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">Michael Chen</div>
+                      <div className="text-sm text-gray-600">Cipher</div>
+                      <div className="flex text-red-400 mt-1">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                          <Star key={i} className="w-4 h-4 fill-current" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 text-sm">
+                    "We generated 350+ new leads in two weeks using Majorbeam's AI-powered campaigns. It's a must-have for SaaS growth."
                   </p>
                 </div>
               </div>
               
-              {/* Duplicate sets for seamless loop - Top row */}
-              <div className="flex space-x-6 flex-shrink-0">
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" alt="Sarah" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Sarah Johnson</div>
-                      <div className="text-sm text-gray-600">Buffer</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Majorbeam helped me create a lead magnet that captured <span className="bg-red-100 px-1 rounded">47 emails in the first week</span>. The AI-generated content was spot-on and saved me hours of work!"
-                  </p>
-                </div>
 
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Mike" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Michael Chen</div>
-                      <div className="text-sm text-gray-600">Notion</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "We generated 350+ new leads in two weeks using Majorbeam's AI-powered campaigns. It's a must-have for SaaS growth."
-                  </p>
-                </div>
 
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face" alt="Amanda" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Amanda Rodriguez</div>
-                      <div className="text-sm text-gray-600">Canva</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Majorbeam's lead magnets doubled our email signups in a month. The content feels tailored for our audience."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" alt="David" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">David Kim</div>
-                      <div className="text-sm text-gray-600">Figma</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Majorbeam made it easy to launch a high-converting lead magnet. We now get qualified leads daily."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=40&h=40&fit=crop&crop=face" alt="Lisa" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Lisa Wang</div>
-                      <div className="text-sm text-gray-600">Slack</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Our conversion rate jumped from 2% to 7% after switching to Majorbeam for our lead magnets."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face" alt="Alex" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Alex Thompson</div>
-                      <div className="text-sm text-gray-600">Zapier</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Majorbeam's AI-generated lead magnets save me hours every week and consistently bring in new leads."
-                  </p>
-                </div>
-              </div>
             </div>
             
-            {/* Bottom row - scrolls slower */}
-            <div className="flex space-x-6 animate-scroll-slow">
-              <div className="flex space-x-6 flex-shrink-0">
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=40&h=40&fit=crop&crop=face" alt="Maria" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Maria Garcia</div>
-                      <div className="text-sm text-gray-600">Stripe</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "I grew my newsletter by 500 subscribers in 30 days with Majorbeam's landing pages and email capture."
-                  </p>
-                </div>
 
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=40&h=40&fit=crop&crop=face" alt="James" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">James Wilson</div>
-                      <div className="text-sm text-gray-600">Shopify</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Majorbeam's step-by-step process made it easy to create a lead magnet that actually works."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1548142813-c348350df52b?w=40&h=40&fit=crop&crop=face" alt="Sophie" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Sophie Chen</div>
-                      <div className="text-sm text-gray-600">Dropbox</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "We used Majorbeam to launch a campaign and saw a 40% increase in email list growth."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Ryan" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Ryan Park</div>
-                      <div className="text-sm text-gray-600">Asana</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Majorbeam's lead magnets are the best I've used—our pipeline is always full now."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face" alt="Amanda" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Amanda Rodriguez</div>
-                      <div className="text-sm text-gray-600">Trello</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Majorbeam's lead magnets doubled our email signups in a month. The content feels tailored for our audience."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Carlos" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Carlos Mendez</div>
-                      <div className="text-sm text-gray-600">Airtable</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "The export and email capture features in Majorbeam helped us nurture and convert leads faster."
-                  </p>
-                </div>
-              </div>
-              
-              {/* Duplicate sets for seamless loop - Bottom row */}
-              <div className="flex space-x-6 flex-shrink-0">
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=40&h=40&fit=crop&crop=face" alt="Maria" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Maria Garcia</div>
-                      <div className="text-sm text-gray-600">Stripe</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "I grew my newsletter by 500 subscribers in 30 days with Majorbeam's landing pages and email capture."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=40&h=40&fit=crop&crop=face" alt="James" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">James Wilson</div>
-                      <div className="text-sm text-gray-600">Shopify</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Majorbeam's step-by-step process made it easy to create a lead magnet that actually works."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1548142813-c348350df52b?w=40&h=40&fit=crop&crop=face" alt="Sophie" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Sophie Chen</div>
-                      <div className="text-sm text-gray-600">Dropbox</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "We used Majorbeam to launch a campaign and saw a 40% increase in email list growth."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Ryan" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Ryan Park</div>
-                      <div className="text-sm text-gray-600">Asana</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Majorbeam's lead magnets are the best I've used—our pipeline is always full now."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face" alt="Amanda" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Amanda Rodriguez</div>
-                      <div className="text-sm text-gray-600">Trello</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "Majorbeam's lead magnets doubled our email signups in a month. The content feels tailored for our audience."
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 w-80">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0 flex items-center justify-center">
-                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Carlos" className="w-10 h-10 rounded-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">Carlos Mendez</div>
-                      <div className="text-sm text-gray-600">Airtable</div>
-                      <div className="flex text-red-400 mt-1">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm">
-                    "The export and email capture features in Majorbeam helped us nurture and convert leads faster."
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
