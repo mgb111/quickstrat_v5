@@ -78,6 +78,15 @@ function App() {
         // User is authenticated, but only redirect to dashboard for specific routes
         console.log('User authenticated, checking if should redirect to dashboard');
         
+        // NEVER redirect for demo routes - check this FIRST
+        const isOnDemoRoute = path.startsWith('/demo/');
+        
+        if (isOnDemoRoute) {
+          console.log('🚫 On demo route, never redirect to dashboard');
+          console.log('🚫 Demo route detected, exiting authentication logic early');
+          return; // Exit early, don't process any redirects
+        }
+        
         // Only redirect to dashboard for these specific routes when user is logged in
         const shouldRedirectToDashboard = [
           '/',
@@ -93,14 +102,6 @@ function App() {
           '/profile',
           '/landing'
         ].some(validPath => path.startsWith(validPath));
-        
-        // NEVER redirect for demo routes
-        const isOnDemoRoute = path.startsWith('/demo/');
-        
-        if (isOnDemoRoute) {
-          console.log('🚫 On demo route, never redirect to dashboard');
-          return; // Exit early, don't process any redirects
-        }
         
         if (shouldRedirectToDashboard && (mode === 'auth' || mode === 'public')) {
           console.log('Redirecting authenticated user to dashboard');

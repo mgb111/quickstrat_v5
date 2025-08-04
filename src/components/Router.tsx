@@ -291,6 +291,7 @@ const AppWrapper: React.FC = () => {
   // If we're on a demo route, don't render the App component
   if (path.startsWith('/demo/')) {
     console.log('✅ AppWrapper: On demo route, not rendering App');
+    console.log('✅ AppWrapper: Demo route detected, returning null to prevent App rendering');
     return null;
   }
   
