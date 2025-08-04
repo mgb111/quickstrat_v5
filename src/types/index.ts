@@ -33,6 +33,7 @@ export interface LeadMagnetFormatOption {
   whyItWorks: string;
   icon: string;
   isInteractive: boolean; // New field to distinguish interactive vs PDF formats
+  demoLink: string; // Demo link for each format
 }
 
 export interface LeadMagnetConcept {

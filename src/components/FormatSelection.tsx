@@ -7,7 +7,8 @@ import {
   BarChart3, 
   Search,
   Check,
-  FileText
+  FileText,
+  ExternalLink
 } from 'lucide-react';
 
 interface FormatSelectionProps {
@@ -25,7 +26,8 @@ const formatOptions: LeadMagnetFormatOption[] = [
     example: '"Why aren\'t you getting more customers?" quiz for a fitness coach, "Why isn\'t your store making more sales?" quiz for an ecommerce seller.',
     whyItWorks: 'Works in any sector, adapts by changing questions and feedback language.',
     icon: 'HelpCircle',
-    isInteractive: true
+    isInteractive: true,
+    demoLink: 'https://majorbeam.com/demo/quiz'
   },
   {
     id: 'roi_calculator',
@@ -35,7 +37,8 @@ const formatOptions: LeadMagnetFormatOption[] = [
     example: 'A restaurant sees "Increase bookings by 20% → +$X/month"; a SaaS company sees "Lower churn by 5% → +$X/year."',
     whyItWorks: 'Makes benefits tangible for any business type.',
     icon: 'Calculator',
-    isInteractive: true
+    isInteractive: true,
+    demoLink: 'https://majorbeam.com/demo/calculator'
   },
   {
     id: 'action_plan',
@@ -45,7 +48,8 @@ const formatOptions: LeadMagnetFormatOption[] = [
     example: '"Get 50 more leads in 30 days" → 5 steps for a real estate agent vs. 5 steps for a B2B SaaS founder.',
     whyItWorks: 'Simple, practical, and feels tailored to them.',
     icon: 'Target',
-    isInteractive: true
+    isInteractive: true,
+    demoLink: 'https://majorbeam.com/demo/action-plan'
   },
   {
     id: 'benchmark_report',
@@ -55,7 +59,8 @@ const formatOptions: LeadMagnetFormatOption[] = [
     example: '"Your email open rate is 7% below industry average — here\'s how to fix it."',
     whyItWorks: 'People hate feeling behind their competition — this creates urgency to act.',
     icon: 'BarChart3',
-    isInteractive: true
+    isInteractive: true,
+    demoLink: 'https://majorbeam.com/demo/benchmark'
   },
   {
     id: 'opportunity_finder',
@@ -65,7 +70,8 @@ const formatOptions: LeadMagnetFormatOption[] = [
     example: 'A clothing store gets "You\'re missing Instagram Reels — competitors see 40% more engagement from them."',
     whyItWorks: 'Turns vague "you could improve" into specific, actionable suggestions that are easy to start.',
     icon: 'Search',
-    isInteractive: true
+    isInteractive: true,
+    demoLink: 'https://majorbeam.com/demo/opportunity-finder'
   },
   {
     id: 'pdf',
@@ -75,7 +81,8 @@ const formatOptions: LeadMagnetFormatOption[] = [
     example: '"5 Proven Strategies to Double Your Revenue" PDF guide with checklists and templates.',
     whyItWorks: 'Familiar format that users can save, print, and reference later.',
     icon: 'FileText',
-    isInteractive: false
+    isInteractive: false,
+    demoLink: 'https://majorbeam.com/demo/pdf'
   }
 ];
 
@@ -181,6 +188,20 @@ const FormatSelection: React.FC<FormatSelectionProps> = ({
                     {option.whyItWorks}
                   </p>
                 </div>
+
+                {/* Demo Link */}
+                {option.demoLink && (
+                  <a
+                    href={option.demoLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    View Demo
+                  </a>
+                )}
               </div>
             );
           })}
