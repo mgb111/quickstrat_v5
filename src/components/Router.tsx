@@ -283,22 +283,6 @@ const PdfDemo = () => (
   </div>
 );
 
-// Wrapper component that prevents App from rendering on demo routes
-const AppWrapper: React.FC = () => {
-  const path = window.location.pathname;
-  console.log('🔍 AppWrapper path check:', path);
-  
-  // If we're on a demo route, don't render the App component
-  if (path.startsWith('/demo/')) {
-    console.log('✅ AppWrapper: On demo route, not rendering App');
-    console.log('✅ AppWrapper: Demo route detected, returning null to prevent App rendering');
-    return null;
-  }
-  
-  console.log('❌ AppWrapper: Not on demo route, rendering App');
-  return <App />;
-};
-
 const AppRouter: React.FC = () => {
   console.log('🔍 AppRouter: Setting up routes');
   console.log('🔍 AppRouter: Demo routes should be matched before catch-all');
@@ -321,7 +305,7 @@ const AppRouter: React.FC = () => {
         <Route path="/saas-checklist" element={<SaaSChecklist />} />
         
         {/* Catch-all route - Must be last */}
-        <Route path="/*" element={<AppWrapper />} />
+        <Route path="/*" element={<App />} />
       </Routes>
     </Router>
   );
