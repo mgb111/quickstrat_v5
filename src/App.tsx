@@ -77,6 +77,12 @@ function App() {
           '/signup'
         ].includes(path);
         
+        // NEVER redirect to dashboard for demo routes, regardless of authentication
+        if (path.startsWith('/demo/')) {
+          console.log('On demo route, never redirect to dashboard');
+          return; // Exit early, don't process any redirects
+        }
+        
         if (shouldRedirectToDashboard && (mode === 'auth' || mode === 'public')) {
           console.log('Redirecting authenticated user to dashboard');
           setMode('dashboard');
