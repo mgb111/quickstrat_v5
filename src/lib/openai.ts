@@ -250,6 +250,27 @@ Return JSON in this exact format:
   ]
 }`;
 
+    case 'pdf':
+      return `${baseContext}
+
+Generate 3 Traditional PDF Guide concepts. Each guide should:
+- Focus on comprehensive, educational content
+- Include actionable insights and step-by-step instructions
+- Provide templates, checklists, or frameworks
+- Be valuable enough to download and reference later
+
+Return JSON in this exact format:
+{
+  "concepts": [
+    {
+      "title": "PDF Guide Title (PDF)",
+      "description": "Brief description of what the guide covers and what users will learn",
+      "value_proposition": "What specific value and insights users will get from this guide",
+      "target_audience": "Specific audience segment this guide targets"
+    }
+  ]
+}`;
+
     default:
       throw new Error(`Unknown format: ${format}`);
   }
@@ -434,6 +455,29 @@ Return JSON in this exact format:
   "cta": "...",
   "example": "A sample opportunity analysis and what recommendations it would provide",
   "template": "The blueprint structure and analysis format"
+}`;
+
+    case 'pdf':
+      return `${baseContext}
+
+Generate a content outline for a Traditional PDF Guide.
+
+The guide should include:
+1. Title: A compelling guide title that promises comprehensive insights
+2. Introduction: A hook that explains what the guide will cover and why it matters
+3. Core Points: Key sections and topics the guide will address
+4. CTA: A call-to-action for downloading the full guide
+5. Example: A sample section and what insights it would provide
+6. Template: The guide structure and content format
+
+Return JSON in this exact format:
+{
+  "title": "The [Guide Name]: [Specific Benefit] (PDF)",
+  "introduction": "...",
+  "core_points": ["..."],
+  "cta": "...",
+  "example": "A sample section and what insights it would provide",
+  "template": "The guide structure and content format"
 }`;
 
     default:
@@ -1139,6 +1183,102 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
     "layout": "centered",
     "title": "Find Your Opportunities Now",
     "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and opportunity finder topic."
+  }
+}`;
+
+    case 'pdf':
+      return `${baseContext}
+
+${founderIntro}
+
+${corePrinciples}
+
+THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+
+1. Title Page (layout: "centered"):
+Title: A compelling guide title that promises comprehensive insights (8-12 words).
+Subtitle: A powerful subtitle that explains what the guide will cover (10-15 words).
+
+2. Introduction Page (layout: "filled"):
+Title: A clear, engaging title for the introduction (e.g., "Why This Guide Will Transform Your Business").
+Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what comprehensive insights they will receive.
+
+3. The Guide Sections (layout: "filled"):
+Generate EXACTLY 3 distinct guide sections. Each section must be comprehensive enough to be a filled page on its own.
+
+SECTION TYPES TO USE:
+- For type: "guide_section": Generate a comprehensive section on a specific topic. Include "section_title", "content" (structured or plain text), and "subsections" (if applicable).
+
+- For type: "call_to_action": Create a call-to-action page for downloading the full guide.
+
+4. Call to Action Page (layout: "centered"):
+Title: A clear, action-oriented title (e.g., "Download Your Guide Now").
+Content: Write a custom, relevant call-to-action for this guide.
+
+RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+{
+  "founder_intro": "...",
+  "title_page": {
+    "layout": "centered",
+    "title": "The [Guide Name] (PDF)",
+    "subtitle": "A [X]-Insight Guide to [Specific Benefit]."
+  },
+  "introduction_page": {
+    "layout": "filled",
+    "title": "Why This Guide Will Transform Your Business",
+    "content": "Introduction content here..."
+  },
+  "toolkit_sections": [
+    {
+      "layout": "filled",
+      "type": "guide_section",
+      "title": "Section 1: Your Core Insights",
+      "content": {
+        "section_title": "Your Core Insights",
+        "content": "Detailed content about the topic here...",
+        "subsections": [
+          {
+            "title": "Subsection 1",
+            "content": "Content for subsection 1"
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "guide_section",
+      "title": "Section 2: Your Actionable Steps",
+      "content": {
+        "section_title": "Your Actionable Steps",
+        "content": "Content for actionable steps here...",
+        "subsections": [
+          {
+            "title": "Subsection 1",
+            "content": "Content for subsection 1"
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "guide_section",
+      "title": "Section 3: Your Next Steps",
+      "content": {
+        "section_title": "Your Next Steps",
+        "content": "Content for next steps here...",
+        "subsections": [
+          {
+            "title": "Subsection 1",
+            "content": "Content for subsection 1"
+          }
+        ]
+      }
+    }
+  ],
+  "cta_page": {
+    "layout": "centered",
+    "title": "Download Your Guide Now",
+    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and guide topic."
   }
 }`;
 
