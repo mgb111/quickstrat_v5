@@ -21,6 +21,13 @@ type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile
 function App() {
   console.log('App component rendering...');
   
+  // Check if we're on a demo route BEFORE any hooks
+  const path = window.location.pathname;
+  if (path.startsWith('/demo/')) {
+    console.log('On demo route, App component should not render at all');
+    return null; // Don't render anything for demo routes
+  }
+  
   const { user, loading, signOut } = useAuth();
   const [mode, setMode] = useState<AppMode>('public');
   const [wizardState, setWizardState] = useState<WizardState>({
@@ -76,12 +83,6 @@ function App() {
           '/login',
           '/signup'
         ].includes(path);
-        
-        // NEVER redirect to dashboard for demo routes, regardless of authentication
-        if (path.startsWith('/demo/')) {
-          console.log('On demo route, never redirect to dashboard');
-          return; // Exit early, don't process any redirects
-        }
         
         if (shouldRedirectToDashboard && (mode === 'auth' || mode === 'public')) {
           console.log('Redirecting authenticated user to dashboard');
