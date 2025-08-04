@@ -8,7 +8,8 @@ import {
   CampaignOutput,
   PDFContent,
   LandingPageCopy,
-  PDFCustomization
+  PDFCustomization,
+  LeadMagnetFormat
 } from '../types/index';
 
 // Get API key from environment variables
@@ -157,7 +158,7 @@ Return JSON in this exact format:
 {
   "concepts": [
     {
-      "title": "Quiz Title (e.g., 'Why Aren't You Getting More Customers?')",
+      "title": "Quiz Title (Interactive Quiz)",
       "description": "Brief description of what the quiz diagnoses and what users will learn",
       "value_proposition": "What specific value or insight users will get from taking this quiz",
       "target_audience": "Specific audience segment this quiz targets"
@@ -178,7 +179,7 @@ Return JSON in this exact format:
 {
   "concepts": [
     {
-      "title": "Calculator Title (e.g., 'Revenue Growth Calculator')",
+      "title": "Calculator Title (ROI Calculator)",
       "description": "Brief description of what the calculator measures and what insights it provides",
       "value_proposition": "What specific financial insights users will gain",
       "target_audience": "Specific audience segment this calculator targets"
@@ -199,7 +200,7 @@ Return JSON in this exact format:
 {
   "concepts": [
     {
-      "title": "Action Plan Title (e.g., '30-Day Lead Generation Plan')",
+      "title": "Action Plan Title (Action Plan)",
       "description": "Brief description of what the plan covers and what users will achieve",
       "value_proposition": "What specific results users can expect from following this plan",
       "target_audience": "Specific audience segment this plan targets"
@@ -220,7 +221,7 @@ Return JSON in this exact format:
 {
   "concepts": [
     {
-      "title": "Benchmark Report Title (e.g., 'Email Marketing Performance Report')",
+      "title": "Benchmark Report Title (Benchmark Report)",
       "description": "Brief description of what metrics are analyzed and what insights are provided",
       "value_proposition": "What specific competitive insights users will gain",
       "target_audience": "Specific audience segment this report targets"
@@ -241,7 +242,7 @@ Return JSON in this exact format:
 {
   "concepts": [
     {
-      "title": "Opportunity Finder Title (e.g., 'Marketing Channel Audit')",
+      "title": "Opportunity Finder Title (Opportunity Finder)",
       "description": "Brief description of what opportunities are analyzed and what recommendations are provided",
       "value_proposition": "What specific opportunities users will discover and how to act on them",
       "target_audience": "Specific audience segment this blueprint targets"
@@ -335,7 +336,7 @@ The quiz should include:
 
 Return JSON in this exact format:
 {
-  "title": "The [Quiz Name]: [Specific Benefit]",
+  "title": "The [Quiz Name]: [Specific Benefit] (Interactive Quiz)",
   "introduction": "...",
   "core_points": ["..."],
   "cta": "...",
@@ -358,7 +359,7 @@ The calculator should include:
 
 Return JSON in this exact format:
 {
-  "title": "The [Calculator Name]: [Specific Benefit]",
+  "title": "The [Calculator Name]: [Specific Benefit] (ROI Calculator)",
   "introduction": "...",
   "core_points": ["..."],
   "cta": "...",
@@ -381,7 +382,7 @@ The plan should include:
 
 Return JSON in this exact format:
 {
-  "title": "The [Plan Name]: [Specific Benefit]",
+  "title": "The [Plan Name]: [Specific Benefit] (Action Plan)",
   "introduction": "...",
   "core_points": ["..."],
   "cta": "...",
@@ -404,7 +405,7 @@ The report should include:
 
 Return JSON in this exact format:
 {
-  "title": "The [Report Name]: [Specific Benefit]",
+  "title": "The [Report Name]: [Specific Benefit] (Benchmark Report)",
   "introduction": "...",
   "core_points": ["..."],
   "cta": "...",
@@ -427,7 +428,7 @@ The blueprint should include:
 
 Return JSON in this exact format:
 {
-  "title": "The [Blueprint Name]: [Specific Benefit]",
+  "title": "The [Blueprint Name]: [Specific Benefit] (Opportunity Finder)",
   "introduction": "...",
   "core_points": ["..."],
   "cta": "...",
@@ -440,131 +441,167 @@ Return JSON in this exact format:
   }
 }
 
-export async function generatePdfContent(input: CampaignInput, outline: ContentOutline, customization?: PDFCustomization): Promise<PDFContent> {
+export async function generatePdfContent(input: {
+  selected_format: LeadMagnetFormat;
+  name: string;
+  brand_name: string;
+  target_audience: string;
+  niche: string;
+  problem_statement: string;
+  desired_outcome: string;
+  tone: string;
+  position: string;
+  concept: LeadMagnetConcept;
+  outline: ContentOutline;
+}): Promise<PDFContent> {
   const client = getOpenAIClient();
-
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    try {
-      const format = input.selected_format;
-      if (!format) {
-        throw new Error('No format selected');
-      }
-
-      const formatSpecificPrompt = getFormatSpecificPdfPrompt(format, input, outline, customization);
-      
-      const res = await client.chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: Generate EXACTLY 3 toolkit sections. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc. DO NOT create both checklist and step-by-step guide to avoid redundancy. Use the exact CTA text provided.' },
-          { role: 'user', content: formatSpecificPrompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 4500
-      });
-
-      if (!res.choices?.[0]?.message?.content) {
-        throw new Error('Empty response received from OpenAI API');
-      }
-
-      const content = res.choices[0].message.content;
-      let parsed;
-      try {
-        parsed = JSON.parse(content);
-      } catch (err) {
-        throw new Error('Failed to parse JSON from OpenAI response');
-      }
-
-      // Fallback: If a checklist or scripts section's content is a flat array, wrap it in a simple object
-      if (Array.isArray(parsed.toolkit_sections)) {
-        parsed.toolkit_sections = parsed.toolkit_sections.map((section: any) => {
-          if ((section.type === 'checklist' || section.type === 'scripts') && Array.isArray(section.content)) {
-            return {
-              ...section,
-              content: { items: section.content }
-            };
-          }
-          return section;
-        });
-      }
-
-      // Require all main fields and at least 2 toolkit sections
-      if (!parsed.title_page || !parsed.introduction_page || !Array.isArray(parsed.toolkit_sections) || !parsed.cta_page) {
-        throw new Error('Invalid response format from OpenAI API - missing required pages');
-      }
-      if (parsed.toolkit_sections.length < 2) {
-        throw new Error('Must have at least 2 toolkit sections');
-      }
-      // Require at least 2 items/scenarios in each toolkit section
-      let scriptsSectionError = false;
-      for (const section of parsed.toolkit_sections) {
-        if (section.type === 'checklist' && section.content?.phases && Array.isArray(section.content.phases)) {
-          const totalItems = section.content.phases.reduce((sum: number, phase: any) => sum + (Array.isArray(phase.items) ? phase.items.length : 0), 0);
-          if (totalItems < 2) throw new Error('Checklist section must have at least 2 items');
-        }
-        if (section.type === 'scripts' && section.content?.scenarios && Array.isArray(section.content.scenarios)) {
-          if (section.content.scenarios.length < 2) scriptsSectionError = true;
-        }
-        if (section.type === 'pros_and_cons_list' && section.content?.items && Array.isArray(section.content.items)) {
-          if (section.content.items.length < 2) throw new Error('Pros and cons section must have at least 2 items');
-        }
-      }
-
-      // If scripts section error and this is the last attempt, auto-duplicate the scenario
-      if (scriptsSectionError && attempt === 3) {
-        parsed.toolkit_sections = parsed.toolkit_sections.map((section: any) => {
-          if (section.type === 'scripts' && section.content?.scenarios && section.content.scenarios.length === 1) {
-            // Duplicate the scenario to make 2
-            section.content.scenarios.push({ ...section.content.scenarios[0] });
-          }
-          return section;
-        });
-      } else if (scriptsSectionError) {
-        // Retry if not last attempt
-        throw new Error('Scripts section must have at least 2 scenarios');
-      }
-
-      // Return the structured content for better PDF formatting
-      return {
-        founder_intro: parsed.founder_intro,
-        title: parsed.title_page.title,
-        introduction: parsed.title_page.subtitle,
-        sections: [
-          {
-            title: parsed.introduction_page.title,
-            content: parsed.introduction_page.content
-          },
-          ...parsed.toolkit_sections.map((section: any) => ({
-            title: section.title,
-            content: formatLayoutSectionContent(section)
-          }))
-        ],
-        cta: parsed.cta_page.content,
-        structured_content: parsed,
-        founderName: input.name || '',
-        brandName: input.brand_name || '',
-        problemStatement: input.problem_statement || '',
-        desiredOutcome: input.desired_outcome || '',
-        // Add customization fields
-        ctaText: customization?.ctaText || parsed.cta_page.content,
-        mainAction: customization?.mainAction || 'Book a Free Strategy Call',
-        bookingLink: customization?.bookingLink || '',
-        website: customization?.website || '',
-        supportEmail: customization?.supportEmail || '',
-        logo: customization?.logo || '',
-        primaryColor: customization?.primaryColor || '#1a365d',
-        secondaryColor: customization?.secondaryColor || '#4a90e2',
-        font: customization?.font || 'Inter'
-      };
-    } catch (err: any) {
-      console.error(`Attempt ${attempt} failed:`, err.message);
-      
-      if (attempt === 3) {
-        throw new Error(`Failed to generate PDF content after 3 attempts: ${err.message}`);
-      }
-    }
-  }
   
-  throw new Error('Failed to generate PDF content');
+  // Create a CampaignInput object for the format-specific prompt
+  const campaignInput: CampaignInput = {
+    name: input.name,
+    brand_name: input.brand_name,
+    target_audience: input.target_audience,
+    niche: input.niche,
+    problem_statement: input.problem_statement,
+    desired_outcome: input.desired_outcome,
+    tone: input.tone,
+    position: input.position,
+    selected_format: input.selected_format
+  };
+  
+  const formatSpecificPrompt = getFormatSpecificPdfPrompt(input.selected_format, campaignInput, input.outline);
+  
+  const prompt = `You are an expert content creator specializing in ${input.selected_format} lead magnets.
+
+Context:
+- Creator: ${input.name} (${input.position})
+- Brand: ${input.brand_name}
+- Niche: ${input.niche}
+- Target audience: ${input.target_audience}
+- Problem: ${input.problem_statement}
+- Desired outcome: ${input.desired_outcome}
+- Tone: ${input.tone}
+- Format: ${input.selected_format}
+
+${formatSpecificPrompt}
+
+Return JSON in this exact format:
+{
+  "founder_intro": {
+    "name": "${input.name}",
+    "title": "${input.position}",
+    "company": "${input.brand_name}",
+    "intro_text": "Personal introduction and credibility statement"
+  },
+  "introduction": "Engaging introduction that hooks the reader",
+  "sections": [
+    {
+      "title": "Section Title",
+      "content": "Section content with actionable insights",
+      "subsections": [
+        {
+          "title": "Subsection Title",
+          "content": "Detailed content with examples and tips"
+        }
+      ]
+    }
+  ],
+  "cta": {
+    "title": "Call to Action Title",
+    "description": "Compelling CTA description",
+    "button_text": "Action Button Text"
+  },
+  "structured_content": {
+    "toolkit_sections": [
+      {
+        "title": "Toolkit Section Title",
+        "description": "What this section provides",
+        "items": [
+          {
+            "title": "Item Title",
+            "description": "Item description",
+            "type": "template|checklist|worksheet|resource"
+          }
+        ]
+      }
+    ]
+  },
+  "founderName": "${input.name}",
+  "brandName": "${input.brand_name}",
+  "problemStatement": "${input.problem_statement}",
+  "desiredOutcome": "${input.desired_outcome}",
+  "customization": {
+    "tone": "${input.tone}",
+    "target_audience": "${input.target_audience}",
+    "niche": "${input.niche}"
+  }
+}`;
+
+  try {
+    const response = await client.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an expert content creator who creates high-quality, actionable lead magnet content. Always return valid JSON.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 4000
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) {
+      throw new Error('No content received from OpenAI');
+    }
+
+    // Parse the JSON response
+    const pdfContent = JSON.parse(content) as PDFContent;
+    
+    // Only return PDF content if the format is PDF, otherwise return interactive content structure
+    if (input.selected_format === 'pdf') {
+      return pdfContent;
+    } else {
+      // For interactive formats, return a modified structure with format type in title
+      return {
+        ...pdfContent,
+        title: `${pdfContent.title || 'Lead Magnet'} (${input.selected_format.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())})`,
+        interactive_content: {
+          format: input.selected_format,
+          title: pdfContent.title || 'Lead Magnet',
+          description: pdfContent.introduction,
+          // Add format-specific interactive elements
+          ...(input.selected_format === 'interactive_quiz' && {
+            questions: [],
+            results: []
+          }),
+          ...(input.selected_format === 'roi_calculator' && {
+            inputs: [],
+            calculations: []
+          }),
+          ...(input.selected_format === 'action_plan' && {
+            steps: [],
+            timeline: []
+          }),
+          ...(input.selected_format === 'benchmark_report' && {
+            metrics: [],
+            comparisons: []
+          }),
+          ...(input.selected_format === 'opportunity_finder' && {
+            categories: [],
+            opportunities: []
+          })
+        }
+      };
+    }
+  } catch (error) {
+    console.error('Error generating PDF content:', error);
+    throw new Error('Failed to generate content');
+  }
 }
 
 function getFormatSpecificPdfPrompt(format: string, input: CampaignInput, outline: ContentOutline, customization?: PDFCustomization): string {
@@ -652,7 +689,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   "founder_intro": "...",
   "title_page": {
     "layout": "centered",
-    "title": "The [Quiz Name]",
+    "title": "The [Quiz Name] (Interactive Quiz)",
     "subtitle": "A [X]-Question Assessment to [Specific Benefit]."
   },
   "introduction_page": {
@@ -746,7 +783,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   "founder_intro": "...",
   "title_page": {
     "layout": "centered",
-    "title": "The [Calculator Name]",
+    "title": "The [Calculator Name] (ROI Calculator)",
     "subtitle": "A [X]-Metric Tool to [Specific Benefit]."
   },
   "introduction_page": {
@@ -844,7 +881,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   "founder_intro": "...",
   "title_page": {
     "layout": "centered",
-    "title": "The [Action Plan Name]",
+    "title": "The [Action Plan Name] (Action Plan)",
     "subtitle": "A [X]-Step Plan to [Specific Benefit]."
   },
   "introduction_page": {
@@ -943,7 +980,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   "founder_intro": "...",
   "title_page": {
     "layout": "centered",
-    "title": "The [Benchmark Report Name]",
+    "title": "The [Benchmark Report Name] (Benchmark Report)",
     "subtitle": "A [X]-Metric Analysis of [Specific Benefit]."
   },
   "introduction_page": {
@@ -1042,7 +1079,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   "founder_intro": "...",
   "title_page": {
     "layout": "centered",
-    "title": "The [Opportunity Finder Name]",
+    "title": "The [Opportunity Finder Name] (Opportunity Finder)",
     "subtitle": "A [X]-Category Audit to [Specific Benefit]."
   },
   "introduction_page": {
@@ -1365,7 +1402,23 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
   try {
     // Generate content sequentially instead of in parallel for better error handling
     console.log('Starting PDF content generation...');
-    const pdf_content = await generatePdfContent(input, outline, customization).catch(err => {
+    
+    // Create the input object for the new generatePdfContent signature
+    const pdfInput = {
+      selected_format: input.selected_format || 'pdf',
+      name: input.name || '',
+      brand_name: input.brand_name,
+      target_audience: input.target_audience,
+      niche: input.niche,
+      problem_statement: input.problem_statement,
+      desired_outcome: input.desired_outcome,
+      tone: input.tone || 'professional',
+      position: input.position || '',
+      concept: { id: '1', title: 'Generated Concept', description: '', value_proposition: '', target_audience: '', format: input.selected_format || 'pdf' },
+      outline: outline
+    };
+    
+    const pdf_content = await generatePdfContent(pdfInput).catch(err => {
       console.error('PDF Generation Error:', err);
       throw new Error(`PDF Generation Failed: ${err.message}`);
     });

@@ -14,6 +14,7 @@ interface CampaignInput {
   brand_name: string;
   tone: string;
   target_audience: string;
+  selected_format?: string;
 }
 
 serve(async (req) => {
@@ -30,16 +31,16 @@ serve(async (req) => {
       throw new Error('OpenAI API key not configured');
     }
 
-    const prompt = `You are a lead generation expert and persuasive copywriter.
+    const prompt = `
 
-Your task is to turn a single customer problem into a complete lead magnet campaign. Create the following:
+Generate a complete lead magnet campaign with the following components:
 
-1. PDF Lead Magnet (5 pages max):
-    - Title Page (title + subtitle)
-    - Introduction
-    - 3 Key Solutions or Insights
-    - Actionable Takeaways
-    - CTA
+1. PDF Content:
+    - Title page with compelling headline
+    - Introduction that hooks the reader
+    - 3 key solutions or strategies
+    - Actionable takeaways
+    - Strong call-to-action
 
 2. Landing Page Copy:
     - Headline
@@ -59,12 +60,13 @@ User inputs:
 - Brand name: ${input.brand_name}
 - Tone: ${input.tone}
 - Target audience: ${input.target_audience}
+- Format: ${input.selected_format || 'PDF'}
 
 Return JSON in this exact format:
 {
   "pdf_content": {
     "title_page": {
-      "title": "...",
+      "title": "... (${input.selected_format || 'PDF'})",
       "subtitle": "..."
     },
     "introduction": "...",
@@ -92,25 +94,88 @@ Return JSON in this exact format:
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
         messages: [
           {
             role: 'system',
-            content: 'You are a lead generation expert. Always respond with valid JSON only.'
+            content: 'You are an expert content creator who creates high-quality, actionable lead magnet content. Always return valid JSON.'
           },
           {
             role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 2000
-      })
-    });
+            content: `Generate a lead magnet based on the following input:
+                
+                Campaign Input:
+                - Name: ${input.name}
+                - Brand Name: ${input.brand_name}
+                - Target Audience: ${input.target_audience}
+                - Niche: ${input.niche}
+                - Problem Statement: ${input.problem_statement}
+                - Desired Outcome: ${input.desired_outcome}
+                - Tone: ${input.tone}
+                - Position: ${input.position}
+                - Format: ${input.selected_format || 'PDF'}
+                
+                Return JSON in this exact format:
+                {
+                  "pdf_content": {
+                    "title_page": {
+                      "title": "${input.selected_format === 'pdf' ? '... (PDF)' : '...'}",
+                      "subtitle": "..."
+                    },
+                    "founder_intro": {
+                      "name": "${input.name}",
+                      "title": "${input.position}",
+                      "company": "${input.brand_name}",
+                      "intro_text": "..."
+                    },
+                    "introduction": "...",
+                    "sections": [
+                      {
+                        "title": "Section Title",
+                        "content": "Section content"
+                      }
+                    ],
+                    "cta": {
+                      "title": "Call to Action",
+                      "description": "CTA description",
+                      "button_text": "Action Button"
+                    },
+                    "structured_content": {
+                      "toolkit_sections": [
+                        {
+                          "title": "Toolkit Section",
+                          "description": "Section description",
+                          "items": [
+                            {
+                              "title": "Item Title",
+                              "description": "Item description",
+                              "type": "template"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "founderName": "${input.name}",
+                    "brandName": "${input.brand_name}",
+                    "problemStatement": "${input.problem_statement}",
+                    "desiredOutcome": "${input.desired_outcome}",
+                    "customization": {
+                      "tone": "${input.tone}",
+                      "target_audience": "${input.target_audience}",
+                      "niche": "${input.niche}"
+                    }
+                  }
+                }`
+              }
+            ],
+            temperature: 0.7,
+            max_tokens: 4000
+          })
+        });
 
     if (!response.ok) {
       throw new Error(`OpenAI API error: ${response.status}`);

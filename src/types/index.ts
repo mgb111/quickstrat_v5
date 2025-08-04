@@ -21,7 +21,8 @@ export type LeadMagnetFormat =
   | 'roi_calculator'
   | 'action_plan'
   | 'benchmark_report'
-  | 'opportunity_finder';
+  | 'opportunity_finder'
+  | 'pdf'; // Keep PDF as an option for backward compatibility
 
 export interface LeadMagnetFormatOption {
   id: LeadMagnetFormat;
@@ -31,6 +32,7 @@ export interface LeadMagnetFormatOption {
   example: string;
   whyItWorks: string;
   icon: string;
+  isInteractive: boolean; // New field to distinguish interactive vs PDF formats
 }
 
 export interface LeadMagnetConcept {
@@ -130,6 +132,22 @@ export interface PDFContent {
       title: string;
       content: string;
     };
+  };
+  // Interactive content for non-PDF formats
+  interactive_content?: {
+    format: LeadMagnetFormat;
+    title: string;
+    description: string;
+    questions?: any[];
+    results?: any[];
+    inputs?: any[];
+    calculations?: any[];
+    steps?: any[];
+    timeline?: any[];
+    metrics?: any[];
+    comparisons?: any[];
+    categories?: any[];
+    opportunities?: any[];
   };
   // Branding and CTA customization fields
   logo?: string;

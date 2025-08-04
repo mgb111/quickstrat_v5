@@ -6,7 +6,8 @@ import {
   Target, 
   BarChart3, 
   Search,
-  Check
+  Check,
+  FileText
 } from 'lucide-react';
 
 interface FormatSelectionProps {
@@ -23,7 +24,8 @@ const formatOptions: LeadMagnetFormatOption[] = [
     flow: 'User answers 5–10 quick questions → gets a personalized problem diagnosis + next steps.',
     example: '"Why aren\'t you getting more customers?" quiz for a fitness coach, "Why isn\'t your store making more sales?" quiz for an ecommerce seller.',
     whyItWorks: 'Works in any sector, adapts by changing questions and feedback language.',
-    icon: 'HelpCircle'
+    icon: 'HelpCircle',
+    isInteractive: true
   },
   {
     id: 'roi_calculator',
@@ -32,7 +34,8 @@ const formatOptions: LeadMagnetFormatOption[] = [
     flow: 'User inputs numbers (current revenue, traffic, conversion rate, costs, etc.) → calculator shows potential gains if they fix certain issues.',
     example: 'A restaurant sees "Increase bookings by 20% → +$X/month"; a SaaS company sees "Lower churn by 5% → +$X/year."',
     whyItWorks: 'Makes benefits tangible for any business type.',
-    icon: 'Calculator'
+    icon: 'Calculator',
+    isInteractive: true
   },
   {
     id: 'action_plan',
@@ -41,7 +44,8 @@ const formatOptions: LeadMagnetFormatOption[] = [
     flow: 'User answers niche, goal, and timeframe → tool outputs a short, visual action plan they can start today.',
     example: '"Get 50 more leads in 30 days" → 5 steps for a real estate agent vs. 5 steps for a B2B SaaS founder.',
     whyItWorks: 'Simple, practical, and feels tailored to them.',
-    icon: 'Target'
+    icon: 'Target',
+    isInteractive: true
   },
   {
     id: 'benchmark_report',
@@ -50,7 +54,8 @@ const formatOptions: LeadMagnetFormatOption[] = [
     flow: 'User inputs their metrics (sales, social followers, email list size, conversion rate) → tool compares them to average performance in their industry.',
     example: '"Your email open rate is 7% below industry average — here\'s how to fix it."',
     whyItWorks: 'People hate feeling behind their competition — this creates urgency to act.',
-    icon: 'BarChart3'
+    icon: 'BarChart3',
+    isInteractive: true
   },
   {
     id: 'opportunity_finder',
@@ -59,7 +64,18 @@ const formatOptions: LeadMagnetFormatOption[] = [
     flow: 'User answers questions or uploads a link → tool highlights missed opportunities in marketing, customer engagement, or product offering.',
     example: 'A clothing store gets "You\'re missing Instagram Reels — competitors see 40% more engagement from them."',
     whyItWorks: 'Turns vague "you could improve" into specific, actionable suggestions that are easy to start.',
-    icon: 'Search'
+    icon: 'Search',
+    isInteractive: true
+  },
+  {
+    id: 'pdf',
+    title: 'Traditional PDF Guide',
+    description: 'Classic PDF lead magnet with comprehensive content, checklists, and actionable insights.',
+    flow: 'User downloads a comprehensive PDF guide with step-by-step instructions, templates, and resources.',
+    example: '"5 Proven Strategies to Double Your Revenue" PDF guide with checklists and templates.',
+    whyItWorks: 'Familiar format that users can save, print, and reference later.',
+    icon: 'FileText',
+    isInteractive: false
   }
 ];
 
@@ -75,6 +91,8 @@ const getIconComponent = (iconName: string) => {
       return BarChart3;
     case 'Search':
       return Search;
+    case 'FileText':
+      return FileText;
     default:
       return Check;
   }
