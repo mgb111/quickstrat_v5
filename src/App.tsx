@@ -494,7 +494,7 @@ function App() {
               <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
                 <button
                   onClick={() => setMode('wizard')}
-                  className="inline-flex items-center px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
+                  className="inline-flex items-center px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   New Campaign

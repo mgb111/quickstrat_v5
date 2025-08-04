@@ -189,7 +189,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
           <p className="text-black mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
           >
             Retry
           </button>
@@ -211,7 +211,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
               <li key={campaign.id} className="py-3 flex items-center justify-between">
                 <span className="font-medium text-yellow-800">{campaign.name}</span>
                 <button
-                  className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-semibold"
+                  className="ml-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-semibold"
                   onClick={() => onResumeDraft && onResumeDraft(campaign)}
                 >
                   Resume
@@ -339,7 +339,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
           <h2 className="text-2xl font-bold mb-4 text-gray-700">Payment Successful!</h2>
           <p className="mb-4 text-lg">Your premium features are now unlocked. Enjoy unlimited access!</p>
           <button
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition"
+            className="px-6 py-3 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition"
             onClick={() => setShowPaymentSuccess(false)}
           >
             Close
