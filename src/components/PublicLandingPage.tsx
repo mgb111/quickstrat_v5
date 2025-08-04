@@ -143,16 +143,13 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             
             {/* Main Headline */}
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight">
-              Create Professional
-              <span className="text-gray-700"> Lead Magnets</span>
-              <br />
-              in Minutes
+              Capture Upto 50
+              <span className="text-gray-700"> Emails per Campaign</span>
             </h1>
             
             {/* Subheadline */}
             <p className="text-xl lg:text-2xl text-gray-600 mb-12 leading-relaxed max-w-3xl mx-auto">
-              Generate high-converting lead magnets that capture up to 50 emails per campaign. 
-              No design skills required.
+              Create professional lead magnets in minutes. No design skills required.
             </p>
             
             {/* CTA Buttons */}
@@ -170,21 +167,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
               </button>
             </div>
             
-            {/* Social Proof */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-500">
-              <div className="flex items-center">
-                <div className="flex -space-x-2 mr-3">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-yellow-600 border-2 border-white"></div>
-                  ))}
-              </div>
-                <span>Join 10,000+ creators</span>
-              </div>
-              <div className="flex items-center">
-                <Star className="w-4 h-4 text-gray-700 mr-1" />
-                <span>4.9/5 from 2,000+ reviews</span>
-              </div>
-            </div>
+
           </div>
         </div>
 
@@ -227,10 +210,10 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                   </div>
                   
                   {/* Right Side - Preview */}
-                  <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6">
+                  <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 space-y-4">
                     <div className="bg-white rounded-lg p-4 shadow-sm">
-                      <h3 className="font-bold text-gray-900 mb-2">"5 Proven Strategies to Double Your Revenue"</h3>
-                      <p className="text-gray-600 text-sm mb-4">A comprehensive guide for small business owners looking to scale their operations and increase profits.</p>
+                      <h3 className="font-bold text-gray-900 mb-2">"How to Generate More Leads from LinkedIn"</h3>
+                      <p className="text-gray-600 text-sm mb-4">A comprehensive guide for professionals looking to build their network and generate qualified leads on LinkedIn.</p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
@@ -240,6 +223,22 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                         </div>
                         <button className="bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-yellow-700">
                           Download
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <h3 className="font-bold text-gray-900 mb-2">"Startup Idea Validation Checklist"</h3>
+                      <p className="text-gray-600 text-sm mb-4">A step-by-step checklist to validate your startup idea before investing time and money.</p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                            <FileText className="w-4 h-4 text-green-600" />
+                          </div>
+                          <span className="text-sm font-medium text-gray-700">Score Ready</span>
+                        </div>
+                        <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700">
+                          Unlock
                         </button>
                       </div>
                     </div>
@@ -523,14 +522,14 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Trusted by 10,000+ Creators
+              Trusted by 150+ Creators
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Join creators who are generating more leads with our platform
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="text-4xl font-bold text-gray-700 mb-2">50+</div>
               <div className="text-gray-600">Emails per campaign</div>
@@ -542,10 +541,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             <div className="text-center">
               <div className="text-4xl font-bold text-gray-700 mb-2">300%</div>
               <div className="text-gray-600">Conversion increase</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gray-700 mb-2">4.9/5</div>
-              <div className="text-gray-600">User rating</div>
             </div>
           </div>
         </div>
@@ -573,8 +568,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                       <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" alt="Sarah" className="w-10 h-10 rounded-full object-cover" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">Emma Rodriguez</div>
-                      <div className="text-sm text-gray-600">GrowthLead</div>
+                      <div className="font-semibold text-gray-900">Sarah Johnson</div>
+                      <div className="text-sm text-gray-600">Buffer</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -593,8 +588,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                       <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Mike" className="w-10 h-10 rounded-full object-cover" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">Mike Chen</div>
-                      <div className="text-sm text-gray-600">CloudFlow</div>
+                      <div className="font-semibold text-gray-900">Michael Chen</div>
+                      <div className="text-sm text-gray-600">Notion</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -613,8 +608,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                       <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face" alt="Amanda" className="w-10 h-10 rounded-full object-cover" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">Amanda Lee</div>
-                      <div className="text-sm text-gray-600">CreativeStudio</div>
+                      <div className="font-semibold text-gray-900">Amanda Rodriguez</div>
+                      <div className="text-sm text-gray-600">Canva</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -634,7 +629,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">David Kim</div>
-                      <div className="text-sm text-gray-600">MindfulPath</div>
+                      <div className="text-sm text-gray-600">Figma</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -654,7 +649,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Lisa Wang</div>
-                      <div className="text-sm text-gray-600">TechVault</div>
+                      <div className="text-sm text-gray-600">Slack</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -674,7 +669,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Alex Thompson</div>
-                      <div className="text-sm text-gray-600">ContentCraft</div>
+                      <div className="text-sm text-gray-600">Zapier</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -696,8 +691,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                       <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" alt="Sarah" className="w-10 h-10 rounded-full object-cover" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">Emma Rodriguez</div>
-                      <div className="text-sm text-gray-600">GrowthLead</div>
+                      <div className="font-semibold text-gray-900">Sarah Johnson</div>
+                      <div className="text-sm text-gray-600">Buffer</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -716,8 +711,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                       <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Mike" className="w-10 h-10 rounded-full object-cover" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">Mike Chen</div>
-                      <div className="text-sm text-gray-600">CloudFlow</div>
+                      <div className="font-semibold text-gray-900">Michael Chen</div>
+                      <div className="text-sm text-gray-600">Notion</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -736,8 +731,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                       <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face" alt="Amanda" className="w-10 h-10 rounded-full object-cover" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">Amanda Lee</div>
-                      <div className="text-sm text-gray-600">CreativeStudio</div>
+                      <div className="font-semibold text-gray-900">Amanda Rodriguez</div>
+                      <div className="text-sm text-gray-600">Canva</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -757,7 +752,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">David Kim</div>
-                      <div className="text-sm text-gray-600">MindfulPath</div>
+                      <div className="text-sm text-gray-600">Figma</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -777,7 +772,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Lisa Wang</div>
-                      <div className="text-sm text-gray-600">TechVault</div>
+                      <div className="text-sm text-gray-600">Slack</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -797,7 +792,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Alex Thompson</div>
-                      <div className="text-sm text-gray-600">ContentCraft</div>
+                      <div className="text-sm text-gray-600">Zapier</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -822,7 +817,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Maria Garcia</div>
-                      <div className="text-sm text-gray-600">ScaleUp</div>
+                      <div className="text-sm text-gray-600">Stripe</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -842,7 +837,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">James Wilson</div>
-                      <div className="text-sm text-gray-600">StartupHub</div>
+                      <div className="text-sm text-gray-600">Shopify</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -862,7 +857,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Sophie Chen</div>
-                      <div className="text-sm text-gray-600">InnovateLab</div>
+                      <div className="text-sm text-gray-600">Dropbox</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -882,7 +877,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Ryan Park</div>
-                      <div className="text-sm text-gray-600">TechSolutions</div>
+                      <div className="text-sm text-gray-600">Asana</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -901,8 +896,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                       <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face" alt="Amanda" className="w-10 h-10 rounded-full object-cover" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">Amanda Lee</div>
-                      <div className="text-sm text-gray-600">CreativeStudio</div>
+                      <div className="font-semibold text-gray-900">Amanda Rodriguez</div>
+                      <div className="text-sm text-gray-600">Trello</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -922,7 +917,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Carlos Mendez</div>
-                      <div className="text-sm text-gray-600">FutureSelf</div>
+                      <div className="text-sm text-gray-600">Airtable</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -945,7 +940,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Maria Garcia</div>
-                      <div className="text-sm text-gray-600">ScaleUp</div>
+                      <div className="text-sm text-gray-600">Stripe</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -965,7 +960,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">James Wilson</div>
-                      <div className="text-sm text-gray-600">StartupHub</div>
+                      <div className="text-sm text-gray-600">Shopify</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -985,7 +980,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Sophie Chen</div>
-                      <div className="text-sm text-gray-600">InnovateLab</div>
+                      <div className="text-sm text-gray-600">Dropbox</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -1005,7 +1000,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Ryan Park</div>
-                      <div className="text-sm text-gray-600">TechSolutions</div>
+                      <div className="text-sm text-gray-600">Asana</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -1024,8 +1019,8 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                       <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face" alt="Amanda" className="w-10 h-10 rounded-full object-cover" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">Amanda Lee</div>
-                      <div className="text-sm text-gray-600">CreativeStudio</div>
+                      <div className="font-semibold text-gray-900">Amanda Rodriguez</div>
+                      <div className="text-sm text-gray-600">Trello</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -1045,7 +1040,7 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-900">Carlos Mendez</div>
-                      <div className="text-sm text-gray-600">FutureSelf</div>
+                      <div className="text-sm text-gray-600">Airtable</div>
                       <div className="flex text-red-400 mt-1">
                         {[1, 2, 3, 4, 5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-current" />
@@ -1775,7 +1770,6 @@ const PublicLandingPage: React.FC<PublicLandingPageProps> = ({ onLogin }) => {
             Ready to Generate More Leads?
           </h2>
           <p className="text-xl text-white mb-8 max-w-2xl mx-auto">
-            Join 10,000+ creators who are already generating high-quality leads with Majorbeam. 
             Start your first campaign in minutes.
           </p>
           <button 
