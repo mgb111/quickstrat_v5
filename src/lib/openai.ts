@@ -181,7 +181,7 @@ Return JSON in this exact format:
 }`;
 
     const res = await client.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-3.5-turbo',
       messages: [
         { role: 'system', content: 'You are a content strategist. Output strictly valid JSON as defined.' },
         { role: 'user', content: prompt }
@@ -420,7 +420,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
 }`;
 
       const res = await client.chat.completions.create({
-        model: 'gpt-4',
+        model: 'gpt-3.5-turbo',
         messages: [
           { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: Generate EXACTLY 3 toolkit sections. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc. DO NOT create both checklist and step-by-step guide to avoid redundancy. Use the exact CTA text provided.' },
           { role: 'user', content: prompt }
@@ -622,7 +622,7 @@ Return JSON in this exact format:
 }`;
 
     const res = await client.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-3.5-turbo',
       messages: [
         { role: 'system', content: 'You are a direct-response copywriter. Output strictly valid JSON as defined.' },
         { role: 'user', content: prompt }
@@ -738,7 +738,7 @@ Return JSON in this exact format:
 }`;
 
     const res = await client.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-3.5-turbo',
       messages: [
         { role: 'system', content: 'You are a social media manager. Output strictly valid JSON as defined.' },
         { role: 'user', content: prompt }

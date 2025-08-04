@@ -23,7 +23,7 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Major<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">beam</span>
+            Major<span className="text-blue-600">beam</span>
           </h1>
           <p className="text-gray-600">
             {isLogin ? 'Welcome back to your lead generation platform' : 'Start creating AI-powered lead magnets'}
