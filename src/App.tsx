@@ -65,7 +65,7 @@ function App() {
     console.log('Current path:', path);
     
     if (!loading) {
-      // Always check for landing page first - this takes priority
+            // Always check for landing page first - this takes priority
       if (path.startsWith('/landing/')) {
         console.log('On landing page, setting landing mode');
         setMode('landing');

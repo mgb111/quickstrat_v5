@@ -283,6 +283,18 @@ const PdfDemo = () => (
   </div>
 );
 
+// Wrapper component that prevents App from rendering on demo routes
+const AppWrapper: React.FC = () => {
+  const path = window.location.pathname;
+  
+  // If we're on a demo route, don't render the App component
+  if (path.startsWith('/demo/')) {
+    return null;
+  }
+  
+  return <App />;
+};
+
 const AppRouter: React.FC = () => {
   return (
     <Router>
@@ -302,7 +314,7 @@ const AppRouter: React.FC = () => {
         <Route path="/saas-checklist" element={<SaaSChecklist />} />
         
         {/* Catch-all route - Must be last */}
-        <Route path="/*" element={<App />} />
+        <Route path="/*" element={<AppWrapper />} />
       </Routes>
     </Router>
   );
