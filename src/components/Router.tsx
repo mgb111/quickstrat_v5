@@ -59,19 +59,22 @@ const AppRouter: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/*" element={<App />} />
-        <Route path="/admin/users" element={<AdminUserCampaigns />} />
-        <Route path="/admin/creator" element={<AdminLeadMagnetCreator />} />
-        <Route path="/promotion-guide" element={<PromotionGuide />} />
-        <Route path="/saas-checklist" element={<SaaSChecklist />} />
-        
-        {/* Demo Routes */}
+        {/* Demo Routes - Must come before catch-all route */}
         <Route path="/demo/quiz" element={<QuizDemo />} />
         <Route path="/demo/calculator" element={<CalculatorDemo />} />
         <Route path="/demo/action-plan" element={<ActionPlanDemo />} />
         <Route path="/demo/benchmark" element={<BenchmarkDemo />} />
         <Route path="/demo/opportunity-finder" element={<OpportunityFinderDemo />} />
         <Route path="/demo/pdf" element={<PdfDemo />} />
+        
+        {/* Other specific routes */}
+        <Route path="/admin/users" element={<AdminUserCampaigns />} />
+        <Route path="/admin/creator" element={<AdminLeadMagnetCreator />} />
+        <Route path="/promotion-guide" element={<PromotionGuide />} />
+        <Route path="/saas-checklist" element={<SaaSChecklist />} />
+        
+        {/* Catch-all route - Must be last */}
+        <Route path="/*" element={<App />} />
       </Routes>
     </Router>
   );
