@@ -21,6 +21,13 @@ type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile
 function App() {
   console.log('App component rendering...');
   
+  // Check if we're on a demo route - if so, don't render anything
+  const path = window.location.pathname;
+  if (path.startsWith('/demo/')) {
+    console.log('On demo route, App component should not render');
+    return null; // Don't render anything for demo routes
+  }
+  
   const { user, loading, signOut } = useAuth();
   const [mode, setMode] = useState<AppMode>('public');
   const [wizardState, setWizardState] = useState<WizardState>({
@@ -89,7 +96,7 @@ function App() {
     };
 
     handleAuthChange();
-  }, [user, loading]); // Removed 'mode' from dependencies to prevent infinite loop
+  }, [user, loading]); // Removed mode from dependencies to prevent infinite loop
 
   // Extract campaign slug from URL
   const getCampaignSlug = () => {
