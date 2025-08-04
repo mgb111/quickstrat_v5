@@ -613,6 +613,7 @@ function App() {
               outline={wizardState.outline}
               onOutlineApproved={handleOutlineApproved}
               isLoading={isLoading}
+              selectedFormat={wizardState.input?.selected_format}
             />
           </div>
         )}

@@ -30,6 +30,21 @@ const subredditSuggestions: Record<string, string[]> = {
 };
 
 function getSuggestedSubreddits(niche: string): string[] {
+  if (!niche) return ['r/Entrepreneur', 'r/smallbusiness'];
+  
+  const subredditSuggestions: { [key: string]: string[] } = {
+    'saas': ['r/SaaS', 'r/startups', 'r/Entrepreneur'],
+    'ecommerce': ['r/ecommerce', 'r/shopify', 'r/dropshipping'],
+    'marketing': ['r/marketing', 'r/digitalmarketing', 'r/socialmedia'],
+    'fitness': ['r/fitness', 'r/bodybuilding', 'r/weightlifting'],
+    'finance': ['r/personalfinance', 'r/investing', 'r/financialindependence'],
+    'education': ['r/education', 'r/teaching', 'r/edtech'],
+    'healthcare': ['r/healthcare', 'r/medicine', 'r/nursing'],
+    'real estate': ['r/realestate', 'r/realestateinvesting', 'r/landlords'],
+    'consulting': ['r/consulting', 'r/Entrepreneur', 'r/smallbusiness'],
+    'coaching': ['r/lifecoaching', 'r/Entrepreneur', 'r/smallbusiness']
+  };
+
   const key = Object.keys(subredditSuggestions).find(k => niche.toLowerCase().includes(k));
   return key ? subredditSuggestions[key] : ['r/Entrepreneur', 'r/smallbusiness'];
 }
@@ -85,8 +100,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
             toolkit_sections: results.pdf_content.structured_content.toolkit_sections.map((section: any) => {
               let type: 'pros_and_cons_list' | 'checklist' | 'scripts' | undefined = undefined;
               
-              // Determine type based on content analysis
-              const content = section.content.toLowerCase();
+              // Determine type based on content analysis - add null checks
+              const content = section.content ? String(section.content).toLowerCase() : '';
               if (content.includes('pros:') && content.includes('cons:')) {
                 type = 'pros_and_cons_list';
               } else if (content.includes('phase') && content.includes('1.') && content.includes('2.')) {
@@ -116,11 +131,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
         console.log('Creating structured_content from pdf_content object');
         
         // Analyze sections to determine their types
-        const toolkit_sections = results.pdf_content.sections.map(section => {
+        const toolkit_sections = results.pdf_content.sections?.map(section => {
           let type: 'pros_and_cons_list' | 'checklist' | 'scripts' | undefined = undefined;
           
-          // Determine type based on content analysis
-          const content = section.content.toLowerCase();
+          // Determine type based on content analysis - add null checks
+          const content = section.content ? String(section.content).toLowerCase() : '';
           if (content.includes('pros:') && content.includes('cons:')) {
             type = 'pros_and_cons_list';
           } else if (content.includes('phase') && content.includes('1.') && content.includes('2.')) {
@@ -134,7 +149,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
             type: type,
             content: section.content
           };
-        });
+        }) || [];
         
         return {
           ...results.pdf_content,
@@ -145,54 +160,32 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
             },
             introduction_page: {
               title: 'Introduction',
-              content: results.pdf_content.introduction
+              content: results.pdf_content.introduction || ''
             },
             toolkit_sections: toolkit_sections,
             cta_page: {
-              title: 'Next Steps',
-              content: results.pdf_content.cta
+              title: 'Get Started',
+              content: results.pdf_content.cta || 'Ready to take action? Download your complete guide now.'
             }
           }
         };
       }
 
-      // Otherwise, create a new PDFContent object from the string content
-      const content = typeof results.pdf_content === 'string' 
-        ? results.pdf_content 
-        : JSON.stringify(results.pdf_content);
-
-      console.log('Creating new PDFContent from string content');
-      return {
-        title: `${brandName} Lead Magnet Guide`,
-        introduction: content,
-        sections: [
-          {
-            title: 'Implementation Guide',
-            content: content
-          }
-        ],
-        cta: `Ready to put these strategies into action? Schedule a free strategy session with our team or reach out to ${brandName} for personalized support. Your success starts now!`,
-        structured_content: {
-          title_page: {
-            title: `${brandName} Lead Magnet Guide`,
-            subtitle: 'A step-by-step blueprint to help you achieve your goals'
-          },
-          introduction_page: {
-            title: 'Introduction',
-            content: content
-          },
-          toolkit_sections: [
-            {
-              title: 'Implementation Guide',
-              content: content
-            }
-          ],
-          cta_page: {
-            title: 'Next Steps',
-            content: `Ready to put these strategies into action? Schedule a free strategy session with our team or reach out to ${brandName} for personalized support. Your success starts now!`
-          }
+      // If pdf_content is a string, try to parse it
+      if (typeof results.pdf_content === 'string') {
+        try {
+          const parsed = JSON.parse(results.pdf_content);
+          return processPdfContent(); // Recursive call with parsed object
+        } catch (parseError) {
+          console.error('Failed to parse PDF content string:', parseError);
+          setPdfError('Invalid PDF content format');
+          return null;
         }
-      };
+      }
+
+      console.error('Unsupported PDF content format:', typeof results.pdf_content);
+      setPdfError('Unsupported PDF content format');
+      return null;
     } catch (error) {
       console.error('Error processing PDF content:', error);
       setPdfError('Error processing PDF content');

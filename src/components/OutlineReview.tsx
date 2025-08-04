@@ -8,12 +8,14 @@ interface OutlineReviewProps {
   outline: ContentOutline;
   onOutlineApproved: (finalOutline: ContentOutline) => void;
   isLoading?: boolean;
+  selectedFormat?: string; // Add selected format prop
 }
 
 const OutlineReview: React.FC<OutlineReviewProps> = ({ 
   outline, 
   onOutlineApproved, 
-  isLoading = false 
+  isLoading = false,
+  selectedFormat = 'pdf'
 }) => {
 
   const [editableOutline, setEditableOutline] = useState<ContentOutline>(outline);
@@ -215,17 +217,29 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
             {isLoading ? (
               <>
                 <Loader2 className="animate-spin h-5 w-5 mr-3" />
-                Generating Your PDF...
+                {selectedFormat === 'pdf' ? 'Generating Your PDF...' : 'Generating Your Lead Magnet...'}
               </>
             ) : (
               <>
-                Generate My PDF
+                {selectedFormat === 'pdf' ? 'Generate My PDF' : 
+                 selectedFormat === 'interactive_quiz' ? 'Generate My Quiz' :
+                 selectedFormat === 'roi_calculator' ? 'Generate My Calculator' :
+                 selectedFormat === 'action_plan' ? 'Generate My Action Plan' :
+                 selectedFormat === 'benchmark_report' ? 'Generate My Benchmark Report' :
+                 selectedFormat === 'opportunity_finder' ? 'Generate My Opportunity Finder' :
+                 'Generate My Lead Magnet'}
                 <ArrowRight className="h-5 w-5 ml-2" />
               </>
             )}
           </button>
           <p className="text-sm text-gray-600 mt-3">
-            AI will expand your outline into a complete, professional lead magnet
+            {selectedFormat === 'pdf' ? 'AI will expand your outline into a complete, professional PDF guide' :
+             selectedFormat === 'interactive_quiz' ? 'AI will create an interactive quiz with personalized results' :
+             selectedFormat === 'roi_calculator' ? 'AI will build a calculator that shows potential ROI gains' :
+             selectedFormat === 'action_plan' ? 'AI will create a personalized action plan with specific steps' :
+             selectedFormat === 'benchmark_report' ? 'AI will generate a benchmark report comparing to industry standards' :
+             selectedFormat === 'opportunity_finder' ? 'AI will create an opportunity finder that identifies missed chances' :
+             'AI will expand your outline into a complete, professional lead magnet'}
           </p>
         </>
       </div>

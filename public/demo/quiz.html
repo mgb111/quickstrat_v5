@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz Demo - Majorbeam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-inter">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="bg-gradient-to-r from-blue-600 to-purple-600 w-8 h-8 rounded-lg flex items-center justify-center mr-3">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold text-gray-900">Majorbeam</span>
+                    </div>
+                    <a href="/" class="text-blue-600 hover:text-blue-700 font-medium">← Back to Home</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Demo Content -->
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white text-center">
+                    <h1 class="text-3xl lg:text-4xl font-bold mb-4">
+                        Interactive Quiz Demo
+                    </h1>
+                    <p class="text-lg opacity-90">
+                        See how Majorbeam generates personalized diagnostic quizzes
+                    </p>
+                </div>
+
+                <!-- Quiz Content -->
+                <div class="p-8">
+                    <div class="max-w-2xl mx-auto">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">
+                            "Why Aren't You Getting More Customers?" Quiz
+                        </h2>
+                        
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                            <h3 class="text-lg font-semibold text-blue-900 mb-3">Quiz Flow:</h3>
+                            <ol class="list-decimal list-inside space-y-2 text-blue-800">
+                                <li>User answers 5-10 targeted questions</li>
+                                <li>AI analyzes responses and identifies key issues</li>
+                                <li>User receives personalized diagnosis</li>
+                                <li>Specific next steps and action plan provided</li>
+                            </ol>
+                        </div>
+
+                        <!-- Sample Questions -->
+                        <div class="space-y-6 mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900">Sample Questions Generated:</h3>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <h4 class="font-semibold text-gray-900 mb-3">Question 1: Customer Acquisition</h4>
+                                <p class="text-gray-700 mb-4">How do you currently find new customers?</p>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="q1" class="mr-3">
+                                        <span>Social media advertising</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="q1" class="mr-3">
+                                        <span>Word of mouth referrals</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="q1" class="mr-3">
+                                        <span>Cold outreach</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="q1" class="mr-3">
+                                        <span>I don't have a system</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <h4 class="font-semibold text-gray-900 mb-3">Question 2: Conversion Rate</h4>
+                                <p class="text-gray-700 mb-4">What percentage of leads convert to customers?</p>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="q2" class="mr-3">
+                                        <span>Less than 5%</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="q2" class="mr-3">
+                                        <span>5-15%</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="q2" class="mr-3">
+                                        <span>15-30%</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="q2" class="mr-3">
+                                        <span>Over 30%</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sample Results -->
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-green-900 mb-3">Sample Diagnosis Result:</h3>
+                            <div class="space-y-3 text-green-800">
+                                <p><strong>Primary Issue:</strong> Lead Quality Problem</p>
+                                <p><strong>Root Cause:</strong> You're attracting the wrong audience through broad social media ads</p>
+                                <p><strong>Impact:</strong> Low conversion rates despite high traffic</p>
+                                <div class="mt-4">
+                                    <h4 class="font-semibold mb-2">Immediate Action Steps:</h4>
+                                    <ol class="list-decimal list-inside space-y-1">
+                                        <li>Create detailed customer personas</li>
+                                        <li>Refine ad targeting to specific demographics</li>
+                                        <li>Implement lead qualification questions</li>
+                                        <li>Set up conversion tracking</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
