@@ -65,8 +65,14 @@ function App() {
         return; // Exit early, don't process other auth logic
       }
       
+      // Check for demo routes - these should not be redirected
+      if (path.startsWith('/demo/')) {
+        console.log('On demo page, keeping current mode');
+        return; // Exit early, don't process other auth logic
+      }
+      
       if (user) {
-        // User is authenticated, show dashboard (but not if on landing page)
+        // User is authenticated, show dashboard (but not if on landing page or demo page)
         console.log('User authenticated, switching to dashboard');
         if (mode === 'auth' || mode === 'public') {
           setMode('dashboard');

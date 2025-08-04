@@ -134,7 +134,7 @@ const FormatSelection: React.FC<FormatSelectionProps> = ({
                 className={`
                   relative p-6 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:shadow-lg
                   ${isSelected 
-                    ? 'border-blue-500 bg-blue-50 shadow-md' 
+                    ? 'border-green-500 bg-green-50 shadow-md' 
                     : 'border-gray-200 bg-white hover:border-gray-300'
                   }
                   ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
@@ -143,7 +143,7 @@ const FormatSelection: React.FC<FormatSelectionProps> = ({
                 {/* Selection indicator */}
                 {isSelected && (
                   <div className="absolute top-4 right-4">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                       <Check className="w-4 h-4 text-white" />
                     </div>
                   </div>
@@ -153,7 +153,7 @@ const FormatSelection: React.FC<FormatSelectionProps> = ({
                 <div className="flex items-center mb-4">
                   <div className={`
                     w-12 h-12 rounded-lg flex items-center justify-center mr-4
-                    ${isSelected ? 'bg-blue-500' : 'bg-gray-100'}
+                    ${isSelected ? 'bg-green-500' : 'bg-gray-100'}
                   `}>
                     <IconComponent className={`w-6 h-6 ${isSelected ? 'text-white' : 'text-gray-600'}`} />
                   </div>
@@ -196,7 +196,7 @@ const FormatSelection: React.FC<FormatSelectionProps> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 transition-colors"
+                    className="mt-4 inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-full text-sm font-medium hover:bg-green-700 transition-colors"
                   >
                     <ExternalLink className="w-4 h-4 mr-2" />
                     View Demo
