@@ -26,6 +26,7 @@ function App() {
   console.log('🔍 App component path check:', path);
   if (path.startsWith('/demo/')) {
     console.log('✅ On demo route, App component should not render at all');
+    console.log('✅ Demo route detected, returning null to prevent any authentication logic');
     return null; // Don't render anything for demo routes
   }
   console.log('❌ Not on demo route, continuing with App component');
@@ -84,6 +85,7 @@ function App() {
         if (isOnDemoRoute) {
           console.log('🚫 On demo route, never redirect to dashboard');
           console.log('🚫 Demo route detected, exiting authentication logic early');
+          console.log('🚫 Demo route protection active - no redirects allowed');
           return; // Exit early, don't process any redirects
         }
         

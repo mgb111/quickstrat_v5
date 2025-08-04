@@ -300,6 +300,9 @@ const AppWrapper: React.FC = () => {
 };
 
 const AppRouter: React.FC = () => {
+  console.log('🔍 AppRouter: Setting up routes');
+  console.log('🔍 AppRouter: Demo routes should be matched before catch-all');
+  
   return (
     <Router>
       <Routes>
