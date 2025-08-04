@@ -286,12 +286,15 @@ const PdfDemo = () => (
 // Wrapper component that prevents App from rendering on demo routes
 const AppWrapper: React.FC = () => {
   const path = window.location.pathname;
+  console.log('🔍 AppWrapper path check:', path);
   
   // If we're on a demo route, don't render the App component
   if (path.startsWith('/demo/')) {
+    console.log('✅ AppWrapper: On demo route, not rendering App');
     return null;
   }
   
+  console.log('❌ AppWrapper: Not on demo route, rendering App');
   return <App />;
 };
 

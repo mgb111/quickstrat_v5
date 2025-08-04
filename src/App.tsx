@@ -23,10 +23,12 @@ function App() {
   
   // Check if we're on a demo route BEFORE any hooks
   const path = window.location.pathname;
+  console.log('🔍 App component path check:', path);
   if (path.startsWith('/demo/')) {
-    console.log('On demo route, App component should not render at all');
+    console.log('✅ On demo route, App component should not render at all');
     return null; // Don't render anything for demo routes
   }
+  console.log('❌ Not on demo route, continuing with App component');
   
   const { user, loading, signOut } = useAuth();
   const [mode, setMode] = useState<AppMode>('public');
@@ -84,9 +86,27 @@ function App() {
           '/signup'
         ].includes(path);
         
+        // NEVER redirect if we're already on a valid page
+        const isOnValidPage = [
+          '/dashboard',
+          '/wizard',
+          '/profile',
+          '/landing'
+        ].some(validPath => path.startsWith(validPath));
+        
+        // NEVER redirect for demo routes
+        const isOnDemoRoute = path.startsWith('/demo/');
+        
+        if (isOnDemoRoute) {
+          console.log('🚫 On demo route, never redirect to dashboard');
+          return; // Exit early, don't process any redirects
+        }
+        
         if (shouldRedirectToDashboard && (mode === 'auth' || mode === 'public')) {
           console.log('Redirecting authenticated user to dashboard');
           setMode('dashboard');
+        } else if (isOnValidPage) {
+          console.log('User authenticated and on valid page, staying put:', path);
         } else {
           console.log('User authenticated but staying on current page:', path);
         }
