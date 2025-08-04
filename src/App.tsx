@@ -24,11 +24,6 @@ function App() {
   // Check if we're on a demo route BEFORE any hooks
   const path = window.location.pathname;
   console.log('🔍 App component path check:', path);
-  if (path.startsWith('/demo/')) {
-    console.log('✅ On demo route, App component should not render at all');
-    console.log('✅ Demo route detected, returning null to prevent any authentication logic');
-    return null; // Don't render anything for demo routes
-  }
   console.log('❌ Not on demo route, continuing with App component');
   
   const { user, loading, signOut } = useAuth();
@@ -78,16 +73,6 @@ function App() {
       if (user) {
         // User is authenticated, but only redirect to dashboard for specific routes
         console.log('User authenticated, checking if should redirect to dashboard');
-        
-        // NEVER redirect for demo routes - check this FIRST
-        const isOnDemoRoute = path.startsWith('/demo/');
-        
-        if (isOnDemoRoute) {
-          console.log('🚫 On demo route, never redirect to dashboard');
-          console.log('🚫 Demo route detected, exiting authentication logic early');
-          console.log('🚫 Demo route protection active - no redirects allowed');
-          return; // Exit early, don't process any redirects
-        }
         
         // Only redirect to dashboard for these specific routes when user is logged in
         const shouldRedirectToDashboard = [
