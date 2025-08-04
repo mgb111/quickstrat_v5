@@ -24,6 +24,15 @@ function App() {
   // Check if we're on a demo route BEFORE any hooks
   const path = window.location.pathname;
   console.log('🔍 App component path check:', path);
+  
+  // CRITICAL: If we're on a demo route, don't render anything
+  // This prevents any authentication logic from running
+  if (path.startsWith('/demo/')) {
+    console.log('✅ Demo route detected, App component should not render');
+    console.log('❌ Demo routes should be handled by Router.tsx, not App.tsx');
+    return null; // Don't render anything for demo routes
+  }
+  
   console.log('❌ Not on demo route, continuing with App component');
   
   const { user, loading, signOut } = useAuth();
@@ -87,7 +96,8 @@ function App() {
           '/dashboard',
           '/wizard',
           '/profile',
-          '/landing'
+          '/landing',
+          '/demo' // Add demo routes as valid pages
         ].some(validPath => path.startsWith(validPath));
         
         if (shouldRedirectToDashboard && (mode === 'auth' || mode === 'public')) {
