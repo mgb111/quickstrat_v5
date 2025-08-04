@@ -692,43 +692,35 @@ ${founderIntro}
 
 ${corePrinciples}
 
-THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+GENERATE AN INTERACTIVE QUIZ LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 
-1. Title Page (layout: "centered"):
-Title: A compelling quiz title that promises specific insights (8-12 words).
-Subtitle: A powerful subtitle that explains what the quiz will diagnose (10-15 words).
+1. Title Page:
+- Title: A compelling quiz title that promises specific insights
+- Subtitle: Explains what the quiz will diagnose
 
-2. Introduction Page (layout: "filled"):
-Title: A clear, engaging title for the introduction (e.g., "Why This Quiz Will Reveal Your Hidden Problems").
-Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what insights they will receive from taking the quiz.
+2. Introduction:
+- Hook the reader with a sharp pain point
+- Explain what insights they'll receive from taking the quiz
 
-3. The Quiz Sections (layout: "filled"):
-Generate EXACTLY 3 distinct quiz sections. Each section must be comprehensive enough to be a filled page on its own.
+3. Quiz Questions (5-10 questions):
+Each question should have:
+- Question text that reveals root causes
+- 3-4 answer options
+- Insight explanation of what this question reveals
 
-SECTION TYPES TO USE:
-- For type: "quiz_questions": Generate 5-10 targeted questions that reveal the root cause of the problem. Each question should have a "question" field, "options" array (3-4 options), and "insight" field explaining what this question reveals. Format exactly like this example:
+4. Diagnosis Categories (3-4 categories):
+Each category should have:
+- Category name and description
+- Symptoms list
+- Solutions list
+- Brief case study example
 
-EXAMPLE QUIZ QUESTIONS FORMAT:
-{
-  "question": "How do you currently measure your marketing success?",
-  "options": [
-    "I don't track anything systematically",
-    "I check basic metrics like website visits",
-    "I track conversions and ROI",
-    "I have a comprehensive analytics dashboard"
-  ],
-  "insight": "This reveals whether you're flying blind or have proper measurement systems in place."
-}
+5. Action Plan:
+- Immediate actions (next 7 days)
+- Short-term goals (next 30 days)
+- Long-term strategy (next 90 days)
 
-- For type: "diagnosis_categories": Create 3-4 diagnosis categories that users will fall into based on their answers. Each category should have a "category_name", "description" of what this means, "symptoms" list, and "solutions" list. Include a "case_study" field with a brief real-world example (2-3 sentences).
-
-- For type: "action_plan": Provide a personalized action plan based on quiz results. Include "immediate_actions" (next 7 days), "short_term" (next 30 days), and "long_term" (next 90 days) with specific, actionable steps.
-
-4. Call to Action Page (layout: "centered"):
-Title: A clear, action-oriented title (e.g., "Take Your Quiz Now").
-Content: Write a custom, relevant call-to-action for this quiz. The CTA should reference the brand name and encourage users to take the quiz to get their personalized diagnosis.
-
-RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+RETURN JSON IN THIS EXACT FORMAT:
 {
   "founder_intro": "...",
   "title_page": {
@@ -750,8 +742,13 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
         "questions": [
           {
             "question": "How do you currently measure your marketing success?",
-            "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
-            "insight": "What this question reveals about the user's situation."
+            "options": [
+              "I don't track anything systematically",
+              "I check basic metrics like website visits",
+              "I track conversions and ROI",
+              "I have a comprehensive analytics dashboard"
+            ],
+            "insight": "This reveals whether you're flying blind or have proper measurement systems in place."
           }
         ]
       }
@@ -763,11 +760,11 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
       "content": {
         "categories": [
           {
-            "category_name": "The Beginner",
-            "description": "What this category means",
-            "symptoms": ["Symptom 1", "Symptom 2"],
-            "solutions": ["Solution 1", "Solution 2"],
-            "case_study": "Real-world example of someone in this category."
+            "category_name": "The Flying Blind Marketer",
+            "description": "You're making decisions without proper data and measurement",
+            "symptoms": ["No tracking systems", "Gut-based decisions", "Inconsistent results"],
+            "solutions": ["Implement analytics", "Set up conversion tracking", "Create measurement framework"],
+            "case_study": "Sarah, a fitness coach, was spending $2000/month on ads without tracking conversions. After implementing proper analytics, she reduced ad spend by 40% while increasing leads by 60%."
           }
         ]
       }
@@ -777,17 +774,16 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
       "type": "action_plan",
       "title": "Section 3: Your Personalized Action Plan",
       "content": {
-        "immediate_actions": ["Action 1", "Action 2"],
-        "short_term": ["Action 1", "Action 2"],
-        "long_term": ["Action 1", "Action 2"],
-        "case_study": "Real-world example of someone following this plan."
+        "immediate_actions": ["Set up Google Analytics", "Install conversion tracking", "Create measurement dashboard"],
+        "short_term": ["A/B test different approaches", "Optimize based on data", "Scale what works"],
+        "long_term": ["Build comprehensive marketing system", "Automate successful processes", "Focus on high-ROI activities"]
       }
     }
   ],
   "cta_page": {
     "layout": "centered",
     "title": "Take Your Quiz Now",
-    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and quiz topic."
+    "content": "Ready to discover your hidden marketing problems? Take this quiz to get your personalized diagnosis and action plan."
   }
 }`;
 
@@ -798,94 +794,107 @@ ${founderIntro}
 
 ${corePrinciples}
 
-THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+GENERATE AN ROI CALCULATOR LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 
-1. Title Page (layout: "centered"):
-Title: A compelling calculator title that promises specific financial insights (8-12 words).
-Subtitle: A powerful subtitle that explains what the calculator will measure (10-15 words).
+1. Title Page:
+- Title: A compelling calculator title that promises specific ROI insights
+- Subtitle: Explains what the calculator will reveal
 
-2. Introduction Page (layout: "filled"):
-Title: A clear, engaging title for the introduction (e.g., "Why This Calculator Will Transform Your Business").
-Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what financial insights they will receive.
+2. Introduction:
+- Hook with the pain of not knowing your true ROI
+- Explain what insights they'll get from the calculator
 
-3. The Calculator Sections (layout: "filled"):
-Generate EXACTLY 3 distinct calculator sections. Each section must be comprehensive enough to be a filled page on its own.
+3. Input Fields Section:
+Generate 5-8 input fields that users will fill out, such as:
+- Current monthly revenue
+- Customer acquisition cost
+- Average order value
+- Conversion rate
+- Customer lifetime value
+- Marketing spend
+- Industry benchmarks
 
-SECTION TYPES TO USE:
-- For type: "input_metrics": Generate 5-8 key metrics that users will input. Each metric should have a "metric_name", "description" of what it measures, "input_type" (number, percentage, currency), and "calculation_impact" explaining how this affects results.
+4. Calculation Logic:
+- Revenue optimization calculations
+- Cost reduction scenarios
+- Efficiency improvement formulas
+- Break-even analysis
 
-- For type: "calculation_formulas": Provide the mathematical formulas and logic for calculating ROI, savings, or gains. Include "formula_name", "formula_description", "variables", and "example_calculation" with real numbers.
+5. Results Categories:
+- Immediate opportunities (quick wins)
+- Medium-term improvements (30-90 days)
+- Long-term optimizations (6-12 months)
 
-- For type: "results_interpretation": Create different result categories and what they mean. Include "result_category", "description", "recommendations", and "next_steps" for each category.
+6. Implementation Guide:
+- Step-by-step action plan
+- Timeline for each improvement
+- Expected ROI for each action
 
-4. Call to Action Page (layout: "centered"):
-Title: A clear, action-oriented title (e.g., "Calculate Your ROI Now").
-Content: Write a custom, relevant call-to-action for this calculator.
-
-RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+RETURN JSON IN THIS EXACT FORMAT:
 {
   "founder_intro": "...",
   "title_page": {
     "layout": "centered",
     "title": "The [Calculator Name] (ROI Calculator)",
-    "subtitle": "A [X]-Metric Tool to [Specific Benefit]."
+    "subtitle": "Calculate Your Potential Revenue Gains and Cost Savings."
   },
   "introduction_page": {
     "layout": "filled",
-    "title": "Why This Calculator Will Transform Your Business",
+    "title": "Why You Need This ROI Calculator",
     "content": "Introduction content here..."
   },
   "toolkit_sections": [
     {
       "layout": "filled",
       "type": "input_metrics",
-      "title": "Section 1: Your Key Metrics",
+      "title": "Your Current Business Metrics",
       "content": {
-        "metrics": [
+        "inputs": [
           {
-            "metric_name": "Current Monthly Revenue",
-            "description": "What this metric measures",
-            "input_type": "currency",
-            "calculation_impact": "How this affects the final calculation."
+            "label": "Monthly Revenue",
+            "type": "number",
+            "placeholder": "25000",
+            "description": "Your current monthly revenue"
+          },
+          {
+            "label": "Customer Acquisition Cost",
+            "type": "number",
+            "placeholder": "35",
+            "description": "How much you spend to acquire one customer"
           }
         ]
       }
     },
     {
       "layout": "filled",
-      "type": "calculation_formulas",
-      "title": "Section 2: The ROI Formulas",
+      "type": "calculation_results",
+      "title": "Your ROI Analysis Results",
       "content": {
-        "formulas": [
+        "opportunities": [
           {
-            "formula_name": "Revenue Growth Potential",
-            "formula_description": "How this formula works",
-            "variables": ["Variable 1", "Variable 2"],
-            "example_calculation": "Example with real numbers."
+            "title": "Increase Average Order Value by 15%",
+            "potential_gain": "+$3,750/month",
+            "implementation": "Upselling training, product bundling",
+            "timeline": "2-4 weeks"
           }
         ]
       }
     },
     {
       "layout": "filled",
-      "type": "results_interpretation",
-      "title": "Section 3: Understanding Your Results",
+      "type": "implementation_plan",
+      "title": "Implementation Roadmap",
       "content": {
-        "result_categories": [
-          {
-            "result_category": "High Growth Potential",
-            "description": "What this means",
-            "recommendations": ["Rec 1", "Rec 2"],
-            "next_steps": ["Step 1", "Step 2"]
-          }
-        ]
+        "immediate_actions": ["Analyze current metrics", "Set up tracking systems"],
+        "short_term": ["Implement quick wins", "Test new strategies"],
+        "long_term": ["Optimize entire funnel", "Scale successful tactics"]
       }
     }
   ],
   "cta_page": {
     "layout": "centered",
     "title": "Calculate Your ROI Now",
-    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and calculator topic."
+    "content": "Ready to see your potential revenue gains? Use this calculator to discover hidden opportunities in your business."
   }
 }`;
 
@@ -896,71 +905,82 @@ ${founderIntro}
 
 ${corePrinciples}
 
-THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+GENERATE AN ACTION PLAN LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 
-1. Title Page (layout: "centered"):
-Title: A compelling action plan title that promises specific results (8-12 words).
-Subtitle: A powerful subtitle that explains what the plan will deliver (10-15 words).
+1. Title Page:
+- Title: A compelling action plan title that promises specific results
+- Subtitle: Explains what the action plan will deliver
 
-2. Introduction Page (layout: "filled"):
-Title: A clear, engaging title for the introduction (e.g., "Why This Action Plan Will Transform Your Results").
-Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what results they will achieve.
+2. Introduction:
+- Hook with the pain of not having a clear plan
+- Explain what they'll get from this action plan
 
-3. The Action Plan Sections (layout: "filled"):
-Generate EXACTLY 3 distinct action plan sections. Each section must be comprehensive enough to be a filled page on its own.
+3. Personalization Questions:
+Generate 5-7 questions that will customize the action plan:
+- Business niche/industry
+- Current situation
+- Specific goals
+- Timeline
+- Available resources
+- Previous attempts
 
-SECTION TYPES TO USE:
-- For type: "phase_planning": Break down the action plan into 3-4 phases. Each phase should have a "phase_name", "duration", "objectives", and "key_actions" list. Include a "case_study" field with a brief real-world example.
+4. Action Plan Sections:
+- Week 1: Foundation building
+- Week 2: Implementation start
+- Week 3: Optimization
+- Week 4: Scaling
 
-- For type: "implementation_tools": Provide specific tools, templates, and resources needed to implement the plan. Include "tool_name", "description", "how_to_use", and "expected_outcome" for each tool.
+5. Each Week Should Include:
+- Specific tasks and activities
+- Expected outcomes
+- Time requirements
+- Success metrics
+- Troubleshooting tips
 
-- For type: "progress_tracking": Create a system for tracking progress and measuring success. Include "milestone_name", "success_metrics", "timeline", and "adjustment_strategies" for each milestone.
+6. Progress Tracking:
+- Weekly check-ins
+- Milestone markers
+- Adjustment guidelines
 
-4. Call to Action Page (layout: "centered"):
-Title: A clear, action-oriented title (e.g., "Start Your Action Plan Now").
-Content: Write a custom, relevant call-to-action for this action plan.
-
-RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+RETURN JSON IN THIS EXACT FORMAT:
 {
   "founder_intro": "...",
   "title_page": {
     "layout": "centered",
     "title": "The [Action Plan Name] (Action Plan)",
-    "subtitle": "A [X]-Step Plan to [Specific Benefit]."
+    "subtitle": "Your Personalized [X]-Week Roadmap to [Specific Goal]."
   },
   "introduction_page": {
     "layout": "filled",
-    "title": "Why This Action Plan Will Transform Your Results",
+    "title": "Why You Need This Action Plan",
     "content": "Introduction content here..."
   },
   "toolkit_sections": [
     {
       "layout": "filled",
-      "type": "phase_planning",
-      "title": "Section 1: Your Implementation Phases",
+      "type": "personalization_questions",
+      "title": "Personalize Your Action Plan",
       "content": {
-        "phases": [
+        "questions": [
           {
-            "phase_name": "Foundation Phase",
-            "duration": "Week 1-2",
-            "objectives": ["Objective 1", "Objective 2"],
-            "key_actions": ["Action 1", "Action 2"],
-            "case_study": "Real-world example of this phase."
+            "question": "What's your primary business niche?",
+            "options": ["Real Estate", "B2B SaaS", "E-commerce", "Consulting"],
+            "description": "This helps customize strategies for your industry"
           }
         ]
       }
     },
     {
       "layout": "filled",
-      "type": "implementation_tools",
-      "title": "Section 2: Your Implementation Tools",
+      "type": "weekly_plan",
+      "title": "Week 1: Foundation Building",
       "content": {
-        "tools": [
+        "tasks": [
           {
-            "tool_name": "Progress Tracker Template",
-            "description": "What this tool does",
-            "how_to_use": "How to implement this tool",
-            "expected_outcome": "What results to expect."
+            "task": "Optimize your LinkedIn profile",
+            "time_required": "2 hours",
+            "expected_outcome": "15-20 new profile views per week",
+            "success_metrics": "Profile view increase, connection requests"
           }
         ]
       }
@@ -968,23 +988,17 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
     {
       "layout": "filled",
       "type": "progress_tracking",
-      "title": "Section 3: Your Success Metrics",
+      "title": "Track Your Progress",
       "content": {
-        "milestones": [
-          {
-            "milestone_name": "First Results",
-            "success_metrics": ["Metric 1", "Metric 2"],
-            "timeline": "When to expect this",
-            "adjustment_strategies": ["Strategy 1", "Strategy 2"]
-          }
-        ]
+        "weekly_checkins": ["Review metrics", "Adjust strategies", "Plan next week"],
+        "milestones": ["Week 1: Foundation complete", "Week 2: First results", "Week 4: Goal achieved"]
       }
     }
   ],
   "cta_page": {
     "layout": "centered",
-    "title": "Start Your Action Plan Now",
-    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and action plan topic."
+    "title": "Get Your Action Plan",
+    "content": "Ready to take action? Get your personalized roadmap to achieve your goals."
   }
 }`;
 
@@ -995,86 +1009,98 @@ ${founderIntro}
 
 ${corePrinciples}
 
-THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+GENERATE A BENCHMARK REPORT LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 
-1. Title Page (layout: "centered"):
-Title: A compelling benchmark report title that promises competitive insights (8-12 words).
-Subtitle: A powerful subtitle that explains what the report will analyze (10-15 words).
+1. Title Page:
+- Title: A compelling benchmark report title
+- Subtitle: Explains what the benchmark report will reveal
 
-2. Introduction Page (layout: "filled"):
-Title: A clear, engaging title for the introduction (e.g., "Why This Benchmark Report Will Reveal Your Competitive Position").
-Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what competitive insights they will receive.
+2. Introduction:
+- Hook with the pain of not knowing how you compare
+- Explain what insights they'll get from the benchmark
 
-3. The Benchmark Report Sections (layout: "filled"):
-Generate EXACTLY 3 distinct benchmark report sections. Each section must be comprehensive enough to be a filled page on its own.
+3. Metrics Input Section:
+Generate 8-12 input fields for key business metrics:
+- Revenue metrics
+- Marketing metrics
+- Customer metrics
+- Operational metrics
+- Industry-specific metrics
 
-SECTION TYPES TO USE:
-- For type: "benchmark_metrics": Generate 5-8 key metrics that will be compared to industry standards. Each metric should have a "metric_name", "industry_average", "top_performer_level", and "improvement_potential" explaining the gap and opportunity.
+4. Benchmark Analysis:
+- Industry averages for each metric
+- Performance comparison (above/below average)
+- Gap analysis
+- Opportunity identification
 
-- For type: "competitive_analysis": Provide insights into how competitors are performing and what strategies they're using. Include "competitor_category", "performance_insights", "strategies_used", and "opportunity_gaps" for each category.
+5. Improvement Strategies:
+- Specific actions for each gap
+- Expected improvement for each action
+- Implementation timeline
+- Resource requirements
 
-- For type: "improvement_roadmap": Create a specific roadmap for closing performance gaps. Include "priority_area", "current_performance", "target_performance", "action_steps", and "timeline" for each area.
+6. ROI Impact Analysis:
+- Revenue impact of improvements
+- Cost savings potential
+- Timeline for results
 
-4. Call to Action Page (layout: "centered"):
-Title: A clear, action-oriented title (e.g., "Get Your Benchmark Report Now").
-Content: Write a custom, relevant call-to-action for this benchmark report.
-
-RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+RETURN JSON IN THIS EXACT FORMAT:
 {
   "founder_intro": "...",
   "title_page": {
     "layout": "centered",
     "title": "The [Benchmark Report Name] (Benchmark Report)",
-    "subtitle": "A [X]-Metric Analysis of [Specific Benefit]."
+    "subtitle": "Compare Your Performance to Industry Standards."
   },
   "introduction_page": {
     "layout": "filled",
-    "title": "Why This Benchmark Report Will Reveal Your Competitive Position",
+    "title": "Why You Need This Benchmark Report",
     "content": "Introduction content here..."
   },
   "toolkit_sections": [
     {
       "layout": "filled",
-      "type": "benchmark_metrics",
-      "title": "Section 1: Your Performance Metrics",
+      "type": "metrics_input",
+      "title": "Your Current Metrics",
       "content": {
-        "metrics": [
+        "inputs": [
           {
-            "metric_name": "Email Open Rate",
-            "industry_average": "22%",
-            "top_performer_level": "35%",
-            "improvement_potential": "How to close this gap."
+            "label": "Email List Size",
+            "type": "number",
+            "placeholder": "2500",
+            "industry_average": "5000",
+            "description": "Your current email subscriber count"
           }
         ]
       }
     },
     {
       "layout": "filled",
-      "type": "competitive_analysis",
-      "title": "Section 2: Competitive Landscape",
+      "type": "benchmark_analysis",
+      "title": "Your Performance vs Industry",
       "content": {
-        "competitor_categories": [
+        "comparisons": [
           {
-            "competitor_category": "Industry Leaders",
-            "performance_insights": "What top performers are doing",
-            "strategies_used": ["Strategy 1", "Strategy 2"],
-            "opportunity_gaps": ["Gap 1", "Gap 2"]
+            "metric": "Email Open Rate",
+            "your_performance": "18.5%",
+            "industry_average": "24.2%",
+            "gap": "-23.6%",
+            "opportunity": "Subject line optimization, personalization"
           }
         ]
       }
     },
     {
       "layout": "filled",
-      "type": "improvement_roadmap",
-      "title": "Section 3: Your Improvement Roadmap",
+      "type": "improvement_strategies",
+      "title": "Improvement Strategies",
       "content": {
-        "priority_areas": [
+        "strategies": [
           {
-            "priority_area": "Email Marketing",
-            "current_performance": "Current level",
-            "target_performance": "Target level",
-            "action_steps": ["Step 1", "Step 2"],
-            "timeline": "When to achieve this"
+            "title": "Subject Line Optimization",
+            "description": "Implement A/B testing for subject lines",
+            "expected_improvement": "+5.7% open rate",
+            "timeline": "2-4 weeks"
           }
         ]
       }
@@ -1082,8 +1108,8 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
   ],
   "cta_page": {
     "layout": "centered",
-    "title": "Get Your Benchmark Report Now",
-    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and benchmark report topic."
+    "title": "Get Your Benchmark Report",
+    "content": "Ready to see how you stack up? Get your personalized benchmark analysis."
   }
 }`;
 
@@ -1094,95 +1120,102 @@ ${founderIntro}
 
 ${corePrinciples}
 
-THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+GENERATE AN OPPORTUNITY FINDER LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 
-1. Title Page (layout: "centered"):
-Title: A compelling opportunity finder title that promises specific opportunities (8-12 words).
-Subtitle: A powerful subtitle that explains what opportunities will be identified (10-15 words).
+1. Title Page:
+- Title: A compelling opportunity finder title
+- Subtitle: Explains what opportunities the finder will reveal
 
-2. Introduction Page (layout: "filled"):
-Title: A clear, engaging title for the introduction (e.g., "Why This Opportunity Finder Will Unlock Hidden Growth").
-Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what opportunities they will discover.
+2. Introduction:
+- Hook with the pain of missing opportunities
+- Explain what opportunities they'll discover
 
-3. The Opportunity Finder Sections (layout: "filled"):
-Generate EXACTLY 3 distinct opportunity finder sections. Each section must be comprehensive enough to be a filled page on its own.
+3. Analysis Questions:
+Generate 8-12 questions that will identify missed opportunities:
+- Current business practices
+- Marketing channels used
+- Customer acquisition methods
+- Revenue streams
+- Technology usage
+- Competitive analysis
 
-SECTION TYPES TO USE:
-- For type: "opportunity_categories": Generate 4-6 key opportunity categories to analyze. Each category should have a "category_name", "analysis_focus", "opportunity_signs", and "potential_impact" explaining what to look for and the upside.
+4. Opportunity Categories:
+- High-priority opportunities (immediate impact)
+- Medium-priority opportunities (30-90 days)
+- Low-priority opportunities (long-term)
 
-- For type: "audit_framework": Provide a systematic framework for conducting the opportunity audit. Include "audit_step", "what_to_look_for", "red_flags", and "green_signals" for each step.
+5. Each Opportunity Should Include:
+- Specific opportunity description
+- Impact assessment (revenue/customers)
+- Implementation difficulty
+- Timeline for results
+- Required resources
 
-- For type: "implementation_priorities": Create a prioritized list of opportunities to pursue. Include "opportunity_name", "effort_level", "expected_impact", "implementation_steps", and "success_metrics" for each opportunity.
+6. Implementation Roadmap:
+- Prioritized action plan
+- Step-by-step implementation
+- Success metrics
+- Risk mitigation
 
-4. Call to Action Page (layout: "centered"):
-Title: A clear, action-oriented title (e.g., "Find Your Opportunities Now").
-Content: Write a custom, relevant call-to-action for this opportunity finder.
-
-RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+RETURN JSON IN THIS EXACT FORMAT:
 {
   "founder_intro": "...",
   "title_page": {
     "layout": "centered",
     "title": "The [Opportunity Finder Name] (Opportunity Finder)",
-    "subtitle": "A [X]-Category Audit to [Specific Benefit]."
+    "subtitle": "Discover Hidden Growth Opportunities in Your Business."
   },
   "introduction_page": {
     "layout": "filled",
-    "title": "Why This Opportunity Finder Will Unlock Hidden Growth",
+    "title": "Why You Need This Opportunity Finder",
     "content": "Introduction content here..."
   },
   "toolkit_sections": [
     {
       "layout": "filled",
+      "type": "analysis_questions",
+      "title": "Business Analysis Questions",
+      "content": {
+        "questions": [
+          {
+            "question": "What's your primary sales channel?",
+            "options": ["Website only", "Website + Amazon", "Multi-channel"],
+            "description": "This helps identify channel expansion opportunities"
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
       "type": "opportunity_categories",
-      "title": "Section 1: Opportunity Categories to Analyze",
+      "title": "Your Growth Opportunities",
       "content": {
-        "categories": [
+        "high_priority": [
           {
-            "category_name": "Marketing Channels",
-            "analysis_focus": "What to analyze in this category",
-            "opportunity_signs": ["Sign 1", "Sign 2"],
-            "potential_impact": "What upside this could deliver."
+            "title": "Missing Instagram Reels Strategy",
+            "description": "Your competitors see 40% more engagement from Reels",
+            "impact": "15-25 new customers per month",
+            "implementation": "2-3 hours per week",
+            "timeline": "Immediate"
           }
         ]
       }
     },
     {
       "layout": "filled",
-      "type": "audit_framework",
-      "title": "Section 2: Your Audit Framework",
+      "type": "implementation_roadmap",
+      "title": "Implementation Roadmap",
       "content": {
-        "audit_steps": [
-          {
-            "audit_step": "Step 1: Channel Analysis",
-            "what_to_look_for": "What to examine",
-            "red_flags": ["Flag 1", "Flag 2"],
-            "green_signals": ["Signal 1", "Signal 2"]
-          }
-        ]
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "implementation_priorities",
-      "title": "Section 3: Your Implementation Priorities",
-      "content": {
-        "opportunities": [
-          {
-            "opportunity_name": "Instagram Reels Strategy",
-            "effort_level": "Low effort, high impact",
-            "expected_impact": "40% increase in engagement",
-            "implementation_steps": ["Step 1", "Step 2"],
-            "success_metrics": ["Metric 1", "Metric 2"]
-          }
-        ]
+        "week_1": ["Set up Instagram Business", "Create content calendar"],
+        "week_2": ["Launch first Reels", "Monitor engagement"],
+        "week_3": ["Optimize based on data", "Scale successful content"]
       }
     }
   ],
   "cta_page": {
     "layout": "centered",
-    "title": "Find Your Opportunities Now",
-    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and opportunity finder topic."
+    "title": "Find Your Opportunities",
+    "content": "Ready to discover hidden growth opportunities? Use this finder to identify your next big wins."
   }
 }`;
 
@@ -1193,92 +1226,59 @@ ${founderIntro}
 
 ${corePrinciples}
 
-THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+GENERATE A TRADITIONAL PDF GUIDE WITH THE FOLLOWING STRUCTURE:
 
-1. Title Page (layout: "centered"):
-Title: A compelling guide title that promises comprehensive insights (8-12 words).
-Subtitle: A powerful subtitle that explains what the guide will cover (10-15 words).
+1. Title Page:
+- Title: A compelling guide title that promises comprehensive insights
+- Subtitle: Explains what the guide will cover
 
-2. Introduction Page (layout: "filled"):
-Title: A clear, engaging title for the introduction (e.g., "Why This Guide Will Transform Your Business").
-Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what comprehensive insights they will receive.
+2. Introduction:
+- Hook that explains what the guide will cover and why it matters
+- Overview of what readers will learn
 
-3. The Guide Sections (layout: "filled"):
-Generate EXACTLY 3 distinct guide sections. Each section must be comprehensive enough to be a filled page on its own.
+3. Content Sections (3-5 sections):
+Each section should include:
+- Clear section title
+- Educational content with actionable insights
+- Step-by-step instructions
+- Examples and case studies
+- Templates or checklists
 
-SECTION TYPES TO USE:
-- For type: "guide_section": Generate a comprehensive section on a specific topic. Include "section_title", "content" (structured or plain text), and "subsections" (if applicable).
+4. Implementation Guide:
+- How to apply the concepts
+- Common mistakes to avoid
+- Success metrics to track
 
-- For type: "call_to_action": Create a call-to-action page for downloading the full guide.
+5. Call to Action:
+- Clear next steps
+- Additional resources
+- Contact information
 
-4. Call to Action Page (layout: "centered"):
-Title: A clear, action-oriented title (e.g., "Download Your Guide Now").
-Content: Write a custom, relevant call-to-action for this guide.
-
-RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+RETURN JSON IN THIS EXACT FORMAT:
 {
   "founder_intro": "...",
   "title_page": {
     "layout": "centered",
     "title": "The [Guide Name] (PDF)",
-    "subtitle": "A [X]-Insight Guide to [Specific Benefit]."
+    "subtitle": "A Comprehensive Guide to [Specific Topic]."
   },
   "introduction_page": {
     "layout": "filled",
-    "title": "Why This Guide Will Transform Your Business",
+    "title": "Introduction",
     "content": "Introduction content here..."
   },
   "toolkit_sections": [
     {
       "layout": "filled",
-      "type": "guide_section",
-      "title": "Section 1: Your Core Insights",
-      "content": {
-        "section_title": "Your Core Insights",
-        "content": "Detailed content about the topic here...",
-        "subsections": [
-          {
-            "title": "Subsection 1",
-            "content": "Content for subsection 1"
-          }
-        ]
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "guide_section",
-      "title": "Section 2: Your Actionable Steps",
-      "content": {
-        "section_title": "Your Actionable Steps",
-        "content": "Content for actionable steps here...",
-        "subsections": [
-          {
-            "title": "Subsection 1",
-            "content": "Content for subsection 1"
-          }
-        ]
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "guide_section",
-      "title": "Section 3: Your Next Steps",
-      "content": {
-        "section_title": "Your Next Steps",
-        "content": "Content for next steps here...",
-        "subsections": [
-          {
-            "title": "Subsection 1",
-            "content": "Content for subsection 1"
-          }
-        ]
-      }
+      "type": "educational_content",
+      "title": "Section 1: [Topic]",
+      "content": "Comprehensive educational content with actionable insights..."
     }
   ],
   "cta_page": {
     "layout": "centered",
-    "title": "Download Your Guide Now",
-    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and guide topic."
+    "title": "Next Steps",
+    "content": "Ready to implement these strategies? Download your complete guide now."
   }
 }`;
 

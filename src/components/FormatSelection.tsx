@@ -27,7 +27,7 @@ const formatOptions: LeadMagnetFormatOption[] = [
     whyItWorks: 'Works in any sector, adapts by changing questions and feedback language.',
     icon: 'HelpCircle',
     isInteractive: true,
-    demoLink: 'https://majorbeam.com/demo/quiz'
+    demoLink: '/demo/quiz'
   },
   {
     id: 'roi_calculator',
@@ -38,7 +38,7 @@ const formatOptions: LeadMagnetFormatOption[] = [
     whyItWorks: 'Makes benefits tangible for any business type.',
     icon: 'Calculator',
     isInteractive: true,
-    demoLink: 'https://majorbeam.com/demo/calculator'
+    demoLink: '/demo/calculator'
   },
   {
     id: 'action_plan',
@@ -49,7 +49,7 @@ const formatOptions: LeadMagnetFormatOption[] = [
     whyItWorks: 'Simple, practical, and feels tailored to them.',
     icon: 'Target',
     isInteractive: true,
-    demoLink: 'https://majorbeam.com/demo/action-plan'
+    demoLink: '/demo/action-plan'
   },
   {
     id: 'benchmark_report',
@@ -60,7 +60,7 @@ const formatOptions: LeadMagnetFormatOption[] = [
     whyItWorks: 'People hate feeling behind their competition — this creates urgency to act.',
     icon: 'BarChart3',
     isInteractive: true,
-    demoLink: 'https://majorbeam.com/demo/benchmark'
+    demoLink: '/demo/benchmark'
   },
   {
     id: 'opportunity_finder',
@@ -71,7 +71,7 @@ const formatOptions: LeadMagnetFormatOption[] = [
     whyItWorks: 'Turns vague "you could improve" into specific, actionable suggestions that are easy to start.',
     icon: 'Search',
     isInteractive: true,
-    demoLink: 'https://majorbeam.com/demo/opportunity-finder'
+    demoLink: '/demo/opportunity-finder'
   },
   {
     id: 'pdf',
@@ -82,7 +82,7 @@ const formatOptions: LeadMagnetFormatOption[] = [
     whyItWorks: 'Familiar format that users can save, print, and reference later.',
     icon: 'FileText',
     isInteractive: false,
-    demoLink: 'https://majorbeam.com/demo/pdf'
+    demoLink: '/demo/pdf'
   }
 ];
 
