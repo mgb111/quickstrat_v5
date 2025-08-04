@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { CampaignInput } from '../types';
+import { CampaignInput, LeadMagnetFormat } from '../types';
 import { Loader2 } from 'lucide-react';
+import FormatSelection from './FormatSelection';
 
 interface CampaignFormProps {
   onSubmit: (input: CampaignInput) => void;
@@ -16,9 +17,11 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
     problem_statement: '',
     desired_outcome: '',
     tone: 'professional',
-    position: ''
+    position: '',
+    selected_format: undefined
   });
   const [localLoading, setLocalLoading] = useState(false);
+  const [showFormatSelection, setShowFormatSelection] = useState(true);
 
   // Load saved data from localStorage on component mount
   useEffect(() => {
@@ -30,6 +33,10 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
           ...prev,
           ...parsedData
         }));
+        // If format is already selected, show the form
+        if (parsedData.selected_format) {
+          setShowFormatSelection(false);
+        }
       } catch (error) {
         console.error('Error loading saved form data:', error);
       }
@@ -41,9 +48,17 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
     localStorage.setItem('campaignFormData', JSON.stringify(formData));
   }, [formData]);
 
+  const handleFormatSelect = (format: LeadMagnetFormat) => {
+    setFormData(prev => ({
+      ...prev,
+      selected_format: format
+    }));
+    setShowFormatSelection(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoading && !localLoading) {
+    if (!isLoading && !localLoading && formData.selected_format) {
       setLocalLoading(true);
       await onSubmit(formData);
       setLocalLoading(false);
@@ -67,23 +82,56 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
       problem_statement: '',
       desired_outcome: '',
       tone: 'professional',
-      position: ''
+      position: '',
+      selected_format: undefined
     });
+    setShowFormatSelection(true);
   };
+
+  const goBackToFormatSelection = () => {
+    setShowFormatSelection(true);
+  };
+
+  // Show format selection if no format is selected
+  if (showFormatSelection) {
+    return (
+      <div className="w-full max-w-6xl mx-auto">
+        <FormatSelection
+          selectedFormat={formData.selected_format || null}
+          onFormatSelect={handleFormatSelect}
+          disabled={isLoading || localLoading}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-6xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Campaign Information</h2>
-            <button
-              type="button"
-              onClick={clearSavedData}
-              className="text-sm text-gray-500 hover:text-gray-700 underline"
-            >
-              Clear Saved Data
-            </button>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Campaign Information</h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Selected Format: {formData.selected_format?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              </p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button
+                type="button"
+                onClick={goBackToFormatSelection}
+                className="text-sm text-blue-600 hover:text-blue-700 underline"
+              >
+                Change Format
+              </button>
+              <button
+                type="button"
+                onClick={clearSavedData}
+                className="text-sm text-gray-500 hover:text-gray-700 underline"
+              >
+                Clear Saved Data
+              </button>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -236,7 +284,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
           <div className="mt-8 flex justify-center items-center">
             <button
               type="submit"
-              disabled={isLoading || localLoading || !formData.name || !formData.brand_name || !formData.niche || !formData.target_audience || !formData.problem_statement || !formData.desired_outcome}
+              disabled={isLoading || localLoading || !formData.name || !formData.brand_name || !formData.niche || !formData.target_audience || !formData.problem_statement || !formData.desired_outcome || !formData.selected_format}
               className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-gray-700 text-white rounded-xl font-semibold text-base sm:text-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full sm:w-auto"
             >
               {localLoading ? (

@@ -73,42 +73,18 @@ export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<
   const client = getOpenAIClient();
 
   try {
-    const prompt = `You are a lead generation expert. Based on the user's inputs, generate 6 unique lead magnet concepts.
-User Context:
-- Niche: ${input.niche}
-- Customer Problem Statement: ${input.problem_statement}
-- Desired Outcome: ${input.desired_outcome}
-- Target Audience: ${input.target_audience}
-
-Each concept must be framed as a practical TOOL (checklist, template, cheat sheet, guide, action plan, etc.).
-
-Requirements:
-- Each concept should solve ONE specific problem related to their pain point.
-- Frame as actionable tools, not general guides.
-- Make them specific to their niche and audience.
-- Ensure each is distinct and valuable.
-- For each concept, provide a concrete, step-by-step example or micro-case study showing how it would be used in practice (1-2 sentences).
-- If possible, include a plug-and-play template or swipe file for the user to use immediately.
-- Use sharp, actionable language—avoid generic advice.
-
-Return JSON in this exact format:
-{
-  "concepts": [
-    {
-      "id": "concept-1",
-      "title": "A [Tool Type] for [Specific Problem]",
-      "description": "Brief description of what this tool accomplishes (15-25 words)",
-      "example": "A real-life example or micro-case study (1-2 sentences)",
-      "template": "A plug-and-play template or swipe file (if applicable)"
+    const format = input.selected_format;
+    if (!format) {
+      throw new Error('No format selected');
     }
-  ]
-}`;
 
+    const formatSpecificPrompt = getFormatSpecificPrompt(format, input);
+    
     const res = await client.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: 'You are a content strategist. Output strictly valid JSON as defined.' },
-        { role: 'user', content: prompt }
+        { role: 'system', content: 'You are a lead magnet strategist. Generate 3 unique concepts for the specified format. Each concept should be specific, actionable, and tailored to the user\'s niche and audience.' },
+        { role: 'user', content: formatSpecificPrompt }
       ],
       temperature: 0.7,
       max_tokens: 1500
@@ -120,12 +96,20 @@ Return JSON in this exact format:
 
     const content = res.choices[0].message.content;
     const parsed = JSON.parse(content);
-    
-    if (!Array.isArray(parsed.concepts)) {
+
+    // Validate the response structure
+    if (!Array.isArray(parsed.concepts) || parsed.concepts.length === 0) {
       throw new Error('Invalid response format from OpenAI API');
     }
 
-    return parsed.concepts;
+    return parsed.concepts.map((concept: any, index: number) => ({
+      id: `concept-${index + 1}`,
+      title: concept.title,
+      description: concept.description,
+      value_proposition: concept.value_proposition,
+      target_audience: concept.target_audience,
+      format: format
+    }));
   } catch (err: any) {
     console.error('OpenAI API Error:', {
       message: err.message,
@@ -140,9 +124,133 @@ Return JSON in this exact format:
       throw new Error('Invalid OpenAI API key. Please check your .env file.');
     } else if (err.message.includes('timeout')) {
       throw new Error('Request timed out. Please check your internet connection and try again.');
+    } else if (err.message.includes('JSON')) {
+      throw new Error('Failed to process the response from OpenAI. Please try again.');
     }
 
     throw new Error(`Failed to generate lead magnet concepts: ${err.message}`);
+  }
+}
+
+function getFormatSpecificPrompt(format: string, input: CampaignInput): string {
+  const baseContext = `
+User Context:
+- Niche: ${input.niche}
+- Target Audience: ${input.target_audience}
+- Problem Statement: ${input.problem_statement}
+- Desired Outcome: ${input.desired_outcome}
+- Brand: ${input.brand_name}
+- Tone: ${input.tone}
+`;
+
+  switch (format) {
+    case 'interactive_quiz':
+      return `${baseContext}
+
+Generate 3 Interactive Problem Diagnosis Quiz concepts. Each quiz should:
+- Focus on diagnosing a specific problem in the user's niche
+- Include 5-10 targeted questions that reveal the root cause
+- Provide personalized feedback and next steps based on answers
+- Be engaging and feel like a professional assessment
+
+Return JSON in this exact format:
+{
+  "concepts": [
+    {
+      "title": "Quiz Title (e.g., 'Why Aren't You Getting More Customers?')",
+      "description": "Brief description of what the quiz diagnoses and what users will learn",
+      "value_proposition": "What specific value or insight users will get from taking this quiz",
+      "target_audience": "Specific audience segment this quiz targets"
+    }
+  ]
+}`;
+
+    case 'roi_calculator':
+      return `${baseContext}
+
+Generate 3 Instant ROI or Cost-Savings Calculator concepts. Each calculator should:
+- Focus on quantifying potential gains or savings
+- Include relevant metrics for the user's industry
+- Show tangible financial impact of improvements
+- Make benefits concrete and actionable
+
+Return JSON in this exact format:
+{
+  "concepts": [
+    {
+      "title": "Calculator Title (e.g., 'Revenue Growth Calculator')",
+      "description": "Brief description of what the calculator measures and what insights it provides",
+      "value_proposition": "What specific financial insights users will gain",
+      "target_audience": "Specific audience segment this calculator targets"
+    }
+  ]
+}`;
+
+    case 'action_plan':
+      return `${baseContext}
+
+Generate 3 Quick Wins Action Plan concepts. Each plan should:
+- Focus on immediate, actionable steps
+- Be tailored to the user's specific niche and goals
+- Include 3-5 concrete steps they can start today
+- Feel personalized and practical
+
+Return JSON in this exact format:
+{
+  "concepts": [
+    {
+      "title": "Action Plan Title (e.g., '30-Day Lead Generation Plan')",
+      "description": "Brief description of what the plan covers and what users will achieve",
+      "value_proposition": "What specific results users can expect from following this plan",
+      "target_audience": "Specific audience segment this plan targets"
+    }
+  ]
+}`;
+
+    case 'benchmark_report':
+      return `${baseContext}
+
+Generate 3 Industry Benchmark Report concepts. Each report should:
+- Compare user metrics to industry standards
+- Identify specific areas for improvement
+- Provide actionable insights based on gaps
+- Create urgency to act on findings
+
+Return JSON in this exact format:
+{
+  "concepts": [
+    {
+      "title": "Benchmark Report Title (e.g., 'Email Marketing Performance Report')",
+      "description": "Brief description of what metrics are analyzed and what insights are provided",
+      "value_proposition": "What specific competitive insights users will gain",
+      "target_audience": "Specific audience segment this report targets"
+    }
+  ]
+}`;
+
+    case 'opportunity_finder':
+      return `${baseContext}
+
+Generate 3 Opportunity Finder Blueprint concepts. Each blueprint should:
+- Identify missed opportunities in the user's business
+- Provide specific, actionable recommendations
+- Focus on low-effort, high-impact improvements
+- Feel like a personalized audit
+
+Return JSON in this exact format:
+{
+  "concepts": [
+    {
+      "title": "Opportunity Finder Title (e.g., 'Marketing Channel Audit')",
+      "description": "Brief description of what opportunities are analyzed and what recommendations are provided",
+      "value_proposition": "What specific opportunities users will discover and how to act on them",
+      "target_audience": "Specific audience segment this blueprint targets"
+    }
+  ]
+}`;
+
+    default:
+      throw new Error(`Unknown format: ${format}`);
   }
 }
 
@@ -150,41 +258,14 @@ export async function generateContentOutline(input: CampaignInput, selected: Lea
   const client = getOpenAIClient();
 
   try {
-    const prompt = `You are creating a content outline for a lead magnet.
-User Context:
-- Niche: ${input.niche}
-- Target Audience: ${input.target_audience}
-- Tone: ${input.tone}
-- Brand: ${input.brand_name}
-
-Selected Concept: "${selected.title}"
-Concept Description: "${selected.description}"
-
-Generate a content outline with these components:
-1. Title: A sharp, specific headline for the selected concept (8-12 words)
-2. Introduction: A concise hook that states the problem this tool solves (40-60 words)
-3. Core Points: 4-6 bullet points outlining key steps/points (10-15 words each)
-4. CTA: A brief call-to-action offering next steps (25-40 words)
-5. Example: Provide at least one real-life example or micro-case study for the main strategy (2-3 sentences)
-6. Template: If possible, include a plug-and-play template or swipe file for the user to use immediately.
-
-Use sharp, actionable language—avoid generic advice.
-
-Return JSON in this exact format:
-{
-  "title": "The [Tool Name]: [Specific Benefit]",
-  "introduction": "...",
-  "core_points": ["..."],
-  "cta": "...",
-  "example": "A real-life example or micro-case study (2-3 sentences)",
-  "template": "A plug-and-play template or swipe file (if applicable)"
-}`;
+    const format = selected.format;
+    const formatSpecificPrompt = getFormatSpecificOutlinePrompt(format, input, selected);
 
     const res = await client.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
         { role: 'system', content: 'You are a content strategist. Output strictly valid JSON as defined.' },
-        { role: 'user', content: prompt }
+        { role: 'user', content: formatSpecificPrompt }
       ],
       temperature: 0.7,
       max_tokens: 1000
@@ -225,205 +306,157 @@ Return JSON in this exact format:
   }
 }
 
+function getFormatSpecificOutlinePrompt(format: string, input: CampaignInput, selected: LeadMagnetConcept): string {
+  const baseContext = `
+User Context:
+- Niche: ${input.niche}
+- Target Audience: ${input.target_audience}
+- Tone: ${input.tone}
+- Brand: ${input.brand_name}
+
+Selected Concept: "${selected.title}"
+Concept Description: "${selected.description}"
+Format: ${format}
+`;
+
+  switch (format) {
+    case 'interactive_quiz':
+      return `${baseContext}
+
+Generate a content outline for an Interactive Problem Diagnosis Quiz.
+
+The quiz should include:
+1. Title: A compelling quiz title that promises specific insights
+2. Introduction: A hook that explains what the quiz will diagnose and why it matters
+3. Core Points: 5-10 key questions that will reveal the root cause of the problem
+4. CTA: A call-to-action for taking the quiz and getting personalized results
+5. Example: A sample question and what insights it would reveal
+6. Template: The quiz structure and question format
+
+Return JSON in this exact format:
+{
+  "title": "The [Quiz Name]: [Specific Benefit]",
+  "introduction": "...",
+  "core_points": ["..."],
+  "cta": "...",
+  "example": "A sample question and what insights it would reveal",
+  "template": "The quiz structure and question format"
+}`;
+
+    case 'roi_calculator':
+      return `${baseContext}
+
+Generate a content outline for an Instant ROI or Cost-Savings Calculator.
+
+The calculator should include:
+1. Title: A compelling calculator title that promises specific financial insights
+2. Introduction: A hook that explains what the calculator will measure and why it matters
+3. Core Points: Key metrics and calculations the calculator will perform
+4. CTA: A call-to-action for using the calculator and getting personalized results
+5. Example: A sample calculation and what insights it would reveal
+6. Template: The calculator structure and input fields
+
+Return JSON in this exact format:
+{
+  "title": "The [Calculator Name]: [Specific Benefit]",
+  "introduction": "...",
+  "core_points": ["..."],
+  "cta": "...",
+  "example": "A sample calculation and what insights it would reveal",
+  "template": "The calculator structure and input fields"
+}`;
+
+    case 'action_plan':
+      return `${baseContext}
+
+Generate a content outline for a Quick Wins Action Plan.
+
+The plan should include:
+1. Title: A compelling plan title that promises specific results
+2. Introduction: A hook that explains what the plan will deliver and why it matters
+3. Core Points: 3-5 concrete steps they can start today
+4. CTA: A call-to-action for getting the full plan and starting implementation
+5. Example: A sample step and what results it would deliver
+6. Template: The action plan structure and step format
+
+Return JSON in this exact format:
+{
+  "title": "The [Plan Name]: [Specific Benefit]",
+  "introduction": "...",
+  "core_points": ["..."],
+  "cta": "...",
+  "example": "A sample step and what results it would deliver",
+  "template": "The action plan structure and step format"
+}`;
+
+    case 'benchmark_report':
+      return `${baseContext}
+
+Generate a content outline for an Industry Benchmark Report.
+
+The report should include:
+1. Title: A compelling report title that promises competitive insights
+2. Introduction: A hook that explains what the report will analyze and why it matters
+3. Core Points: Key metrics and benchmarks that will be compared
+4. CTA: A call-to-action for getting the full report and personalized insights
+5. Example: A sample benchmark comparison and what insights it would reveal
+6. Template: The report structure and metric format
+
+Return JSON in this exact format:
+{
+  "title": "The [Report Name]: [Specific Benefit]",
+  "introduction": "...",
+  "core_points": ["..."],
+  "cta": "...",
+  "example": "A sample benchmark comparison and what insights it would reveal",
+  "template": "The report structure and metric format"
+}`;
+
+    case 'opportunity_finder':
+      return `${baseContext}
+
+Generate a content outline for an Opportunity Finder Blueprint.
+
+The blueprint should include:
+1. Title: A compelling blueprint title that promises specific opportunities
+2. Introduction: A hook that explains what opportunities will be identified and why it matters
+3. Core Points: Key areas where opportunities will be analyzed
+4. CTA: A call-to-action for getting the full blueprint and personalized recommendations
+5. Example: A sample opportunity analysis and what recommendations it would provide
+6. Template: The blueprint structure and analysis format
+
+Return JSON in this exact format:
+{
+  "title": "The [Blueprint Name]: [Specific Benefit]",
+  "introduction": "...",
+  "core_points": ["..."],
+  "cta": "...",
+  "example": "A sample opportunity analysis and what recommendations it would provide",
+  "template": "The blueprint structure and analysis format"
+}`;
+
+    default:
+      throw new Error(`Unknown format: ${format}`);
+  }
+}
+
 export async function generatePdfContent(input: CampaignInput, outline: ContentOutline, customization?: PDFCustomization): Promise<PDFContent> {
   const client = getOpenAIClient();
 
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const prompt = `You are an expert Instructional Designer and a professional Layout Designer. Your task is to generate the complete and final content for an A+ grade, high-value lead magnet. Your output must be structured for a visually dense, professional PDF where every page is either intentionally centered for impact or completely filled with valuable content.
-
-USER CONTEXT:
-Niche: ${input.niche}
-Target Audience: ${input.target_audience}
-Tone: ${input.tone}
-Brand Name: ${input.brand_name}
-Position/Title: ${input.position || ''}
-Selected Concept: A lead magnet about ${outline.title}.
-
----
-
-PERSONALIZED FOUNDER INTRODUCTION:
-Before the toolkit, write a short, authentic introduction in the founder’s voice. Use these details:
-- Name: ${input.name}
-- Position/Title: ${input.position || ''}
-- Brand/company: ${input.brand_name}
-- Customer problem: ${input.problem_statement}
-- Desired outcome: ${input.desired_outcome}
-If position/title is provided, use it in the intro (e.g., "I'm [Name], [Position] at [Brand]"). The intro should sound like the founder is speaking directly to the reader, sharing why they built this and what the reader will achieve. Make it authentic, concise, and motivating. Return this as a field called founder_intro in the JSON.
-
----
-
-CORE PRINCIPLES (NON-NEGOTIABLE):
-VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or structured content) to fill a standard document page. Sparse pages with single paragraphs are forbidden.
-
-STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, and structured content—to enhance readability and ensure pages are full.
-
-EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what."
-
-NO SELLING: The content must be 100% educational and brand-agnostic.
-
-CRITICAL REDUNDANCY RULE: If you include a checklist section, DO NOT create a separate "step-by-step guide" section. The checklist is the superior implementation tool and should be the sole guide. Avoid redundancy at all costs.
-
-THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
-
-1. Title Page (layout: "centered"):
-Title: A sharp, specific headline (8-12 words).
-Subtitle: A powerful subtitle that makes a quantifiable promise (10-15 words).
-
-2. Introduction Page (layout: "filled"):
-Title: A clear, engaging title for the introduction (e.g., "Why This Toolkit Will Change Your Approach").
-Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what tangible tools they will receive. This length is required to properly fill the page.
-
-3. The Toolkit Sections (layout: "filled"):
-Generate EXACTLY 3 distinct toolkit sections. Each section must be comprehensive enough to be a filled page on its own. The content for each tool must be detailed and expanded.
-
-SECTION TYPES TO USE (NO TABLES, NO REDUNDANT STEP-BY-STEP GUIDES):
-
-- For type: "pros_and_cons_list": Use this for comparing different methods or strategies. Generate a list of AT LEAST 3-6 items. Each item MUST have a "method_name", a single "pros" string (not an array), a single "cons" string (not an array), and a "case_study" field with a brief real-world example (2-3 sentences). Format exactly like this example:
-
-EXAMPLE PROS AND CONS FORMAT:
-{
-  "method_name": "Social Media Marketing",
-  "pros": "Offers wide reach and the ability to form a personal connection with prospects.",
-  "cons": "It is time-consuming and requires the regular creation of new content to stay relevant.",
-  "case_study": "Sarah, a fitness coach, tested Instagram vs. Facebook ads for her online program. Instagram brought in 40% more qualified leads at half the cost, but required daily content creation. She now focuses 80% of her efforts on Instagram while using Facebook for retargeting."
-}
-
-For type: "checklist": The checklist must be broken into 2-3 sub-headings or phases and contain a total of 8-12 detailed, actionable items. Include a "case_study" field with a brief real-world example showing how this checklist was used successfully (2-3 sentences). Format exactly like this example:
-
-EXAMPLE CHECKLIST FORMAT:
-{
-  "phases": [
-    {
-      "phase_title": "Phase A: Initial Assessment",
-      "items": [
-        "1.1 Identify the training needs that can be addressed using VR",
-        "1.2 Estimate the number of users who will need access to VR training",
-        "1.3 Calculate the budget available for VR training implementation"
-      ]
-    },
-    {
-      "phase_title": "Phase B: Vendor Evaluation", 
-      "items": [
-        "2.1 Compare various VR training platforms based on features and cost",
-        "2.2 Evaluate the scalability and flexibility of each platform",
-        "2.3 Consider the support and training provided by the vendor"
-      ]
-    },
-    {
-      "phase_title": "Phase C: Implementation and Monitoring",
-      "items": [
-        "3.1 Implement a pilot project to test the effectiveness of the chosen platform",
-        "3.2 Measure the ROI of the VR training program", 
-        "3.3 Iterate and adjust the program based on feedback and results"
-      ]
-    }
-  ],
-  "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs."
-}
-
-For type: "scripts": Provide at least 3-4 script scenarios, each with a "trigger" (what they say), "response" (what you say), "explanation" (strategy behind the script), and a "case_study" field with a detailed real-world example (2-3 sentences) showing the script in action with specific results. Include specific numbers, outcomes, and context to make it relatable. **If you do not provide at least 2 scenarios in the scripts section, you MUST rewrite and return the correct format.**
-
-For type: "mistakes_to_avoid": List 4-5 common mistakes. For each mistake, provide a "mistake" description and a "solution" paragraph of 40-50 words. Include a real-life example or case study for at least one mistake.
-
-IMPORTANT: DO NOT USE "step_by_by_step_guide" type if you already have a checklist. The checklist serves as the implementation guide and creating both would be redundant.
-
-4. Call to Action Page (layout: "centered"):
-Title: A clear, action-oriented title (e.g., "Your Next Step").
-Content: Write a custom, relevant call-to-action for this campaign. The CTA should reference the brand name (${input.brand_name}) and the lead magnet topic (${outline.title}), and encourage the reader to take a next step relevant to their business (such as booking a call, downloading more resources, or contacting support). Make it actionable, specific, bold, urgent, and benefit-driven. Do NOT use a generic or unrelated CTA.
-
-5. For each toolkit section, if possible, include a plug-and-play template or swipe file for the user to use immediately.
-
-6. Use sharp, actionable language—avoid generic advice. Add at least one real-life example or micro-case study per strategy or script.
-
-FINAL GUARDRAIL AND SELF-CORRECTION: Before generating the JSON, you MUST verify your own output against the mandatory instructions.
-1. Is the content for each page dense enough?
-2. Does the checklist contain 8-12 items across 2-3 phases?
-3. Are there exactly 3 toolkit sections with no redundancy?
-4. Is the CTA custom, relevant, and tailored to the brand and lead magnet topic?
-5. Have you avoided creating both a checklist AND a step-by-step guide?
-6. Have you included at least one real-life example or micro-case study per strategy or script?
-7. Have you included a plug-and-play template or swipe file where possible?
-If any answer is no, you MUST rewrite that section to fully comply before providing the final output.
-
-RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
-{
-  "founder_intro": "...",
-  "title_page": {
-    "layout": "centered",
-    "title": "The VR Vendor Negotiation Toolkit",
-    "subtitle": "A 3-Part Guide to Cut Costs and Secure a Future-Proof Contract."
-  },
-  "introduction_page": {
-    "layout": "filled",
-    "title": "Your Strongest Position is a Prepared One",
-    "content": "That complex VR vendor contract is likely hiding thousands in unnecessary costs. Many L&D leaders overpay for bloated feature sets they'll never use and enter into inflexible agreements they later regret. This toolkit provides the specific, actionable resources—a tech glossary, an action checklist, negotiation scripts, and sample contract clauses—to help you negotiate from a position of power, cut costs, and secure a flexible, future-proof partnership. Use these tools to prepare for your next vendor call and ensure you get maximum value for your investment."
-  },
-  "toolkit_sections": [
-    {
-      "layout": "filled",
-      "type": "pros_and_cons_list",
-      "title": "Section 1: Social Media Marketing Strategies Overview",
-      "content": {
-        "items": [
-          {
-            "method_name": "Paid Advertising",
-            "pros": "Quick results, precise targeting, scalable.",
-            "cons": "Can be expensive, requires constant monitoring and adjustment.",
-            "case_study": "Mike, a B2B consultant, spent $2,000 on LinkedIn ads targeting CFOs. He generated 15 qualified leads in 30 days, with 3 converting to $15K clients. The key was testing 5 different ad copy variations and focusing on pain points rather than features.",
-            "template": "A plug-and-play template or swipe file (if applicable)"
-          }
-        ]
+      const format = input.selected_format;
+      if (!format) {
+        throw new Error('No format selected');
       }
-    },
-    {
-      "layout": "filled",
-      "type": "checklist",
-      "title": "Section 2: Cost-Effectiveness Checklist",
-      "content": {
-        "phases": [
-          {
-            "phase_title": "Phase A: Initial Assessment",
-            "items": [
-              "1.1 Identify the training needs that can be addressed using VR",
-              "1.2 Estimate the number of users who will need access to VR training",
-              "1.3 Calculate the budget available for VR training implementation"
-            ]
-          }
-        ],
-        "case_study": "TechCorp used this checklist to implement VR training for their sales team. They started with a pilot of 20 reps, saw a 35% improvement in sales performance, and then rolled it out company-wide, saving $200K in traditional training costs.",
-        "template": "A plug-and-play template or swipe file (if applicable)"
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "scripts",
-      "title": "Section 3: Negotiation Scripts That Work",
-      "content": {
-        "scenarios": [
-          {
-            "trigger": "We can offer you a 20% discount if you sign today.",
-            "response": "I appreciate the offer, but I need time to review all terms with my team. Can you put that discount in writing with a 30-day validity period?",
-            "explanation": "This deflects pressure tactics while securing the discount for proper evaluation time.",
-            "case_study": "Lisa, a procurement manager, used this script when negotiating with a software vendor. She secured a 20% discount that was valid for 45 days, giving her team time to evaluate the solution. The vendor later increased the discount to 25% to close the deal.",
-            "template": "A plug-and-play template or swipe file (if applicable)"
-          }
-        ]
-      }
-    }
-  ],
-  "cta_page": {
-    "layout": "centered",
-    "title": "Your Next Step",
-    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and lead magnet topic."
-  }
-}`;
 
+      const formatSpecificPrompt = getFormatSpecificPdfPrompt(format, input, outline, customization);
+      
       const res = await client.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: [
           { role: 'system', content: 'You are an expert Instructional Designer and Layout Designer. Output strictly valid JSON as defined. Generate visually dense, professionally structured content for each page. CRITICAL: Generate EXACTLY 3 toolkit sections. All scripts sections must have exactly 3-4 scenarios with "trigger", "response", and "explanation" fields. For pros_and_cons_list, each item must have "method_name", "pros" (single string), and "cons" (single string) - NOT arrays. For checklist, use phases with numbered items like "1.1", "2.1", etc. DO NOT create both checklist and step-by-step guide to avoid redundancy. Use the exact CTA text provided.' },
-          { role: 'user', content: prompt }
+          { role: 'user', content: formatSpecificPrompt }
         ],
         temperature: 0.7,
         max_tokens: 4500
@@ -502,7 +535,7 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
           },
           ...parsed.toolkit_sections.map((section: any) => ({
             title: section.title,
-            content: typeof section.content === 'string' ? section.content : JSON.stringify(section.content)
+            content: formatLayoutSectionContent(section)
           }))
         ],
         cta: parsed.cta_page.content,
@@ -523,19 +556,558 @@ RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
         font: customization?.font || 'Inter'
       };
     } catch (err: any) {
-      const retriable =
-        err.message?.includes('timeout') ||
-        err.message?.includes('Empty response') ||
-        err.message?.includes('JSON') ||
-        err.message?.includes('Invalid response format');
-      if (attempt < 3 && retriable) {
-        console.warn(`PDF generation failed (attempt ${attempt}): ${err.message}. Retrying...`);
-        continue;
+      console.error(`Attempt ${attempt} failed:`, err.message);
+      
+      if (attempt === 3) {
+        throw new Error(`Failed to generate PDF content after 3 attempts: ${err.message}`);
       }
-      throw err;
     }
   }
-  throw new Error('Failed to generate PDF content after 3 attempts.');
+  
+  throw new Error('Failed to generate PDF content');
+}
+
+function getFormatSpecificPdfPrompt(format: string, input: CampaignInput, outline: ContentOutline, customization?: PDFCustomization): string {
+  const baseContext = `
+User Context:
+- Niche: ${input.niche}
+- Target Audience: ${input.target_audience}
+- Tone: ${input.tone}
+- Brand Name: ${input.brand_name}
+- Position/Title: ${input.position || ''}
+- Selected Concept: A lead magnet about ${outline.title}.
+- Format: ${format}
+`;
+
+  const founderIntro = `
+PERSONALIZED FOUNDER INTRODUCTION:
+Before the toolkit, write a short, authentic introduction in the founder's voice. Use these details:
+- Name: ${input.name}
+- Position/Title: ${input.position || ''}
+- Brand/company: ${input.brand_name}
+- Customer problem: ${input.problem_statement}
+- Desired outcome: ${input.desired_outcome}
+If position/title is provided, use it in the intro (e.g., "I'm [Name], [Position] at [Brand]"). The intro should sound like the founder is speaking directly to the reader, sharing why they built this and what the reader will achieve. Make it authentic, concise, and motivating. Return this as a field called founder_intro in the JSON.
+`;
+
+  const corePrinciples = `
+CORE PRINCIPLES (NON-NEGOTIABLE):
+VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or structured content) to fill a standard document page. Sparse pages with single paragraphs are forbidden.
+
+STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, and structured content—to enhance readability and ensure pages are full.
+
+EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what."
+
+NO SELLING: The content must be 100% educational and brand-agnostic.
+
+CRITICAL REDUNDANCY RULE: If you include a checklist section, DO NOT create a separate "step-by-step guide" section. The checklist is the superior implementation tool and should be the sole guide. Avoid redundancy at all costs.
+`;
+
+  switch (format) {
+    case 'interactive_quiz':
+      return `${baseContext}
+
+${founderIntro}
+
+${corePrinciples}
+
+THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+
+1. Title Page (layout: "centered"):
+Title: A compelling quiz title that promises specific insights (8-12 words).
+Subtitle: A powerful subtitle that explains what the quiz will diagnose (10-15 words).
+
+2. Introduction Page (layout: "filled"):
+Title: A clear, engaging title for the introduction (e.g., "Why This Quiz Will Reveal Your Hidden Problems").
+Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what insights they will receive from taking the quiz.
+
+3. The Quiz Sections (layout: "filled"):
+Generate EXACTLY 3 distinct quiz sections. Each section must be comprehensive enough to be a filled page on its own.
+
+SECTION TYPES TO USE:
+- For type: "quiz_questions": Generate 5-10 targeted questions that reveal the root cause of the problem. Each question should have a "question" field, "options" array (3-4 options), and "insight" field explaining what this question reveals. Format exactly like this example:
+
+EXAMPLE QUIZ QUESTIONS FORMAT:
+{
+  "question": "How do you currently measure your marketing success?",
+  "options": [
+    "I don't track anything systematically",
+    "I check basic metrics like website visits",
+    "I track conversions and ROI",
+    "I have a comprehensive analytics dashboard"
+  ],
+  "insight": "This reveals whether you're flying blind or have proper measurement systems in place."
+}
+
+- For type: "diagnosis_categories": Create 3-4 diagnosis categories that users will fall into based on their answers. Each category should have a "category_name", "description" of what this means, "symptoms" list, and "solutions" list. Include a "case_study" field with a brief real-world example (2-3 sentences).
+
+- For type: "action_plan": Provide a personalized action plan based on quiz results. Include "immediate_actions" (next 7 days), "short_term" (next 30 days), and "long_term" (next 90 days) with specific, actionable steps.
+
+4. Call to Action Page (layout: "centered"):
+Title: A clear, action-oriented title (e.g., "Take Your Quiz Now").
+Content: Write a custom, relevant call-to-action for this quiz. The CTA should reference the brand name and encourage users to take the quiz to get their personalized diagnosis.
+
+RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+{
+  "founder_intro": "...",
+  "title_page": {
+    "layout": "centered",
+    "title": "The [Quiz Name]",
+    "subtitle": "A [X]-Question Assessment to [Specific Benefit]."
+  },
+  "introduction_page": {
+    "layout": "filled",
+    "title": "Why This Quiz Will Reveal Your Hidden Problems",
+    "content": "Introduction content here..."
+  },
+  "toolkit_sections": [
+    {
+      "layout": "filled",
+      "type": "quiz_questions",
+      "title": "Section 1: Problem Diagnosis Questions",
+      "content": {
+        "questions": [
+          {
+            "question": "How do you currently measure your marketing success?",
+            "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+            "insight": "What this question reveals about the user's situation."
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "diagnosis_categories",
+      "title": "Section 2: Your Diagnosis Categories",
+      "content": {
+        "categories": [
+          {
+            "category_name": "The Beginner",
+            "description": "What this category means",
+            "symptoms": ["Symptom 1", "Symptom 2"],
+            "solutions": ["Solution 1", "Solution 2"],
+            "case_study": "Real-world example of someone in this category."
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "action_plan",
+      "title": "Section 3: Your Personalized Action Plan",
+      "content": {
+        "immediate_actions": ["Action 1", "Action 2"],
+        "short_term": ["Action 1", "Action 2"],
+        "long_term": ["Action 1", "Action 2"],
+        "case_study": "Real-world example of someone following this plan."
+      }
+    }
+  ],
+  "cta_page": {
+    "layout": "centered",
+    "title": "Take Your Quiz Now",
+    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and quiz topic."
+  }
+}`;
+
+    case 'roi_calculator':
+      return `${baseContext}
+
+${founderIntro}
+
+${corePrinciples}
+
+THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+
+1. Title Page (layout: "centered"):
+Title: A compelling calculator title that promises specific financial insights (8-12 words).
+Subtitle: A powerful subtitle that explains what the calculator will measure (10-15 words).
+
+2. Introduction Page (layout: "filled"):
+Title: A clear, engaging title for the introduction (e.g., "Why This Calculator Will Transform Your Business").
+Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what financial insights they will receive.
+
+3. The Calculator Sections (layout: "filled"):
+Generate EXACTLY 3 distinct calculator sections. Each section must be comprehensive enough to be a filled page on its own.
+
+SECTION TYPES TO USE:
+- For type: "input_metrics": Generate 5-8 key metrics that users will input. Each metric should have a "metric_name", "description" of what it measures, "input_type" (number, percentage, currency), and "calculation_impact" explaining how this affects results.
+
+- For type: "calculation_formulas": Provide the mathematical formulas and logic for calculating ROI, savings, or gains. Include "formula_name", "formula_description", "variables", and "example_calculation" with real numbers.
+
+- For type: "results_interpretation": Create different result categories and what they mean. Include "result_category", "description", "recommendations", and "next_steps" for each category.
+
+4. Call to Action Page (layout: "centered"):
+Title: A clear, action-oriented title (e.g., "Calculate Your ROI Now").
+Content: Write a custom, relevant call-to-action for this calculator.
+
+RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+{
+  "founder_intro": "...",
+  "title_page": {
+    "layout": "centered",
+    "title": "The [Calculator Name]",
+    "subtitle": "A [X]-Metric Tool to [Specific Benefit]."
+  },
+  "introduction_page": {
+    "layout": "filled",
+    "title": "Why This Calculator Will Transform Your Business",
+    "content": "Introduction content here..."
+  },
+  "toolkit_sections": [
+    {
+      "layout": "filled",
+      "type": "input_metrics",
+      "title": "Section 1: Your Key Metrics",
+      "content": {
+        "metrics": [
+          {
+            "metric_name": "Current Monthly Revenue",
+            "description": "What this metric measures",
+            "input_type": "currency",
+            "calculation_impact": "How this affects the final calculation."
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "calculation_formulas",
+      "title": "Section 2: The ROI Formulas",
+      "content": {
+        "formulas": [
+          {
+            "formula_name": "Revenue Growth Potential",
+            "formula_description": "How this formula works",
+            "variables": ["Variable 1", "Variable 2"],
+            "example_calculation": "Example with real numbers."
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "results_interpretation",
+      "title": "Section 3: Understanding Your Results",
+      "content": {
+        "result_categories": [
+          {
+            "result_category": "High Growth Potential",
+            "description": "What this means",
+            "recommendations": ["Rec 1", "Rec 2"],
+            "next_steps": ["Step 1", "Step 2"]
+          }
+        ]
+      }
+    }
+  ],
+  "cta_page": {
+    "layout": "centered",
+    "title": "Calculate Your ROI Now",
+    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and calculator topic."
+  }
+}`;
+
+    case 'action_plan':
+      return `${baseContext}
+
+${founderIntro}
+
+${corePrinciples}
+
+THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+
+1. Title Page (layout: "centered"):
+Title: A compelling action plan title that promises specific results (8-12 words).
+Subtitle: A powerful subtitle that explains what the plan will deliver (10-15 words).
+
+2. Introduction Page (layout: "filled"):
+Title: A clear, engaging title for the introduction (e.g., "Why This Action Plan Will Transform Your Results").
+Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what results they will achieve.
+
+3. The Action Plan Sections (layout: "filled"):
+Generate EXACTLY 3 distinct action plan sections. Each section must be comprehensive enough to be a filled page on its own.
+
+SECTION TYPES TO USE:
+- For type: "phase_planning": Break down the action plan into 3-4 phases. Each phase should have a "phase_name", "duration", "objectives", and "key_actions" list. Include a "case_study" field with a brief real-world example.
+
+- For type: "implementation_tools": Provide specific tools, templates, and resources needed to implement the plan. Include "tool_name", "description", "how_to_use", and "expected_outcome" for each tool.
+
+- For type: "progress_tracking": Create a system for tracking progress and measuring success. Include "milestone_name", "success_metrics", "timeline", and "adjustment_strategies" for each milestone.
+
+4. Call to Action Page (layout: "centered"):
+Title: A clear, action-oriented title (e.g., "Start Your Action Plan Now").
+Content: Write a custom, relevant call-to-action for this action plan.
+
+RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+{
+  "founder_intro": "...",
+  "title_page": {
+    "layout": "centered",
+    "title": "The [Action Plan Name]",
+    "subtitle": "A [X]-Step Plan to [Specific Benefit]."
+  },
+  "introduction_page": {
+    "layout": "filled",
+    "title": "Why This Action Plan Will Transform Your Results",
+    "content": "Introduction content here..."
+  },
+  "toolkit_sections": [
+    {
+      "layout": "filled",
+      "type": "phase_planning",
+      "title": "Section 1: Your Implementation Phases",
+      "content": {
+        "phases": [
+          {
+            "phase_name": "Foundation Phase",
+            "duration": "Week 1-2",
+            "objectives": ["Objective 1", "Objective 2"],
+            "key_actions": ["Action 1", "Action 2"],
+            "case_study": "Real-world example of this phase."
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "implementation_tools",
+      "title": "Section 2: Your Implementation Tools",
+      "content": {
+        "tools": [
+          {
+            "tool_name": "Progress Tracker Template",
+            "description": "What this tool does",
+            "how_to_use": "How to implement this tool",
+            "expected_outcome": "What results to expect."
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "progress_tracking",
+      "title": "Section 3: Your Success Metrics",
+      "content": {
+        "milestones": [
+          {
+            "milestone_name": "First Results",
+            "success_metrics": ["Metric 1", "Metric 2"],
+            "timeline": "When to expect this",
+            "adjustment_strategies": ["Strategy 1", "Strategy 2"]
+          }
+        ]
+      }
+    }
+  ],
+  "cta_page": {
+    "layout": "centered",
+    "title": "Start Your Action Plan Now",
+    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and action plan topic."
+  }
+}`;
+
+    case 'benchmark_report':
+      return `${baseContext}
+
+${founderIntro}
+
+${corePrinciples}
+
+THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+
+1. Title Page (layout: "centered"):
+Title: A compelling benchmark report title that promises competitive insights (8-12 words).
+Subtitle: A powerful subtitle that explains what the report will analyze (10-15 words).
+
+2. Introduction Page (layout: "filled"):
+Title: A clear, engaging title for the introduction (e.g., "Why This Benchmark Report Will Reveal Your Competitive Position").
+Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what competitive insights they will receive.
+
+3. The Benchmark Report Sections (layout: "filled"):
+Generate EXACTLY 3 distinct benchmark report sections. Each section must be comprehensive enough to be a filled page on its own.
+
+SECTION TYPES TO USE:
+- For type: "benchmark_metrics": Generate 5-8 key metrics that will be compared to industry standards. Each metric should have a "metric_name", "industry_average", "top_performer_level", and "improvement_potential" explaining the gap and opportunity.
+
+- For type: "competitive_analysis": Provide insights into how competitors are performing and what strategies they're using. Include "competitor_category", "performance_insights", "strategies_used", and "opportunity_gaps" for each category.
+
+- For type: "improvement_roadmap": Create a specific roadmap for closing performance gaps. Include "priority_area", "current_performance", "target_performance", "action_steps", and "timeline" for each area.
+
+4. Call to Action Page (layout: "centered"):
+Title: A clear, action-oriented title (e.g., "Get Your Benchmark Report Now").
+Content: Write a custom, relevant call-to-action for this benchmark report.
+
+RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+{
+  "founder_intro": "...",
+  "title_page": {
+    "layout": "centered",
+    "title": "The [Benchmark Report Name]",
+    "subtitle": "A [X]-Metric Analysis of [Specific Benefit]."
+  },
+  "introduction_page": {
+    "layout": "filled",
+    "title": "Why This Benchmark Report Will Reveal Your Competitive Position",
+    "content": "Introduction content here..."
+  },
+  "toolkit_sections": [
+    {
+      "layout": "filled",
+      "type": "benchmark_metrics",
+      "title": "Section 1: Your Performance Metrics",
+      "content": {
+        "metrics": [
+          {
+            "metric_name": "Email Open Rate",
+            "industry_average": "22%",
+            "top_performer_level": "35%",
+            "improvement_potential": "How to close this gap."
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "competitive_analysis",
+      "title": "Section 2: Competitive Landscape",
+      "content": {
+        "competitor_categories": [
+          {
+            "competitor_category": "Industry Leaders",
+            "performance_insights": "What top performers are doing",
+            "strategies_used": ["Strategy 1", "Strategy 2"],
+            "opportunity_gaps": ["Gap 1", "Gap 2"]
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "improvement_roadmap",
+      "title": "Section 3: Your Improvement Roadmap",
+      "content": {
+        "priority_areas": [
+          {
+            "priority_area": "Email Marketing",
+            "current_performance": "Current level",
+            "target_performance": "Target level",
+            "action_steps": ["Step 1", "Step 2"],
+            "timeline": "When to achieve this"
+          }
+        ]
+      }
+    }
+  ],
+  "cta_page": {
+    "layout": "centered",
+    "title": "Get Your Benchmark Report Now",
+    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and benchmark report topic."
+  }
+}`;
+
+    case 'opportunity_finder':
+      return `${baseContext}
+
+${founderIntro}
+
+${corePrinciples}
+
+THE BLUEPRINT: GENERATE THE FOLLOWING COMPONENTS WITH LAYOUT INSTRUCTIONS
+
+1. Title Page (layout: "centered"):
+Title: A compelling opportunity finder title that promises specific opportunities (8-12 words).
+Subtitle: A powerful subtitle that explains what opportunities will be identified (10-15 words).
+
+2. Introduction Page (layout: "filled"):
+Title: A clear, engaging title for the introduction (e.g., "Why This Opportunity Finder Will Unlock Hidden Growth").
+Content: A concise but powerful introduction (80-120 words) that hooks the reader with a sharp pain point and clearly states what opportunities they will discover.
+
+3. The Opportunity Finder Sections (layout: "filled"):
+Generate EXACTLY 3 distinct opportunity finder sections. Each section must be comprehensive enough to be a filled page on its own.
+
+SECTION TYPES TO USE:
+- For type: "opportunity_categories": Generate 4-6 key opportunity categories to analyze. Each category should have a "category_name", "analysis_focus", "opportunity_signs", and "potential_impact" explaining what to look for and the upside.
+
+- For type: "audit_framework": Provide a systematic framework for conducting the opportunity audit. Include "audit_step", "what_to_look_for", "red_flags", and "green_signals" for each step.
+
+- For type: "implementation_priorities": Create a prioritized list of opportunities to pursue. Include "opportunity_name", "effort_level", "expected_impact", "implementation_steps", and "success_metrics" for each opportunity.
+
+4. Call to Action Page (layout: "centered"):
+Title: A clear, action-oriented title (e.g., "Find Your Opportunities Now").
+Content: Write a custom, relevant call-to-action for this opportunity finder.
+
+RETURN JSON IN THIS EXACT, STRUCTURED FORMAT:
+{
+  "founder_intro": "...",
+  "title_page": {
+    "layout": "centered",
+    "title": "The [Opportunity Finder Name]",
+    "subtitle": "A [X]-Category Audit to [Specific Benefit]."
+  },
+  "introduction_page": {
+    "layout": "filled",
+    "title": "Why This Opportunity Finder Will Unlock Hidden Growth",
+    "content": "Introduction content here..."
+  },
+  "toolkit_sections": [
+    {
+      "layout": "filled",
+      "type": "opportunity_categories",
+      "title": "Section 1: Opportunity Categories to Analyze",
+      "content": {
+        "categories": [
+          {
+            "category_name": "Marketing Channels",
+            "analysis_focus": "What to analyze in this category",
+            "opportunity_signs": ["Sign 1", "Sign 2"],
+            "potential_impact": "What upside this could deliver."
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "audit_framework",
+      "title": "Section 2: Your Audit Framework",
+      "content": {
+        "audit_steps": [
+          {
+            "audit_step": "Step 1: Channel Analysis",
+            "what_to_look_for": "What to examine",
+            "red_flags": ["Flag 1", "Flag 2"],
+            "green_signals": ["Signal 1", "Signal 2"]
+          }
+        ]
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "implementation_priorities",
+      "title": "Section 3: Your Implementation Priorities",
+      "content": {
+        "opportunities": [
+          {
+            "opportunity_name": "Instagram Reels Strategy",
+            "effort_level": "Low effort, high impact",
+            "expected_impact": "40% increase in engagement",
+            "implementation_steps": ["Step 1", "Step 2"],
+            "success_metrics": ["Metric 1", "Metric 2"]
+          }
+        ]
+      }
+    }
+  ],
+  "cta_page": {
+    "layout": "centered",
+    "title": "Find Your Opportunities Now",
+    "content": "A bold, urgent, benefit-driven call-to-action tailored to the brand and opportunity finder topic."
+  }
+}`;
+
+    default:
+      throw new Error(`Unknown format: ${format}`);
+  }
 }
 
 // Helper function to format layout-focused section content into readable format

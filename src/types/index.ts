@@ -7,11 +7,30 @@ export interface CampaignInput {
   desired_outcome: string;
   tone?: string;
   position?: string;
+  selected_format?: LeadMagnetFormat; // New field for format selection
   // Legacy fields for backward compatibility (optional)
   customer_profile?: string;
   customer_problems?: string;
   industry?: string;
   pain_point?: string;
+}
+
+// New types for the 5 lead magnet formats
+export type LeadMagnetFormat = 
+  | 'interactive_quiz'
+  | 'roi_calculator'
+  | 'action_plan'
+  | 'benchmark_report'
+  | 'opportunity_finder';
+
+export interface LeadMagnetFormatOption {
+  id: LeadMagnetFormat;
+  title: string;
+  description: string;
+  flow: string;
+  example: string;
+  whyItWorks: string;
+  icon: string;
 }
 
 export interface LeadMagnetConcept {
@@ -20,7 +39,7 @@ export interface LeadMagnetConcept {
   description: string;
   value_proposition: string;
   target_audience: string;
-  format: string;
+  format: LeadMagnetFormat;
 }
 
 export interface ContentOutline {
