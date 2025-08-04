@@ -21,13 +21,6 @@ type AppMode = 'public' | 'auth' | 'wizard' | 'dashboard' | 'landing' | 'profile
 function App() {
   console.log('App component rendering...');
   
-  // Check if we're on a demo route - if so, don't render anything
-  const path = window.location.pathname;
-  if (path.startsWith('/demo/')) {
-    console.log('On demo route, App component should not render');
-    return null; // Don't render anything for demo routes
-  }
-  
   const { user, loading, signOut } = useAuth();
   const [mode, setMode] = useState<AppMode>('public');
   const [wizardState, setWizardState] = useState<WizardState>({
@@ -72,17 +65,23 @@ function App() {
         return; // Exit early, don't process other auth logic
       }
       
-      // Check for demo routes - these should not be redirected
-      if (path.startsWith('/demo/')) {
-        console.log('On demo page, keeping current mode');
-        return; // Exit early, don't process other auth logic
-      }
-      
       if (user) {
-        // User is authenticated, show dashboard (but not if on landing page or demo page)
-        console.log('User authenticated, switching to dashboard');
-        if (mode === 'auth' || mode === 'public') {
+        // User is authenticated, but only redirect to dashboard for specific routes
+        console.log('User authenticated, checking if should redirect to dashboard');
+        
+        // Only redirect to dashboard for these specific routes when user is logged in
+        const shouldRedirectToDashboard = [
+          '/',
+          '/auth',
+          '/login',
+          '/signup'
+        ].includes(path);
+        
+        if (shouldRedirectToDashboard && (mode === 'auth' || mode === 'public')) {
+          console.log('Redirecting authenticated user to dashboard');
           setMode('dashboard');
+        } else {
+          console.log('User authenticated but staying on current page:', path);
         }
           // Remove all subscription status fetching logic
       } else {

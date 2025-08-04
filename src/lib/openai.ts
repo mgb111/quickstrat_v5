@@ -721,6 +721,7 @@ Each category should have:
 - Long-term strategy (next 90 days)
 
 RETURN JSON IN THIS EXACT FORMAT:
+\`\`\`json
 {
   "founder_intro": "...",
   "title_page": {
@@ -785,7 +786,8 @@ RETURN JSON IN THIS EXACT FORMAT:
     "title": "Take Your Quiz Now",
     "content": "Ready to discover your hidden marketing problems? Take this quiz to get your personalized diagnosis and action plan."
   }
-}`;
+}
+\`\`\``;
 
     case 'roi_calculator':
       return `${baseContext}
@@ -1255,6 +1257,7 @@ Each section should include:
 - Contact information
 
 RETURN JSON IN THIS EXACT FORMAT:
+\`\`\`json
 {
   "founder_intro": "...",
   "title_page": {
@@ -1280,7 +1283,8 @@ RETURN JSON IN THIS EXACT FORMAT:
     "title": "Next Steps",
     "content": "Ready to implement these strategies? Download your complete guide now."
   }
-}`;
+}
+\`\`\``;
 
     default:
       throw new Error(`Unknown format: ${format}`);
