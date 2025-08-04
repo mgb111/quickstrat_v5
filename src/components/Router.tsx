@@ -6,57 +6,66 @@ import AdminLeadMagnetCreator from './AdminLeadMagnetCreator';
 import PromotionGuide from './PromotionGuide';
 import SaaSChecklist from './SaaSChecklist';
 
-// Demo page components with consistent styling
-const QuizDemo = () => (
-  <div className="min-h-screen bg-gray-50 font-inter">
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white text-center relative">
-          <a href="/" className="absolute top-4 left-4 text-white hover:text-blue-200 transition-colors">
-            ← Back to Home
-          </a>
-          <h1 className="text-3xl lg:text-4xl font-bold mb-4">Interactive Quiz Demo</h1>
-          <p className="text-lg opacity-90">See how Majorbeam generates personalized diagnostic quizzes</p>
-        </div>
-        <div className="p-8">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">"Why Aren't You Getting More Customers?" Quiz</h2>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-              <h3 className="text-lg font-semibold text-blue-900 mb-3">Quiz Flow:</h3>
-              <ol className="list-decimal list-inside space-y-2 text-blue-800">
-                <li>User answers 5-10 targeted questions</li>
-                <li>AI analyzes responses and identifies key issues</li>
-                <li>User receives personalized diagnosis</li>
-                <li>Specific next steps and action plan provided</li>
-              </ol>
-            </div>
-            <div className="space-y-6 mb-8">
-              <h3 className="text-xl font-semibold text-gray-900">Sample Questions Generated:</h3>
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h4 className="font-semibold text-gray-900 mb-3">Question 1: Customer Acquisition</h4>
-                <p className="text-gray-700 mb-4">How do you currently find new customers?</p>
-                <div className="space-y-2">
-                  <label className="flex items-center"><input type="radio" name="q1" className="mr-3" /><span>Social media advertising</span></label>
-                  <label className="flex items-center"><input type="radio" name="q1" className="mr-3" /><span>Word of mouth referrals</span></label>
-                  <label className="flex items-center"><input type="radio" name="q1" className="mr-3" /><span>Cold outreach</span></label>
-                  <label className="flex items-center"><input type="radio" name="q1" className="mr-3" /><span>I don't have a system</span></label>
+// Demo page components with consistent styling - COMPLETELY ISOLATED
+const QuizDemo = () => {
+  console.log('🎯 QuizDemo component rendering - ISOLATED');
+  
+  // Prevent any authentication or redirect logic
+  React.useEffect(() => {
+    console.log('🎯 QuizDemo: Component mounted - NO AUTH LOGIC');
+  }, []);
+  
+  return (
+    <div className="min-h-screen bg-gray-50 font-inter">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white text-center relative">
+            <a href="/" className="absolute top-4 left-4 text-white hover:text-blue-200 transition-colors">
+              ← Back to Home
+            </a>
+            <h1 className="text-3xl lg:text-4xl font-bold mb-4">Interactive Quiz Demo</h1>
+            <p className="text-lg opacity-90">See how Majorbeam generates personalized diagnostic quizzes</p>
+          </div>
+          <div className="p-8">
+            <div className="max-w-2xl mx-auto">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">"Why Aren't You Getting More Customers?" Quiz</h2>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                <h3 className="text-lg font-semibold text-blue-900 mb-3">Quiz Flow:</h3>
+                <ol className="list-decimal list-inside space-y-2 text-blue-800">
+                  <li>User answers 5-10 targeted questions</li>
+                  <li>AI analyzes responses and identifies key issues</li>
+                  <li>User receives personalized diagnosis</li>
+                  <li>Specific next steps and action plan provided</li>
+                </ol>
+              </div>
+              <div className="space-y-6 mb-8">
+                <h3 className="text-xl font-semibold text-gray-900">Sample Questions Generated:</h3>
+                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <h4 className="font-semibold text-gray-900 mb-3">Question 1: Customer Acquisition</h4>
+                  <p className="text-gray-700 mb-4">How do you currently find new customers?</p>
+                  <div className="space-y-2">
+                    <label className="flex items-center"><input type="radio" name="q1" className="mr-3" /><span>Social media advertising</span></label>
+                    <label className="flex items-center"><input type="radio" name="q1" className="mr-3" /><span>Word of mouth referrals</span></label>
+                    <label className="flex items-center"><input type="radio" name="q1" className="mr-3" /><span>Cold outreach</span></label>
+                    <label className="flex items-center"><input type="radio" name="q1" className="mr-3" /><span>I don't have a system</span></label>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-green-900 mb-3">Sample Diagnosis Result:</h3>
-              <div className="space-y-3 text-green-800">
-                <p><strong>Primary Issue:</strong> Lead Quality Problem</p>
-                <p><strong>Root Cause:</strong> You're attracting the wrong audience through broad social media ads</p>
-                <p><strong>Impact:</strong> Low conversion rates despite high traffic</p>
+              <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-green-900 mb-3">Sample Diagnosis Result:</h3>
+                <div className="space-y-3 text-green-800">
+                  <p><strong>Primary Issue:</strong> Lead Quality Problem</p>
+                  <p><strong>Root Cause:</strong> You're attracting the wrong audience through broad social media ads</p>
+                  <p><strong>Impact:</strong> Low conversion rates despite high traffic</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const CalculatorDemo = () => (
   <div className="min-h-screen bg-gray-50 font-inter">
@@ -284,8 +293,17 @@ const PdfDemo = () => (
 );
 
 const AppRouter: React.FC = () => {
+  const currentPath = window.location.pathname;
   console.log('🔍 AppRouter: Setting up routes');
+  console.log('🔍 AppRouter: Current path:', currentPath);
   console.log('🔍 AppRouter: Demo routes should be matched before catch-all');
+  
+  // Check if we're on a demo route
+  if (currentPath.startsWith('/demo/')) {
+    console.log('✅ AppRouter: Demo route detected:', currentPath);
+  } else {
+    console.log('❌ AppRouter: Not a demo route:', currentPath);
+  }
   
   return (
     <Router>
@@ -304,8 +322,8 @@ const AppRouter: React.FC = () => {
         <Route path="/promotion-guide" element={<PromotionGuide />} />
         <Route path="/saas-checklist" element={<SaaSChecklist />} />
         
-        {/* Catch-all route - Must be last */}
-        <Route path="/*" element={<App />} />
+        {/* Catch-all route - Must be last and more specific */}
+        <Route path="*" element={<App />} />
       </Routes>
     </Router>
   );

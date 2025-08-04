@@ -11,6 +11,25 @@ console.log('Application starting...', {
   buildTime: new Date().toISOString()
 });
 
+// Wrapper component that conditionally applies AuthProvider
+const AppWrapper: React.FC = () => {
+  const path = window.location.pathname;
+  console.log('🔍 AppWrapper: Current path:', path);
+  
+  // If we're on a demo route, don't use AuthProvider
+  if (path.startsWith('/demo/')) {
+    console.log('✅ AppWrapper: Demo route detected, skipping AuthProvider');
+    return <AppRouter />;
+  }
+  
+  console.log('❌ AppWrapper: Not a demo route, using AuthProvider');
+  return (
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
+  );
+};
+
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
@@ -23,9 +42,7 @@ try {
   root.render(
     <React.StrictMode>
       <ErrorBoundary>
-        <AuthProvider>
-          <AppRouter />
-        </AuthProvider>
+        <AppWrapper />
       </ErrorBoundary>
     </React.StrictMode>
   );
