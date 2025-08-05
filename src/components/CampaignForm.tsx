@@ -49,15 +49,22 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ onSubmit, isLoading }) => {
   }, [formData]);
 
   const handleFormatSelect = (format: LeadMagnetFormat) => {
-    setFormData(prev => ({
-      ...prev,
-      selected_format: format
-    }));
+    console.log('🎯 CampaignForm: handleFormatSelect called with format =', format);
+    setFormData(prev => {
+      const newData = {
+        ...prev,
+        selected_format: format
+      };
+      console.log('🎯 CampaignForm: Updated formData =', newData);
+      return newData;
+    });
     setShowFormatSelection(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🎯 CampaignForm: formData =', formData);
+    console.log('🎯 CampaignForm: formData.selected_format =', formData.selected_format);
     if (!isLoading && !localLoading && formData.selected_format) {
       setLocalLoading(true);
       await onSubmit(formData);

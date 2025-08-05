@@ -652,6 +652,12 @@ function App() {
               isLoading={isLoading}
               selectedFormat={wizardState.input?.selected_format}
             />
+            {/* Debug: Log wizard state */}
+            {(() => {
+              console.log('🎯 App: wizardState.input =', wizardState.input);
+              console.log('🎯 App: wizardState.input?.selected_format =', wizardState.input?.selected_format);
+              return null;
+            })()}
           </div>
         )}
 

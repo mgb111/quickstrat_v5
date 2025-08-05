@@ -19,6 +19,13 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
 }) => {
   // Debug: Log the selected format
   console.log('🎯 OutlineReview: selectedFormat =', selectedFormat);
+  console.log('🎯 OutlineReview: selectedFormat type =', typeof selectedFormat);
+  console.log('🎯 OutlineReview: selectedFormat === undefined =', selectedFormat === undefined);
+  console.log('🎯 OutlineReview: selectedFormat === null =', selectedFormat === null);
+  
+  // Get the actual format to use - try selectedFormat first, then fallback to 'pdf'
+  const actualFormat = selectedFormat || 'pdf';
+  console.log('🎯 OutlineReview: actualFormat =', actualFormat);
 
   const [editableOutline, setEditableOutline] = useState<ContentOutline>(outline);
   const [editingField, setEditingField] = useState<string | null>(null);
@@ -224,11 +231,9 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
             ) : (
               <>
                 {(() => {
-                  // Ensure we have a valid format, fallback to 'pdf' if undefined
-                  const format = selectedFormat || 'pdf';
-                  console.log('🎯 Button text for format:', format);
+                  console.log('🎯 Button text for format:', actualFormat);
                   
-                  switch (format) {
+                  switch (actualFormat) {
                     case 'pdf':
                       return 'Generate My PDF';
                     case 'interactive_quiz':
@@ -251,10 +256,7 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
           </button>
           <p className="text-sm text-gray-600 mt-3">
             {(() => {
-              // Ensure we have a valid format, fallback to 'pdf' if undefined
-              const format = selectedFormat || 'pdf';
-              
-              switch (format) {
+              switch (actualFormat) {
                 case 'pdf':
                   return 'AI will expand your outline into a complete, professional PDF guide';
                 case 'interactive_quiz':
