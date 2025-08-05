@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Copy, ExternalLink, Mail } from 'lucide-react';
 import { CampaignOutput, LeadMagnetFormat } from '../types/index';
 import PDFGenerator from './PDFGenerator';
+import InteractiveDisplay from './InteractiveDisplay';
 import EmailCapture from './EmailCapture';
 import { createClient } from '@supabase/supabase-js';
 import Modal from 'react-modal';
@@ -328,7 +329,18 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
               {pdfError ? `⚠️ ${pdfError}` : formatInfo.successMessage}
             </p>
           </div>
-          {pdfContent && <PDFGenerator data={pdfContent} campaignId={''} requirePayment={requirePayment} selectedFormat={selectedFormat} />}
+                      {pdfContent && (
+              selectedFormat && selectedFormat !== 'pdf' ? (
+                <InteractiveDisplay 
+                  results={results} 
+                  selectedFormat={selectedFormat} 
+                  brandName={brandName} 
+                  requirePayment={requirePayment} 
+                />
+              ) : (
+                <PDFGenerator data={pdfContent} campaignId={''} requirePayment={requirePayment} selectedFormat={selectedFormat} />
+              )
+            )}
         </div>
       )}
 
