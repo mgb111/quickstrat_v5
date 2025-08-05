@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Edit3, CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
-import { ContentOutline } from '../types';
+import { ContentOutline, LeadMagnetFormat } from '../types';
 import PaymentModal from './PaymentButton';
 
 
@@ -8,7 +8,7 @@ interface OutlineReviewProps {
   outline: ContentOutline;
   onOutlineApproved: (finalOutline: ContentOutline) => void;
   isLoading?: boolean;
-  selectedFormat?: string; // Add selected format prop
+  selectedFormat?: LeadMagnetFormat; // Use proper type
 }
 
 const OutlineReview: React.FC<OutlineReviewProps> = ({ 
@@ -17,6 +17,8 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
   isLoading = false,
   selectedFormat = 'pdf'
 }) => {
+  // Debug: Log the selected format
+  console.log('🎯 OutlineReview: selectedFormat =', selectedFormat);
 
   const [editableOutline, setEditableOutline] = useState<ContentOutline>(outline);
   const [editingField, setEditingField] = useState<string | null>(null);
@@ -221,25 +223,54 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
               </>
             ) : (
               <>
-                {selectedFormat === 'pdf' ? 'Generate My PDF' : 
-                 selectedFormat === 'interactive_quiz' ? 'Generate My Quiz' :
-                 selectedFormat === 'roi_calculator' ? 'Generate My Calculator' :
-                 selectedFormat === 'action_plan' ? 'Generate My Action Plan' :
-                 selectedFormat === 'benchmark_report' ? 'Generate My Benchmark Report' :
-                 selectedFormat === 'opportunity_finder' ? 'Generate My Opportunity Finder' :
-                 'Generate My Lead Magnet'}
+                {(() => {
+                  // Ensure we have a valid format, fallback to 'pdf' if undefined
+                  const format = selectedFormat || 'pdf';
+                  console.log('🎯 Button text for format:', format);
+                  
+                  switch (format) {
+                    case 'pdf':
+                      return 'Generate My PDF';
+                    case 'interactive_quiz':
+                      return 'Generate My Quiz';
+                    case 'roi_calculator':
+                      return 'Generate My Calculator';
+                    case 'action_plan':
+                      return 'Generate My Action Plan';
+                    case 'benchmark_report':
+                      return 'Generate My Benchmark Report';
+                    case 'opportunity_finder':
+                      return 'Generate My Opportunity Finder';
+                    default:
+                      return 'Generate My Lead Magnet';
+                  }
+                })()}
                 <ArrowRight className="h-5 w-5 ml-2" />
               </>
             )}
           </button>
           <p className="text-sm text-gray-600 mt-3">
-            {selectedFormat === 'pdf' ? 'AI will expand your outline into a complete, professional PDF guide' :
-             selectedFormat === 'interactive_quiz' ? 'AI will create an interactive quiz with personalized results' :
-             selectedFormat === 'roi_calculator' ? 'AI will build a calculator that shows potential ROI gains' :
-             selectedFormat === 'action_plan' ? 'AI will create a personalized action plan with specific steps' :
-             selectedFormat === 'benchmark_report' ? 'AI will generate a benchmark report comparing to industry standards' :
-             selectedFormat === 'opportunity_finder' ? 'AI will create an opportunity finder that identifies missed chances' :
-             'AI will expand your outline into a complete, professional lead magnet'}
+            {(() => {
+              // Ensure we have a valid format, fallback to 'pdf' if undefined
+              const format = selectedFormat || 'pdf';
+              
+              switch (format) {
+                case 'pdf':
+                  return 'AI will expand your outline into a complete, professional PDF guide';
+                case 'interactive_quiz':
+                  return 'AI will create an interactive quiz with personalized results';
+                case 'roi_calculator':
+                  return 'AI will build a calculator that shows potential ROI gains';
+                case 'action_plan':
+                  return 'AI will create a personalized action plan with specific steps';
+                case 'benchmark_report':
+                  return 'AI will generate a benchmark report comparing to industry standards';
+                case 'opportunity_finder':
+                  return 'AI will create an opportunity finder that identifies missed chances';
+                default:
+                  return 'AI will expand your outline into a complete, professional lead magnet';
+              }
+            })()}
           </p>
         </>
       </div>

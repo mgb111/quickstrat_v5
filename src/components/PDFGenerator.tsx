@@ -911,7 +911,24 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             
             <div className="elegant-section">
               <p className="elegant-text" style={{ marginBottom: '48px' }}>
-                {data.founder_intro || `Hi, I'm ${data.founderName || 'Your Name'}, ${data.position || 'founder'} of ${data.brandName || 'Your Brand'}. I didn't start out with a tool that could solve ${data.problemStatement || 'your business challenges'}. It took me years of trial and error to figure out what actually works for ${data.desiredOutcome || 'achieving your goals'}. That's why I created this guide—to save you the time and frustration I went through.`}
+                {(() => {
+                  // Handle founder_intro as either string or object
+                  if (typeof data.founder_intro === 'string') {
+                    return data.founder_intro;
+                  } else if (typeof data.founder_intro === 'object' && data.founder_intro !== null) {
+                    // If it's an object with intro_text, use that
+                    if ('intro_text' in data.founder_intro && typeof (data.founder_intro as any).intro_text === 'string') {
+                      return (data.founder_intro as any).intro_text;
+                    }
+                    // If it's an object with other properties, construct a string
+                    const intro = data.founder_intro as any;
+                    if (intro.name && intro.title && intro.company) {
+                      return `Hi, I'm ${intro.name}, ${intro.title} of ${intro.company}. ${intro.intro_text || 'I created this guide to help you achieve your goals.'}`;
+                    }
+                  }
+                  // Fallback to default text
+                  return `Hi, I'm ${data.founderName || 'Your Name'}, ${data.position || 'founder'} of ${data.brandName || 'Your Brand'}. I didn't start out with a tool that could solve ${data.problemStatement || 'your business challenges'}. It took me years of trial and error to figure out what actually works for ${data.desiredOutcome || 'achieving your goals'}. That's why I created this guide—to save you the time and frustration I went through.`;
+                })()}
               </p>
               
               <h3 className="elegant-title">

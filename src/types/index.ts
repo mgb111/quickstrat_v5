@@ -81,7 +81,12 @@ export interface SocialPosts {
 }
 
 export interface PDFContent {
-  founder_intro?: string;
+  founder_intro?: string | {
+    name: string;
+    title: string;
+    company: string;
+    intro_text: string;
+  };
   title: string;
   introduction: string;
   sections: {

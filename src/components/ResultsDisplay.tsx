@@ -202,7 +202,22 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
     brandName: brandName || '',
     problemStatement: problemStatement || '',
     desiredOutcome: desiredOutcome || '',
-    founder_intro: typeof results.pdf_content === 'object' && results.pdf_content ? (results.pdf_content as any).founder_intro : undefined
+    founder_intro: (() => {
+      if (typeof results.pdf_content === 'object' && results.pdf_content) {
+        const content = results.pdf_content as any;
+        if (content.founder_intro) {
+          // If founder_intro is already an object, use it as is
+          if (typeof content.founder_intro === 'object') {
+            return content.founder_intro;
+          }
+          // If it's a string, use it as is
+          if (typeof content.founder_intro === 'string') {
+            return content.founder_intro;
+          }
+        }
+      }
+      return undefined;
+    })()
   } : null;
 
   console.log('ResultsDisplay render:', { 
