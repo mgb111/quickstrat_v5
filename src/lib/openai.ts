@@ -726,9 +726,9 @@ ${founderIntro}
 
 ${corePrinciples}
 
-GENERATE AN INTERACTIVE QUIZ LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
+GENERATE AN INTERACTIVE QUIZ LEAD MAGNET:
 
-IMPORTANT: This content will be displayed in a PDF preview, so it must include traditional PDF sections that can be visually displayed.
+Create a comprehensive quiz that provides real value to users. The content should be engaging, educational, and actionable.
 
 1. Title Page:
 - Title: A compelling quiz title that promises specific insights
@@ -738,25 +738,23 @@ IMPORTANT: This content will be displayed in a PDF preview, so it must include t
 - Hook the reader with a sharp pain point
 - Explain what insights they'll receive from taking the quiz
 
-3. Strategy Analysis Section (for PDF display):
-- Create a "pros_and_cons_list" section with 3-4 quiz strategies/methods
-- Each strategy should have pros, cons, and a case study
-- Focus on different approaches to problem diagnosis
+3. Quiz Content:
+- 5-10 engaging questions that reveal insights
+- Multiple choice answers that help categorize users
+- Clear explanations of what each answer reveals
+- Diagnosis categories with symptoms and solutions
 
-4. Action Checklist Section (for PDF display):
-- Create a "checklist" section with phases for quiz preparation
-- Include phases like "Pre-Quiz Preparation", "During Quiz", "Post-Quiz Analysis"
-- Each phase should have actionable checklist items
+4. Educational Content:
+- Include valuable insights and tips throughout
+- Add case studies and real examples
+- Provide actionable advice based on quiz results
 
-5. Conversation Scripts Section (for PDF display):
-- Create a "scripts" section with scenarios for discussing quiz results
-- Include scenarios like "When someone asks about the quiz", "How to explain the results"
-- Each scenario should have trigger, response, and explanation
+5. Interactive Elements:
+- Questions that engage and educate
+- Results that provide immediate value
+- Clear next steps for users
 
-6. Interactive Quiz Content (for actual quiz):
-- Include 5-10 quiz questions with multiple choice answers
-- Add 3-4 diagnosis categories with symptoms and solutions
-- This will be used for the actual interactive quiz functionality
+Make the content natural, engaging, and genuinely helpful. Focus on providing real value rather than following rigid structures.
 - Brief case study example
 
 5. Action Plan:
@@ -781,47 +779,90 @@ RETURN JSON IN THIS EXACT FORMAT:
   "toolkit_sections": [
     {
       "layout": "filled",
-      "type": "quiz_questions",
-      "title": "Section 1: Problem Diagnosis Questions",
+      "type": "pros_and_cons_list",
+      "title": "Quiz Strategy Analysis",
       "content": {
-        "questions": [
+        "items": [
           {
-            "question": "How do you currently measure your marketing success?",
-            "options": [
-              "I don't track anything systematically",
-              "I check basic metrics like website visits",
-              "I track conversions and ROI",
-              "I have a comprehensive analytics dashboard"
-            ],
-            "insight": "This reveals whether you're flying blind or have proper measurement systems in place."
+            "method_name": "Problem Diagnosis Quiz",
+            "pros": "Quickly identifies root causes of issues",
+            "cons": "May oversimplify complex problems",
+            "case_study": "A marketing agency used diagnostic quizzes to identify client pain points, improving conversion rates by 45%"
+          },
+          {
+            "method_name": "Personality Assessment Quiz",
+            "pros": "Provides personalized recommendations",
+            "cons": "Results can be subjective",
+            "case_study": "A fitness coach created a personality-based quiz that increased client retention by 60%"
+          },
+          {
+            "method_name": "Skill Gap Analysis Quiz",
+            "pros": "Identifies specific areas for improvement",
+            "cons": "Requires honest self-assessment",
+            "case_study": "A SaaS company used skill gap quizzes to improve employee training, reducing support tickets by 30%"
           }
         ]
       }
     },
     {
       "layout": "filled",
-      "type": "diagnosis_categories",
-      "title": "Section 2: Your Diagnosis Categories",
+      "type": "checklist",
+      "title": "Quiz Preparation Checklist",
       "content": {
-        "categories": [
+        "phases": [
           {
-            "category_name": "The Flying Blind Marketer",
-            "description": "You're making decisions without proper data and measurement",
-            "symptoms": ["No tracking systems", "Gut-based decisions", "Inconsistent results"],
-            "solutions": ["Implement analytics", "Set up conversion tracking", "Create measurement framework"],
-            "case_study": "Sarah, a fitness coach, was spending $2000/month on ads without tracking conversions. After implementing proper analytics, she reduced ad spend by 40% while increasing leads by 60%."
+            "phase_title": "Phase 1: Pre-Quiz Preparation",
+            "items": [
+              "1.1 Set up quiz platform and tracking",
+              "1.2 Create compelling quiz title and description",
+              "1.3 Design quiz flow and question sequence",
+              "1.4 Test quiz functionality and user experience"
+            ]
+          },
+          {
+            "phase_title": "Phase 2: During Quiz",
+            "items": [
+              "2.1 Monitor quiz completion rates",
+              "2.2 Track user engagement and drop-off points",
+              "2.3 Collect email addresses for follow-up",
+              "2.4 Provide immediate value and results"
+            ]
+          },
+          {
+            "phase_title": "Phase 3: Post-Quiz Analysis",
+            "items": [
+              "3.1 Analyze quiz results and patterns",
+              "3.2 Segment leads based on quiz answers",
+              "3.3 Create personalized follow-up sequences",
+              "3.4 Optimize quiz based on performance data"
+            ]
           }
-        ]
+        ],
+        "case_study": "A real estate agent created a property preference quiz that generated 150 qualified leads in 30 days"
       }
     },
     {
       "layout": "filled",
-      "type": "action_plan",
-      "title": "Section 3: Your Personalized Action Plan",
+      "type": "scripts",
+      "title": "Quiz Discussion Scripts",
       "content": {
-        "immediate_actions": ["Set up Google Analytics", "Install conversion tracking", "Create measurement dashboard"],
-        "short_term": ["A/B test different approaches", "Optimize based on data", "Scale what works"],
-        "long_term": ["Build comprehensive marketing system", "Automate successful processes", "Focus on high-ROI activities"]
+        "scenarios": [
+          {
+            "trigger": "When someone asks about your quiz",
+            "response": "It's a quick assessment that helps identify your specific challenges and provides personalized solutions",
+            "explanation": "This positions the quiz as valuable and time-efficient"
+          },
+          {
+            "trigger": "When explaining quiz results",
+            "response": "Based on your answers, you fall into the [Category] category. Here's what that means and your next steps",
+            "explanation": "Shows you have a systematic approach to problem-solving"
+          },
+          {
+            "trigger": "When following up after quiz completion",
+            "response": "Thanks for taking our quiz! Here's your personalized action plan based on your results",
+            "explanation": "Demonstrates immediate value delivery"
+          }
+        ]
       }
     }
   ],
@@ -840,9 +881,9 @@ ${founderIntro}
 
 ${corePrinciples}
 
-GENERATE AN ROI CALCULATOR LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
+GENERATE AN ROI CALCULATOR LEAD MAGNET:
 
-IMPORTANT: This content will be displayed in a PDF preview, so it must include traditional PDF sections that can be visually displayed.
+Create a comprehensive calculator that provides real financial insights. The content should be practical, educational, and actionable.
 
 1. Title Page:
 - Title: A compelling calculator title that promises specific ROI insights
@@ -852,25 +893,24 @@ IMPORTANT: This content will be displayed in a PDF preview, so it must include t
 - Hook with the pain of not knowing your true ROI
 - Explain what insights they'll get from the calculator
 
-3. Strategy Analysis Section (for PDF display):
-- Create a "pros_and_cons_list" section with 3-4 ROI calculation methods
-- Each method should have pros, cons, and a case study
-- Focus on different approaches to financial analysis
+3. Calculator Content:
+- Input fields for key business metrics
+- Calculation logic and formulas
+- Different result categories with insights
+- Implementation guidance for improvements
 
-4. Action Checklist Section (for PDF display):
-- Create a "checklist" section with phases for ROI preparation
-- Include phases like "Data Collection", "Calculation Setup", "Analysis Review"
-- Each phase should have actionable checklist items
+4. Educational Content:
+- Explain why each metric matters
+- Include industry benchmarks and examples
+- Provide actionable improvement strategies
+- Add case studies of successful implementations
 
-5. Conversation Scripts Section (for PDF display):
-- Create a "scripts" section with scenarios for discussing ROI results
-- Include scenarios like "When presenting ROI to stakeholders", "How to explain calculations"
-- Each scenario should have trigger, response, and explanation
+5. Interactive Elements:
+- Input fields that capture real data
+- Calculations that provide immediate insights
+- Clear action plans based on results
 
-6. Interactive Calculator Content (for actual calculator):
-- Include input fields and calculation formulas
-- Add different result categories with insights
-- This will be used for the actual interactive calculator functionality
+Make the content practical, data-driven, and genuinely helpful. Focus on providing real financial value rather than following rigid structures.
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
@@ -888,48 +928,90 @@ RETURN JSON IN THIS EXACT FORMAT:
   "toolkit_sections": [
     {
       "layout": "filled",
-      "type": "input_metrics",
-      "title": "Your Current Business Metrics",
+      "type": "pros_and_cons_list",
+      "title": "ROI Calculation Strategies",
       "content": {
-        "inputs": [
+        "items": [
           {
-            "label": "Monthly Revenue",
-            "type": "number",
-            "placeholder": "25000",
-            "description": "Your current monthly revenue"
+            "method_name": "Revenue Optimization Analysis",
+            "pros": "Identifies immediate revenue opportunities",
+            "cons": "May require upfront investment",
+            "case_study": "An e-commerce store increased revenue by 35% by optimizing their pricing strategy"
           },
           {
-            "label": "Customer Acquisition Cost",
-            "type": "number",
-            "placeholder": "35",
-            "description": "How much you spend to acquire one customer"
-          }
-        ]
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "calculation_results",
-      "title": "Your ROI Analysis Results",
-      "content": {
-        "opportunities": [
+            "method_name": "Cost Reduction Calculator",
+            "pros": "Shows immediate savings potential",
+            "cons": "May impact quality or service",
+            "case_study": "A SaaS company reduced customer acquisition costs by 40% through automation"
+          },
           {
-            "title": "Increase Average Order Value by 15%",
-            "potential_gain": "+$3,750/month",
-            "implementation": "Upselling training, product bundling",
-            "timeline": "2-4 weeks"
+            "method_name": "Efficiency Improvement Analysis",
+            "pros": "Improves operational effectiveness",
+            "cons": "Requires process changes",
+            "case_study": "A consulting firm increased billable hours by 25% through process optimization"
           }
         ]
       }
     },
     {
       "layout": "filled",
-      "type": "implementation_plan",
-      "title": "Implementation Roadmap",
+      "type": "checklist",
+      "title": "ROI Preparation Checklist",
       "content": {
-        "immediate_actions": ["Analyze current metrics", "Set up tracking systems"],
-        "short_term": ["Implement quick wins", "Test new strategies"],
-        "long_term": ["Optimize entire funnel", "Scale successful tactics"]
+        "phases": [
+          {
+            "phase_title": "Phase 1: Data Collection",
+            "items": [
+              "1.1 Gather current financial metrics",
+              "1.2 Collect customer acquisition data",
+              "1.3 Analyze revenue streams",
+              "1.4 Review operational costs"
+            ]
+          },
+          {
+            "phase_title": "Phase 2: Calculation Setup",
+            "items": [
+              "2.1 Set up ROI calculation models",
+              "2.2 Define key performance indicators",
+              "2.3 Create baseline measurements",
+              "2.4 Establish tracking systems"
+            ]
+          },
+          {
+            "phase_title": "Phase 3: Analysis Review",
+            "items": [
+              "3.1 Compare current vs. potential performance",
+              "3.2 Identify improvement opportunities",
+              "3.3 Prioritize high-impact changes",
+              "3.4 Create implementation timeline"
+            ]
+          }
+        ],
+        "case_study": "A marketing agency used ROI analysis to increase client retention by 50% and average project value by 30%"
+      }
+    },
+    {
+      "layout": "filled",
+      "type": "scripts",
+      "title": "ROI Discussion Scripts",
+      "content": {
+        "scenarios": [
+          {
+            "trigger": "When presenting ROI to stakeholders",
+            "response": "Based on our analysis, we can increase revenue by 25-40% while reducing costs by 15-20%",
+            "explanation": "Quantifies the value and shows strategic thinking"
+          },
+          {
+            "trigger": "When explaining ROI calculations",
+            "response": "We've analyzed your current metrics and identified specific opportunities for improvement",
+            "explanation": "Shows data-driven approach"
+          },
+          {
+            "trigger": "When discussing implementation",
+            "response": "Here's our 90-day roadmap to achieve these ROI improvements",
+            "explanation": "Demonstrates clear action plan"
+          }
+        ]
       }
     }
   ],
@@ -947,9 +1029,9 @@ ${founderIntro}
 
 ${corePrinciples}
 
-GENERATE AN ACTION PLAN LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
+GENERATE AN ACTION PLAN LEAD MAGNET:
 
-IMPORTANT: This content will be displayed in a PDF preview, so it must include traditional PDF sections that can be visually displayed.
+Create a comprehensive action plan that provides real guidance. The content should be practical, step-by-step, and actionable.
 
 1. Title Page:
 - Title: A compelling action plan title that promises specific results
@@ -959,25 +1041,24 @@ IMPORTANT: This content will be displayed in a PDF preview, so it must include t
 - Hook with the pain of not having a clear plan
 - Explain what they'll get from this action plan
 
-3. Strategy Analysis Section (for PDF display):
-- Create a "pros_and_cons_list" section with 3-4 action plan strategies
-- Each strategy should have pros, cons, and a case study
-- Focus on different approaches to goal achievement
+3. Action Plan Content:
+- Personalization questions to customize the plan
+- Weekly or monthly breakdown of tasks
+- Clear milestones and success metrics
+- Progress tracking and adjustment guidelines
 
-4. Action Checklist Section (for PDF display):
-- Create a "checklist" section with phases for action plan execution
-- Include phases like "Preparation", "Implementation", "Optimization", "Scaling"
-- Each phase should have actionable checklist items
+4. Educational Content:
+- Explain the reasoning behind each step
+- Include tips and best practices
+- Add case studies of successful implementations
+- Provide troubleshooting for common obstacles
 
-5. Conversation Scripts Section (for PDF display):
-- Create a "scripts" section with scenarios for discussing action plans
-- Include scenarios like "When someone asks about your plan", "How to explain your progress"
-- Each scenario should have trigger, response, and explanation
+5. Interactive Elements:
+- Questions that personalize the experience
+- Step-by-step guidance that's easy to follow
+- Progress tracking and milestone celebrations
 
-6. Interactive Action Plan Content (for actual action plan):
-- Include personalization questions and weekly plans
-- Add progress tracking and milestone markers
-- This will be used for the actual interactive action plan functionality
+Make the content practical, motivating, and genuinely helpful. Focus on providing real guidance rather than following rigid structures.
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
@@ -995,40 +1076,90 @@ RETURN JSON IN THIS EXACT FORMAT:
   "toolkit_sections": [
     {
       "layout": "filled",
-      "type": "personalization_questions",
-      "title": "Personalize Your Action Plan",
+      "type": "pros_and_cons_list",
+      "title": "Action Plan Strategies",
       "content": {
-        "questions": [
+        "items": [
           {
-            "question": "What's your primary business niche?",
-            "options": ["Real Estate", "B2B SaaS", "E-commerce", "Consulting"],
-            "description": "This helps customize strategies for your industry"
+            "method_name": "Goal-Oriented Action Planning",
+            "pros": "Clear roadmap to achieve specific objectives",
+            "cons": "May be too rigid for changing circumstances",
+            "case_study": "A startup used goal-oriented planning to launch their MVP in 90 days"
+          },
+          {
+            "method_name": "Agile Action Planning",
+            "pros": "Flexible and adaptable to changes",
+            "cons": "May lack clear long-term direction",
+            "case_study": "A marketing agency increased client results by 40% using agile planning"
+          },
+          {
+            "method_name": "Data-Driven Action Planning",
+            "pros": "Based on measurable metrics and results",
+            "cons": "Requires good data infrastructure",
+            "case_study": "An e-commerce store increased conversions by 60% using data-driven planning"
           }
         ]
       }
     },
     {
       "layout": "filled",
-      "type": "weekly_plan",
-      "title": "Week 1: Foundation Building",
+      "type": "checklist",
+      "title": "Action Plan Execution Checklist",
       "content": {
-        "tasks": [
+        "phases": [
           {
-            "task": "Optimize your LinkedIn profile",
-            "time_required": "2 hours",
-            "expected_outcome": "15-20 new profile views per week",
-            "success_metrics": "Profile view increase, connection requests"
+            "phase_title": "Phase 1: Preparation",
+            "items": [
+              "1.1 Define clear goals and objectives",
+              "1.2 Assess current resources and capabilities",
+              "1.3 Identify potential obstacles and solutions",
+              "1.4 Set up tracking and measurement systems"
+            ]
+          },
+          {
+            "phase_title": "Phase 2: Implementation",
+            "items": [
+              "2.1 Execute high-priority actions first",
+              "2.2 Monitor progress and adjust as needed",
+              "2.3 Track key performance indicators",
+              "2.4 Communicate progress to stakeholders"
+            ]
+          },
+          {
+            "phase_title": "Phase 3: Optimization",
+            "items": [
+              "3.1 Analyze results and identify improvements",
+              "3.2 Scale successful strategies",
+              "3.3 Refine processes based on data",
+              "3.4 Plan next iteration of actions"
+            ]
           }
-        ]
+        ],
+        "case_study": "A consultant used systematic action planning to help clients achieve 80% of their goals within 6 months"
       }
     },
     {
       "layout": "filled",
-      "type": "progress_tracking",
-      "title": "Track Your Progress",
+      "type": "scripts",
+      "title": "Action Plan Discussion Scripts",
       "content": {
-        "weekly_checkins": ["Review metrics", "Adjust strategies", "Plan next week"],
-        "milestones": ["Week 1: Foundation complete", "Week 2: First results", "Week 4: Goal achieved"]
+        "scenarios": [
+          {
+            "trigger": "When someone asks about your action plan",
+            "response": "We've created a systematic approach with clear milestones and measurable outcomes",
+            "explanation": "Shows you have a structured, professional approach"
+          },
+          {
+            "trigger": "When explaining your progress",
+            "response": "We're on track with our action plan. Here are our key achievements and next steps",
+            "explanation": "Demonstrates accountability and forward thinking"
+          },
+          {
+            "trigger": "When discussing results",
+            "response": "Our action plan delivered [specific results]. Here's what we learned and how we'll improve",
+            "explanation": "Shows results orientation and continuous improvement"
+          }
+        ]
       }
     }
   ],
@@ -1046,9 +1177,9 @@ ${founderIntro}
 
 ${corePrinciples}
 
-GENERATE A BENCHMARK REPORT LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
+GENERATE A BENCHMARK REPORT LEAD MAGNET:
 
-IMPORTANT: This content will be displayed in a PDF preview, so it must include traditional PDF sections that can be visually displayed.
+Create a comprehensive benchmark report that provides real performance insights. The content should be data-driven, educational, and actionable.
 
 1. Title Page:
 - Title: A compelling benchmark report title
@@ -1058,25 +1189,24 @@ IMPORTANT: This content will be displayed in a PDF preview, so it must include t
 - Hook with the pain of not knowing how you compare
 - Explain what insights they'll get from the benchmark
 
-3. Strategy Analysis Section (for PDF display):
-- Create a "pros_and_cons_list" section with 3-4 benchmarking strategies
-- Each strategy should have pros, cons, and a case study
-- Focus on different approaches to performance measurement
+3. Benchmark Content:
+- Input fields for key performance metrics
+- Industry comparisons and benchmarks
+- Gap analysis and opportunity identification
+- Improvement strategies and implementation plans
 
-4. Action Checklist Section (for PDF display):
-- Create a "checklist" section with phases for benchmark preparation
-- Include phases like "Data Collection", "Analysis Setup", "Comparison Review"
-- Each phase should have actionable checklist items
+4. Educational Content:
+- Explain what each metric means and why it matters
+- Include industry standards and best practices
+- Provide actionable improvement strategies
+- Add case studies of successful improvements
 
-5. Conversation Scripts Section (for PDF display):
-- Create a "scripts" section with scenarios for discussing benchmark results
-- Include scenarios like "When presenting benchmarks to stakeholders", "How to explain performance gaps"
-- Each scenario should have trigger, response, and explanation
+5. Interactive Elements:
+- Input fields that capture real performance data
+- Comparisons that provide immediate insights
+- Clear action plans based on gaps
 
-6. Interactive Benchmark Content (for actual benchmark report):
-- Include metrics input fields and comparison analysis
-- Add improvement strategies and ROI impact analysis
-- This will be used for the actual interactive benchmark report functionality
+Make the content data-driven, insightful, and genuinely helpful. Focus on providing real performance value rather than following rigid structures.
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
@@ -1094,47 +1224,88 @@ RETURN JSON IN THIS EXACT FORMAT:
   "toolkit_sections": [
     {
       "layout": "filled",
-      "type": "metrics_input",
-      "title": "Your Current Metrics",
+      "type": "pros_and_cons_list",
+      "title": "Benchmarking Strategies",
       "content": {
-        "inputs": [
+        "items": [
           {
-            "label": "Email List Size",
-            "type": "number",
-            "placeholder": "2500",
-            "industry_average": "5000",
-            "description": "Your current email subscriber count"
+            "method_name": "Industry Benchmark Analysis",
+            "pros": "Provides clear performance targets",
+            "cons": "May not reflect your unique situation",
+            "case_study": "A SaaS company improved conversion rates by 30% by benchmarking against industry leaders"
+          },
+          {
+            "method_name": "Competitive Benchmark Analysis",
+            "pros": "Identifies specific competitive advantages",
+            "cons": "Requires access to competitor data",
+            "case_study": "An e-commerce store increased market share by 25% through competitive benchmarking"
+          },
+          {
+            "method_name": "Internal Benchmark Analysis",
+            "pros": "Tracks your own progress over time",
+            "cons": "May not provide external context",
+            "case_study": "A consulting firm improved client satisfaction by 40% using internal benchmarks"
           }
         ]
       }
     },
     {
       "layout": "filled",
-      "type": "benchmark_analysis",
-      "title": "Your Performance vs Industry",
+      "type": "checklist",
+      "title": "Benchmark Preparation Checklist",
       "content": {
-        "comparisons": [
+        "phases": [
           {
-            "metric": "Email Open Rate",
-            "your_performance": "18.5%",
-            "industry_average": "24.2%",
-            "gap": "-23.6%",
-            "opportunity": "Subject line optimization, personalization"
+            "phase_title": "Phase 1: Data Collection",
+            "items": [
+              "1.1 Gather current performance metrics",
+              "1.2 Identify key performance indicators",
+              "1.3 Collect industry benchmark data",
+              "1.4 Analyze competitor performance"
+            ]
+          },
+          {
+            "phase_title": "Phase 2: Analysis Setup",
+            "items": [
+              "2.1 Set up benchmarking framework",
+              "2.2 Define comparison criteria",
+              "2.3 Create performance baselines",
+              "2.4 Establish measurement systems"
+            ]
+          },
+          {
+            "phase_title": "Phase 3: Comparison Review",
+            "items": [
+              "3.1 Compare your metrics to benchmarks",
+              "3.2 Identify performance gaps",
+              "3.3 Analyze root causes of differences",
+              "3.4 Prioritize improvement opportunities"
+            ]
           }
-        ]
+        ],
+        "case_study": "A marketing agency used benchmarking to improve client ROI by 45% within 6 months"
       }
     },
     {
       "layout": "filled",
-      "type": "improvement_strategies",
-      "title": "Improvement Strategies",
+      "type": "scripts",
+      "title": "Benchmark Discussion Scripts",
       "content": {
-        "strategies": [
+        "scenarios": [
           {
-            "title": "Subject Line Optimization",
-            "description": "Implement A/B testing for subject lines",
-            "expected_improvement": "+5.7% open rate",
-            "timeline": "2-4 weeks"
+            "trigger": "When presenting benchmarks to stakeholders",
+            "response": "Our analysis shows we're performing at [X]% of industry standards. Here are our key opportunities",
+            "explanation": "Quantifies performance and shows strategic thinking"
+          },
+          {
+            "trigger": "When explaining performance gaps",
+            "response": "We've identified specific areas where we can improve. Here's our action plan to close these gaps",
+            "explanation": "Shows problem-solving approach"
+          },
+          {
+            "trigger": "When discussing improvement strategies",
+            "response": "Based on our benchmark analysis, we can improve performance by [X]% by implementing these strategies",
+            "explanation": "Demonstrates data-driven decision making"
           }
         ]
       }
@@ -1154,9 +1325,9 @@ ${founderIntro}
 
 ${corePrinciples}
 
-GENERATE AN OPPORTUNITY FINDER LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
+GENERATE AN OPPORTUNITY FINDER LEAD MAGNET:
 
-IMPORTANT: This content will be displayed in a PDF preview, so it must include traditional PDF sections that can be visually displayed.
+Create a comprehensive opportunity finder that provides real business insights. The content should be strategic, educational, and actionable.
 
 1. Title Page:
 - Title: A compelling opportunity finder title
@@ -1166,25 +1337,24 @@ IMPORTANT: This content will be displayed in a PDF preview, so it must include t
 - Hook with the pain of missing opportunities
 - Explain what opportunities they'll discover
 
-3. Strategy Analysis Section (for PDF display):
-- Create a "pros_and_cons_list" section with 3-4 opportunity finding strategies
-- Each strategy should have pros, cons, and a case study
-- Focus on different approaches to opportunity identification
+3. Opportunity Finder Content:
+- Analysis questions to identify gaps and opportunities
+- Different opportunity categories and priorities
+- Implementation roadmaps and success metrics
+- Risk assessment and mitigation strategies
 
-4. Action Checklist Section (for PDF display):
-- Create a "checklist" section with phases for opportunity analysis
-- Include phases like "Business Analysis", "Opportunity Identification", "Implementation Planning"
-- Each phase should have actionable checklist items
+4. Educational Content:
+- Explain how to identify and evaluate opportunities
+- Include industry trends and market insights
+- Provide strategic frameworks for opportunity analysis
+- Add case studies of successful opportunity capture
 
-5. Conversation Scripts Section (for PDF display):
-- Create a "scripts" section with scenarios for discussing opportunities
-- Include scenarios like "When presenting opportunities to stakeholders", "How to explain opportunity impact"
-- Each scenario should have trigger, response, and explanation
+5. Interactive Elements:
+- Questions that reveal hidden opportunities
+- Analysis tools that provide strategic insights
+- Clear implementation plans for each opportunity
 
-6. Interactive Opportunity Content (for actual opportunity finder):
-- Include analysis questions and opportunity categories
-- Add implementation roadmap and success metrics
-- This will be used for the actual interactive opportunity finder functionality
+Make the content strategic, insightful, and genuinely helpful. Focus on providing real business value rather than following rigid structures.
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
@@ -1202,42 +1372,90 @@ RETURN JSON IN THIS EXACT FORMAT:
   "toolkit_sections": [
     {
       "layout": "filled",
-      "type": "analysis_questions",
-      "title": "Business Analysis Questions",
+      "type": "pros_and_cons_list",
+      "title": "Opportunity Finding Strategies",
       "content": {
-        "questions": [
+        "items": [
           {
-            "question": "What's your primary sales channel?",
-            "options": ["Website only", "Website + Amazon", "Multi-channel"],
-            "description": "This helps identify channel expansion opportunities"
+            "method_name": "Competitive Analysis",
+            "pros": "Identifies gaps in your market positioning",
+            "cons": "Requires significant research time",
+            "case_study": "A SaaS company discovered 3 untapped market segments through competitive analysis"
+          },
+          {
+            "method_name": "Customer Feedback Analysis",
+            "pros": "Direct insights from your target audience",
+            "cons": "May be biased by vocal minority",
+            "case_study": "An e-commerce store increased revenue by 40% after implementing customer feedback"
+          },
+          {
+            "method_name": "Data-Driven Gap Analysis",
+            "pros": "Objective, measurable approach",
+            "cons": "Requires good data infrastructure",
+            "case_study": "A consulting firm found 5 new service opportunities through data analysis"
           }
         ]
       }
     },
     {
       "layout": "filled",
-      "type": "opportunity_categories",
-      "title": "Your Growth Opportunities",
+      "type": "checklist",
+      "title": "Opportunity Analysis Checklist",
       "content": {
-        "high_priority": [
+        "phases": [
           {
-            "title": "Missing Instagram Reels Strategy",
-            "description": "Your competitors see 40% more engagement from Reels",
-            "impact": "15-25 new customers per month",
-            "implementation": "2-3 hours per week",
-            "timeline": "Immediate"
+            "phase_title": "Phase 1: Business Analysis",
+            "items": [
+              "1.1 Review current revenue streams",
+              "1.2 Analyze customer acquisition channels",
+              "1.3 Assess technology stack usage",
+              "1.4 Evaluate marketing performance"
+            ]
+          },
+          {
+            "phase_title": "Phase 2: Opportunity Identification",
+            "items": [
+              "2.1 Compare with industry benchmarks",
+              "2.2 Identify service gaps",
+              "2.3 Analyze competitor offerings",
+              "2.4 Review customer feedback"
+            ]
+          },
+          {
+            "phase_title": "Phase 3: Implementation Planning",
+            "items": [
+              "3.1 Prioritize opportunities by impact",
+              "3.2 Estimate resource requirements",
+              "3.3 Create implementation timeline",
+              "3.4 Define success metrics"
+            ]
           }
-        ]
+        ],
+        "case_study": "A B2B company identified 7 new service opportunities and implemented 3 within 6 months, increasing revenue by 35%"
       }
     },
     {
       "layout": "filled",
-      "type": "implementation_roadmap",
-      "title": "Implementation Roadmap",
+      "type": "scripts",
+      "title": "Opportunity Discussion Scripts",
       "content": {
-        "week_1": ["Set up Instagram Business", "Create content calendar"],
-        "week_2": ["Launch first Reels", "Monitor engagement"],
-        "week_3": ["Optimize based on data", "Scale successful content"]
+        "scenarios": [
+          {
+            "trigger": "When someone asks about your business opportunities",
+            "response": "We've identified several untapped opportunities in our market. Would you like to see our analysis?",
+            "explanation": "This positions you as proactive and data-driven"
+          },
+          {
+            "trigger": "When presenting opportunities to stakeholders",
+            "response": "Based on our analysis, we've found 3 high-impact opportunities that could increase revenue by 25-40%",
+            "explanation": "Quantifies the value and shows strategic thinking"
+          },
+          {
+            "trigger": "When explaining opportunity implementation",
+            "response": "We've prioritized these opportunities by impact and resource requirements. Here's our 90-day implementation plan",
+            "explanation": "Shows you have a clear action plan"
+          }
+        ]
       }
     }
   ],
