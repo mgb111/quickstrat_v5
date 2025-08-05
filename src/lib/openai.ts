@@ -70,6 +70,25 @@ function getOpenAIClient(): OpenAI {
   return openai;
 }
 
+// Helper function to clean JSON responses that might be wrapped in markdown
+function cleanJsonResponse(content: string): string {
+  // Remove markdown code blocks if present
+  let cleaned = content.trim();
+  
+  // Remove ```json and ``` markers
+  if (cleaned.startsWith('```json')) {
+    cleaned = cleaned.replace(/^```json\s*/, '');
+  }
+  if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/^```\s*/, '');
+  }
+  if (cleaned.endsWith('```')) {
+    cleaned = cleaned.replace(/\s*```$/, '');
+  }
+  
+  return cleaned.trim();
+}
+
 export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<LeadMagnetConcept[]> {
   const client = getOpenAIClient();
 
@@ -96,7 +115,11 @@ export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<
     }
 
     const content = res.choices[0].message.content;
-    const parsed = JSON.parse(content);
+    
+    // Clean the content to handle markdown-wrapped JSON
+    const cleanedContent = cleanJsonResponse(content);
+    console.log('🎯 OpenAI Response (cleaned):', cleanedContent);
+    const parsed = JSON.parse(cleanedContent);
 
     // Validate the response structure
     if (!Array.isArray(parsed.concepts) || parsed.concepts.length === 0) {
@@ -278,6 +301,7 @@ Return JSON in this exact format:
 
 export async function generateContentOutline(input: CampaignInput, selected: LeadMagnetConcept): Promise<ContentOutline> {
   const client = getOpenAIClient();
+  let content = '';
 
   try {
     const format = selected.format;
@@ -297,8 +321,12 @@ export async function generateContentOutline(input: CampaignInput, selected: Lea
       throw new Error('Empty response received from OpenAI API');
     }
 
-    const content = res.choices[0].message.content;
-    const parsed = JSON.parse(content);
+    content = res.choices[0].message.content;
+    
+    // Clean the content to handle markdown-wrapped JSON
+    const cleanedContent = cleanJsonResponse(content);
+    console.log('🎯 OpenAI Response (cleaned):', cleanedContent);
+    const parsed = JSON.parse(cleanedContent);
 
     // Validate the response structure
     if (!parsed.title || !parsed.introduction || !Array.isArray(parsed.core_points) || !parsed.cta) {
@@ -320,7 +348,8 @@ export async function generateContentOutline(input: CampaignInput, selected: Lea
       throw new Error('Invalid OpenAI API key. Please check your .env file.');
     } else if (err.message.includes('timeout')) {
       throw new Error('Request timed out. Please check your internet connection and try again.');
-    } else if (err.message.includes('JSON')) {
+    } else if (err.message.includes('JSON') || err.message.includes('Unexpected token')) {
+      console.error('JSON parsing error. Original content:', content);
       throw new Error('Failed to process the response from OpenAI. Please try again.');
     }
 
