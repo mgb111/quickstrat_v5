@@ -559,57 +559,7 @@ Context:
 
 ${formatSpecificPrompt}
 
-Return JSON in this exact format:
-{
-  "founder_intro": {
-    "name": "${input.name}",
-    "title": "${input.position}",
-    "company": "${input.brand_name}",
-    "intro_text": "Personal introduction and credibility statement"
-  },
-  "introduction": "Engaging introduction that hooks the reader",
-  "sections": [
-    {
-      "title": "Section Title",
-      "content": "Section content with actionable insights",
-      "subsections": [
-        {
-          "title": "Subsection Title",
-          "content": "Detailed content with examples and tips"
-        }
-      ]
-    }
-  ],
-  "cta": {
-    "title": "Call to Action Title",
-    "description": "Compelling CTA description",
-    "button_text": "Action Button Text"
-  },
-  "structured_content": {
-    "toolkit_sections": [
-      {
-        "title": "Toolkit Section Title",
-        "description": "What this section provides",
-        "items": [
-          {
-            "title": "Item Title",
-            "description": "Item description",
-            "type": "template|checklist|worksheet|resource"
-          }
-        ]
-      }
-    ]
-  },
-  "founderName": "${input.name}",
-  "brandName": "${input.brand_name}",
-  "problemStatement": "${input.problem_statement}",
-  "desiredOutcome": "${input.desired_outcome}",
-  "customization": {
-    "tone": "${input.tone}",
-    "target_audience": "${input.target_audience}",
-    "niche": "${input.niche}"
-  }
-}`;
+IMPORTANT: Follow the exact JSON format specified in the format-specific prompt above. Do not override it with a different structure.`;
 
   try {
     const response = await client.chat.completions.create({
@@ -755,48 +705,47 @@ Create a comprehensive quiz that provides real value to users. The content shoul
 - Clear next steps for users
 
 Make the content natural, engaging, and genuinely helpful. Focus on providing real value rather than following rigid structures.
-- Brief case study example
-
-5. Action Plan:
-- Immediate actions (next 7 days)
-- Short-term goals (next 30 days)
-- Long-term strategy (next 90 days)
 
 RETURN JSON IN THIS EXACT FORMAT:
 \`\`\`json
 {
-  "founder_intro": "...",
+  "founder_intro": "A personalized introduction from the founder explaining why they created this quiz and what value it provides.",
   "title_page": {
-    "layout": "centered",
     "title": "The [Quiz Name] (Interactive Quiz)",
     "subtitle": "A [X]-Question Assessment to [Specific Benefit]."
   },
   "introduction_page": {
-    "layout": "filled",
     "title": "Why This Quiz Will Reveal Your Hidden Problems",
-    "content": "Introduction content here..."
+    "content": "Introduction content explaining the value and benefits of taking this quiz."
   },
-  "toolkit_sections": [
-    {
-      "layout": "filled",
-      "type": "pros_and_cons_list",
-      "title": "Quiz Strategy Analysis",
-      "content": {
-        "items": [
-          {
-            "method_name": "Problem Diagnosis Quiz",
-            "pros": "Quickly identifies root causes of issues",
-            "cons": "May oversimplify complex problems",
-            "case_study": "A marketing agency used diagnostic quizzes to identify client pain points, improving conversion rates by 45%"
-          },
-          {
-            "method_name": "Personality Assessment Quiz",
-            "pros": "Provides personalized recommendations",
-            "cons": "Results can be subjective",
-            "case_study": "A fitness coach created a personality-based quiz that increased client retention by 60%"
-          },
-          {
-            "method_name": "Skill Gap Analysis Quiz",
+  "quiz_content": {
+    "questions": [
+      {
+        "question": "Sample question text",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "explanation": "What this question reveals about the user"
+      }
+    ],
+    "diagnosis_categories": [
+      {
+        "category_name": "Category Name",
+        "description": "Description of this category",
+        "symptoms": ["Symptom 1", "Symptom 2", "Symptom 3"],
+        "solutions": ["Solution 1", "Solution 2", "Solution 3"]
+      }
+    ]
+  },
+  "educational_content": {
+    "insights": ["Insight 1", "Insight 2", "Insight 3"],
+    "tips": ["Tip 1", "Tip 2", "Tip 3"],
+    "case_studies": ["Case study 1", "Case study 2"]
+  },
+  "interactive_elements": {
+    "next_steps": ["Step 1", "Step 2", "Step 3"],
+    "action_items": ["Action 1", "Action 2", "Action 3"]
+  }
+}
+\`\`\`
             "pros": "Identifies specific areas for improvement",
             "cons": "Requires honest self-assessment",
             "case_study": "A SaaS company used skill gap quizzes to improve employee training, reducing support tickets by 30%"

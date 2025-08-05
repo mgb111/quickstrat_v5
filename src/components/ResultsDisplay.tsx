@@ -56,6 +56,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
+  // Debug logging
+  console.log('🎯 ResultsDisplay: selectedFormat =', selectedFormat);
+  console.log('🎯 ResultsDisplay: selectedFormat type =', typeof selectedFormat);
+  console.log('🎯 ResultsDisplay: should use InteractiveDisplay =', selectedFormat && selectedFormat !== 'pdf');
+
   useEffect(() => {
     // Get user ID on mount
     supabase.auth.getUser().then(({ data: { user } }) => {

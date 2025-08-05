@@ -137,6 +137,8 @@ function App() {
 
   const handleInputSubmit = async (input: CampaignInput) => {
     console.log('🔄 Starting concept generation...');
+    console.log('🎯 App: input.selected_format =', input.selected_format);
+    console.log('🎯 App: input =', input);
     setIsLoading(true);
     setError(null);
 
