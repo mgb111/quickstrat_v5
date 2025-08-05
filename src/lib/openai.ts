@@ -514,7 +514,7 @@ Return JSON in this exact format:
   }
 }
 
-export async function generatePdfContent(input: {
+export async function generateLeadMagnetContent(input: {
   selected_format: LeadMagnetFormat;
   name: string;
   brand_name: string;
@@ -530,6 +530,7 @@ export async function generatePdfContent(input: {
   const client = getOpenAIClient();
   
   // Create a CampaignInput object for the format-specific prompt
+  // This function generates content for all formats: PDF, Interactive Quiz, ROI Calculator, etc.
   const campaignInput: CampaignInput = {
     name: input.name,
     brand_name: input.brand_name,
@@ -632,8 +633,12 @@ Return JSON in this exact format:
       throw new Error('No content received from OpenAI');
     }
 
+    // Clean the content to handle markdown-wrapped JSON
+    const cleanedContent = cleanJsonResponse(content);
+    console.log('🎯 OpenAI PDF Response (cleaned):', cleanedContent);
+    
     // Parse the JSON response
-    const pdfContent = JSON.parse(content) as PDFContent;
+    const pdfContent = JSON.parse(cleanedContent) as PDFContent;
     
     // Only return PDF content if the format is PDF, otherwise return interactive content structure
     if (input.selected_format === 'pdf') {
@@ -1363,6 +1368,7 @@ function formatLayoutSectionContent(section: any): string {
 
 export async function generateLandingPageCopy(input: CampaignInput, outline: ContentOutline): Promise<LandingPageCopy> {
   const client = getOpenAIClient();
+  let content = '';
 
   try {
     const prompt = `You are a direct-response copywriter. Your task is to create high-converting copy for a landing page to promote a lead magnet.
@@ -1417,8 +1423,12 @@ Return JSON in this exact format:
       throw new Error('Empty response received from OpenAI API');
     }
 
-    const content = res.choices[0].message.content;
-    const parsed = JSON.parse(content);
+    content = res.choices[0].message.content;
+    
+    // Clean the content to handle markdown-wrapped JSON
+    const cleanedContent = cleanJsonResponse(content);
+    console.log('🎯 OpenAI Landing Page Response (cleaned):', cleanedContent);
+    const parsed = JSON.parse(cleanedContent);
 
     // Validate the response structure
     if (!parsed.headline || !parsed.subheadline || !Array.isArray(parsed.benefit_bullets) || !parsed.cta_button_text) {
@@ -1453,7 +1463,8 @@ parsed.benefit_bullets = parsed.benefit_bullets.slice(0, 4);
       throw new Error('Invalid OpenAI API key. Please check your .env file.');
     } else if (err.message.includes('timeout')) {
       throw new Error('Request timed out while generating landing page copy. Please try again.');
-    } else if (err.message.includes('JSON')) {
+    } else if (err.message.includes('JSON') || err.message.includes('Unexpected token')) {
+      console.error('JSON parsing error. Original content:', content);
       throw new Error('Failed to process the landing page content. Please try again.');
     }
 
@@ -1463,6 +1474,7 @@ parsed.benefit_bullets = parsed.benefit_bullets.slice(0, 4);
 
 export async function generateSocialPosts(input: CampaignInput, outline: ContentOutline): Promise<SocialPosts> {
   const client = getOpenAIClient();
+  let content = '';
 
   try {
     const prompt = `You are a social media manager. Your task is to create promotional posts for a new lead magnet.
@@ -1533,8 +1545,12 @@ Return JSON in this exact format:
       throw new Error('Empty response received from OpenAI API');
     }
 
-    const content = res.choices[0].message.content;
-    const parsed = JSON.parse(content);
+    content = res.choices[0].message.content;
+    
+    // Clean the content to handle markdown-wrapped JSON
+    const cleanedContent = cleanJsonResponse(content);
+    console.log('🎯 OpenAI Social Posts Response (cleaned):', cleanedContent);
+    const parsed = JSON.parse(cleanedContent);
 
     // Validate the response structure
     if (!parsed.linkedin || !parsed.twitter || !parsed.instagram || !parsed.reddit || !parsed.subreddits) {
@@ -1561,7 +1577,8 @@ Return JSON in this exact format:
       throw new Error('Invalid OpenAI API key. Please check your .env file.');
     } else if (err.message.includes('timeout')) {
       throw new Error('Request timed out while generating social media posts. Please try again.');
-    } else if (err.message.includes('JSON')) {
+    } else if (err.message.includes('JSON') || err.message.includes('Unexpected token')) {
+      console.error('JSON parsing error. Original content:', content);
       throw new Error('Failed to process the social media content. Please try again.');
     }
 
@@ -1574,11 +1591,14 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
 
   try {
     // Generate content sequentially instead of in parallel for better error handling
-    console.log('Starting PDF content generation...');
+    const format = input.selected_format || 'pdf';
+    const formatDisplayName = format === 'pdf' ? 'PDF' : format.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
     
-    // Create the input object for the new generatePdfContent signature
-    const pdfInput = {
-      selected_format: input.selected_format || 'pdf',
+    console.log(`Starting ${formatDisplayName} content generation...`);
+    
+    // Create the input object for the new generateLeadMagnetContent signature
+    const contentInput = {
+      selected_format: format,
       name: input.name || '',
       brand_name: input.brand_name,
       target_audience: input.target_audience,
@@ -1587,13 +1607,13 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
       desired_outcome: input.desired_outcome,
       tone: input.tone || 'professional',
       position: input.position || '',
-      concept: { id: '1', title: 'Generated Concept', description: '', value_proposition: '', target_audience: '', format: input.selected_format || 'pdf' },
+      concept: { id: '1', title: 'Generated Concept', description: '', value_proposition: '', target_audience: '', format: format },
       outline: outline
     };
     
-    const pdf_content = await generatePdfContent(pdfInput).catch(err => {
-      console.error('PDF Generation Error:', err);
-      throw new Error(`PDF Generation Failed: ${err.message}`);
+    const lead_magnet_content = await generateLeadMagnetContent(contentInput).catch(err => {
+      console.error(`${formatDisplayName} Generation Error:`, err);
+      throw new Error(`${formatDisplayName} Generation Failed: ${err.message}`);
     });
 
     console.log('Starting landing page generation...');
@@ -1609,20 +1629,20 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
     });
 
     // Validate all required content was generated
-    if (!pdf_content) throw new Error('PDF content generation failed');
+    if (!lead_magnet_content) throw new Error(`${formatDisplayName} content generation failed`);
     if (!landing_page) throw new Error('Landing page generation failed');
     if (!social_posts) throw new Error('Social posts generation failed');
 
-    // Use the structured content that was already generated by generatePdfContent
-    const structured_pdf_content: PDFContent = {
-      ...pdf_content,
-      // Keep the original structured_content that was generated by generatePdfContent
-      structured_content: pdf_content.structured_content
+    // Use the structured content that was already generated by generateLeadMagnetContent
+    const structured_content: PDFContent = {
+      ...lead_magnet_content,
+      // Keep the original structured_content that was generated by generateLeadMagnetContent
+      structured_content: lead_magnet_content.structured_content
     };
 
     console.log('Campaign generation completed successfully');
     return {
-      pdf_content: structured_pdf_content,
+      pdf_content: structured_content,
       landing_page,
       social_posts
     };
