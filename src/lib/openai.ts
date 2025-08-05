@@ -863,41 +863,58 @@ Make the content practical, data-driven, and genuinely helpful. Focus on providi
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
-  "founder_intro": "...",
+  "founder_intro": "A personalized introduction from the founder explaining why they created this calculator and what value it provides.",
   "title_page": {
-    "layout": "centered",
     "title": "The [Calculator Name] (ROI Calculator)",
     "subtitle": "Calculate Your Potential Revenue Gains and Cost Savings."
   },
   "introduction_page": {
-    "layout": "filled",
     "title": "Why You Need This ROI Calculator",
-    "content": "Introduction content here..."
+    "content": "Introduction content explaining the value and benefits of using this calculator."
   },
-  "toolkit_sections": [
-    {
-      "layout": "filled",
-      "type": "pros_and_cons_list",
-      "title": "ROI Calculation Strategies",
-      "content": {
-        "items": [
-          {
-            "method_name": "Revenue Optimization Analysis",
-            "pros": "Identifies immediate revenue opportunities",
-            "cons": "May require upfront investment",
-            "case_study": "An e-commerce store increased revenue by 35% by optimizing their pricing strategy"
-          },
-          {
-            "method_name": "Cost Reduction Calculator",
-            "pros": "Shows immediate savings potential",
-            "cons": "May impact quality or service",
-            "case_study": "A SaaS company reduced customer acquisition costs by 40% through automation"
-          },
-          {
-            "method_name": "Efficiency Improvement Analysis",
-            "pros": "Improves operational effectiveness",
-            "cons": "Requires process changes",
-            "case_study": "A consulting firm increased billable hours by 25% through process optimization"
+  "calculator_content": {
+    "input_fields": [
+      {
+        "field_name": "Current Revenue",
+        "description": "Your current monthly/annual revenue",
+        "placeholder": "Enter your current revenue"
+      },
+      {
+        "field_name": "Current Costs",
+        "description": "Your current monthly/annual costs",
+        "placeholder": "Enter your current costs"
+      },
+      {
+        "field_name": "Conversion Rate",
+        "description": "Your current conversion rate percentage",
+        "placeholder": "Enter your conversion rate"
+      }
+    ],
+    "calculation_categories": [
+      {
+        "category_name": "Revenue Optimization",
+        "description": "Potential revenue gains from optimization",
+        "improvements": ["Improvement 1", "Improvement 2", "Improvement 3"],
+        "potential_gains": "Estimated revenue increase"
+      },
+      {
+        "category_name": "Cost Reduction",
+        "description": "Potential cost savings opportunities",
+        "savings": ["Savings 1", "Savings 2", "Savings 3"],
+        "potential_savings": "Estimated cost reduction"
+      }
+    ]
+  },
+  "educational_content": {
+    "insights": ["Insight 1", "Insight 2", "Insight 3"],
+    "benchmarks": ["Benchmark 1", "Benchmark 2", "Benchmark 3"],
+    "case_studies": ["Case study 1", "Case study 2"]
+  },
+  "interactive_elements": {
+    "next_steps": ["Step 1", "Step 2", "Step 3"],
+    "action_items": ["Action 1", "Action 2", "Action 3"]
+  }
+}
           }
         ]
       }
@@ -1011,105 +1028,55 @@ Make the content practical, motivating, and genuinely helpful. Focus on providin
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
-  "founder_intro": "...",
+  "founder_intro": "A personalized introduction from the founder explaining why they created this action plan and what value it provides.",
   "title_page": {
-    "layout": "centered",
     "title": "The [Action Plan Name] (Action Plan)",
     "subtitle": "Your Personalized [X]-Week Roadmap to [Specific Goal]."
   },
   "introduction_page": {
-    "layout": "filled",
     "title": "Why You Need This Action Plan",
-    "content": "Introduction content here..."
+    "content": "Introduction content explaining the value and benefits of following this action plan."
   },
-  "toolkit_sections": [
-    {
-      "layout": "filled",
-      "type": "pros_and_cons_list",
-      "title": "Action Plan Strategies",
-      "content": {
-        "items": [
-          {
-            "method_name": "Goal-Oriented Action Planning",
-            "pros": "Clear roadmap to achieve specific objectives",
-            "cons": "May be too rigid for changing circumstances",
-            "case_study": "A startup used goal-oriented planning to launch their MVP in 90 days"
-          },
-          {
-            "method_name": "Agile Action Planning",
-            "pros": "Flexible and adaptable to changes",
-            "cons": "May lack clear long-term direction",
-            "case_study": "A marketing agency increased client results by 40% using agile planning"
-          },
-          {
-            "method_name": "Data-Driven Action Planning",
-            "pros": "Based on measurable metrics and results",
-            "cons": "Requires good data infrastructure",
-            "case_study": "An e-commerce store increased conversions by 60% using data-driven planning"
-          }
-        ]
+  "action_plan_content": {
+    "goals": [
+      {
+        "goal_name": "Primary Goal",
+        "description": "Description of the main objective",
+        "timeline": "Expected completion time",
+        "milestones": ["Milestone 1", "Milestone 2", "Milestone 3"]
       }
-    },
-    {
-      "layout": "filled",
-      "type": "checklist",
-      "title": "Action Plan Execution Checklist",
-      "content": {
-        "phases": [
-          {
-            "phase_title": "Phase 1: Preparation",
-            "items": [
-              "1.1 Define clear goals and objectives",
-              "1.2 Assess current resources and capabilities",
-              "1.3 Identify potential obstacles and solutions",
-              "1.4 Set up tracking and measurement systems"
-            ]
-          },
-          {
-            "phase_title": "Phase 2: Implementation",
-            "items": [
-              "2.1 Execute high-priority actions first",
-              "2.2 Monitor progress and adjust as needed",
-              "2.3 Track key performance indicators",
-              "2.4 Communicate progress to stakeholders"
-            ]
-          },
-          {
-            "phase_title": "Phase 3: Optimization",
-            "items": [
-              "3.1 Analyze results and identify improvements",
-              "3.2 Scale successful strategies",
-              "3.3 Refine processes based on data",
-              "3.4 Plan next iteration of actions"
-            ]
-          }
-        ],
-        "case_study": "A consultant used systematic action planning to help clients achieve 80% of their goals within 6 months"
+    ],
+    "action_phases": [
+      {
+        "phase_name": "Phase 1: Foundation",
+        "description": "Setting up the foundation for success",
+        "actions": ["Action 1", "Action 2", "Action 3"],
+        "timeline": "1-2 weeks"
+      },
+      {
+        "phase_name": "Phase 2: Implementation",
+        "description": "Executing the core strategies",
+        "actions": ["Action 1", "Action 2", "Action 3"],
+        "timeline": "3-4 weeks"
+      },
+      {
+        "phase_name": "Phase 3: Optimization",
+        "description": "Refining and improving results",
+        "actions": ["Action 1", "Action 2", "Action 3"],
+        "timeline": "5-6 weeks"
       }
-    },
-    {
-      "layout": "filled",
-      "type": "scripts",
-      "title": "Action Plan Discussion Scripts",
-      "content": {
-        "scenarios": [
-          {
-            "trigger": "When someone asks about your action plan",
-            "response": "We've created a systematic approach with clear milestones and measurable outcomes",
-            "explanation": "Shows you have a structured, professional approach"
-          },
-          {
-            "trigger": "When explaining your progress",
-            "response": "We're on track with our action plan. Here are our key achievements and next steps",
-            "explanation": "Demonstrates accountability and forward thinking"
-          },
-          {
-            "trigger": "When discussing results",
-            "response": "Our action plan delivered [specific results]. Here's what we learned and how we'll improve",
-            "explanation": "Shows results orientation and continuous improvement"
-          }
-        ]
-      }
+    ]
+  },
+  "educational_content": {
+    "strategies": ["Strategy 1", "Strategy 2", "Strategy 3"],
+    "tips": ["Tip 1", "Tip 2", "Tip 3"],
+    "case_studies": ["Case study 1", "Case study 2"]
+  },
+  "interactive_elements": {
+    "progress_tracking": ["Track 1", "Track 2", "Track 3"],
+    "action_items": ["Action 1", "Action 2", "Action 3"]
+  }
+}
     }
   ],
   "cta_page": {
@@ -1159,112 +1126,57 @@ Make the content data-driven, insightful, and genuinely helpful. Focus on provid
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
-  "founder_intro": "...",
+  "founder_intro": "A personalized introduction from the founder explaining why they created this benchmark report and what value it provides.",
   "title_page": {
-    "layout": "centered",
     "title": "The [Benchmark Report Name] (Benchmark Report)",
     "subtitle": "Compare Your Performance to Industry Standards."
   },
   "introduction_page": {
-    "layout": "filled",
     "title": "Why You Need This Benchmark Report",
-    "content": "Introduction content here..."
+    "content": "Introduction content explaining the value and benefits of this benchmark analysis."
   },
-  "toolkit_sections": [
-    {
-      "layout": "filled",
-      "type": "pros_and_cons_list",
-      "title": "Benchmarking Strategies",
-      "content": {
-        "items": [
-          {
-            "method_name": "Industry Benchmark Analysis",
-            "pros": "Provides clear performance targets",
-            "cons": "May not reflect your unique situation",
-            "case_study": "A SaaS company improved conversion rates by 30% by benchmarking against industry leaders"
-          },
-          {
-            "method_name": "Competitive Benchmark Analysis",
-            "pros": "Identifies specific competitive advantages",
-            "cons": "Requires access to competitor data",
-            "case_study": "An e-commerce store increased market share by 25% through competitive benchmarking"
-          },
-          {
-            "method_name": "Internal Benchmark Analysis",
-            "pros": "Tracks your own progress over time",
-            "cons": "May not provide external context",
-            "case_study": "A consulting firm improved client satisfaction by 40% using internal benchmarks"
-          }
-        ]
+  "benchmark_content": {
+    "metrics": [
+      {
+        "metric_name": "Conversion Rate",
+        "description": "Your current conversion rate vs industry average",
+        "your_performance": "Your current rate",
+        "industry_average": "Industry average rate",
+        "gap_analysis": "Performance gap analysis"
+      },
+      {
+        "metric_name": "Customer Acquisition Cost",
+        "description": "Your CAC vs industry benchmarks",
+        "your_performance": "Your current CAC",
+        "industry_average": "Industry average CAC",
+        "gap_analysis": "Cost efficiency analysis"
       }
-    },
-    {
-      "layout": "filled",
-      "type": "checklist",
-      "title": "Benchmark Preparation Checklist",
-      "content": {
-        "phases": [
-          {
-            "phase_title": "Phase 1: Data Collection",
-            "items": [
-              "1.1 Gather current performance metrics",
-              "1.2 Identify key performance indicators",
-              "1.3 Collect industry benchmark data",
-              "1.4 Analyze competitor performance"
-            ]
-          },
-          {
-            "phase_title": "Phase 2: Analysis Setup",
-            "items": [
-              "2.1 Set up benchmarking framework",
-              "2.2 Define comparison criteria",
-              "2.3 Create performance baselines",
-              "2.4 Establish measurement systems"
-            ]
-          },
-          {
-            "phase_title": "Phase 3: Comparison Review",
-            "items": [
-              "3.1 Compare your metrics to benchmarks",
-              "3.2 Identify performance gaps",
-              "3.3 Analyze root causes of differences",
-              "3.4 Prioritize improvement opportunities"
-            ]
-          }
-        ],
-        "case_study": "A marketing agency used benchmarking to improve client ROI by 45% within 6 months"
+    ],
+    "comparison_categories": [
+      {
+        "category_name": "Performance Metrics",
+        "description": "Key performance indicators comparison",
+        "benchmarks": ["Benchmark 1", "Benchmark 2", "Benchmark 3"],
+        "improvement_opportunities": ["Opportunity 1", "Opportunity 2", "Opportunity 3"]
+      },
+      {
+        "category_name": "Efficiency Metrics",
+        "description": "Operational efficiency comparison",
+        "benchmarks": ["Benchmark 1", "Benchmark 2", "Benchmark 3"],
+        "improvement_opportunities": ["Opportunity 1", "Opportunity 2", "Opportunity 3"]
       }
-    },
-    {
-      "layout": "filled",
-      "type": "scripts",
-      "title": "Benchmark Discussion Scripts",
-      "content": {
-        "scenarios": [
-          {
-            "trigger": "When presenting benchmarks to stakeholders",
-            "response": "Our analysis shows we're performing at [X]% of industry standards. Here are our key opportunities",
-            "explanation": "Quantifies performance and shows strategic thinking"
-          },
-          {
-            "trigger": "When explaining performance gaps",
-            "response": "We've identified specific areas where we can improve. Here's our action plan to close these gaps",
-            "explanation": "Shows problem-solving approach"
-          },
-          {
-            "trigger": "When discussing improvement strategies",
-            "response": "Based on our benchmark analysis, we can improve performance by [X]% by implementing these strategies",
-            "explanation": "Demonstrates data-driven decision making"
-          }
-        ]
-      }
-    }
-  ],
-  "cta_page": {
-    "layout": "centered",
-    "title": "Get Your Benchmark Report",
-    "content": "Ready to see how you stack up? Get your personalized benchmark analysis."
+    ]
+  },
+  "educational_content": {
+    "insights": ["Insight 1", "Insight 2", "Insight 3"],
+    "best_practices": ["Practice 1", "Practice 2", "Practice 3"],
+    "case_studies": ["Case study 1", "Case study 2"]
+  },
+  "interactive_elements": {
+    "improvement_plans": ["Plan 1", "Plan 2", "Plan 3"],
+    "action_items": ["Action 1", "Action 2", "Action 3"]
   }
+}
 }`;
 
     case 'opportunity_finder':
@@ -1307,112 +1219,53 @@ Make the content strategic, insightful, and genuinely helpful. Focus on providin
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
-  "founder_intro": "...",
+  "founder_intro": "A personalized introduction from the founder explaining why they created this opportunity finder and what value it provides.",
   "title_page": {
-    "layout": "centered",
     "title": "The [Opportunity Finder Name] (Opportunity Finder)",
     "subtitle": "Discover Hidden Growth Opportunities in Your Business."
   },
   "introduction_page": {
-    "layout": "filled",
     "title": "Why You Need This Opportunity Finder",
-    "content": "Introduction content here..."
+    "content": "Introduction content explaining the value and benefits of this opportunity analysis."
   },
-  "toolkit_sections": [
-    {
-      "layout": "filled",
-      "type": "pros_and_cons_list",
-      "title": "Opportunity Finding Strategies",
-      "content": {
-        "items": [
-          {
-            "method_name": "Competitive Analysis",
-            "pros": "Identifies gaps in your market positioning",
-            "cons": "Requires significant research time",
-            "case_study": "A SaaS company discovered 3 untapped market segments through competitive analysis"
-          },
-          {
-            "method_name": "Customer Feedback Analysis",
-            "pros": "Direct insights from your target audience",
-            "cons": "May be biased by vocal minority",
-            "case_study": "An e-commerce store increased revenue by 40% after implementing customer feedback"
-          },
-          {
-            "method_name": "Data-Driven Gap Analysis",
-            "pros": "Objective, measurable approach",
-            "cons": "Requires good data infrastructure",
-            "case_study": "A consulting firm found 5 new service opportunities through data analysis"
-          }
-        ]
+  "opportunity_finder_content": {
+    "analysis_questions": [
+      {
+        "question": "What are your current revenue streams?",
+        "description": "Analyze your existing income sources",
+        "insights": ["Insight 1", "Insight 2", "Insight 3"]
+      },
+      {
+        "question": "What gaps exist in your market?",
+        "description": "Identify untapped market opportunities",
+        "insights": ["Insight 1", "Insight 2", "Insight 3"]
       }
-    },
-    {
-      "layout": "filled",
-      "type": "checklist",
-      "title": "Opportunity Analysis Checklist",
-      "content": {
-        "phases": [
-          {
-            "phase_title": "Phase 1: Business Analysis",
-            "items": [
-              "1.1 Review current revenue streams",
-              "1.2 Analyze customer acquisition channels",
-              "1.3 Assess technology stack usage",
-              "1.4 Evaluate marketing performance"
-            ]
-          },
-          {
-            "phase_title": "Phase 2: Opportunity Identification",
-            "items": [
-              "2.1 Compare with industry benchmarks",
-              "2.2 Identify service gaps",
-              "2.3 Analyze competitor offerings",
-              "2.4 Review customer feedback"
-            ]
-          },
-          {
-            "phase_title": "Phase 3: Implementation Planning",
-            "items": [
-              "3.1 Prioritize opportunities by impact",
-              "3.2 Estimate resource requirements",
-              "3.3 Create implementation timeline",
-              "3.4 Define success metrics"
-            ]
-          }
-        ],
-        "case_study": "A B2B company identified 7 new service opportunities and implemented 3 within 6 months, increasing revenue by 35%"
+    ],
+    "opportunity_categories": [
+      {
+        "category_name": "Revenue Opportunities",
+        "description": "New ways to increase revenue",
+        "opportunities": ["Opportunity 1", "Opportunity 2", "Opportunity 3"],
+        "implementation_roadmap": ["Step 1", "Step 2", "Step 3"]
+      },
+      {
+        "category_name": "Market Expansion",
+        "description": "Ways to reach new markets",
+        "opportunities": ["Opportunity 1", "Opportunity 2", "Opportunity 3"],
+        "implementation_roadmap": ["Step 1", "Step 2", "Step 3"]
       }
-    },
-    {
-      "layout": "filled",
-      "type": "scripts",
-      "title": "Opportunity Discussion Scripts",
-      "content": {
-        "scenarios": [
-          {
-            "trigger": "When someone asks about your business opportunities",
-            "response": "We've identified several untapped opportunities in our market. Would you like to see our analysis?",
-            "explanation": "This positions you as proactive and data-driven"
-          },
-          {
-            "trigger": "When presenting opportunities to stakeholders",
-            "response": "Based on our analysis, we've found 3 high-impact opportunities that could increase revenue by 25-40%",
-            "explanation": "Quantifies the value and shows strategic thinking"
-          },
-          {
-            "trigger": "When explaining opportunity implementation",
-            "response": "We've prioritized these opportunities by impact and resource requirements. Here's our 90-day implementation plan",
-            "explanation": "Shows you have a clear action plan"
-          }
-        ]
-      }
-    }
-  ],
-  "cta_page": {
-    "layout": "centered",
-    "title": "Find Your Opportunities",
-    "content": "Ready to discover hidden growth opportunities? Use this finder to identify your next big wins."
+    ]
+  },
+  "educational_content": {
+    "strategies": ["Strategy 1", "Strategy 2", "Strategy 3"],
+    "trends": ["Trend 1", "Trend 2", "Trend 3"],
+    "case_studies": ["Case study 1", "Case study 2"]
+  },
+  "interactive_elements": {
+    "implementation_plans": ["Plan 1", "Plan 2", "Plan 3"],
+    "action_items": ["Action 1", "Action 2", "Action 3"]
   }
+}
 }`;
 
     case 'pdf':
