@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Copy, ExternalLink, Mail } from 'lucide-react';
-import { CampaignOutput } from '../types/index';
+import { CampaignOutput, LeadMagnetFormat } from '../types/index';
 import PDFGenerator from './PDFGenerator';
 import EmailCapture from './EmailCapture';
 import { createClient } from '@supabase/supabase-js';
@@ -17,6 +17,7 @@ interface ResultsDisplayProps {
   userName?: string;
   problemStatement?: string;
   desiredOutcome?: string;
+  selectedFormat?: LeadMagnetFormat; // New prop for format information
   onCampaignCreated?: () => void;
   requirePayment?: boolean; // New prop to control payment requirement
 }
@@ -49,7 +50,7 @@ function getSuggestedSubreddits(niche: string): string[] {
   return key ? subredditSuggestions[key] : ['r/Entrepreneur', 'r/smallbusiness'];
 }
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, userName, problemStatement, desiredOutcome, onCampaignCreated, requirePayment = true }) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, userName, problemStatement, desiredOutcome, selectedFormat, onCampaignCreated, requirePayment = true }) => {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -68,6 +69,64 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
   const handleEmailSubmitted = () => {
     setEmailSubmitted(true);
   };
+
+  // Format-aware text and actions
+  const getFormatDisplayInfo = () => {
+    const format = selectedFormat || 'pdf';
+    
+    switch (format) {
+      case 'interactive_quiz':
+        return {
+          title: 'Take Quiz',
+          description: 'Enter your email to access your personalized interactive quiz',
+          successMessage: '✅ Email submitted! Your quiz is ready below.',
+          downloadText: 'Take Quiz Now',
+          isInteractive: true
+        };
+      case 'roi_calculator':
+        return {
+          title: 'Use Calculator',
+          description: 'Enter your email to access your personalized ROI calculator',
+          successMessage: '✅ Email submitted! Your calculator is ready below.',
+          downloadText: 'Use Calculator Now',
+          isInteractive: true
+        };
+      case 'action_plan':
+        return {
+          title: 'Get Action Plan',
+          description: 'Enter your email to access your personalized action plan',
+          successMessage: '✅ Email submitted! Your action plan is ready below.',
+          downloadText: 'Get Action Plan',
+          isInteractive: true
+        };
+      case 'benchmark_report':
+        return {
+          title: 'View Report',
+          description: 'Enter your email to access your personalized benchmark report',
+          successMessage: '✅ Email submitted! Your report is ready below.',
+          downloadText: 'View Report Now',
+          isInteractive: true
+        };
+      case 'opportunity_finder':
+        return {
+          title: 'Find Opportunities',
+          description: 'Enter your email to access your personalized opportunity finder',
+          successMessage: '✅ Email submitted! Your opportunity finder is ready below.',
+          downloadText: 'Find Opportunities',
+          isInteractive: true
+        };
+      default: // pdf
+        return {
+          title: 'Download PDF',
+          description: 'Enter your email to access your personalized PDF guide',
+          successMessage: '✅ Email submitted! Your guide is ready below.',
+          downloadText: 'Download as PDF',
+          isInteractive: false
+        };
+    }
+  };
+
+  const formatInfo = getFormatDisplayInfo();
 
   // Process PDF content
   const processPdfContent = () => {
@@ -256,7 +315,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
               <Mail className="h-8 w-8 text-gray-600 mx-auto mb-2" />
               <h3 className="text-lg font-semibold text-gray-900">Enter Your Email to Get Your Lead Magnet</h3>
               <p className="text-gray-600 text-sm">
-                Please enter your email to access your personalized PDF guide
+                {formatInfo.description}
               </p>
             </div>
             <EmailCapture onEmailSubmitted={handleEmailSubmitted} />
@@ -266,10 +325,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
         <div className="max-w-5xl mx-auto">
           <div className={`border rounded-lg p-4 mb-6 ${pdfError ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`}>
             <p className={`text-center ${pdfError ? 'text-red-700' : 'text-green-700'}`}>
-              {pdfError ? `⚠️ ${pdfError}` : '✅ Email submitted! Your guide is ready below.'}
+              {pdfError ? `⚠️ ${pdfError}` : formatInfo.successMessage}
             </p>
           </div>
-          {pdfContent && <PDFGenerator data={pdfContent} campaignId={''} requirePayment={requirePayment} />}
+          {pdfContent && <PDFGenerator data={pdfContent} campaignId={''} requirePayment={requirePayment} selectedFormat={selectedFormat} />}
         </div>
       )}
 

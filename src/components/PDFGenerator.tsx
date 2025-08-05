@@ -1,6 +1,6 @@
 // @ts-ignore: No types for html2pdf.js
 import React, { useRef, useState } from 'react';
-import { PDFContent } from '../types';
+import { PDFContent, LeadMagnetFormat } from '../types';
 import html2pdf from 'html2pdf.js';
 
 
@@ -13,9 +13,10 @@ interface PDFGeneratorProps {
   data: PDFContent;
   campaignId: string;
   requirePayment?: boolean; // New prop to control paywall
+  selectedFormat?: LeadMagnetFormat; // New prop for format information
 }
 
-const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePayment = false }) => {
+const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePayment = false, selectedFormat }) => {
   const pdfRef = useRef<HTMLDivElement>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentComplete, setPaymentComplete] = useState(false);
@@ -43,6 +44,26 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
       return;
     }
     handleDownloadPDF();
+  };
+
+  // Format-aware button text
+  const getDownloadButtonText = () => {
+    const format = selectedFormat || 'pdf';
+    
+    switch (format) {
+      case 'interactive_quiz':
+        return paymentComplete && requirePayment ? 'Take Quiz Again' : 'Take Quiz Now';
+      case 'roi_calculator':
+        return paymentComplete && requirePayment ? 'Use Calculator Again' : 'Use Calculator Now';
+      case 'action_plan':
+        return paymentComplete && requirePayment ? 'Get Action Plan Again' : 'Get Action Plan';
+      case 'benchmark_report':
+        return paymentComplete && requirePayment ? 'View Report Again' : 'View Report Now';
+      case 'opportunity_finder':
+        return paymentComplete && requirePayment ? 'Find Opportunities Again' : 'Find Opportunities';
+      default: // pdf
+        return paymentComplete && requirePayment ? 'Download PDF Again' : 'Download as PDF';
+    }
   };
 
   // Debug logging to understand the data structure
@@ -1133,7 +1154,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
             onClick={tryDownloadPDF}
             className="download-btn"
           >
-            {paymentComplete && requirePayment ? 'Download PDF Again' : 'Download as PDF'}
+            {getDownloadButtonText()}
           </button>
         </div>
         {requirePayment && (

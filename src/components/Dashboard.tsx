@@ -239,17 +239,57 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
                 </button>
                 <div className="text-xs text-gray-700 mt-1">Completed</div>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  <button
-                                          className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-xs font-semibold"
+                                    <button
+                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-xs font-semibold"
                     onClick={() => setViewPdfCampaign(campaign)}
                   >
-                    View PDF
+                    {(() => {
+                      // Extract format from lead_magnet_content
+                      if (campaign.lead_magnet_content) {
+                        const content = typeof campaign.lead_magnet_content === 'string' 
+                          ? JSON.parse(campaign.lead_magnet_content) 
+                          : campaign.lead_magnet_content;
+                        
+                        if (content.interactive_content?.format) {
+                          const format = content.interactive_content.format;
+                          switch (format) {
+                            case 'interactive_quiz': return 'Take Quiz';
+                            case 'roi_calculator': return 'Use Calculator';
+                            case 'action_plan': return 'Get Action Plan';
+                            case 'benchmark_report': return 'View Report';
+                            case 'opportunity_finder': return 'Find Opportunities';
+                            default: return 'View PDF';
+                          }
+                        }
+                      }
+                      return 'View PDF';
+                    })()}
                   </button>
                   <button
                     className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded hover:bg-yellow-200 text-xs font-semibold"
                     onClick={() => handleEditClick(campaign)}
                   >
-                    Edit PDF
+                    {(() => {
+                      // Extract format from lead_magnet_content
+                      if (campaign.lead_magnet_content) {
+                        const content = typeof campaign.lead_magnet_content === 'string' 
+                          ? JSON.parse(campaign.lead_magnet_content) 
+                          : campaign.lead_magnet_content;
+                        
+                        if (content.interactive_content?.format) {
+                          const format = content.interactive_content.format;
+                          switch (format) {
+                            case 'interactive_quiz': return 'Edit Quiz';
+                            case 'roi_calculator': return 'Edit Calculator';
+                            case 'action_plan': return 'Edit Action Plan';
+                            case 'benchmark_report': return 'Edit Report';
+                            case 'opportunity_finder': return 'Edit Opportunities';
+                            default: return 'Edit PDF';
+                          }
+                        }
+                      }
+                      return 'Edit PDF';
+                    })()}
                   </button>
                   <button
                     className="px-3 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 text-xs font-semibold"
@@ -281,7 +321,27 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
       <Modal
         isOpen={!!viewPdfCampaign}
         onRequestClose={() => setViewPdfCampaign(null)}
-        contentLabel="View PDF"
+        contentLabel={(() => {
+          // Extract format from lead_magnet_content
+          if (viewPdfCampaign?.lead_magnet_content) {
+            const content = typeof viewPdfCampaign.lead_magnet_content === 'string' 
+              ? JSON.parse(viewPdfCampaign.lead_magnet_content) 
+              : viewPdfCampaign.lead_magnet_content;
+            
+            if (content.interactive_content?.format) {
+              const format = content.interactive_content.format;
+              switch (format) {
+                case 'interactive_quiz': return 'Take Quiz';
+                case 'roi_calculator': return 'Use Calculator';
+                case 'action_plan': return 'Get Action Plan';
+                case 'benchmark_report': return 'View Report';
+                case 'opportunity_finder': return 'Find Opportunities';
+                default: return 'View PDF';
+              }
+            }
+          }
+          return 'View PDF';
+        })()}
         ariaHideApp={false}
         style={{ content: { maxWidth: 900, margin: 'auto', height: '90vh', overflow: 'auto' } }}
       >
@@ -293,6 +353,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
               : viewPdfCampaign.lead_magnet_content}
             campaignId={''}
             requirePayment={true}
+            selectedFormat={(() => {
+              // Extract format from lead_magnet_content
+              if (viewPdfCampaign.lead_magnet_content) {
+                const content = typeof viewPdfCampaign.lead_magnet_content === 'string' 
+                  ? JSON.parse(viewPdfCampaign.lead_magnet_content) 
+                  : viewPdfCampaign.lead_magnet_content;
+                
+                if (content.interactive_content?.format) {
+                  return content.interactive_content.format;
+                }
+              }
+              return 'pdf';
+            })()}
           />
         )}
       </Modal>

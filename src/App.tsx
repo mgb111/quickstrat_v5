@@ -685,6 +685,7 @@ function App() {
               userName={wizardState.input?.name || ''}
               problemStatement={wizardState.input?.problem_statement || ''}
               desiredOutcome={wizardState.input?.desired_outcome || ''}
+              selectedFormat={wizardState.input?.selected_format}
               onCampaignCreated={handleCampaignCreated}
             />
           </div>

@@ -728,6 +728,8 @@ ${corePrinciples}
 
 GENERATE AN INTERACTIVE QUIZ LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 
+IMPORTANT: This content will be displayed in a PDF preview, so it must include traditional PDF sections that can be visually displayed.
+
 1. Title Page:
 - Title: A compelling quiz title that promises specific insights
 - Subtitle: Explains what the quiz will diagnose
@@ -736,17 +738,25 @@ GENERATE AN INTERACTIVE QUIZ LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 - Hook the reader with a sharp pain point
 - Explain what insights they'll receive from taking the quiz
 
-3. Quiz Questions (5-10 questions):
-Each question should have:
-- Question text that reveals root causes
-- 3-4 answer options
-- Insight explanation of what this question reveals
+3. Strategy Analysis Section (for PDF display):
+- Create a "pros_and_cons_list" section with 3-4 quiz strategies/methods
+- Each strategy should have pros, cons, and a case study
+- Focus on different approaches to problem diagnosis
 
-4. Diagnosis Categories (3-4 categories):
-Each category should have:
-- Category name and description
-- Symptoms list
-- Solutions list
+4. Action Checklist Section (for PDF display):
+- Create a "checklist" section with phases for quiz preparation
+- Include phases like "Pre-Quiz Preparation", "During Quiz", "Post-Quiz Analysis"
+- Each phase should have actionable checklist items
+
+5. Conversation Scripts Section (for PDF display):
+- Create a "scripts" section with scenarios for discussing quiz results
+- Include scenarios like "When someone asks about the quiz", "How to explain the results"
+- Each scenario should have trigger, response, and explanation
+
+6. Interactive Quiz Content (for actual quiz):
+- Include 5-10 quiz questions with multiple choice answers
+- Add 3-4 diagnosis categories with symptoms and solutions
+- This will be used for the actual interactive quiz functionality
 - Brief case study example
 
 5. Action Plan:
@@ -832,6 +842,8 @@ ${corePrinciples}
 
 GENERATE AN ROI CALCULATOR LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 
+IMPORTANT: This content will be displayed in a PDF preview, so it must include traditional PDF sections that can be visually displayed.
+
 1. Title Page:
 - Title: A compelling calculator title that promises specific ROI insights
 - Subtitle: Explains what the calculator will reveal
@@ -840,31 +852,25 @@ GENERATE AN ROI CALCULATOR LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 - Hook with the pain of not knowing your true ROI
 - Explain what insights they'll get from the calculator
 
-3. Input Fields Section:
-Generate 5-8 input fields that users will fill out, such as:
-- Current monthly revenue
-- Customer acquisition cost
-- Average order value
-- Conversion rate
-- Customer lifetime value
-- Marketing spend
-- Industry benchmarks
+3. Strategy Analysis Section (for PDF display):
+- Create a "pros_and_cons_list" section with 3-4 ROI calculation methods
+- Each method should have pros, cons, and a case study
+- Focus on different approaches to financial analysis
 
-4. Calculation Logic:
-- Revenue optimization calculations
-- Cost reduction scenarios
-- Efficiency improvement formulas
-- Break-even analysis
+4. Action Checklist Section (for PDF display):
+- Create a "checklist" section with phases for ROI preparation
+- Include phases like "Data Collection", "Calculation Setup", "Analysis Review"
+- Each phase should have actionable checklist items
 
-5. Results Categories:
-- Immediate opportunities (quick wins)
-- Medium-term improvements (30-90 days)
-- Long-term optimizations (6-12 months)
+5. Conversation Scripts Section (for PDF display):
+- Create a "scripts" section with scenarios for discussing ROI results
+- Include scenarios like "When presenting ROI to stakeholders", "How to explain calculations"
+- Each scenario should have trigger, response, and explanation
 
-6. Implementation Guide:
-- Step-by-step action plan
-- Timeline for each improvement
-- Expected ROI for each action
+6. Interactive Calculator Content (for actual calculator):
+- Include input fields and calculation formulas
+- Add different result categories with insights
+- This will be used for the actual interactive calculator functionality
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
@@ -943,6 +949,8 @@ ${corePrinciples}
 
 GENERATE AN ACTION PLAN LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 
+IMPORTANT: This content will be displayed in a PDF preview, so it must include traditional PDF sections that can be visually displayed.
+
 1. Title Page:
 - Title: A compelling action plan title that promises specific results
 - Subtitle: Explains what the action plan will deliver
@@ -951,32 +959,25 @@ GENERATE AN ACTION PLAN LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 - Hook with the pain of not having a clear plan
 - Explain what they'll get from this action plan
 
-3. Personalization Questions:
-Generate 5-7 questions that will customize the action plan:
-- Business niche/industry
-- Current situation
-- Specific goals
-- Timeline
-- Available resources
-- Previous attempts
+3. Strategy Analysis Section (for PDF display):
+- Create a "pros_and_cons_list" section with 3-4 action plan strategies
+- Each strategy should have pros, cons, and a case study
+- Focus on different approaches to goal achievement
 
-4. Action Plan Sections:
-- Week 1: Foundation building
-- Week 2: Implementation start
-- Week 3: Optimization
-- Week 4: Scaling
+4. Action Checklist Section (for PDF display):
+- Create a "checklist" section with phases for action plan execution
+- Include phases like "Preparation", "Implementation", "Optimization", "Scaling"
+- Each phase should have actionable checklist items
 
-5. Each Week Should Include:
-- Specific tasks and activities
-- Expected outcomes
-- Time requirements
-- Success metrics
-- Troubleshooting tips
+5. Conversation Scripts Section (for PDF display):
+- Create a "scripts" section with scenarios for discussing action plans
+- Include scenarios like "When someone asks about your plan", "How to explain your progress"
+- Each scenario should have trigger, response, and explanation
 
-6. Progress Tracking:
-- Weekly check-ins
-- Milestone markers
-- Adjustment guidelines
+6. Interactive Action Plan Content (for actual action plan):
+- Include personalization questions and weekly plans
+- Add progress tracking and milestone markers
+- This will be used for the actual interactive action plan functionality
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
@@ -1047,6 +1048,8 @@ ${corePrinciples}
 
 GENERATE A BENCHMARK REPORT LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 
+IMPORTANT: This content will be displayed in a PDF preview, so it must include traditional PDF sections that can be visually displayed.
+
 1. Title Page:
 - Title: A compelling benchmark report title
 - Subtitle: Explains what the benchmark report will reveal
@@ -1055,30 +1058,25 @@ GENERATE A BENCHMARK REPORT LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 - Hook with the pain of not knowing how you compare
 - Explain what insights they'll get from the benchmark
 
-3. Metrics Input Section:
-Generate 8-12 input fields for key business metrics:
-- Revenue metrics
-- Marketing metrics
-- Customer metrics
-- Operational metrics
-- Industry-specific metrics
+3. Strategy Analysis Section (for PDF display):
+- Create a "pros_and_cons_list" section with 3-4 benchmarking strategies
+- Each strategy should have pros, cons, and a case study
+- Focus on different approaches to performance measurement
 
-4. Benchmark Analysis:
-- Industry averages for each metric
-- Performance comparison (above/below average)
-- Gap analysis
-- Opportunity identification
+4. Action Checklist Section (for PDF display):
+- Create a "checklist" section with phases for benchmark preparation
+- Include phases like "Data Collection", "Analysis Setup", "Comparison Review"
+- Each phase should have actionable checklist items
 
-5. Improvement Strategies:
-- Specific actions for each gap
-- Expected improvement for each action
-- Implementation timeline
-- Resource requirements
+5. Conversation Scripts Section (for PDF display):
+- Create a "scripts" section with scenarios for discussing benchmark results
+- Include scenarios like "When presenting benchmarks to stakeholders", "How to explain performance gaps"
+- Each scenario should have trigger, response, and explanation
 
-6. ROI Impact Analysis:
-- Revenue impact of improvements
-- Cost savings potential
-- Timeline for results
+6. Interactive Benchmark Content (for actual benchmark report):
+- Include metrics input fields and comparison analysis
+- Add improvement strategies and ROI impact analysis
+- This will be used for the actual interactive benchmark report functionality
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
@@ -1158,6 +1156,8 @@ ${corePrinciples}
 
 GENERATE AN OPPORTUNITY FINDER LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 
+IMPORTANT: This content will be displayed in a PDF preview, so it must include traditional PDF sections that can be visually displayed.
+
 1. Title Page:
 - Title: A compelling opportunity finder title
 - Subtitle: Explains what opportunities the finder will reveal
@@ -1166,32 +1166,25 @@ GENERATE AN OPPORTUNITY FINDER LEAD MAGNET WITH THE FOLLOWING STRUCTURE:
 - Hook with the pain of missing opportunities
 - Explain what opportunities they'll discover
 
-3. Analysis Questions:
-Generate 8-12 questions that will identify missed opportunities:
-- Current business practices
-- Marketing channels used
-- Customer acquisition methods
-- Revenue streams
-- Technology usage
-- Competitive analysis
+3. Strategy Analysis Section (for PDF display):
+- Create a "pros_and_cons_list" section with 3-4 opportunity finding strategies
+- Each strategy should have pros, cons, and a case study
+- Focus on different approaches to opportunity identification
 
-4. Opportunity Categories:
-- High-priority opportunities (immediate impact)
-- Medium-priority opportunities (30-90 days)
-- Low-priority opportunities (long-term)
+4. Action Checklist Section (for PDF display):
+- Create a "checklist" section with phases for opportunity analysis
+- Include phases like "Business Analysis", "Opportunity Identification", "Implementation Planning"
+- Each phase should have actionable checklist items
 
-5. Each Opportunity Should Include:
-- Specific opportunity description
-- Impact assessment (revenue/customers)
-- Implementation difficulty
-- Timeline for results
-- Required resources
+5. Conversation Scripts Section (for PDF display):
+- Create a "scripts" section with scenarios for discussing opportunities
+- Include scenarios like "When presenting opportunities to stakeholders", "How to explain opportunity impact"
+- Each scenario should have trigger, response, and explanation
 
-6. Implementation Roadmap:
-- Prioritized action plan
-- Step-by-step implementation
-- Success metrics
-- Risk mitigation
+6. Interactive Opportunity Content (for actual opportunity finder):
+- Include analysis questions and opportunity categories
+- Add implementation roadmap and success metrics
+- This will be used for the actual interactive opportunity finder functionality
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
