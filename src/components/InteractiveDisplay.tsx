@@ -33,6 +33,12 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
     setEmailSubmitted(true);
   };
 
+  // Parse content once at component level
+  const content = typeof results.pdf_content === 'string'
+    ? JSON.parse(results.pdf_content)
+    : results.pdf_content;
+
+
   // Handle calculator input changes
   const handleCalculatorInputChange = (fieldName: string, value: string) => {
     const numericValue = parseFloat(value) || 0;
@@ -40,75 +46,50 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
     setCalculatorInputs(newInputs);
     
     // Perform real-time calculations
-    calculateROI(newInputs);
+    calculateResults(newInputs);
   };
 
-  // ROI Calculation Logic
-  const calculateROI = (inputs: Record<string, number>) => {
+  // Generic Calculation Logic - works with any calculator content
+  const calculateResults = (inputs: Record<string, number>) => {
     const results: Record<string, any> = {};
     
-    // Get common input values
-    const currentRevenue = inputs['Current Revenue'] || inputs['Current Spending on Styling'] || 0;
-    const currentCosts = inputs['Current Costs'] || 0;
-    const conversionRate = inputs['Conversion Rate'] || inputs['Number of Styling Sessions'] || 0;
-    const averageTime = inputs['Average Time Spent on Styling'] || 0;
+    // Get all input values that have been entered
+    const inputEntries = Object.entries(inputs).filter(([_, value]) => value > 0);
     
-    // Revenue Optimization Calculations
-    if (currentRevenue > 0) {
-      const optimizedRevenue = currentRevenue * 1.25; // 25% improvement
-      const revenueGain = optimizedRevenue - currentRevenue;
-      const monthlyGain = revenueGain;
-      const yearlyGain = revenueGain * 12;
-      
-      results.revenueOptimization = {
-        current: currentRevenue,
-        optimized: optimizedRevenue,
-        monthlyGain: monthlyGain,
-        yearlyGain: yearlyGain,
-        percentage: 25
-      };
+    if (inputEntries.length === 0) {
+      results.summary = { hasResults: false };
+      setCalculationResults(results);
+      return;
     }
     
-    // Cost Reduction Calculations
-    if (currentCosts > 0) {
-      const optimizedCosts = currentCosts * 0.8; // 20% cost reduction
-      const costSavings = currentCosts - optimizedCosts;
-      const monthlySavings = costSavings;
-      const yearlySavings = costSavings * 12;
+    // Use the AI-generated calculation categories if available
+    if (content.calculator_content?.calculation_categories) {
+      content.calculator_content.calculation_categories.forEach((category: any, index: number) => {
+        const categoryKey = `category_${index}`;
+        
+        results[categoryKey] = {
+          name: category.category_name || `Category ${index + 1}`,
+          description: category.description || '',
+          potential_result: category.potential_savings || category.potential_gains || 'Result calculated from your inputs',
+          details: category.savings || category.improvements || [],
+          inputData: inputEntries
+        };
+      });
+    } else {
+      // Fallback: Show input summary
+      const totalValue = inputEntries.reduce((sum, [_, value]) => sum + value, 0);
       
-      results.costReduction = {
-        current: currentCosts,
-        optimized: optimizedCosts,
-        monthlySavings: monthlySavings,
-        yearlySavings: yearlySavings,
-        percentage: 20
+      results.inputSummary = {
+        name: 'Input Summary',
+        description: 'Your entered values',
+        totalValue: totalValue,
+        inputs: inputEntries.map(([key, value]) => ({ field: key, value: value }))
       };
     }
-    
-    // Time Efficiency Calculations
-    if (averageTime > 0) {
-      const optimizedTime = averageTime * 0.7; // 30% time savings
-      const timeSaved = averageTime - optimizedTime;
-      const sessionsPerMonth = conversionRate || 4;
-      const monthlyTimeSaved = timeSaved * sessionsPerMonth;
-      
-      results.timeEfficiency = {
-        currentTime: averageTime,
-        optimizedTime: optimizedTime,
-        timeSavedPerSession: timeSaved,
-        monthlyTimeSaved: monthlyTimeSaved,
-        percentage: 30
-      };
-    }
-    
-    // ROI Summary
-    const totalMonthlyBenefit = (results.revenueOptimization?.monthlyGain || 0) + (results.costReduction?.monthlySavings || 0);
-    const totalYearlyBenefit = totalMonthlyBenefit * 12;
     
     results.summary = {
-      totalMonthlyBenefit,
-      totalYearlyBenefit,
-      hasResults: Object.keys(inputs).length > 0 && Object.values(inputs).some(v => v > 0)
+      hasResults: true,
+      totalInputs: inputEntries.length
     };
     
     setCalculationResults(results);
@@ -282,49 +263,55 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </ul>
             </div>
 
-            {/* Interactive Quiz Questions */}
-            <div className="bg-indigo-50 rounded-lg p-6 mb-6">
-              <h2 className="text-xl font-semibold text-indigo-900 mb-4">📝 Quick Assessment</h2>
-              <div className="space-y-4">
-                {[
-                  { question: "What's your primary concern when choosing styling services?", options: ["Budget and cost", "Time efficiency", "Quality and results", "Convenience"] },
-                  { question: "How often do you typically update your wardrobe?", options: ["Every few months", "Seasonally", "Once a year", "Only when necessary"] },
-                  { question: "What's your biggest styling challenge?", options: ["Finding time to shop", "Staying within budget", "Knowing what looks good", "Keeping up with trends"] },
-                  { question: "Which best describes your lifestyle?", options: ["Fast-paced professional", "Budget-conscious", "Quality-focused", "Balanced approach"] },
-                  { question: "What would make the biggest impact on your styling routine?", options: ["Saving money", "Saving time", "Better quality results", "More convenience"] }
-                ].map((q, index) => (
-                  <div key={index} className="bg-white rounded-lg p-4 border border-indigo-200">
-                    <h3 className="font-medium text-indigo-900 mb-3">{index + 1}. {q.question}</h3>
-                    <div className="space-y-2">
-                      {q.options.map((option, optIndex) => (
-                        <label key={optIndex} className="flex items-center cursor-pointer">
-                          <input
-                            type="radio"
-                            name={`question-${index}`}
-                            value={option}
-                            checked={quizAnswers[index] === option}
-                            onChange={(e) => {
-                              handleQuizAnswer(index, e.target.value);
-                              setTimeout(calculateQuizResults, 100);
-                            }}
-                            className="mr-3 text-indigo-600"
-                          />
-                          <span className="text-indigo-800">{option}</span>
-                        </label>
-                      ))}
+            {/* Dynamic Quiz Questions - Based on AI Content */}
+            {content.quiz_content?.questions && (
+              <div className="bg-indigo-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-indigo-900 mb-4">📝 {content.quiz_content.title || 'Assessment'}</h2>
+                <div className="space-y-4">
+                  {content.quiz_content.questions.map((q: any, index: number) => (
+                    <div key={index} className="bg-white rounded-lg p-4 border border-indigo-200">
+                      <h3 className="font-medium text-indigo-900 mb-3">{index + 1}. {q.question || q.text}</h3>
+                      <div className="space-y-2">
+                        {(q.options || q.answers || []).map((option: string, optIndex: number) => (
+                          <label key={optIndex} className="flex items-center cursor-pointer">
+                            <input
+                              type="radio"
+                              name={`question-${index}`}
+                              value={option}
+                              checked={quizAnswers[index] === option}
+                              onChange={(e) => {
+                                handleQuizAnswer(index, e.target.value);
+                                setTimeout(calculateQuizResults, 100);
+                              }}
+                              className="mr-3 text-indigo-600"
+                            />
+                            <span className="text-indigo-800">{option}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+            
+            {/* Fallback Quiz if no AI content */}
+            {!content.quiz_content?.questions && (
+              <div className="bg-indigo-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-indigo-900 mb-4">📝 Quick Assessment</h2>
+                <p className="text-indigo-700 text-center py-8">
+                  Quiz questions will be generated based on your specific topic and displayed here.
+                </p>
+              </div>
+            )}
 
-            {/* Quiz Results */}
+            {/* Dynamic Quiz Results */}
             {quizResults && (
               <div className="bg-green-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-green-900 mb-4">🎯 Your Styling Personality</h2>
+                <h2 className="text-xl font-semibold text-green-900 mb-4">🎯 Your Results</h2>
                 <div className="bg-white rounded-lg p-4 border border-green-200 mb-4">
                   <h3 className="font-bold text-green-900 text-lg mb-2">
-                    You're: <span className="capitalize">{quizResults.primaryCategory.replace('-', ' ')}</span>
+                    Result: <span className="capitalize">{quizResults.primaryCategory.replace('-', ' ')}</span>
                   </h3>
                   <div className="mb-3">
                     <div className="bg-green-200 rounded-full h-2">
@@ -338,7 +325,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                 </div>
                 
                 <div className="bg-white rounded-lg p-4 border border-green-200">
-                  <h4 className="font-semibold text-green-900 mb-2">📋 Personalized Recommendations:</h4>
+                  <h4 className="font-semibold text-green-900 mb-2">📋 Recommendations:</h4>
                   <ul className="space-y-2">
                     {quizResults.recommendations.map((rec: string, index: number) => (
                       <li key={index} className="text-green-800 flex items-start">
@@ -353,7 +340,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
 
             <div className="text-center">
               {quizResults ? (
-                <button 
+              <button 
                   className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
                   onClick={() => {
                     const resultText = `Styling Personality Quiz Results:\n\nYour Type: ${quizResults.primaryCategory.replace('-', ' ')}\n\nRecommendations:\n${quizResults.recommendations.map((r: string) => `• ${r}`).join('\n')}`;
@@ -362,7 +349,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                   }}
                 >
                   📋 Copy Results
-                </button>
+              </button>
               ) : (
                 <div className="bg-blue-100 border border-blue-300 rounded-lg p-4">
                   <h3 className="text-lg font-semibold text-blue-800 mb-2">Ready to Start?</h3>
@@ -372,6 +359,70 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                 </div>
               )}
             </div>
+
+            {/* Educational Content - After Quiz */}
+            {quizResults && content.educational_content && (
+              <div className="bg-purple-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-purple-900 mb-4">📚 Insights & Tips</h2>
+                {content.educational_content.insights && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-purple-800 mb-2">Key Insights:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.insights.map((insight: string, index: number) => (
+                        <li key={index}>• {insight}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.educational_content.benchmarks && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-purple-800 mb-2">Industry Benchmarks:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.benchmarks.map((benchmark: string, index: number) => (
+                        <li key={index}>• {benchmark}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.educational_content.case_studies && (
+                  <div>
+                    <h3 className="font-semibold text-purple-800 mb-2">Case Studies:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.case_studies.map((caseStudy: string, index: number) => (
+                        <li key={index}>• {caseStudy}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Next Steps - After Quiz */}
+            {quizResults && content.interactive_elements && (
+              <div className="bg-orange-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-orange-900 mb-4">🚀 Next Steps</h2>
+                {content.interactive_elements.next_steps && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-orange-800 mb-2">Recommended Actions:</h3>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      {content.interactive_elements.next_steps.map((step: string, index: number) => (
+                        <li key={index}>• {step}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.interactive_elements.action_items && (
+                  <div>
+                    <h3 className="font-semibold text-orange-800 mb-2">Action Items:</h3>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      {content.interactive_elements.action_items.map((item: string, index: number) => (
+                        <li key={index}>• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         );
 
@@ -419,7 +470,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
             )}
 
             {/* Real-Time Calculation Results */}
-            <div className="bg-blue-50 rounded-lg p-6 mb-6">
+              <div className="bg-blue-50 rounded-lg p-6 mb-6">
               <h2 className="text-xl font-semibold text-blue-900 mb-4">💰 Real-Time Calculation Results</h2>
               {!calculationResults.summary?.hasResults ? (
                 <div className="text-center py-8 text-blue-700">
@@ -427,125 +478,251 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                   <p className="text-sm mt-2">Your results will update automatically as you type.</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {/* Revenue Optimization */}
-                  {calculationResults.revenueOptimization && (
-                    <div className="bg-white rounded-lg p-4 border border-blue-200">
-                      <h3 className="font-semibold text-blue-900 mb-2">📈 Revenue Optimization</h3>
-                      <p className="text-sm text-blue-700 mb-3">Potential revenue gains from optimization</p>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-blue-800 font-medium">Current: </span>
-                          <span className="text-blue-900">${calculationResults.revenueOptimization.current.toLocaleString()}</span>
-                        </div>
-                        <div>
-                          <span className="text-blue-800 font-medium">Optimized: </span>
-                          <span className="text-green-600 font-bold">${calculationResults.revenueOptimization.optimized.toLocaleString()}</span>
-                        </div>
-                        <div>
-                          <span className="text-blue-800 font-medium">Monthly Gain: </span>
-                          <span className="text-green-600 font-bold">+${calculationResults.revenueOptimization.monthlyGain.toLocaleString()}</span>
-                        </div>
-                        <div>
-                          <span className="text-blue-800 font-medium">Yearly Gain: </span>
-                          <span className="text-green-600 font-bold">+${calculationResults.revenueOptimization.yearlyGain.toLocaleString()}</span>
-                        </div>
+                                <div className="space-y-4">
+                  {/* Dynamic Results - Based on AI-Generated Categories */}
+                  {Object.entries(calculationResults)
+                    .filter(([key, _]) => key !== 'summary')
+                    .map(([key, result]: [string, any], index) => (
+                      <div key={key} className="bg-white rounded-lg p-4 border border-blue-200">
+                        <h3 className="font-semibold text-blue-900 mb-2">
+                          📊 {result.name}
+                        </h3>
+                        <p className="text-sm text-blue-700 mb-3">{result.description}</p>
+                        
+                        {/* Show input data */}
+                        {result.inputData && result.inputData.length > 0 && (
+                          <div className="mb-3">
+                            <h4 className="text-sm font-medium text-blue-800 mb-2">Your Inputs:</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                              {result.inputData.map(([field, value]: [string, number], idx: number) => (
+                                <div key={idx} className="flex justify-between">
+                                  <span className="text-blue-700">{field}:</span>
+                                  <span className="font-medium text-blue-900">{value}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Show potential result */}
+                        {result.potential_result && (
+                          <div className="mb-3">
+                            <h4 className="text-sm font-medium text-blue-800 mb-1">Result:</h4>
+                            <p className="text-sm text-green-700 font-medium">{result.potential_result}</p>
+                          </div>
+                        )}
+                        
+                        {/* Show details/improvements */}
+                        {result.details && result.details.length > 0 && (
+                          <div>
+                            <h4 className="text-sm font-medium text-blue-800 mb-1">Details:</h4>
+                            <ul className="text-sm text-blue-700 space-y-1">
+                              {result.details.map((detail: string, idx: number) => (
+                                <li key={idx}>• {detail}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        
+                        {/* Fallback for input summary */}
+                        {result.totalValue && (
+                          <div className="text-center">
+                            <p className="text-lg font-bold text-blue-900">
+                              Total: {result.totalValue}
+                            </p>
+                          </div>
+                        )}
                       </div>
-                      <div className="mt-2 text-sm">
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded">
-                          {calculationResults.revenueOptimization.percentage}% improvement
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Cost Reduction */}
-                  {calculationResults.costReduction && (
-                    <div className="bg-white rounded-lg p-4 border border-blue-200">
-                      <h3 className="font-semibold text-blue-900 mb-2">💰 Cost Reduction</h3>
-                      <p className="text-sm text-blue-700 mb-3">Potential cost savings opportunities</p>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-blue-800 font-medium">Current Costs: </span>
-                          <span className="text-blue-900">${calculationResults.costReduction.current.toLocaleString()}</span>
-                        </div>
-                        <div>
-                          <span className="text-blue-800 font-medium">Optimized Costs: </span>
-                          <span className="text-green-600 font-bold">${calculationResults.costReduction.optimized.toLocaleString()}</span>
-                        </div>
-                        <div>
-                          <span className="text-blue-800 font-medium">Monthly Savings: </span>
-                          <span className="text-green-600 font-bold">${calculationResults.costReduction.monthlySavings.toLocaleString()}</span>
-                        </div>
-                        <div>
-                          <span className="text-blue-800 font-medium">Yearly Savings: </span>
-                          <span className="text-green-600 font-bold">${calculationResults.costReduction.yearlySavings.toLocaleString()}</span>
-                        </div>
-                      </div>
-                      <div className="mt-2 text-sm">
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded">
-                          {calculationResults.costReduction.percentage}% cost reduction
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Time Efficiency */}
-                  {calculationResults.timeEfficiency && (
-                    <div className="bg-white rounded-lg p-4 border border-blue-200">
-                      <h3 className="font-semibold text-blue-900 mb-2">⏱️ Time Efficiency</h3>
-                      <p className="text-sm text-blue-700 mb-3">Time savings from optimization</p>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-blue-800 font-medium">Current Time: </span>
-                          <span className="text-blue-900">{calculationResults.timeEfficiency.currentTime} min</span>
-                        </div>
-                        <div>
-                          <span className="text-blue-800 font-medium">Optimized Time: </span>
-                          <span className="text-green-600 font-bold">{calculationResults.timeEfficiency.optimizedTime.toFixed(1)} min</span>
-                        </div>
-                        <div>
-                          <span className="text-blue-800 font-medium">Time Saved/Session: </span>
-                          <span className="text-green-600 font-bold">{calculationResults.timeEfficiency.timeSavedPerSession.toFixed(1)} min</span>
-                        </div>
-                        <div>
-                          <span className="text-blue-800 font-medium">Monthly Time Saved: </span>
-                          <span className="text-green-600 font-bold">{calculationResults.timeEfficiency.monthlyTimeSaved.toFixed(1)} min</span>
-                        </div>
-                      </div>
-                      <div className="mt-2 text-sm">
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded">
-                          {calculationResults.timeEfficiency.percentage}% time savings
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Summary */}
-                  {calculationResults.summary && calculationResults.summary.totalMonthlyBenefit > 0 && (
-                    <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 border-2 border-green-200">
-                      <h3 className="font-bold text-green-900 mb-2">🎯 Total ROI Summary</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="text-center">
-                          <p className="text-sm text-green-700">Total Monthly Benefit</p>
-                          <p className="text-2xl font-bold text-green-600">
-                            ${calculationResults.summary.totalMonthlyBenefit.toLocaleString()}
-                          </p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-green-700">Total Yearly Benefit</p>
-                          <p className="text-2xl font-bold text-green-600">
-                            ${calculationResults.summary.totalYearlyBenefit.toLocaleString()}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                    ))}
                 </div>
               )}
             </div>
 
-            {/* Educational Content */}
+            <div className="text-center">
+              {calculationResults.summary?.hasResults ? (
+                <div className="space-y-4">
+                  <div className="bg-green-100 border border-green-300 rounded-lg p-4">
+                    <h3 className="text-lg font-semibold text-green-800 mb-2">✅ Calculator Complete!</h3>
+                    <p className="text-green-700">
+                      Your personalized ROI analysis is ready. Scroll up to see your detailed results.
+                    </p>
+                  </div>
+                  <button 
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
+                    onClick={() => {
+                      const inputs = Object.entries(calculatorInputs)
+                        .filter(([_, value]) => value > 0)
+                        .map(([key, value]) => `${key}: ${value}`)
+                        .join(', ');
+                      const summary = calculationResults.summary;
+                      const reportText = `ROI Calculator Results:\n\nInputs: ${inputs}\n\nMonthly Benefit: $${summary.totalMonthlyBenefit.toLocaleString()}\nYearly Benefit: $${summary.totalYearlyBenefit.toLocaleString()}`;
+                      navigator.clipboard.writeText(reportText);
+                      alert('Calculator results copied to clipboard!');
+                    }}
+                  >
+                    📋 Copy Results to Clipboard
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">Ready to Calculate?</h3>
+                  <p className="text-gray-600">
+                    Enter your data in the fields above to see real-time ROI calculations.
+                  </p>
+              </div>
+            )}
+            </div>
+
+            {/* Educational Content - After Calculator */}
+            {calculationResults.summary?.hasResults && content.educational_content && (
+              <div className="bg-purple-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-purple-900 mb-4">📚 Insights & Tips</h2>
+                {content.educational_content.insights && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-purple-800 mb-2">Key Insights:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.insights.map((insight: string, index: number) => (
+                        <li key={index}>• {insight}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.educational_content.benchmarks && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-purple-800 mb-2">Industry Benchmarks:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.benchmarks.map((benchmark: string, index: number) => (
+                        <li key={index}>• {benchmark}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.educational_content.case_studies && (
+                  <div>
+                    <h3 className="font-semibold text-purple-800 mb-2">Case Studies:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.case_studies.map((caseStudy: string, index: number) => (
+                        <li key={index}>• {caseStudy}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Next Steps - After Calculator */}
+            {calculationResults.summary?.hasResults && content.interactive_elements && (
+              <div className="bg-orange-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-orange-900 mb-4">🚀 Next Steps</h2>
+                {content.interactive_elements.next_steps && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-orange-800 mb-2">Recommended Actions:</h3>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      {content.interactive_elements.next_steps.map((step: string, index: number) => (
+                        <li key={index}>• {step}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.interactive_elements.action_items && (
+                  <div>
+                    <h3 className="font-semibold text-orange-800 mb-2">Action Items:</h3>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      {content.interactive_elements.action_items.map((item: string, index: number) => (
+                        <li key={index}>• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        );
+
+      case 'action_plan':
+        return (
+          <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                {content.title_page?.title || 'Action Plan'}
+              </h1>
+              <p className="text-lg text-gray-600">
+                {content.title_page?.subtitle || 'Your personalized roadmap to success'}
+              </p>
+            </div>
+
+            <div className="mb-8">
+              <p className="text-gray-700 leading-relaxed">
+                {content.founder_intro || 'Get your personalized action plan with clear steps, timelines, and success metrics.'}
+              </p>
+            </div>
+
+            <div className="bg-purple-50 rounded-lg p-6 mb-6">
+              <h2 className="text-xl font-semibold text-purple-900 mb-4">📋 What You'll Get</h2>
+              <ul className="space-y-2 text-purple-800">
+                <li>• Personalized step-by-step plan</li>
+                <li>• Clear milestones and timelines</li>
+                <li>• Success metrics to track progress</li>
+                <li>• Troubleshooting for common obstacles</li>
+              </ul>
+            </div>
+
+            {/* Dynamic Action Plan - Based on AI Content */}
+            {content.action_plan_content?.steps && (
+              <div className="bg-purple-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-purple-900 mb-4">📋 {content.action_plan_content.title || 'Your Action Plan'}</h2>
+                <div className="space-y-3">
+                  {content.action_plan_content.steps.map((step: any, index: number) => (
+                    <label key={index} className="flex items-center cursor-pointer bg-white rounded-lg p-3 border border-purple-200 hover:bg-purple-25">
+                      <input
+                        type="checkbox"
+                        className="mr-3 text-purple-600 rounded"
+                        onChange={(e) => {
+                          const checkbox = e.target;
+                          if (checkbox.checked) {
+                            checkbox.parentElement!.classList.add('bg-purple-100');
+                          } else {
+                            checkbox.parentElement!.classList.remove('bg-purple-100');
+                          }
+                        }}
+                      />
+                      <span className="text-purple-800 font-medium">
+                        Step {index + 1}: {step.title || step.action || step}
+                      </span>
+                      {step.description && (
+                        <p className="text-sm text-purple-600 ml-6 mt-1">{step.description}</p>
+                      )}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Fallback Action Plan if no AI content */}
+            {!content.action_plan_content?.steps && (
+              <div className="bg-purple-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-purple-900 mb-4">📋 Your Action Plan</h2>
+                <p className="text-purple-700 text-center py-8">
+                  Action plan steps will be generated based on your specific goals and displayed here.
+                </p>
+              </div>
+            )}
+
+            <div className="text-center">
+              <button 
+                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
+                onClick={() => {
+                  const checkedSteps = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).length;
+                  const totalSteps = 5;
+                  const progress = Math.round((checkedSteps / totalSteps) * 100);
+                  alert(`Action Plan Progress: ${checkedSteps}/${totalSteps} steps completed (${progress}%)`);
+                }}
+              >
+                📊 Check Progress
+              </button>
+            </div>
+
+            {/* Educational Content - After Action Plan */}
             {content.educational_content && (
               <div className="bg-purple-50 rounded-lg p-6 mb-6">
                 <h2 className="text-xl font-semibold text-purple-900 mb-4">📚 Insights & Tips</h2>
@@ -582,7 +759,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </div>
             )}
 
-            {/* Interactive Elements */}
+            {/* Next Steps - After Action Plan */}
             {content.interactive_elements && (
               <div className="bg-orange-50 rounded-lg p-6 mb-6">
                 <h2 className="text-xl font-semibold text-orange-900 mb-4">🚀 Next Steps</h2>
@@ -608,115 +785,6 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                 )}
               </div>
             )}
-
-            <div className="text-center">
-              {calculationResults.summary?.hasResults ? (
-                <div className="space-y-4">
-                  <div className="bg-green-100 border border-green-300 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-green-800 mb-2">✅ Calculator Complete!</h3>
-                    <p className="text-green-700">
-                      Your personalized ROI analysis is ready. Scroll up to see your detailed results.
-                    </p>
-                  </div>
-                  <button 
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
-                    onClick={() => {
-                      const inputs = Object.entries(calculatorInputs)
-                        .filter(([_, value]) => value > 0)
-                        .map(([key, value]) => `${key}: ${value}`)
-                        .join(', ');
-                      const summary = calculationResults.summary;
-                      const reportText = `ROI Calculator Results:\n\nInputs: ${inputs}\n\nMonthly Benefit: $${summary.totalMonthlyBenefit.toLocaleString()}\nYearly Benefit: $${summary.totalYearlyBenefit.toLocaleString()}`;
-                      navigator.clipboard.writeText(reportText);
-                      alert('Calculator results copied to clipboard!');
-                    }}
-                  >
-                    📋 Copy Results to Clipboard
-                  </button>
-                </div>
-              ) : (
-                <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-600 mb-2">Ready to Calculate?</h3>
-                  <p className="text-gray-600">
-                    Enter your data in the fields above to see real-time ROI calculations.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        );
-
-      case 'action_plan':
-        return (
-          <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                {content.title_page?.title || 'Action Plan'}
-              </h1>
-              <p className="text-lg text-gray-600">
-                {content.title_page?.subtitle || 'Your personalized roadmap to success'}
-              </p>
-            </div>
-
-            <div className="mb-8">
-              <p className="text-gray-700 leading-relaxed">
-                {content.founder_intro || 'Get your personalized action plan with clear steps, timelines, and success metrics.'}
-              </p>
-            </div>
-
-            <div className="bg-purple-50 rounded-lg p-6 mb-6">
-              <h2 className="text-xl font-semibold text-purple-900 mb-4">📋 What You'll Get</h2>
-              <ul className="space-y-2 text-purple-800">
-                <li>• Personalized step-by-step plan</li>
-                <li>• Clear milestones and timelines</li>
-                <li>• Success metrics to track progress</li>
-                <li>• Troubleshooting for common obstacles</li>
-              </ul>
-            </div>
-
-            {/* Interactive Action Plan */}
-            <div className="bg-purple-50 rounded-lg p-6 mb-6">
-              <h2 className="text-xl font-semibold text-purple-900 mb-4">📋 Your Action Plan Checklist</h2>
-              <div className="space-y-3">
-                {[
-                  "Assess your current situation and goals",
-                  "Identify your top 3 priorities for improvement",
-                  "Create a timeline with specific milestones",
-                  "Implement the first action step within 24 hours",
-                  "Track your progress weekly and adjust as needed"
-                ].map((step, index) => (
-                  <label key={index} className="flex items-center cursor-pointer bg-white rounded-lg p-3 border border-purple-200 hover:bg-purple-25">
-                    <input
-                      type="checkbox"
-                      className="mr-3 text-purple-600 rounded"
-                      onChange={(e) => {
-                        const checkbox = e.target;
-                        if (checkbox.checked) {
-                          checkbox.parentElement!.classList.add('bg-purple-100');
-                        } else {
-                          checkbox.parentElement!.classList.remove('bg-purple-100');
-                        }
-                      }}
-                    />
-                    <span className="text-purple-800 font-medium">Step {index + 1}: {step}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="text-center">
-              <button 
-                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
-                onClick={() => {
-                  const checkedSteps = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).length;
-                  const totalSteps = 5;
-                  const progress = Math.round((checkedSteps / totalSteps) * 100);
-                  alert(`Action Plan Progress: ${checkedSteps}/${totalSteps} steps completed (${progress}%)`);
-                }}
-              >
-                📊 Check Progress
-              </button>
-            </div>
           </div>
         );
 
@@ -748,47 +816,57 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </ul>
             </div>
 
-            {/* Interactive Benchmark Comparison */}
-            <div className="bg-orange-50 rounded-lg p-6 mb-6">
-              <h2 className="text-xl font-semibold text-orange-900 mb-4">📊 Industry Benchmark Comparison</h2>
-              <div className="space-y-4">
-                {[
-                  { metric: "Customer Satisfaction", yourScore: 75, industry: 68, unit: "%" },
-                  { metric: "Response Time", yourScore: 24, industry: 48, unit: " hours" },
-                  { metric: "Cost Efficiency", yourScore: 82, industry: 76, unit: "%" },
-                  { metric: "Quality Rating", yourScore: 4.2, industry: 3.8, unit: "/5.0" }
-                ].map((item, index) => (
-                  <div key={index} className="bg-white rounded-lg p-4 border border-orange-200">
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="font-semibold text-orange-900">{item.metric}</h3>
-                      <span className={`px-2 py-1 rounded text-sm font-medium ${
-                        item.yourScore > item.industry ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      }`}>
-                        {item.yourScore > item.industry ? '↗ Above Average' : '↘ Below Average'}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-orange-700">Your Score: </span>
-                        <span className="font-bold text-orange-900">{item.yourScore}{item.unit}</span>
+            {/* Dynamic Benchmark Comparison - Based on AI Content */}
+            {content.benchmark_content?.metrics && (
+              <div className="bg-orange-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-orange-900 mb-4">📊 {content.benchmark_content.title || 'Benchmark Comparison'}</h2>
+                <div className="space-y-4">
+                  {content.benchmark_content.metrics.map((item: any, index: number) => (
+                    <div key={index} className="bg-white rounded-lg p-4 border border-orange-200">
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="font-semibold text-orange-900">{item.metric || item.name}</h3>
+                        <span className={`px-2 py-1 rounded text-sm font-medium ${
+                          (item.yourScore || item.current) > (item.industry || item.benchmark) ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}>
+                          {(item.yourScore || item.current) > (item.industry || item.benchmark) ? '↗ Above Average' : '↘ Below Average'}
+                        </span>
                       </div>
-                      <div>
-                        <span className="text-orange-700">Industry Average: </span>
-                        <span className="font-bold text-orange-900">{item.industry}{item.unit}</span>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-orange-700">Your Score: </span>
+                          <span className="font-bold text-orange-900">{item.yourScore || item.current}{item.unit || ''}</span>
+                        </div>
+                        <div>
+                          <span className="text-orange-700">Benchmark: </span>
+                          <span className="font-bold text-orange-900">{item.industry || item.benchmark}{item.unit || ''}</span>
+                        </div>
+                      </div>
+                      {item.description && (
+                        <p className="text-sm text-orange-700 mt-2">{item.description}</p>
+                      )}
+                      <div className="mt-2">
+                        <div className="bg-gray-200 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full ${(item.yourScore || item.current) > (item.industry || item.benchmark) ? 'bg-green-500' : 'bg-red-500'}`}
+                            style={{ width: `${Math.min(((item.yourScore || item.current) / ((item.industry || item.benchmark) * 1.5)) * 100, 100)}%` }}
+                          ></div>
+                        </div>
                       </div>
                     </div>
-                    <div className="mt-2">
-                      <div className="bg-gray-200 rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full ${item.yourScore > item.industry ? 'bg-green-500' : 'bg-red-500'}`}
-                          style={{ width: `${Math.min((item.yourScore / (item.industry * 1.5)) * 100, 100)}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+            
+            {/* Fallback Benchmark if no AI content */}
+            {!content.benchmark_content?.metrics && (
+              <div className="bg-orange-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-orange-900 mb-4">📊 Benchmark Comparison</h2>
+                <p className="text-orange-700 text-center py-8">
+                  Benchmark metrics will be generated based on your specific industry and displayed here.
+                </p>
+              </div>
+            )}
 
             <div className="text-center">
               <button 
@@ -802,6 +880,70 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                 📋 Copy Report
               </button>
             </div>
+
+            {/* Educational Content - After Benchmark Report */}
+            {content.educational_content && (
+              <div className="bg-purple-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-purple-900 mb-4">📚 Insights & Tips</h2>
+                {content.educational_content.insights && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-purple-800 mb-2">Key Insights:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.insights.map((insight: string, index: number) => (
+                        <li key={index}>• {insight}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.educational_content.benchmarks && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-purple-800 mb-2">Industry Benchmarks:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.benchmarks.map((benchmark: string, index: number) => (
+                        <li key={index}>• {benchmark}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.educational_content.case_studies && (
+                  <div>
+                    <h3 className="font-semibold text-purple-800 mb-2">Case Studies:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.case_studies.map((caseStudy: string, index: number) => (
+                        <li key={index}>• {caseStudy}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Next Steps - After Benchmark Report */}
+            {content.interactive_elements && (
+              <div className="bg-orange-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-orange-900 mb-4">🚀 Next Steps</h2>
+                {content.interactive_elements.next_steps && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-orange-800 mb-2">Recommended Actions:</h3>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      {content.interactive_elements.next_steps.map((step: string, index: number) => (
+                        <li key={index}>• {step}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.interactive_elements.action_items && (
+                  <div>
+                    <h3 className="font-semibold text-orange-800 mb-2">Action Items:</h3>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      {content.interactive_elements.action_items.map((item: string, index: number) => (
+                        <li key={index}>• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         );
 
@@ -833,66 +975,62 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </ul>
             </div>
 
-            {/* Interactive Opportunity Finder */}
-            <div className="bg-teal-50 rounded-lg p-6 mb-6">
-              <h2 className="text-xl font-semibold text-teal-900 mb-4">🔍 Opportunity Analysis</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { 
-                    category: "Market Opportunities", 
-                    opportunities: ["Untapped customer segment", "Seasonal trend leverage", "Partnership potential"],
-                    impact: "High",
-                    effort: "Medium"
-                  },
-                  { 
-                    category: "Service Improvements", 
-                    opportunities: ["Process automation", "Quality enhancement", "Customer experience"],
-                    impact: "Medium",
-                    effort: "Low"
-                  },
-                  { 
-                    category: "Cost Optimization", 
-                    opportunities: ["Supplier negotiations", "Operational efficiency", "Technology upgrades"],
-                    impact: "High",
-                    effort: "High"
-                  },
-                  { 
-                    category: "Revenue Streams", 
-                    opportunities: ["Premium services", "Subscription model", "Digital products"],
-                    impact: "Very High",
-                    effort: "Medium"
-                  }
-                ].map((item, index) => (
-                  <div key={index} className="bg-white rounded-lg p-4 border border-teal-200">
-                    <h3 className="font-semibold text-teal-900 mb-2">{item.category}</h3>
-                    <ul className="space-y-1 mb-3">
-                      {item.opportunities.map((opp, idx) => (
-                        <li key={idx} className="text-sm text-teal-700 flex items-center">
-                          <span className="text-teal-500 mr-2">•</span>
-                          {opp}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="flex justify-between text-xs">
-                      <span className={`px-2 py-1 rounded ${
-                        item.impact === 'Very High' ? 'bg-green-100 text-green-800' :
-                        item.impact === 'High' ? 'bg-blue-100 text-blue-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        Impact: {item.impact}
-                      </span>
-                      <span className={`px-2 py-1 rounded ${
-                        item.effort === 'Low' ? 'bg-green-100 text-green-800' :
-                        item.effort === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        Effort: {item.effort}
-                      </span>
+            {/* Dynamic Opportunity Finder - Based on AI Content */}
+            {content.opportunity_content?.categories && (
+              <div className="bg-teal-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-teal-900 mb-4">🔍 {content.opportunity_content.title || 'Opportunity Analysis'}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {content.opportunity_content.categories.map((item: any, index: number) => (
+                    <div key={index} className="bg-white rounded-lg p-4 border border-teal-200">
+                      <h3 className="font-semibold text-teal-900 mb-2">{item.category || item.name || item.title}</h3>
+                      <ul className="space-y-1 mb-3">
+                        {(item.opportunities || item.items || item.details || []).map((opp: string, idx: number) => (
+                          <li key={idx} className="text-sm text-teal-700 flex items-center">
+                            <span className="text-teal-500 mr-2">•</span>
+                            {opp}
+                          </li>
+                        ))}
+                      </ul>
+                      {(item.impact || item.effort) && (
+                        <div className="flex justify-between text-xs">
+                          {item.impact && (
+                            <span className={`px-2 py-1 rounded ${
+                              item.impact === 'Very High' || item.impact === 'High' ? 'bg-green-100 text-green-800' :
+                              item.impact === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              Impact: {item.impact}
+                            </span>
+                          )}
+                          {item.effort && (
+                            <span className={`px-2 py-1 rounded ${
+                              item.effort === 'Low' ? 'bg-green-100 text-green-800' :
+                              item.effort === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              Effort: {item.effort}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {item.description && (
+                        <p className="text-sm text-teal-600 mt-2">{item.description}</p>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+            
+            {/* Fallback Opportunity Finder if no AI content */}
+            {!content.opportunity_content?.categories && (
+              <div className="bg-teal-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-teal-900 mb-4">🔍 Opportunity Analysis</h2>
+                <p className="text-teal-700 text-center py-8">
+                  Opportunity categories will be generated based on your specific situation and displayed here.
+                </p>
+              </div>
+            )}
 
             <div className="text-center">
               <button 
@@ -906,6 +1044,70 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                 📋 Copy Analysis
               </button>
             </div>
+
+            {/* Educational Content - After Opportunity Finder */}
+            {content.educational_content && (
+              <div className="bg-purple-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-purple-900 mb-4">📚 Insights & Tips</h2>
+                {content.educational_content.insights && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-purple-800 mb-2">Key Insights:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.insights.map((insight: string, index: number) => (
+                        <li key={index}>• {insight}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.educational_content.benchmarks && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-purple-800 mb-2">Industry Benchmarks:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.benchmarks.map((benchmark: string, index: number) => (
+                        <li key={index}>• {benchmark}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.educational_content.case_studies && (
+                  <div>
+                    <h3 className="font-semibold text-purple-800 mb-2">Case Studies:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.case_studies.map((caseStudy: string, index: number) => (
+                        <li key={index}>• {caseStudy}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Next Steps - After Opportunity Finder */}
+            {content.interactive_elements && (
+              <div className="bg-orange-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-orange-900 mb-4">🚀 Next Steps</h2>
+                {content.interactive_elements.next_steps && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-orange-800 mb-2">Recommended Actions:</h3>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      {content.interactive_elements.next_steps.map((step: string, index: number) => (
+                        <li key={index}>• {step}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.interactive_elements.action_items && (
+                  <div>
+                    <h3 className="font-semibold text-orange-800 mb-2">Action Items:</h3>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      {content.interactive_elements.action_items.map((item: string, index: number) => (
+                        <li key={index}>• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         );
 
