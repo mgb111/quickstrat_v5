@@ -820,7 +820,7 @@ This must be a complete diagnostic tool that provides professional-grade insight
 
 REQUIRED STRUCTURE:
 1. **Diagnostic Framework**: Explain the methodology behind the questions
-2. **Question Bank**: 10-15 strategic questions that build on each other
+2. **Question Bank**: 8-12 strategic questions that build on each other
 3. **Scoring System**: How answers combine to create accurate diagnosis
 4. **Result Categories**: 4-6 specific diagnosis types with solutions
 5. **Action Protocols**: Exact next steps for each diagnosis type
@@ -831,6 +831,8 @@ CRITICAL REQUIREMENTS:
 - Each result category needs SPECIFIC action steps
 - Include success metrics and timelines
 - Provide troubleshooting for each diagnosis type
+- Questions must be SPECIFIC to the niche and problem
+- Results must be ACTIONABLE and TIMELINE-BASED
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
@@ -847,65 +849,58 @@ RETURN JSON IN THIS EXACT FORMAT:
     "title": "Professional Diagnostic Assessment",
     "questions": [
       {
-        "question": "What is your biggest challenge with [specific problem area]?",
-        "options": ["Option A - Specific issue 1", "Option B - Specific issue 2", "Option C - Specific issue 3", "Option D - Something else"],
+        "question": "[SPECIFIC QUESTION ABOUT THE PROBLEM - e.g., 'When choosing colors for an outfit, what's your biggest struggle?']",
+        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
         "explanation": "This reveals your primary pain point and helps categorize your situation"
       },
       {
-        "question": "How long have you been experiencing this challenge?",
-        "options": ["Less than 3 months", "3-6 months", "6-12 months", "Over a year"],
-        "explanation": "Duration helps determine the urgency and approach needed"
+        "question": "[FOLLOW-UP QUESTION THAT BUILDS ON THE FIRST - e.g., 'How often do you feel confident about your color choices?']",
+        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
+        "explanation": "This helps determine your confidence level and experience"
       },
       {
-        "question": "What have you tried to solve this problem?",
-        "options": ["Nothing yet", "Basic research", "Tried some solutions", "Multiple attempts with no success"],
-        "explanation": "Shows your experience level and what hasn't worked"
+        "question": "[SPECIFIC QUESTION ABOUT CURRENT BEHAVIOR - e.g., 'What's your typical process when putting together an outfit?']",
+        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
+        "explanation": "This shows your current approach and what might be missing"
+      },
+      {
+        "question": "[SPECIFIC QUESTION ABOUT DESIRED OUTCOME - e.g., 'What would success look like for your personal style?']",
+        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
+        "explanation": "This helps tailor the solution to your specific goals"
+      },
+      {
+        "question": "[SPECIFIC QUESTION ABOUT OBSTACLES - e.g., 'What's stopping you from achieving your style goals?']",
+        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
+        "explanation": "This identifies the main barriers to your success"
       }
     ],
     "results": [
       {
-        "category": "Beginner Level",
-        "description": "You're just starting to identify the problem",
-        "symptoms": ["Recently noticed the issue", "Limited knowledge", "Feeling overwhelmed"],
-        "action_steps": ["Step 1: Start with basics", "Step 2: Build foundation", "Step 3: Track progress"],
-        "timeline": "2-4 weeks to see initial improvement"
+        "category": "[SPECIFIC DIAGNOSIS TYPE - e.g., 'Color Theory Beginner']",
+        "description": "[SPECIFIC DESCRIPTION OF WHAT THIS MEANS]",
+        "symptoms": ["[SPECIFIC SYMPTOM 1]", "[SPECIFIC SYMPTOM 2]", "[SPECIFIC SYMPTOM 3]"],
+        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE]", "[SPECIFIC STEP 2 WITH TIMELINE]", "[SPECIFIC STEP 3 WITH TIMELINE]"],
+        "timeline": "[SPECIFIC TIMELINE - e.g., '2-3 weeks to see improvement']",
+        "success_metrics": ["[SPECIFIC METRIC 1]", "[SPECIFIC METRIC 2]", "[SPECIFIC METRIC 3]"]
       },
       {
-        "category": "Intermediate Level", 
-        "description": "You understand the problem but need better solutions",
-        "symptoms": ["Tried some approaches", "Partial success", "Need more targeted help"],
-        "action_steps": ["Step 1: Refine approach", "Step 2: Implement advanced tactics", "Step 3: Optimize results"],
-        "timeline": "1-2 weeks to see improvement"
+        "category": "[SPECIFIC DIAGNOSIS TYPE - e.g., 'Style Confidence Builder']",
+        "description": "[SPECIFIC DESCRIPTION OF WHAT THIS MEANS]",
+        "symptoms": ["[SPECIFIC SYMPTOM 1]", "[SPECIFIC SYMPTOM 2]", "[SPECIFIC SYMPTOM 3]"],
+        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE]", "[SPECIFIC STEP 2 WITH TIMELINE]", "[SPECIFIC STEP 3 WITH TIMELINE]"],
+        "timeline": "[SPECIFIC TIMELINE - e.g., '1-2 weeks to see improvement']",
+        "success_metrics": ["[SPECIFIC METRIC 1]", "[SPECIFIC METRIC 2]", "[SPECIFIC METRIC 3]"]
+      },
+      {
+        "category": "[SPECIFIC DIAGNOSIS TYPE - e.g., 'Advanced Style Optimizer']",
+        "description": "[SPECIFIC DESCRIPTION OF WHAT THIS MEANS]",
+        "symptoms": ["[SPECIFIC SYMPTOM 1]", "[SPECIFIC SYMPTOM 2]", "[SPECIFIC SYMPTOM 3]"],
+        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE]", "[SPECIFIC STEP 2 WITH TIMELINE]", "[SPECIFIC STEP 3 WITH TIMELINE]"],
+        "timeline": "[SPECIFIC TIMELINE - e.g., '3-5 days to see improvement']",
+        "success_metrics": ["[SPECIFIC METRIC 1]", "[SPECIFIC METRIC 2]", "[SPECIFIC METRIC 3]"]
       }
     ]
-  },
-  "quiz_content": {
-    "title": "Professional Diagnostic Assessment",
-    "questions": [
-      {
-        "question": "What is your biggest challenge with [specific problem area]?",
-        "options": ["Option A - Specific issue 1", "Option B - Specific issue 2", "Option C - Specific issue 3", "Option D - Something else"],
-        "explanation": "This reveals your primary pain point and helps categorize your situation"
-      },
-      {
-        "question": "How long have you been experiencing this challenge?",
-        "options": ["Less than 3 months", "3-6 months", "6-12 months", "Over a year"],
-        "explanation": "Duration helps determine the urgency and approach needed"
-      },
-      {
-        "question": "What have you tried to solve this problem?",
-        "options": ["Nothing yet", "Basic research", "Tried some solutions", "Multiple attempts with no success"],
-        "explanation": "Shows your experience level and what hasn't worked"
-      }
-    ],
-    "results": [
-      {
-        "category": "Beginner Level",
-        "description": "You're just starting to identify the problem",
-        "symptoms": ["Recently noticed the issue", "Limited knowledge", "Feeling overwhelmed"],
-        "action_steps": ["Step 1: Start with basics", "Step 2: Build foundation", "Step 3: Track progress"],
-        "timeline": "2-4 weeks to see initial improvement"
-      },
+  }
       {
         "category": "Intermediate Level", 
         "description": "You understand the problem but need better solutions",
