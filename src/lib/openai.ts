@@ -1358,115 +1358,116 @@ ${founderIntro}
 
 ${valueStandards}
 
-GENERATE CONTENT ENTIRELY FROM THE OUTLINE:
+CREATE A COMPREHENSIVE IMPLEMENTATION SYSTEM:
 
-Create comprehensive, actionable content based ONLY on the outline structure. Do NOT use any predefined framework, template, or generic structure.
+This must be a complete, plug-and-play system with everything needed for success.
 
-OUTLINE DETAILS:
-- Title: ${outline.title}
-- Introduction: ${outline.introduction}
-- Core Points: ${outline.core_points?.join(', ') || 'Not specified'}
-- Main Sections: ${outline.sections?.map(s => s.title).join(', ') || 'Not specified'}
+REQUIRED STRUCTURE:
+1. **System Overview**: The complete process from start to finish
+2. **Implementation Phases**: 3-5 phases with exact steps and timelines
+3. **Tool Arsenal**: 15+ templates, scripts, checklists, and frameworks
+4. **Case Studies**: 3+ detailed examples with specific results
+5. **Troubleshooting Guide**: Common problems and exact solutions
+6. **Optimization Strategies**: How to improve results over time
 
 CRITICAL REQUIREMENTS:
-- Generate content that directly addresses the outline structure
-- Create sections based on the outline sections, not predefined frameworks
-- Provide specific, actionable content based on the outline
-- Make everything specific to the topic and audience
-- Do NOT use any predefined section titles or structures
+- Include step-by-step processes with exact instructions
+- Provide comprehensive tool kit with templates and scripts
+- Include detailed case studies with measurable results
+- Cover common mistakes and how to avoid them
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
   "structured_content": {
     "title_page": {
       "title": "${outline.title}",
-      "subtitle": "A comprehensive guide to help you achieve your goals"
+      "subtitle": "A step-by-step blueprint to help you achieve your goals"
     },
-    "introduction": "Write a compelling introduction that explains the specific problem this guide solves and what results users will achieve. Make it personal and credible.",
+    "introduction": "${outline.introduction}",
     "toolkit_sections": [
       {
-        "title": "[Generate section title based on outline]",
+        "title": "Strategy Analysis",
         "type": "pros_and_cons_list",
         "content": {
           "items": [
             {
-              "method_name": "[Generate specific method based on outline]",
-              "pros": "• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]",
-              "cons": "• [Specific challenge based on outline]\n• [Specific challenge based on outline]\n• [Specific challenge based on outline]"
+              "method_name": "Strategy 1: ${outline.sections?.[0]?.title || 'Primary Strategy'}",
+              "pros": "${outline.sections?.[0]?.key_points?.join('\\n• ') || '• Immediate impact on results\\n• Easy to implement\\n• Proven to work\\n• Cost-effective'}",
+              "cons": "• Requires time commitment\\n• May need resources\\n• Initial learning curve"
             },
             {
-              "method_name": "[Generate specific method based on outline]",
-              "pros": "• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]",
-              "cons": "• [Specific challenge based on outline]\n• [Specific challenge based on outline]\n• [Specific challenge based on outline]"
+              "method_name": "Strategy 2: ${outline.sections?.[1]?.title || 'Secondary Strategy'}",
+              "pros": "${outline.sections?.[1]?.key_points?.join('\\n• ') || '• Delivers specific results\\n• Scalable approach\\n• Integrates with existing systems\\n• High ROI'}",
+              "cons": "• Requires investment\\n• Needs expertise\\n• Takes time to see results"
             },
             {
-              "method_name": "[Generate specific method based on outline]",
-              "pros": "• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]",
-              "cons": "• [Specific challenge based on outline]\n• [Specific challenge based on outline]\n• [Specific challenge based on outline]"
+              "method_name": "Strategy 3: ${outline.sections?.[2]?.title || 'Advanced Strategy'}",
+              "pros": "${outline.sections?.[2]?.key_points?.join('\\n• ') || '• Addresses core challenges\\n• Provides measurable outcomes\\n• Works with constraints\\n• Delivers value'}",
+              "cons": "• Requires upfront work\\n• May need adjustments\\n• Initial setup time"
             }
           ]
         }
       },
       {
-        "title": "[Generate section title based on outline]",
+        "title": "Action Checklist",
         "type": "checklist",
         "content": {
           "phases": [
             {
-              "phase_title": "[Generate phase title based on outline]",
+              "phase_title": "Phase 1: Foundation Setup (Days 1-7)",
               "items": [
-                "[Generate specific action based on outline]",
-                "[Generate specific action based on outline]",
-                "[Generate specific action based on outline]",
-                "[Generate specific action based on outline]"
+                "Set up your foundation based on ${outline.sections?.[0]?.content || 'your specific needs'}",
+                "Create your tracking system for ${outline.sections?.[1]?.content || 'measuring progress'}",
+                "Establish your baseline using ${outline.sections?.[2]?.content || 'current metrics'}",
+                "Prepare your resources for ${outline.sections?.[3]?.content || 'implementation'}"
               ]
             },
             {
-              "phase_title": "[Generate phase title based on outline]",
+              "phase_title": "Phase 2: Implementation (Days 8-21)",
               "items": [
-                "[Generate specific action based on outline]",
-                "[Generate specific action based on outline]",
-                "[Generate specific action based on outline]",
-                "[Generate specific action based on outline]"
+                "Execute daily actions from ${outline.sections?.[0]?.title || 'your strategy'}",
+                "Track key metrics related to ${outline.sections?.[1]?.title || 'your goals'}",
+                "Optimize based on feedback from ${outline.sections?.[2]?.title || 'your progress'}",
+                "Scale successful elements of ${outline.sections?.[3]?.title || 'your approach'}"
               ]
             },
             {
-              "phase_title": "[Generate phase title based on outline]",
+              "phase_title": "Phase 3: Optimization (Days 22-30)",
               "items": [
-                "[Generate specific action based on outline]",
-                "[Generate specific action based on outline]",
-                "[Generate specific action based on outline]",
-                "[Generate specific action based on outline]"
+                "Analyze performance data from ${outline.sections?.[0]?.content || 'your implementation'}",
+                "Refine processes based on ${outline.sections?.[1]?.content || 'your results'}",
+                "Implement improvements from ${outline.sections?.[2]?.content || 'your learnings'}",
+                "Prepare for next phase using ${outline.sections?.[3]?.content || 'your insights'}"
               ]
             }
           ]
         }
       },
       {
-        "title": "[Generate section title based on outline]",
+        "title": "Conversation Scripts",
         "type": "scripts",
         "content": {
           "scenarios": [
             {
-              "trigger": "[Generate specific scenario based on outline topic]",
-              "response": "You say: [Generate specific response based on outline]",
-              "explanation": "This works because [Generate specific explanation based on outline]"
+              "trigger": "When someone shows interest in ${outline.title}",
+              "response": "You say: Let me show you how ${outline.main_value_proposition} can help you achieve your goals.",
+              "explanation": "This works because it addresses their specific needs and provides immediate value."
             },
             {
-              "trigger": "[Generate specific scenario based on outline topic]",
-              "response": "You say: [Generate specific response based on outline]",
-              "explanation": "This approach [Generate specific explanation based on outline]"
+              "trigger": "When someone asks about ${outline.sections?.[0]?.title || 'your approach'}",
+              "response": "You say: Great question! Let me explain how ${outline.sections?.[0]?.content} specifically addresses that concern.",
+              "explanation": "This approach builds trust by providing personalized, relevant information."
             },
             {
-              "trigger": "[Generate specific scenario based on outline topic]",
-              "response": "You say: [Generate specific response based on outline]",
-              "explanation": "This converts because [Generate specific explanation based on outline]"
+              "trigger": "When someone is ready to take action on ${outline.title}",
+              "response": "You say: Perfect! Let's get you started with ${outline.sections?.[0]?.key_points?.[0] || 'the first step'} right now.",
+              "explanation": "This converts because it capitalizes on their momentum and provides immediate next steps."
             }
           ]
         }
       }
     ],
-    "cta": "Ready to implement these strategies? Download your complete guide now."
+    "cta": "Ready to take your ${input.niche} to the next level? Download your complete system now."
   }
 }`;
 
