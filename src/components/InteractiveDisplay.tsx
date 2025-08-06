@@ -107,44 +107,86 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
 
     // Use AI-generated quiz content if available
     if (content.quiz_content?.results) {
-      // Simple scoring based on answer patterns
-      const scores = Object.values(quizAnswers);
-      const categoryScores: Record<string, number> = {};
+      const totalQuizQuestions = content.quiz_content.questions?.length || 10;
       
-      // Analyze answers to determine user category
-      scores.forEach((answer, index) => {
-        // This is a simplified scoring system - can be enhanced
-        if (answer.toLowerCase().includes('budget') || answer.toLowerCase().includes('cost')) {
-          categoryScores['budget-conscious'] = (categoryScores['budget-conscious'] || 0) + 1;
+      // Create a proper scoring system based on answer patterns
+      const answerPatterns: Record<string, number> = {};
+      
+      // Analyze each answer and create patterns
+      Object.entries(quizAnswers).forEach(([questionIndex, answer]) => {
+        const answerLower = answer.toLowerCase();
+        
+        // Score based on answer content patterns
+        if (answerLower.includes('low') || answerLower.includes('poor') || answerLower.includes('not confident')) {
+          answerPatterns['beginner'] = (answerPatterns['beginner'] || 0) + 1;
         }
-        if (answer.toLowerCase().includes('time') || answer.toLowerCase().includes('quick')) {
-          categoryScores['time-focused'] = (categoryScores['time-focused'] || 0) + 1;
+        if (answerLower.includes('medium') || answerLower.includes('somewhat') || answerLower.includes('neutral')) {
+          answerPatterns['intermediate'] = (answerPatterns['intermediate'] || 0) + 1;
         }
-        if (answer.toLowerCase().includes('quality') || answer.toLowerCase().includes('premium')) {
-          categoryScores['quality-focused'] = (categoryScores['quality-focused'] || 0) + 1;
+        if (answerLower.includes('high') || answerLower.includes('very') || answerLower.includes('expert')) {
+          answerPatterns['advanced'] = (answerPatterns['advanced'] || 0) + 1;
+        }
+        if (answerLower.includes('budget') || answerLower.includes('cost') || answerLower.includes('limited')) {
+          answerPatterns['budget-conscious'] = (answerPatterns['budget-conscious'] || 0) + 1;
+        }
+        if (answerLower.includes('time') || answerLower.includes('quick') || answerLower.includes('immediately')) {
+          answerPatterns['time-focused'] = (answerPatterns['time-focused'] || 0) + 1;
+        }
+        if (answerLower.includes('quality') || answerLower.includes('premium') || answerLower.includes('expert')) {
+          answerPatterns['quality-focused'] = (answerPatterns['quality-focused'] || 0) + 1;
+        }
+        if (answerLower.includes('seo') || answerLower.includes('content') || answerLower.includes('organic')) {
+          answerPatterns['organic-focused'] = (answerPatterns['organic-focused'] || 0) + 1;
+        }
+        if (answerLower.includes('ads') || answerLower.includes('paid') || answerLower.includes('social')) {
+          answerPatterns['paid-focused'] = (answerPatterns['paid-focused'] || 0) + 1;
         }
       });
 
-      // Determine primary category
-      const primaryCategory = Object.entries(categoryScores)
+      // Determine primary category based on highest score
+      const primaryCategory = Object.entries(answerPatterns)
         .sort(([,a], [,b]) => b - a)[0]?.[0] || 'balanced';
 
-      // Find matching result from AI content
-      const matchingResult = content.quiz_content.results.find((result: any) => 
-        result.category.toLowerCase().includes(primaryCategory) || 
-        primaryCategory.includes(result.category.toLowerCase())
-      ) || content.quiz_content.results[0];
+      // Find the best matching result from AI content
+      let matchingResult = content.quiz_content.results[0]; // Default to first result
+      
+      // Try to find a result that matches the primary category
+      for (const result of content.quiz_content.results) {
+        const resultCategory = result.category.toLowerCase();
+        if (resultCategory.includes(primaryCategory) || primaryCategory.includes(resultCategory)) {
+          matchingResult = result;
+          break;
+        }
+      }
+
+      // If no direct match, use the result that best fits the answer patterns
+      if (!matchingResult || matchingResult === content.quiz_content.results[0]) {
+        // Find result based on answer patterns
+        if (answerPatterns['beginner'] > answerPatterns['advanced']) {
+          matchingResult = content.quiz_content.results.find((r: any) => 
+            r.category.toLowerCase().includes('beginner') || 
+            r.category.toLowerCase().includes('novice') ||
+            r.category.toLowerCase().includes('basic')
+          ) || content.quiz_content.results[0];
+        } else if (answerPatterns['advanced'] > answerPatterns['beginner']) {
+          matchingResult = content.quiz_content.results.find((r: any) => 
+            r.category.toLowerCase().includes('advanced') || 
+            r.category.toLowerCase().includes('expert') ||
+            r.category.toLowerCase().includes('professional')
+          ) || content.quiz_content.results[0];
+        }
+      }
 
       const results = {
         totalAnswered: totalQuestions,
         primaryCategory: matchingResult?.category || primaryCategory,
-        categoryScores,
-        recommendations: matchingResult?.recommendations || getQuizRecommendations(primaryCategory),
+        categoryScores: answerPatterns,
+        recommendations: matchingResult?.recommendations || [],
         description: matchingResult?.description || '',
         action_steps: matchingResult?.action_steps || [],
         timeline: matchingResult?.timeline || '',
         success_metrics: matchingResult?.success_metrics || [],
-        completionPercentage: Math.round((totalQuestions / (content.quiz_content.questions?.length || 10)) * 100)
+        completionPercentage: Math.min(100, Math.round((totalQuestions / totalQuizQuestions) * 100))
       };
 
       setQuizResults(results);
@@ -173,7 +215,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
         primaryCategory,
         categoryScores,
         recommendations: getQuizRecommendations(primaryCategory),
-        completionPercentage: Math.round((totalQuestions / 10) * 100) // Use 10 questions as default
+        completionPercentage: Math.min(100, Math.round((totalQuestions / 10) * 100))
       };
 
       setQuizResults(results);
@@ -298,10 +340,10 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
             <div className="bg-blue-50 rounded-lg p-6 mb-6">
               <h2 className="text-xl font-semibold text-blue-900 mb-4">🎯 What You'll Discover</h2>
               <ul className="space-y-2 text-blue-800">
-                <li>• Your unique style personality type</li>
-                <li>• Colors and patterns that work best for you</li>
-                <li>• Personalized styling recommendations</li>
-                <li>• Confidence-boosting style tips</li>
+                <li>• Your unique {content.niche?.toLowerCase() || 'business'} personality type</li>
+                <li>• {content.niche || 'Business'} strategies that work best for you</li>
+                <li>• Personalized {content.niche?.toLowerCase() || 'business'} recommendations</li>
+                <li>• Confidence-boosting {content.niche?.toLowerCase() || 'business'} tips</li>
               </ul>
             </div>
 
@@ -364,6 +406,11 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                     </div>
                     <p className="text-sm text-green-700 mt-1">{quizResults.completionPercentage}% Complete</p>
                   </div>
+                  {quizResults.description && (
+                    <div className="mt-3 p-3 bg-green-50 rounded-lg">
+                      <p className="text-green-800 leading-relaxed">{quizResults.description}</p>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="bg-white rounded-lg p-4 border border-green-200">
@@ -385,7 +432,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               <button 
                   className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
                   onClick={() => {
-                    const resultText = `Styling Personality Quiz Results:\n\nYour Type: ${quizResults.primaryCategory.replace('-', ' ')}\n\nRecommendations:\n${quizResults.recommendations.map((r: string) => `• ${r}`).join('\n')}`;
+                    const resultText = `${content.niche || 'Business'} Quiz Results:\n\nYour Type: ${quizResults.primaryCategory.replace('-', ' ')}\n\n${quizResults.description ? `Description: ${quizResults.description}\n\n` : ''}Recommendations:\n${quizResults.recommendations.map((r: string) => `• ${r}`).join('\n')}`;
                     navigator.clipboard.writeText(resultText);
                     alert('Quiz results copied to clipboard!');
                   }}
@@ -396,7 +443,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                 <div className="bg-blue-100 border border-blue-300 rounded-lg p-4">
                   <h3 className="text-lg font-semibold text-blue-800 mb-2">Ready to Start?</h3>
                   <p className="text-blue-700">
-                    Answer the questions above to discover your unique styling personality!
+                    Answer the questions above to discover your unique {content.niche?.toLowerCase() || 'business'} approach!
                   </p>
                 </div>
               )}
