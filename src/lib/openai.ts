@@ -704,14 +704,17 @@ IMPORTANT: Follow the exact JSON format specified in the format-specific prompt 
     // Parse the JSON response
     const pdfContent = JSON.parse(cleanedContent) as PDFContent;
     
-    // Only return PDF content if the format is PDF, otherwise return interactive content structure
+    // Always return the PDF content structure for PDF format
     if (input.selected_format === 'pdf') {
       return pdfContent;
     } else {
-      // For interactive formats, return a modified structure with format type in title
+      // For interactive formats, return the PDF content structure but with interactive elements
       return {
         ...pdfContent,
         title: `${pdfContent.title || 'Lead Magnet'} (${input.selected_format.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())})`,
+        // Keep the structured_content for PDF display
+        structured_content: pdfContent.structured_content,
+        // Add interactive content for interactive display
         interactive_content: {
           format: input.selected_format,
           title: pdfContent.title || 'Lead Magnet',
