@@ -171,20 +171,30 @@ User Context:
     case 'interactive_quiz':
       return `${baseContext}
 
-Generate 3 Interactive Problem Diagnosis Quiz concepts. Each quiz should:
-- Focus on diagnosing a specific problem in the user's niche
-- Include 5-10 targeted questions that reveal the root cause
-- Provide personalized feedback and next steps based on answers
-- Be engaging and feel like a professional assessment
+Generate 3 Interactive Problem Diagnosis Quiz concepts that provide IMMEDIATE tactical value.
+
+Each quiz MUST:
+- Diagnose a SPECIFIC problem with a CLEAR solution pathway
+- Include questions that reveal ROOT CAUSES (not symptoms)
+- Provide ACTIONABLE next steps based on diagnosis
+- Feel like a professional assessment worth $200+
+
+❌ AVOID: Generic personality quizzes, "What type are you?" fluff
+✅ FOCUS ON: "Why is X not working?" diagnostic quizzes with tactical solutions
+
+EXAMPLES OF HIGH-VALUE QUIZ CONCEPTS:
+- "The Conversion Killer Audit" - 7 questions that reveal exactly why your landing page isn't converting
+- "The Lead Generation Leak Detector" - 10 questions that pinpoint where you're losing prospects in your funnel
+- "The Pricing Strategy Analyzer" - 8 questions that reveal if you're under-pricing and by how much
 
 Return JSON in this exact format:
 {
   "concepts": [
     {
-      "title": "Quiz Title (Interactive Quiz)",
-      "description": "Brief description of what the quiz diagnoses and what users will learn",
-      "value_proposition": "What specific value or insight users will get from taking this quiz",
-      "target_audience": "Specific audience segment this quiz targets"
+      "title": "[Problem] Diagnosis Quiz - Find Out Why [Specific Issue] Isn't Working",
+      "description": "A [X]-question diagnostic that reveals the ROOT CAUSE of [specific problem] and provides a custom action plan to fix it within [timeframe]",
+      "value_proposition": "Get a professional-grade analysis of [specific issue] and discover the exact steps to [specific outcome] - normally costs $[amount] in consulting",
+      "target_audience": "[Specific segment] struggling with [specific problem] who need immediate answers"
     }
   ]
 }`;
@@ -192,20 +202,30 @@ Return JSON in this exact format:
     case 'roi_calculator':
       return `${baseContext}
 
-Generate 3 Instant ROI or Cost-Savings Calculator concepts. Each calculator should:
-- Focus on quantifying potential gains or savings
-- Include relevant metrics for the user's industry
-- Show tangible financial impact of improvements
-- Make benefits concrete and actionable
+Generate 3 ROI Calculator concepts that show EXACT dollar amounts and create urgency.
+
+Each calculator MUST:
+- Calculate SPECIFIC financial impact (not vague percentages)
+- Show opportunity cost of NOT taking action
+- Include industry benchmarks for comparison
+- Generate a sense of urgency with real numbers
+
+❌ AVOID: Generic "calculate your savings" tools
+✅ FOCUS ON: Specific, shocking financial revelations with benchmarked data
+
+EXAMPLES OF HIGH-VALUE CALCULATOR CONCEPTS:
+- "The Email List Money Calculator" - Shows exact revenue you're missing by not having X subscribers
+- "The Automation ROI Calculator" - Calculates exact hours/dollars wasted on manual tasks vs automation investment
+- "The Employee Turnover Cost Calculator" - Shows shocking true cost of losing employees (with industry averages)
 
 Return JSON in this exact format:
 {
   "concepts": [
     {
-      "title": "Calculator Title (ROI Calculator)",
-      "description": "Brief description of what the calculator measures and what insights it provides",
-      "value_proposition": "What specific financial insights users will gain",
-      "target_audience": "Specific audience segment this calculator targets"
+      "title": "The [Specific Cost/Revenue] Calculator - See What [Problem] Is Really Costing You",
+      "description": "Input [X] simple numbers and discover the EXACT dollar amount [problem] is costing you per [timeframe], plus see how you compare to [industry] benchmarks",
+      "value_proposition": "Reveals the shocking true cost of [specific problem] - most [target audience] discover they're losing $[amount] per [timeframe] without realizing it",
+      "target_audience": "[Specific audience] who don't realize the true financial impact of [specific problem]"
     }
   ]
 }`;
@@ -213,20 +233,30 @@ Return JSON in this exact format:
     case 'action_plan':
       return `${baseContext}
 
-Generate 3 Quick Wins Action Plan concepts. Each plan should:
-- Focus on immediate, actionable steps
-- Be tailored to the user's specific niche and goals
-- Include 3-5 concrete steps they can start today
-- Feel personalized and practical
+Generate 3 Action Plan concepts that provide STEP-BY-STEP implementation roadmaps.
+
+Each plan MUST:
+- Include EXACT steps with timelines and success metrics
+- Provide templates, scripts, or tools for each step
+- Include troubleshooting for common obstacles
+- Show MEASURABLE outcomes within 30-90 days
+
+❌ AVOID: Vague advice like "create better content"
+✅ FOCUS ON: Exact implementation with tools, templates, scripts, and metrics
+
+EXAMPLES OF HIGH-VALUE ACTION PLAN CONCEPTS:
+- "The 30-Day Email List Building Blueprint" - Exact steps to build 1,000 subscribers including templates, tools, and daily tasks
+- "The 7-Day Social Media Content System" - Complete system with templates, posting schedules, and engagement tactics
+- "The 90-Day SEO Action Plan" - Step-by-step keyword research, content creation, and link building with tracking spreadsheets
 
 Return JSON in this exact format:
 {
   "concepts": [
     {
-      "title": "Action Plan Title (Action Plan)",
-      "description": "Brief description of what the plan covers and what users will achieve",
-      "value_proposition": "What specific results users can expect from following this plan",
-      "target_audience": "Specific audience segment this plan targets"
+      "title": "The [Timeframe] [Outcome] Action Plan - Get [Specific Result] in [X] Days",
+      "description": "A step-by-step roadmap with exact tasks, templates, and tools to achieve [specific measurable outcome] within [timeframe] - includes troubleshooting guide",
+      "value_proposition": "Skip months of trial and error - follow this proven system to [specific result] with included templates, scripts, and tracking tools",
+      "target_audience": "[Target audience] ready to take action but need a proven system with exact steps"
     }
   ]
 }`;
@@ -234,20 +264,30 @@ Return JSON in this exact format:
     case 'benchmark_report':
       return `${baseContext}
 
-Generate 3 Industry Benchmark Report concepts. Each report should:
-- Compare user metrics to industry standards
-- Identify specific areas for improvement
-- Provide actionable insights based on gaps
-- Create urgency to act on findings
+Generate 3 Benchmark Report concepts that reveal SPECIFIC performance gaps with competitive intelligence.
+
+Each report MUST:
+- Compare against SPECIFIC industry data (not generic averages)
+- Identify EXACT gaps and improvement opportunities
+- Include competitor analysis and positioning insights
+- Provide TACTICAL improvements based on gaps
+
+❌ AVOID: Generic "how you compare" reports
+✅ FOCUS ON: Specific competitive intelligence with actionable gap analysis
+
+EXAMPLES OF HIGH-VALUE BENCHMARK CONCEPTS:
+- "The E-commerce Conversion Benchmark Report" - Compare your conversion rates against 15 key metrics from 1,000+ stores in your category
+- "The SaaS Pricing Intelligence Report" - See exactly how your pricing compares to 50+ competitors with feature-by-feature analysis
+- "The Social Media Performance Audit" - Compare your engagement rates against industry leaders with gap analysis and improvement tactics
 
 Return JSON in this exact format:
 {
   "concepts": [
     {
-      "title": "Benchmark Report Title (Benchmark Report)",
-      "description": "Brief description of what metrics are analyzed and what insights are provided",
-      "value_proposition": "What specific competitive insights users will gain",
-      "target_audience": "Specific audience segment this report targets"
+      "title": "The [Industry] [Metric] Benchmark Report - See Exactly How You Compare",
+      "description": "Compare your [specific metrics] against [number]+ [competitors/industry leaders] and discover the exact gaps costing you [revenue/customers/growth]",
+      "value_proposition": "Get insider competitive intelligence usually available only to Fortune 500 companies - see exactly where you're falling behind and how to catch up",
+      "target_audience": "[Target audience] who suspect they're underperforming but need specific data to know where and by how much"
     }
   ]
 }`;
@@ -255,20 +295,30 @@ Return JSON in this exact format:
     case 'opportunity_finder':
       return `${baseContext}
 
-Generate 3 Opportunity Finder Blueprint concepts. Each blueprint should:
-- Identify missed opportunities in the user's business
-- Provide specific, actionable recommendations
-- Focus on low-effort, high-impact improvements
-- Feel like a personalized audit
+Generate 3 Opportunity Finder concepts that reveal SPECIFIC, untapped revenue sources.
+
+Each finder MUST:
+- Identify SPECIFIC opportunities with dollar amounts
+- Show missed revenue streams or cost savings
+- Include implementation difficulty and potential ROI
+- Focus on LOW-EFFORT, HIGH-IMPACT opportunities
+
+❌ AVOID: Generic brainstorming tools
+✅ FOCUS ON: Specific revenue opportunities with implementation roadmaps
+
+EXAMPLES OF HIGH-VALUE Opportunity Concepts:
+- "The Hidden Revenue Stream Finder" - Analyzes your business model to find 3-5 untapped revenue sources worth $X each
+- "The Customer Lifetime Value Optimizer" - Identifies specific tactics to increase customer value by 20-50% with minimal effort
+- "The Conversion Rate Goldmine Detector" - Finds overlooked conversion opportunities in your funnel worth $X in additional revenue
 
 Return JSON in this exact format:
 {
   "concepts": [
     {
-      "title": "Opportunity Finder Title (Opportunity Finder)",
-      "description": "Brief description of what opportunities are analyzed and what recommendations are provided",
-      "value_proposition": "What specific opportunities users will discover and how to act on them",
-      "target_audience": "Specific audience segment this blueprint targets"
+      "title": "The [Type] Opportunity Finder - Discover $[Amount] in Hidden [Revenue/Savings]",
+      "description": "Analyze [specific business area] to uncover [X] untapped opportunities worth $[amount] each - includes implementation difficulty scores and ROI projections",
+      "value_proposition": "Most [target audience] are sitting on $[amount]+ in missed opportunities - this finder reveals exactly what they are and how to capture them",
+      "target_audience": "[Target audience] who have plateaued and need fresh growth strategies they haven't considered"
     }
   ]
 }`;
@@ -276,20 +326,30 @@ Return JSON in this exact format:
     case 'pdf':
       return `${baseContext}
 
-Generate 3 Traditional PDF Guide concepts. Each guide should:
-- Focus on comprehensive, educational content
-- Include actionable insights and step-by-step instructions
-- Provide templates, checklists, or frameworks
-- Be valuable enough to download and reference later
+Generate 3 PDF Guide concepts that provide COMPREHENSIVE implementation systems.
+
+Each guide MUST:
+- Include step-by-step processes with checklists
+- Provide templates, scripts, and tools
+- Cover common mistakes and how to avoid them
+- Include case studies with specific results
+
+❌ AVOID: High-level theory or generic advice
+✅ FOCUS ON: Complete implementation systems with tools and templates
+
+EXAMPLES OF HIGH-VALUE PDF Concepts:
+- "The Complete Lead Magnet System" - 47 pages including 12 templates, 3 case studies, and step-by-step creation process
+- "The Email Automation Playbook" - Complete system with 25+ email templates, automation sequences, and performance metrics
+- "The Content Marketing Blueprint" - 60-day content plan with templates, posting schedules, and engagement strategies
 
 Return JSON in this exact format:
 {
   "concepts": [
     {
-      "title": "PDF Guide Title (PDF)",
-      "description": "Brief description of what the guide covers and what users will learn",
-      "value_proposition": "What specific value and insights users will get from this guide",
-      "target_audience": "Specific audience segment this guide targets"
+      "title": "The Complete [Topic] System - [Specific Outcome] in [Timeframe]",
+      "description": "A comprehensive [X]-page guide with step-by-step processes, [number] templates, case studies, and everything needed to [specific result]",
+      "value_proposition": "Get the complete system that took [time period] to develop and has generated [specific results] - includes all templates and tools",
+      "target_audience": "[Target audience] who want a comprehensive system they can implement immediately without missing any steps"
     }
   ]
 }`;
@@ -374,139 +434,193 @@ Format: ${format}
     case 'interactive_quiz':
       return `${baseContext}
 
-Generate a content outline for an Interactive Problem Diagnosis Quiz.
+Create a TACTICAL content outline for a diagnostic quiz that provides professional-grade insights.
 
-The quiz should include:
-1. Title: A compelling quiz title that promises specific insights
-2. Introduction: A hook that explains what the quiz will diagnose and why it matters
-3. Core Points: 5-10 key questions that will reveal the root cause of the problem
-4. CTA: A call-to-action for taking the quiz and getting personalized results
-5. Example: A sample question and what insights it would reveal
-6. Template: The quiz structure and question format
+REQUIREMENTS:
+- 7-12 diagnostic questions that reveal ROOT CAUSES
+- Questions must build on each other logically
+- Each question should eliminate possible causes
+- Final diagnosis must include SPECIFIC next steps
+- Include success metrics and timelines
+
+❌ AVOID: Surface-level questions, generic results
+✅ FOCUS ON: Professional diagnostic methodology with actionable outcomes
 
 Return JSON in this exact format:
 {
-  "title": "The [Quiz Name]: [Specific Benefit] (Interactive Quiz)",
-  "introduction": "...",
-  "core_points": ["..."],
-  "cta": "...",
-  "example": "A sample question and what insights it would reveal",
-  "template": "The quiz structure and question format"
+  "title": "${selected.title}",
+  "introduction": "Professional hook explaining the diagnostic process and what insights they'll receive",
+  "core_points": [
+    "Question 1: [Specific diagnostic question that rules out/confirms X]",
+    "Question 2: [Builds on Q1 to narrow down to Y or Z]", 
+    "Question 3: [Further diagnostic refinement]",
+    "Results Framework: [How answers combine to create diagnosis]",
+    "Action Protocol: [Specific next steps based on each diagnosis type]"
+  ],
+  "cta": "Take the diagnostic quiz to get your personalized action plan",
+  "example": "Example: A marketing agency discovered their lead generation wasn't working because they were targeting too broad an audience (Question 3 revelation), not because of poor ad copy (ruled out in Question 1)",
+  "template": "Quiz flow: Symptom identification → Root cause analysis → Diagnosis confirmation → Action prescription"
 }`;
 
     case 'roi_calculator':
       return `${baseContext}
 
-Generate a content outline for an Instant ROI or Cost-Savings Calculator.
+Create a FINANCIAL IMPACT content outline that reveals shocking dollar amounts.
 
-The calculator should include:
-1. Title: A compelling calculator title that promises specific financial insights
-2. Introduction: A hook that explains what the calculator will measure and why it matters
-3. Core Points: Key metrics and calculations the calculator will perform
-4. CTA: A call-to-action for using the calculator and getting personalized results
-5. Example: A sample calculation and what insights it would reveal
-6. Template: The calculator structure and input fields
+REQUIREMENTS:
+- Include 5-8 input variables that most people underestimate
+- Calculate multiple impact scenarios (conservative, realistic, aggressive)
+- Show opportunity cost of inaction
+- Include industry benchmarks for comparison
+- Provide specific improvement recommendations
+
+❌ AVOID: Simple percentage calculators
+✅ FOCUS ON: Multi-variable financial impact with benchmarking
 
 Return JSON in this exact format:
 {
-  "title": "The [Calculator Name]: [Specific Benefit] (ROI Calculator)",
-  "introduction": "...",
-  "core_points": ["..."],
-  "cta": "...",
-  "example": "A sample calculation and what insights it would reveal",
-  "template": "The calculator structure and input fields"
+  "title": "${selected.title}",
+  "introduction": "Hook about the hidden costs most people don't calculate correctly",
+  "core_points": [
+    "Input Variable 1: [Specific metric with industry context]",
+    "Input Variable 2: [Another key metric most underestimate]",
+    "Calculation Matrix: [How variables combine for total impact]",
+    "Benchmark Comparison: [How user compares to industry averages]",
+    "Opportunity Cost Analysis: [What inaction is costing them]",
+    "Action Recommendations: [Specific steps to improve each metric]"
+  ],
+  "cta": "Calculate your exact financial impact and see how you compare",
+  "example": "Example: Most e-commerce stores discover they're losing $2,847/month in revenue from a 2.1% cart abandonment rate (vs 1.4% industry average) - a simple email sequence could recover 35% of that",
+  "template": "Input Collection → Multi-scenario Calculation → Benchmark Comparison → Gap Analysis → Improvement Roadmap"
 }`;
 
     case 'action_plan':
       return `${baseContext}
 
-Generate a content outline for a Quick Wins Action Plan.
+Create a STEP-BY-STEP implementation outline with exact tasks and timelines.
 
-The plan should include:
-1. Title: A compelling plan title that promises specific results
-2. Introduction: A hook that explains what the plan will deliver and why it matters
-3. Core Points: 3-5 concrete steps they can start today
-4. CTA: A call-to-action for getting the full plan and starting implementation
-5. Example: A sample step and what results it would deliver
-6. Template: The action plan structure and step format
+REQUIREMENTS:
+- Break down into weekly phases with specific tasks
+- Include templates, scripts, or tools for each step
+- Provide success metrics and checkpoints
+- Address common obstacles and solutions
+- Give exact timelines and resource requirements
+
+❌ AVOID: High-level advice without specific actions
+✅ FOCUS ON: Exact implementation with tools and troubleshooting
 
 Return JSON in this exact format:
 {
-  "title": "The [Plan Name]: [Specific Benefit] (Action Plan)",
-  "introduction": "...",
-  "core_points": ["..."],
-  "cta": "...",
-  "example": "A sample step and what results it would deliver",
-  "template": "The action plan structure and step format"
+  "title": "${selected.title}",
+  "introduction": "Why most people fail at [topic] and how this system eliminates guesswork",
+  "core_points": [
+    "Week 1: [Specific setup tasks with templates provided]",
+    "Week 2: [Implementation phase with scripts/tools]",
+    "Week 3: [Optimization with measurement framework]",
+    "Success Metrics: [Exact KPIs to track with target numbers]",
+    "Troubleshooting Guide: [Common problems and solutions]",
+    "Templates & Tools: [List of provided resources]"
+  ],
+  "cta": "Get your complete implementation roadmap with templates and tools",
+  "example": "Example: Following Week 2's email template and sending schedule, a consultant increased response rates from 8% to 34% and booked 12 calls in one week",
+  "template": "Phase-by-phase breakdown with tasks, tools, metrics, and troubleshooting for each stage"
 }`;
 
     case 'benchmark_report':
       return `${baseContext}
 
-Generate a content outline for an Industry Benchmark Report.
+Create a COMPETITIVE INTELLIGENCE outline that reveals specific performance gaps.
 
-The report should include:
-1. Title: A compelling report title that promises competitive insights
-2. Introduction: A hook that explains what the report will analyze and why it matters
-3. Core Points: Key metrics and benchmarks that will be compared
-4. CTA: A call-to-action for getting the full report and personalized insights
-5. Example: A sample benchmark comparison and what insights it would reveal
-6. Template: The report structure and metric format
+REQUIREMENTS:
+- Compare against 10+ specific industry metrics
+- Include competitor analysis and positioning
+- Identify exact improvement opportunities with ROI
+- Provide tactical recommendations for each gap
+- Include industry trend analysis
+
+❌ AVOID: Generic comparison reports
+✅ FOCUS ON: Specific competitive intelligence with action plans
 
 Return JSON in this exact format:
 {
-  "title": "The [Report Name]: [Specific Benefit] (Benchmark Report)",
-  "introduction": "...",
-  "core_points": ["..."],
-  "cta": "...",
-  "example": "A sample benchmark comparison and what insights it would reveal",
-  "template": "The report structure and metric format"
+  "title": "${selected.title}",
+  "introduction": "Industry intelligence that reveals exactly where you're falling behind competitors",
+  "core_points": [
+    "Performance Matrix: [10+ key metrics vs industry leaders]",
+    "Competitive Gap Analysis: [Specific areas of underperformance]",
+    "Opportunity Scoring: [Which gaps to prioritize by ROI potential]",
+    "Tactical Improvements: [Specific actions to close each gap]",
+    "Industry Trends: [What's changing and how to get ahead]",
+    "Implementation Priority: [Which changes to make first]"
+  ],
+  "cta": "Get your competitive intelligence report and gap analysis",
+  "example": "Example: SaaS companies discovered their onboarding sequence was 40% longer than top performers, causing 23% higher churn - reducing it by 2 steps increased retention by 31%",
+  "template": "Metric Collection → Competitive Comparison → Gap Identification → Opportunity Scoring → Action Prioritization"
 }`;
 
     case 'opportunity_finder':
       return `${baseContext}
 
-Generate a content outline for an Opportunity Finder Blueprint.
+Create an OPPORTUNITY ANALYSIS outline that reveals untapped revenue sources.
 
-The blueprint should include:
-1. Title: A compelling blueprint title that promises specific opportunities
-2. Introduction: A hook that explains what opportunities will be identified and why it matters
-3. Core Points: Key areas where opportunities will be analyzed
-4. CTA: A call-to-action for getting the full blueprint and personalized recommendations
-5. Example: A sample opportunity analysis and what recommendations it would provide
-6. Template: The blueprint structure and analysis format
+REQUIREMENTS:
+- Analyze 5-7 specific business areas for opportunities
+- Quantify potential value of each opportunity
+- Score opportunities by effort vs impact
+- Provide implementation roadmaps for top opportunities
+- Include risk assessment and success probability
+
+❌ AVOID: Generic brainstorming exercises
+✅ FOCUS ON: Specific revenue opportunities with implementation plans
 
 Return JSON in this exact format:
 {
-  "title": "The [Blueprint Name]: [Specific Benefit] (Opportunity Finder)",
-  "introduction": "...",
-  "core_points": ["..."],
-  "cta": "...",
-  "example": "A sample opportunity analysis and what recommendations it would provide",
-  "template": "The blueprint structure and analysis format"
+  "title": "${selected.title}",
+  "introduction": "The systematic method to find hidden revenue streams worth $X+ in your business",
+  "core_points": [
+    "Revenue Stream Analysis: [Current vs potential revenue sources]",
+    "Opportunity Categories: [5-7 specific areas to analyze]",
+    "Value Quantification: [How to calculate potential from each opportunity]",
+    "Effort vs Impact Matrix: [Which opportunities to prioritize]",
+    "Implementation Roadmaps: [Step-by-step plans for top 3 opportunities]",
+    "Risk Assessment: [Success probability and mitigation strategies]"
+  ],
+  "cta": "Discover your hidden revenue opportunities and implementation roadmap",
+  "example": "Example: A coaching business discovered 3 untapped revenue streams worth $8,400/month: group programs (low effort, high impact), affiliate partnerships (medium effort, medium impact), and corporate workshops (high effort, very high impact)",
+  "template": "Business Analysis → Opportunity Identification → Value Calculation → Priority Scoring → Implementation Planning"
 }`;
 
     case 'pdf':
       return `${baseContext}
 
-Generate a content outline for a Traditional PDF Guide.
+Create a COMPREHENSIVE SYSTEM outline with complete implementation tools.
 
-The guide should include:
-1. Title: A compelling guide title that promises comprehensive insights
-2. Introduction: A hook that explains what the guide will cover and why it matters
-3. Core Points: Key sections and topics the guide will address
-4. CTA: A call-to-action for downloading the full guide
-5. Example: A sample section and what insights it would provide
-6. Template: The guide structure and content format
+REQUIREMENTS:
+- Include step-by-step processes with checklists
+- Provide 10+ templates, scripts, or tools
+- Cover implementation, optimization, and troubleshooting
+- Include case studies with specific results
+- Give exact timelines and resource requirements
+
+❌ AVOID: High-level theory or generic advice
+✅ FOCUS ON: Complete plug-and-play system with all tools included
 
 Return JSON in this exact format:
 {
-  "title": "The [Guide Name]: [Specific Benefit] (PDF)",
-  "introduction": "...",
-  "core_points": ["..."],
-  "cta": "...",
-  "example": "A sample section and what insights it would provide",
-  "template": "The guide structure and content format"
+  "title": "${selected.title}",
+  "introduction": "The complete system that eliminates guesswork and provides everything needed for [specific outcome]",
+  "core_points": [
+    "System Overview: [Complete process from start to finish]",
+    "Phase 1 - Setup: [Exact steps with templates provided]",
+    "Phase 2 - Implementation: [Step-by-step execution with tools]",
+    "Phase 3 - Optimization: [Improvement strategies with metrics]",
+    "Templates & Tools: [List of 10+ included resources]",
+    "Case Studies: [3+ specific examples with results]",
+    "Troubleshooting: [Common problems and solutions]"
+  ],
+  "cta": "Download the complete system with all templates and tools",
+  "example": "Example: Using the provided email templates and sequence timing, a fitness coach increased course sales from $3,200/month to $12,800/month in 6 weeks",
+  "template": "Complete implementation system with processes, tools, templates, case studies, and troubleshooting guides"
 }`;
 
     default:
@@ -646,26 +760,27 @@ User Context:
 
   const founderIntro = `
 PERSONALIZED FOUNDER INTRODUCTION:
-Before the toolkit, write a short, authentic introduction in the founder's voice. Use these details:
+Before the content, write a short, authentic introduction in the founder's voice. Use these details:
 - Name: ${input.name}
 - Position/Title: ${input.position || ''}
 - Brand/company: ${input.brand_name}
 - Customer problem: ${input.problem_statement}
 - Desired outcome: ${input.desired_outcome}
-If position/title is provided, use it in the intro (e.g., "I'm [Name], [Position] at [Brand]"). The intro should sound like the founder is speaking directly to the reader, sharing why they built this and what the reader will achieve. Make it authentic, concise, and motivating. Return this as a field called founder_intro in the JSON.
+Make it personal and credible - explain WHY you created this and what specific results the reader will get.
 `;
 
-  const corePrinciples = `
-CORE PRINCIPLES (NON-NEGOTIABLE):
-VISUAL DENSITY: Every content page must be "completely filled." You must generate enough detailed content (text, lists, or structured content) to fill a standard document page. Sparse pages with single paragraphs are forbidden.
+  const valueStandards = `
+EXTREME VALUE REQUIREMENTS (NON-NEGOTIABLE):
 
-STRUCTURED FORMATTING: You MUST use a variety of formats—paragraphs, bulleted lists, numbered lists, and structured content—to enhance readability and ensure pages are full.
+1. TACTICAL DEPTH: Every section must provide HOW-TO, not just WHAT-TO
+2. IMPLEMENTABLE TOOLS: Include templates, scripts, checklists, frameworks
+3. SPECIFIC RESULTS: Use exact numbers, timelines, and success metrics
+4. CASE STUDIES: Include real examples with specific outcomes
+5. TROUBLESHOOTING: Address common obstacles and solutions
+6. NO FLUFF: Every paragraph must provide actionable value
 
-EXTREME VALUE: Every section must be a tangible tool that provides the "how," not just the "what."
-
-NO SELLING: The content must be 100% educational and brand-agnostic.
-
-CRITICAL REDUNDANCY RULE: If you include a checklist section, DO NOT create a separate "step-by-step guide" section. The checklist is the superior implementation tool and should be the sole guide. Avoid redundancy at all costs.
+❌ FORBIDDEN: Generic advice, theory without application, vague percentages
+✅ REQUIRED: Specific tactics, exact steps, measurable outcomes
 `;
 
   switch (format) {
@@ -674,318 +789,139 @@ CRITICAL REDUNDANCY RULE: If you include a checklist section, DO NOT create a se
 
 ${founderIntro}
 
-${corePrinciples}
+${valueStandards}
 
-GENERATE AN INTERACTIVE QUIZ LEAD MAGNET:
+CREATE A PROFESSIONAL DIAGNOSTIC QUIZ SYSTEM:
 
-Create a comprehensive quiz that provides real value to users. The content should be engaging, educational, and actionable.
+This must be a complete diagnostic tool that provides professional-grade insights and actionable solutions.
 
-1. Title Page:
-- Title: A compelling quiz title that promises specific insights
-- Subtitle: Explains what the quiz will diagnose
+REQUIRED STRUCTURE:
+1. **Diagnostic Framework**: Explain the methodology behind the questions
+2. **Question Bank**: 10-15 strategic questions that build on each other
+3. **Scoring System**: How answers combine to create accurate diagnosis
+4. **Result Categories**: 4-6 specific diagnosis types with solutions
+5. **Action Protocols**: Exact next steps for each diagnosis type
+6. **Success Tracking**: How to measure improvement
 
-2. Introduction:
-- Hook the reader with a sharp pain point
-- Explain what insights they'll receive from taking the quiz
-
-3. Quiz Content:
-- 5-10 engaging questions that reveal insights
-- Multiple choice answers that help categorize users
-- Clear explanations of what each answer reveals
-- Diagnosis categories with symptoms and solutions
-
-4. Educational Content:
-- Include valuable insights and tips throughout
-- Add case studies and real examples
-- Provide actionable advice based on quiz results
-
-5. Interactive Elements:
-- Questions that engage and educate
-- Results that provide immediate value
-- Clear next steps for users
-
-Make the content natural, engaging, and genuinely helpful. Focus on providing real value rather than following rigid structures.
+CRITICAL REQUIREMENTS:
+- Questions must reveal ROOT CAUSES, not just symptoms
+- Each result category needs SPECIFIC action steps
+- Include success metrics and timelines
+- Provide troubleshooting for each diagnosis type
 
 RETURN JSON IN THIS EXACT FORMAT:
-\`\`\`json
 {
-  "founder_intro": "A personalized introduction from the founder explaining why they created this quiz and what value it provides.",
+  "founder_intro": "Personal introduction explaining why you created this diagnostic and what results users will get",
   "title_page": {
-    "title": "The [Quiz Name] (Interactive Quiz)",
-    "subtitle": "A [X]-Question Assessment to [Specific Benefit]."
+    "title": "${outline.title}",
+    "subtitle": "A Professional-Grade Diagnostic Tool for [Specific Problem]"
   },
   "introduction_page": {
-    "title": "Why This Quiz Will Reveal Your Hidden Problems",
-    "content": "Introduction content explaining the value and benefits of taking this quiz."
+    "title": "How This Diagnostic Works",
+    "content": "Explain the professional methodology and what insights they'll receive"
   },
-  "quiz_content": {
-    "questions": [
-      {
-        "question": "Sample question text",
-        "options": ["Option A", "Option B", "Option C", "Option D"],
-        "explanation": "What this question reveals about the user"
-      }
-    ],
-    "diagnosis_categories": [
-      {
-        "category_name": "Category Name",
-        "description": "Description of this category",
-        "symptoms": ["Symptom 1", "Symptom 2", "Symptom 3"],
-        "solutions": ["Solution 1", "Solution 2", "Solution 3"]
-      }
-    ]
+  "diagnostic_framework": {
+    "methodology": "The scientific approach behind this diagnostic",
+    "question_strategy": "How questions are designed to reveal root causes",
+    "accuracy_factors": "What makes this diagnostic reliable"
   },
-  "educational_content": {
-    "insights": ["Insight 1", "Insight 2", "Insight 3"],
-    "tips": ["Tip 1", "Tip 2", "Tip 3"],
-    "case_studies": ["Case study 1", "Case study 2"]
-  },
-  "interactive_elements": {
-    "next_steps": ["Step 1", "Step 2", "Step 3"],
-    "action_items": ["Action 1", "Action 2", "Action 3"]
-  }
-}
-\`\`\`
-            "pros": "Identifies specific areas for improvement",
-            "cons": "Requires honest self-assessment",
-            "case_study": "A SaaS company used skill gap quizzes to improve employee training, reducing support tickets by 30%"
-          }
-        ]
-      }
-    },
+  "question_bank": [
     {
-      "layout": "filled",
-      "type": "checklist",
-      "title": "Quiz Preparation Checklist",
-      "content": {
-        "phases": [
-          {
-            "phase_title": "Phase 1: Pre-Quiz Preparation",
-            "items": [
-              "1.1 Set up quiz platform and tracking",
-              "1.2 Create compelling quiz title and description",
-              "1.3 Design quiz flow and question sequence",
-              "1.4 Test quiz functionality and user experience"
-            ]
-          },
-          {
-            "phase_title": "Phase 2: During Quiz",
-            "items": [
-              "2.1 Monitor quiz completion rates",
-              "2.2 Track user engagement and drop-off points",
-              "2.3 Collect email addresses for follow-up",
-              "2.4 Provide immediate value and results"
-            ]
-          },
-          {
-            "phase_title": "Phase 3: Post-Quiz Analysis",
-            "items": [
-              "3.1 Analyze quiz results and patterns",
-              "3.2 Segment leads based on quiz answers",
-              "3.3 Create personalized follow-up sequences",
-              "3.4 Optimize quiz based on performance data"
-            ]
-          }
-        ],
-        "case_study": "A real estate agent created a property preference quiz that generated 150 qualified leads in 30 days"
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "scripts",
-      "title": "Quiz Discussion Scripts",
-      "content": {
-        "scenarios": [
-          {
-            "trigger": "When someone asks about your quiz",
-            "response": "It's a quick assessment that helps identify your specific challenges and provides personalized solutions",
-            "explanation": "This positions the quiz as valuable and time-efficient"
-          },
-          {
-            "trigger": "When explaining quiz results",
-            "response": "Based on your answers, you fall into the [Category] category. Here's what that means and your next steps",
-            "explanation": "Shows you have a systematic approach to problem-solving"
-          },
-          {
-            "trigger": "When following up after quiz completion",
-            "response": "Thanks for taking our quiz! Here's your personalized action plan based on your results",
-            "explanation": "Demonstrates immediate value delivery"
-          }
-        ]
-      }
+      "question_number": 1,
+      "question_text": "Specific diagnostic question",
+      "answer_options": ["Option A", "Option B", "Option C"],
+      "diagnostic_purpose": "What this question reveals about the problem"
     }
   ],
-  "cta_page": {
-    "layout": "centered",
-    "title": "Take Your Quiz Now",
-    "content": "Ready to discover your hidden marketing problems? Take this quiz to get your personalized diagnosis and action plan."
+  "result_categories": [
+    {
+      "category_name": "Specific Diagnosis Type",
+      "description": "What this diagnosis means",
+      "symptoms": ["Symptom 1", "Symptom 2", "Symptom 3"],
+      "root_causes": ["Cause 1", "Cause 2"],
+      "action_protocol": ["Step 1", "Step 2", "Step 3"],
+      "success_metrics": "How to measure improvement",
+      "timeline": "Expected improvement timeframe"
+    }
+  ],
+  "implementation_guide": {
+    "how_to_use": "Step-by-step guide for taking and interpreting the quiz",
+    "action_planning": "How to create action plan from results",
+    "progress_tracking": "How to monitor improvement over time"
   }
-}
-\`\`\``;
+}`;
 
     case 'roi_calculator':
       return `${baseContext}
 
 ${founderIntro}
 
-${corePrinciples}
+${valueStandards}
 
-GENERATE AN ROI CALCULATOR LEAD MAGNET:
+CREATE A FINANCIAL IMPACT CALCULATOR SYSTEM:
 
-Create a comprehensive calculator that provides real financial insights. The content should be practical, educational, and actionable.
+This must be a comprehensive tool that reveals shocking financial insights and creates urgency.
 
-1. Title Page:
-- Title: A compelling calculator title that promises specific ROI insights
-- Subtitle: Explains what the calculator will reveal
+REQUIRED STRUCTURE:
+1. **Calculation Framework**: The methodology for financial analysis
+2. **Input Variables**: 8-12 key metrics with industry context
+3. **Calculation Matrix**: How variables combine for total impact
+4. **Scenario Analysis**: Conservative, realistic, and aggressive projections
+5. **Benchmark Comparison**: How user compares to industry leaders
+6. **Improvement Roadmap**: Specific tactics to improve each metric
 
-2. Introduction:
-- Hook with the pain of not knowing your true ROI
-- Explain what insights they'll get from the calculator
-
-3. Calculator Content:
-- Input fields for key business metrics
-- Calculation logic and formulas
-- Different result categories with insights
-- Implementation guidance for improvements
-
-4. Educational Content:
-- Explain why each metric matters
-- Include industry benchmarks and examples
-- Provide actionable improvement strategies
-- Add case studies of successful implementations
-
-5. Interactive Elements:
-- Input fields that capture real data
-- Calculations that provide immediate insights
-- Clear action plans based on results
-
-Make the content practical, data-driven, and genuinely helpful. Focus on providing real financial value rather than following rigid structures.
+CRITICAL REQUIREMENTS:
+- Show exact dollar amounts, not vague percentages
+- Include opportunity cost of inaction
+- Provide industry benchmarks for context
+- Give specific improvement tactics for each metric
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
-  "founder_intro": "A personalized introduction from the founder explaining why they created this calculator and what value it provides.",
+  "founder_intro": "Personal introduction explaining the financial impact this calculator reveals",
   "title_page": {
-    "title": "The [Calculator Name] (ROI Calculator)",
-    "subtitle": "Calculate Your Potential Revenue Gains and Cost Savings."
+    "title": "${outline.title}",
+    "subtitle": "Discover the Exact Financial Impact of [Problem/Opportunity]"
   },
   "introduction_page": {
-    "title": "Why You Need This ROI Calculator",
-    "content": "Introduction content explaining the value and benefits of using this calculator."
+    "title": "The Hidden Costs You're Not Calculating",
+    "content": "Explain why this financial analysis is crucial and what they'll discover"
   },
-  "calculator_content": {
-    "input_fields": [
-      {
-        "field_name": "Current Revenue",
-        "description": "Your current monthly/annual revenue",
-        "placeholder": "Enter your current revenue"
-      },
-      {
-        "field_name": "Current Costs",
-        "description": "Your current monthly/annual costs",
-        "placeholder": "Enter your current costs"
-      },
-      {
-        "field_name": "Conversion Rate",
-        "description": "Your current conversion rate percentage",
-        "placeholder": "Enter your conversion rate"
-      }
-    ],
-    "calculation_categories": [
-      {
-        "category_name": "Revenue Optimization",
-        "description": "Potential revenue gains from optimization",
-        "improvements": ["Improvement 1", "Improvement 2", "Improvement 3"],
-        "potential_gains": "Estimated revenue increase"
-      },
-      {
-        "category_name": "Cost Reduction",
-        "description": "Potential cost savings opportunities",
-        "savings": ["Savings 1", "Savings 2", "Savings 3"],
-        "potential_savings": "Estimated cost reduction"
-      }
-    ]
+  "calculation_framework": {
+    "methodology": "The financial analysis approach used",
+    "variable_selection": "Why these specific metrics matter",
+    "accuracy_factors": "What makes these calculations reliable"
   },
-  "educational_content": {
-    "insights": ["Insight 1", "Insight 2", "Insight 3"],
-    "benchmarks": ["Benchmark 1", "Benchmark 2", "Benchmark 3"],
-    "case_studies": ["Case study 1", "Case study 2"]
-  },
-  "interactive_elements": {
-    "next_steps": ["Step 1", "Step 2", "Step 3"],
-    "action_items": ["Action 1", "Action 2", "Action 3"]
-  }
-}
-          }
-        ]
-      }
-    },
+  "input_variables": [
     {
-      "layout": "filled",
-      "type": "checklist",
-      "title": "ROI Preparation Checklist",
-      "content": {
-        "phases": [
-          {
-            "phase_title": "Phase 1: Data Collection",
-            "items": [
-              "1.1 Gather current financial metrics",
-              "1.2 Collect customer acquisition data",
-              "1.3 Analyze revenue streams",
-              "1.4 Review operational costs"
-            ]
-          },
-          {
-            "phase_title": "Phase 2: Calculation Setup",
-            "items": [
-              "2.1 Set up ROI calculation models",
-              "2.2 Define key performance indicators",
-              "2.3 Create baseline measurements",
-              "2.4 Establish tracking systems"
-            ]
-          },
-          {
-            "phase_title": "Phase 3: Analysis Review",
-            "items": [
-              "3.1 Compare current vs. potential performance",
-              "3.2 Identify improvement opportunities",
-              "3.3 Prioritize high-impact changes",
-              "3.4 Create implementation timeline"
-            ]
-          }
-        ],
-        "case_study": "A marketing agency used ROI analysis to increase client retention by 50% and average project value by 30%"
-      }
-    },
-    {
-      "layout": "filled",
-      "type": "scripts",
-      "title": "ROI Discussion Scripts",
-      "content": {
-        "scenarios": [
-          {
-            "trigger": "When presenting ROI to stakeholders",
-            "response": "Based on our analysis, we can increase revenue by 25-40% while reducing costs by 15-20%",
-            "explanation": "Quantifies the value and shows strategic thinking"
-          },
-          {
-            "trigger": "When explaining ROI calculations",
-            "response": "We've analyzed your current metrics and identified specific opportunities for improvement",
-            "explanation": "Shows data-driven approach"
-          },
-          {
-            "trigger": "When discussing implementation",
-            "response": "Here's our 90-day roadmap to achieve these ROI improvements",
-            "explanation": "Demonstrates clear action plan"
-          }
-        ]
-      }
+      "variable_name": "Current Revenue",
+      "description": "Monthly or annual revenue figure",
+      "industry_context": "How this compares to industry averages",
+      "impact_factor": "How this affects the overall calculation"
     }
   ],
-  "cta_page": {
-    "layout": "centered",
-    "title": "Calculate Your ROI Now",
-    "content": "Ready to see your potential revenue gains? Use this calculator to discover hidden opportunities in your business."
-  }
+  "calculation_scenarios": [
+    {
+      "scenario_name": "Conservative Impact",
+      "description": "Minimum expected financial impact",
+      "calculation_method": "How this scenario is calculated",
+      "typical_results": "What users typically discover"
+    }
+  ],
+  "benchmark_analysis": {
+    "industry_standards": "Key performance benchmarks",
+    "gap_identification": "How to spot underperformance",
+    "competitive_context": "How users compare to top performers"
+  },
+  "improvement_roadmap": [
+    {
+      "metric": "Specific financial metric",
+      "current_typical": "What most people currently achieve",
+      "improvement_target": "Realistic improvement goal",
+      "tactics": ["Tactic 1", "Tactic 2", "Tactic 3"],
+      "financial_impact": "Dollar impact of improvement"
+    }
+  ]
 }`;
 
     case 'action_plan':
@@ -993,97 +929,75 @@ RETURN JSON IN THIS EXACT FORMAT:
 
 ${founderIntro}
 
-${corePrinciples}
+${valueStandards}
 
-GENERATE AN ACTION PLAN LEAD MAGNET:
+CREATE A COMPLETE IMPLEMENTATION SYSTEM:
 
-Create a comprehensive action plan that provides real guidance. The content should be practical, step-by-step, and actionable.
+This must be a step-by-step execution plan with everything needed for success.
 
-1. Title Page:
-- Title: A compelling action plan title that promises specific results
-- Subtitle: Explains what the action plan will deliver
+REQUIRED STRUCTURE:
+1. **Implementation Framework**: The systematic approach to execution
+2. **Phase Breakdown**: 4-6 phases with specific tasks and timelines
+3. **Tool Arsenal**: Templates, scripts, checklists for each phase
+4. **Success Metrics**: Exact KPIs to track with target numbers
+5. **Troubleshooting Guide**: Common obstacles and solutions
+6. **Acceleration Tactics**: How to get faster results
 
-2. Introduction:
-- Hook with the pain of not having a clear plan
-- Explain what they'll get from this action plan
-
-3. Action Plan Content:
-- Personalization questions to customize the plan
-- Weekly or monthly breakdown of tasks
-- Clear milestones and success metrics
-- Progress tracking and adjustment guidelines
-
-4. Educational Content:
-- Explain the reasoning behind each step
-- Include tips and best practices
-- Add case studies of successful implementations
-- Provide troubleshooting for common obstacles
-
-5. Interactive Elements:
-- Questions that personalize the experience
-- Step-by-step guidance that's easy to follow
-- Progress tracking and milestone celebrations
-
-Make the content practical, motivating, and genuinely helpful. Focus on providing real guidance rather than following rigid structures.
+CRITICAL REQUIREMENTS:
+- Every task must have exact steps and timelines
+- Include templates and tools for execution
+- Provide specific success metrics and checkpoints
+- Address common problems and solutions
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
-  "founder_intro": "A personalized introduction from the founder explaining why they created this action plan and what value it provides.",
+  "founder_intro": "Personal introduction explaining why this system works and what results users will get",
   "title_page": {
-    "title": "The [Action Plan Name] (Action Plan)",
-    "subtitle": "Your Personalized [X]-Week Roadmap to [Specific Goal]."
+    "title": "${outline.title}",
+    "subtitle": "Your Complete Step-by-Step Implementation System"
   },
   "introduction_page": {
-    "title": "Why You Need This Action Plan",
-    "content": "Introduction content explaining the value and benefits of following this action plan."
+    "title": "Why Most People Fail (And How This System Prevents That)",
+    "content": "Explain the systematic approach and what makes it effective"
   },
-  "action_plan_content": {
-    "goals": [
-      {
-        "goal_name": "Primary Goal",
-        "description": "Description of the main objective",
-        "timeline": "Expected completion time",
-        "milestones": ["Milestone 1", "Milestone 2", "Milestone 3"]
-      }
-    ],
-    "action_phases": [
-      {
-        "phase_name": "Phase 1: Foundation",
-        "description": "Setting up the foundation for success",
-        "actions": ["Action 1", "Action 2", "Action 3"],
-        "timeline": "1-2 weeks"
-      },
-      {
-        "phase_name": "Phase 2: Implementation",
-        "description": "Executing the core strategies",
-        "actions": ["Action 1", "Action 2", "Action 3"],
-        "timeline": "3-4 weeks"
-      },
-      {
-        "phase_name": "Phase 3: Optimization",
-        "description": "Refining and improving results",
-        "actions": ["Action 1", "Action 2", "Action 3"],
-        "timeline": "5-6 weeks"
-      }
-    ]
+  "implementation_framework": {
+    "methodology": "The systematic approach to execution",
+    "phase_strategy": "Why the phases are structured this way",
+    "success_factors": "What makes this system work"
   },
-  "educational_content": {
-    "strategies": ["Strategy 1", "Strategy 2", "Strategy 3"],
-    "tips": ["Tip 1", "Tip 2", "Tip 3"],
-    "case_studies": ["Case study 1", "Case study 2"]
-  },
-  "interactive_elements": {
-    "progress_tracking": ["Track 1", "Track 2", "Track 3"],
-    "action_items": ["Action 1", "Action 2", "Action 3"]
-  }
-}
+  "phase_breakdown": [
+    {
+      "phase_number": 1,
+      "phase_name": "Foundation Setup",
+      "timeline": "Days 1-7",
+      "objectives": ["Objective 1", "Objective 2"],
+      "tasks": [
+        {
+          "task_name": "Specific task",
+          "instructions": "Exact steps to complete",
+          "tools_needed": "Templates or tools provided",
+          "success_criteria": "How to know it's done correctly"
+        }
+      ],
+      "success_metrics": "What to measure and target numbers"
     }
   ],
-  "cta_page": {
-    "layout": "centered",
-    "title": "Get Your Action Plan",
-    "content": "Ready to take action? Get your personalized roadmap to achieve your goals."
-  }
+  "tool_arsenal": [
+    {
+      "tool_name": "Template Name",
+      "purpose": "What this tool accomplishes",
+      "usage_instructions": "How to use it effectively",
+      "customization_tips": "How to adapt it to specific needs"
+    }
+  ],
+  "troubleshooting_guide": [
+    {
+      "common_problem": "Specific obstacle users face",
+      "symptoms": "How to recognize this problem",
+      "root_cause": "Why this happens",
+      "solution": "Exact steps to fix it"
+    }
+  ]
 }`;
 
     case 'benchmark_report':
@@ -1091,92 +1005,75 @@ RETURN JSON IN THIS EXACT FORMAT:
 
 ${founderIntro}
 
-${corePrinciples}
+${valueStandards}
 
-GENERATE A BENCHMARK REPORT LEAD MAGNET:
+CREATE A COMPETITIVE INTELLIGENCE SYSTEM:
 
-Create a comprehensive benchmark report that provides real performance insights. The content should be data-driven, educational, and actionable.
+This must provide insider competitive analysis that reveals specific performance gaps and improvement opportunities.
 
-1. Title Page:
-- Title: A compelling benchmark report title
-- Subtitle: Explains what the benchmark report will reveal
+REQUIRED STRUCTURE:
+1. **Benchmark Framework**: The methodology for competitive analysis
+2. **Performance Matrix**: 15+ key metrics vs industry leaders
+3. **Gap Analysis**: Specific areas of underperformance with impact
+4. **Competitive Intelligence**: What top performers do differently
+5. **Improvement Priorities**: Which gaps to fix first for maximum ROI
+6. **Implementation Tactics**: Specific strategies to close each gap
 
-2. Introduction:
-- Hook with the pain of not knowing how you compare
-- Explain what insights they'll get from the benchmark
-
-3. Benchmark Content:
-- Input fields for key performance metrics
-- Industry comparisons and benchmarks
-- Gap analysis and opportunity identification
-- Improvement strategies and implementation plans
-
-4. Educational Content:
-- Explain what each metric means and why it matters
-- Include industry standards and best practices
-- Provide actionable improvement strategies
-- Add case studies of successful improvements
-
-5. Interactive Elements:
-- Input fields that capture real performance data
-- Comparisons that provide immediate insights
-- Clear action plans based on gaps
-
-Make the content data-driven, insightful, and genuinely helpful. Focus on providing real performance value rather than following rigid structures.
+CRITICAL REQUIREMENTS:
+- Include specific industry data and competitor insights
+- Quantify the impact of each performance gap
+- Provide tactical strategies for improvement
+- Show ROI potential for each improvement area
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
-  "founder_intro": "A personalized introduction from the founder explaining why they created this benchmark report and what value it provides.",
+  "founder_intro": "Personal introduction explaining the competitive intelligence and insights users will get",
   "title_page": {
-    "title": "The [Benchmark Report Name] (Benchmark Report)",
-    "subtitle": "Compare Your Performance to Industry Standards."
+    "title": "${outline.title}",
+    "subtitle": "Industry Intelligence That Reveals Where You're Falling Behind"
   },
   "introduction_page": {
-    "title": "Why You Need This Benchmark Report",
-    "content": "Introduction content explaining the value and benefits of this benchmark analysis."
+    "title": "The Competitive Intelligence You Need",
+    "content": "Explain the insider analysis and what competitive advantages they'll discover"
   },
-  "benchmark_content": {
-    "metrics": [
-      {
-        "metric_name": "Conversion Rate",
-        "description": "Your current conversion rate vs industry average",
-        "your_performance": "Your current rate",
-        "industry_average": "Industry average rate",
-        "gap_analysis": "Performance gap analysis"
-      },
-      {
-        "metric_name": "Customer Acquisition Cost",
-        "description": "Your CAC vs industry benchmarks",
-        "your_performance": "Your current CAC",
-        "industry_average": "Industry average CAC",
-        "gap_analysis": "Cost efficiency analysis"
-      }
-    ],
-    "comparison_categories": [
-      {
-        "category_name": "Performance Metrics",
-        "description": "Key performance indicators comparison",
-        "benchmarks": ["Benchmark 1", "Benchmark 2", "Benchmark 3"],
-        "improvement_opportunities": ["Opportunity 1", "Opportunity 2", "Opportunity 3"]
-      },
-      {
-        "category_name": "Efficiency Metrics",
-        "description": "Operational efficiency comparison",
-        "benchmarks": ["Benchmark 1", "Benchmark 2", "Benchmark 3"],
-        "improvement_opportunities": ["Opportunity 1", "Opportunity 2", "Opportunity 3"]
-      }
-    ]
+  "benchmark_framework": {
+    "methodology": "How this competitive analysis is conducted",
+    "data_sources": "Where the benchmark data comes from",
+    "reliability_factors": "What makes this analysis accurate"
   },
-  "educational_content": {
-    "insights": ["Insight 1", "Insight 2", "Insight 3"],
-    "best_practices": ["Practice 1", "Practice 2", "Practice 3"],
-    "case_studies": ["Case study 1", "Case study 2"]
+  "performance_matrix": [
+    {
+      "metric_name": "Conversion Rate",
+      "your_typical": "What most users currently achieve",
+      "industry_average": "Industry standard performance",
+      "top_performer": "What leaders achieve",
+      "gap_impact": "Financial impact of the performance gap",
+      "improvement_potential": "Realistic improvement target"
+    }
+  ],
+  "competitive_intelligence": [
+    {
+      "performance_area": "Specific business area",
+      "what_leaders_do": "Specific tactics top performers use",
+      "why_it_works": "The strategic reasoning behind it",
+      "implementation_complexity": "How difficult it is to implement",
+      "impact_timeline": "How quickly you see results"
+    }
+  ],
+  "gap_analysis": {
+    "priority_gaps": "Which performance gaps cost the most",
+    "quick_wins": "Easy improvements with high impact",
+    "strategic_initiatives": "Longer-term competitive advantages"
   },
-  "interactive_elements": {
-    "improvement_plans": ["Plan 1", "Plan 2", "Plan 3"],
-    "action_items": ["Action 1", "Action 2", "Action 3"]
-  }
-}
+  "improvement_roadmap": [
+    {
+      "gap_area": "Specific underperformance area",
+      "current_impact": "What the gap is costing you",
+      "improvement_tactics": ["Tactic 1", "Tactic 2", "Tactic 3"],
+      "implementation_timeline": "How long to see results",
+      "expected_roi": "Financial return on improvement"
+    }
+  ]
 }`;
 
     case 'opportunity_finder':
@@ -1184,88 +1081,81 @@ RETURN JSON IN THIS EXACT FORMAT:
 
 ${founderIntro}
 
-${corePrinciples}
+${valueStandards}
 
-GENERATE AN OPPORTUNITY FINDER LEAD MAGNET:
+CREATE AN OPPORTUNITY ANALYSIS SYSTEM:
 
-Create a comprehensive opportunity finder that provides real business insights. The content should be strategic, educational, and actionable.
+This must systematically reveal untapped revenue streams and growth opportunities with specific implementation plans.
 
-1. Title Page:
-- Title: A compelling opportunity finder title
-- Subtitle: Explains what opportunities the finder will reveal
+REQUIRED STRUCTURE:
+1. **Opportunity Framework**: The methodology for finding hidden opportunities
+2. **Analysis Categories**: 7-10 business areas to analyze for opportunities
+3. **Value Quantification**: How to calculate potential from each opportunity
+4. **Effort vs Impact Matrix**: Priority scoring for opportunity selection
+5. **Implementation Roadmaps**: Step-by-step plans for top opportunities
+6. **Risk Assessment**: Success probability and mitigation strategies
 
-2. Introduction:
-- Hook with the pain of missing opportunities
-- Explain what opportunities they'll discover
-
-3. Opportunity Finder Content:
-- Analysis questions to identify gaps and opportunities
-- Different opportunity categories and priorities
-- Implementation roadmaps and success metrics
-- Risk assessment and mitigation strategies
-
-4. Educational Content:
-- Explain how to identify and evaluate opportunities
-- Include industry trends and market insights
-- Provide strategic frameworks for opportunity analysis
-- Add case studies of successful opportunity capture
-
-5. Interactive Elements:
-- Questions that reveal hidden opportunities
-- Analysis tools that provide strategic insights
-- Clear implementation plans for each opportunity
-
-Make the content strategic, insightful, and genuinely helpful. Focus on providing real business value rather than following rigid structures.
+CRITICAL REQUIREMENTS:
+- Quantify potential value for each opportunity type
+- Score opportunities by effort vs impact
+- Provide detailed implementation plans for top opportunities
+- Include risk assessment and success probability
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
-  "founder_intro": "A personalized introduction from the founder explaining why they created this opportunity finder and what value it provides.",
+  "founder_intro": "Personal introduction explaining the opportunity analysis system and potential discoveries",
   "title_page": {
-    "title": "The [Opportunity Finder Name] (Opportunity Finder)",
-    "subtitle": "Discover Hidden Growth Opportunities in Your Business."
+    "title": "${outline.title}",
+    "subtitle": "Systematic Analysis to Uncover Hidden Revenue Opportunities"
   },
   "introduction_page": {
-    "title": "Why You Need This Opportunity Finder",
-    "content": "Introduction content explaining the value and benefits of this opportunity analysis."
+    "title": "The Opportunities Hiding in Your Business",
+    "content": "Explain the systematic approach and what revenue opportunities they'll discover"
   },
-  "opportunity_finder_content": {
-    "analysis_questions": [
-      {
-        "question": "What are your current revenue streams?",
-        "description": "Analyze your existing income sources",
-        "insights": ["Insight 1", "Insight 2", "Insight 3"]
-      },
-      {
-        "question": "What gaps exist in your market?",
-        "description": "Identify untapped market opportunities",
-        "insights": ["Insight 1", "Insight 2", "Insight 3"]
-      }
-    ],
-    "opportunity_categories": [
-      {
-        "category_name": "Revenue Opportunities",
-        "description": "New ways to increase revenue",
-        "opportunities": ["Opportunity 1", "Opportunity 2", "Opportunity 3"],
-        "implementation_roadmap": ["Step 1", "Step 2", "Step 3"]
-      },
-      {
-        "category_name": "Market Expansion",
-        "description": "Ways to reach new markets",
-        "opportunities": ["Opportunity 1", "Opportunity 2", "Opportunity 3"],
-        "implementation_roadmap": ["Step 1", "Step 2", "Step 3"]
-      }
-    ]
+  "opportunity_framework": {
+    "methodology": "The systematic approach to opportunity identification",
+    "analysis_process": "How to evaluate each potential opportunity",
+    "validation_criteria": "How to determine if an opportunity is viable"
   },
-  "educational_content": {
-    "strategies": ["Strategy 1", "Strategy 2", "Strategy 3"],
-    "trends": ["Trend 1", "Trend 2", "Trend 3"],
-    "case_studies": ["Case study 1", "Case study 2"]
+  "analysis_categories": [
+    {
+      "category_name": "Revenue Stream Diversification",
+      "description": "New ways to monetize existing assets",
+      "analysis_questions": ["Question 1", "Question 2", "Question 3"],
+      "opportunity_types": ["Opportunity type 1", "Opportunity type 2"],
+      "typical_value_range": "$X,000 - $XX,000 additional monthly revenue"
+    }
+  ],
+  "value_quantification": {
+    "calculation_method": "How to estimate opportunity value",
+    "variable_factors": "Key factors that affect potential value",
+    "validation_process": "How to test opportunity assumptions"
   },
-  "interactive_elements": {
-    "implementation_plans": ["Plan 1", "Plan 2", "Plan 3"],
-    "action_items": ["Action 1", "Action 2", "Action 3"]
-  }
-}
+  "priority_matrix": [
+    {
+      "opportunity_name": "Specific opportunity",
+      "effort_score": "Low/Medium/High effort required",
+      "impact_score": "Expected revenue/savings impact",
+      "risk_level": "Implementation risk assessment",
+      "timeline": "Expected time to results",
+      "priority_ranking": "Overall priority score"
+    }
+  ],
+  "implementation_roadmaps": [
+    {
+      "opportunity": "Top priority opportunity",
+      "implementation_phases": [
+        {
+          "phase": "Phase 1: Validation",
+          "timeline": "Weeks 1-2",
+          "tasks": ["Task 1", "Task 2", "Task 3"],
+          "success_criteria": "How to know you're ready for next phase"
+        }
+      ],
+      "resource_requirements": "What you need to implement",
+      "success_metrics": "How to measure progress and success"
+    }
+  ]
 }`;
 
     case 'pdf':
@@ -1273,65 +1163,105 @@ RETURN JSON IN THIS EXACT FORMAT:
 
 ${founderIntro}
 
-${corePrinciples}
+${valueStandards}
 
-GENERATE A TRADITIONAL PDF GUIDE WITH THE FOLLOWING STRUCTURE:
+CREATE A COMPREHENSIVE IMPLEMENTATION SYSTEM:
 
-1. Title Page:
-- Title: A compelling guide title that promises comprehensive insights
-- Subtitle: Explains what the guide will cover
+This must be a complete, plug-and-play system with everything needed for success.
 
-2. Introduction:
-- Hook that explains what the guide will cover and why it matters
-- Overview of what readers will learn
+REQUIRED STRUCTURE:
+1. **System Overview**: The complete process from start to finish
+2. **Implementation Phases**: 3-5 phases with exact steps and timelines
+3. **Tool Arsenal**: 15+ templates, scripts, checklists, and frameworks
+4. **Case Studies**: 3+ detailed examples with specific results
+5. **Troubleshooting Guide**: Common problems and exact solutions
+6. **Optimization Strategies**: How to improve results over time
 
-3. Content Sections (3-5 sections):
-Each section should include:
-- Clear section title
-- Educational content with actionable insights
-- Step-by-step instructions
-- Examples and case studies
-- Templates or checklists
-
-4. Implementation Guide:
-- How to apply the concepts
-- Common mistakes to avoid
-- Success metrics to track
-
-5. Call to Action:
-- Clear next steps
-- Additional resources
-- Contact information
+CRITICAL REQUIREMENTS:
+- Include step-by-step processes with exact instructions
+- Provide comprehensive tool kit with templates and scripts
+- Include detailed case studies with measurable results
+- Cover common mistakes and how to avoid them
 
 RETURN JSON IN THIS EXACT FORMAT:
-\`\`\`json
 {
-  "founder_intro": "...",
+  "founder_intro": "Personal introduction explaining the complete system and guaranteed results users will get",
   "title_page": {
-    "layout": "centered",
-    "title": "The [Guide Name] (PDF)",
-    "subtitle": "A Comprehensive Guide to [Specific Topic]."
+    "title": "${outline.title}",
+    "subtitle": "The Complete System with Templates, Tools, and Case Studies"
   },
   "introduction_page": {
-    "layout": "filled",
-    "title": "Introduction",
-    "content": "Introduction content here..."
+    "title": "Why This System Eliminates All Guesswork",
+    "content": "Explain the comprehensive approach and what complete results they'll achieve"
   },
-  "toolkit_sections": [
+  "system_overview": {
+    "methodology": "The complete process from start to finish",
+    "phase_structure": "Why the system is organized this way",
+    "success_factors": "What makes this system foolproof"
+  },
+  "implementation_phases": [
     {
-      "layout": "filled",
-      "type": "educational_content",
-      "title": "Section 1: [Topic]",
-      "content": "Comprehensive educational content with actionable insights..."
+      "phase_number": 1,
+      "phase_name": "Foundation & Setup",
+      "duration": "Days 1-10",
+      "objectives": ["Objective 1", "Objective 2", "Objective 3"],
+      "step_by_step_process": [
+        {
+          "step_number": 1,
+          "step_title": "Specific action step",
+          "detailed_instructions": "Exact instructions with specifics",
+          "tools_provided": "Templates or tools included",
+          "success_checkpoint": "How to know it's completed correctly",
+          "common_mistakes": "What to avoid"
+        }
+      ],
+      "phase_deliverables": "What you'll have completed",
+      "success_metrics": "How to measure phase completion"
     }
   ],
-  "cta_page": {
-    "layout": "centered",
-    "title": "Next Steps",
-    "content": "Ready to implement these strategies? Download your complete guide now."
+  "tool_arsenal": [
+    {
+      "tool_category": "Templates",
+      "tools": [
+        {
+          "tool_name": "Specific template name",
+          "purpose": "What this template accomplishes",
+          "usage_instructions": "How to customize and use it",
+          "success_tips": "How to get best results"
+        }
+      ]
+    }
+  ],
+  "case_studies": [
+    {
+      "case_title": "Specific industry/situation example",
+      "background": "Initial situation and challenges",
+      "implementation": "How they applied the system",
+      "specific_results": "Exact measurable outcomes",
+      "timeline": "How long it took to see results",
+      "key_lessons": "What made the difference"
+    }
+  ],
+  "troubleshooting_guide": [
+    {
+      "problem_category": "Common obstacle type",
+      "specific_problems": [
+        {
+          "problem": "Specific issue users face",
+          "symptoms": "How to recognize this problem",
+          "root_causes": "Why this happens",
+          "solution_steps": "Exact steps to fix it",
+          "prevention": "How to avoid it in the future"
+        }
+      ]
+    }
+  ],
+  "optimization_strategies": {
+    "performance_tracking": "What metrics to monitor",
+    "improvement_tactics": "How to enhance results over time",
+    "advanced_techniques": "Next-level strategies for power users"
   }
-}
-\`\`\``;
+}`;
 
     default:
       throw new Error(`Unknown format: ${format}`);
