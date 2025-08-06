@@ -172,8 +172,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
           )}
         </div>
 
-        {/* Email Capture Form */}
-        {!isSubmitted ? (
+        {/* Email Capture Form - Only show for PDF format */}
+        {!isSubmitted && (() => {
+          const detectedFormat = detectFormatFromContent(campaign.lead_magnet_content);
+          return detectedFormat === 'pdf';
+        })() ? (
           <div className="max-w-md mx-auto">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -209,7 +212,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
           </div>
         ) : null}
         {/* Content Display - Interactive or PDF based on detected format */}
-        {isSubmitted && showPDF && campaign.lead_magnet_content && (() => {
+        {campaign.lead_magnet_content && (() => {
           const detectedFormat = detectFormatFromContent(campaign.lead_magnet_content);
           const brandName = campaign.name?.split(' - ')[0] || '';
           
@@ -228,12 +231,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
                 selectedFormat={detectedFormat}
                 brandName={brandName}
                 requirePayment={false}
-                emailAlreadySubmitted={true}
+                emailAlreadySubmitted={false}
               />
             );
           }
           
-          // Show PDFGenerator for PDF format
+          // Show PDFGenerator for PDF format - only after email submission
+          if (!isSubmitted) {
+            return null;
+          }
+          
           return (
             <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Your Free Guide</h3>

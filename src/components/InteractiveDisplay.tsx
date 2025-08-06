@@ -105,37 +105,79 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
     const totalQuestions = Object.keys(quizAnswers).length;
     if (totalQuestions === 0) return;
 
-    // Simple scoring logic - can be customized based on quiz content
-    const scores = Object.values(quizAnswers);
-    const categoryScores: Record<string, number> = {};
-    
-    // Analyze answers to determine user category/personality
-    scores.forEach((answer, index) => {
-      // This is a simplified scoring system
-      if (answer.toLowerCase().includes('budget') || answer.toLowerCase().includes('cost')) {
-        categoryScores['budget-conscious'] = (categoryScores['budget-conscious'] || 0) + 1;
-      }
-      if (answer.toLowerCase().includes('time') || answer.toLowerCase().includes('quick')) {
-        categoryScores['time-focused'] = (categoryScores['time-focused'] || 0) + 1;
-      }
-      if (answer.toLowerCase().includes('quality') || answer.toLowerCase().includes('premium')) {
-        categoryScores['quality-focused'] = (categoryScores['quality-focused'] || 0) + 1;
-      }
-    });
+    // Use AI-generated quiz content if available
+    if (content.quiz_content?.results) {
+      // Simple scoring based on answer patterns
+      const scores = Object.values(quizAnswers);
+      const categoryScores: Record<string, number> = {};
+      
+      // Analyze answers to determine user category
+      scores.forEach((answer, index) => {
+        // This is a simplified scoring system - can be enhanced
+        if (answer.toLowerCase().includes('budget') || answer.toLowerCase().includes('cost')) {
+          categoryScores['budget-conscious'] = (categoryScores['budget-conscious'] || 0) + 1;
+        }
+        if (answer.toLowerCase().includes('time') || answer.toLowerCase().includes('quick')) {
+          categoryScores['time-focused'] = (categoryScores['time-focused'] || 0) + 1;
+        }
+        if (answer.toLowerCase().includes('quality') || answer.toLowerCase().includes('premium')) {
+          categoryScores['quality-focused'] = (categoryScores['quality-focused'] || 0) + 1;
+        }
+      });
 
-    // Determine primary category
-    const primaryCategory = Object.entries(categoryScores)
-      .sort(([,a], [,b]) => b - a)[0]?.[0] || 'balanced';
+      // Determine primary category
+      const primaryCategory = Object.entries(categoryScores)
+        .sort(([,a], [,b]) => b - a)[0]?.[0] || 'balanced';
 
-    const results = {
-      totalAnswered: totalQuestions,
-      primaryCategory,
-      categoryScores,
-      recommendations: getQuizRecommendations(primaryCategory),
-      completionPercentage: Math.round((totalQuestions / 5) * 100) // Assuming 5 questions
-    };
+      // Find matching result from AI content
+      const matchingResult = content.quiz_content.results.find((result: any) => 
+        result.category.toLowerCase().includes(primaryCategory) || 
+        primaryCategory.includes(result.category.toLowerCase())
+      ) || content.quiz_content.results[0];
 
-    setQuizResults(results);
+      const results = {
+        totalAnswered: totalQuestions,
+        primaryCategory: matchingResult?.category || primaryCategory,
+        categoryScores,
+        recommendations: matchingResult?.recommendations || getQuizRecommendations(primaryCategory),
+        description: matchingResult?.description || '',
+        action_steps: matchingResult?.action_steps || [],
+        timeline: matchingResult?.timeline || '',
+        success_metrics: matchingResult?.success_metrics || [],
+        completionPercentage: Math.round((totalQuestions / (content.quiz_content.questions?.length || 10)) * 100)
+      };
+
+      setQuizResults(results);
+    } else {
+      // Fallback to original logic
+      const scores = Object.values(quizAnswers);
+      const categoryScores: Record<string, number> = {};
+      
+      scores.forEach((answer, index) => {
+        if (answer.toLowerCase().includes('budget') || answer.toLowerCase().includes('cost')) {
+          categoryScores['budget-conscious'] = (categoryScores['budget-conscious'] || 0) + 1;
+        }
+        if (answer.toLowerCase().includes('time') || answer.toLowerCase().includes('quick')) {
+          categoryScores['time-focused'] = (categoryScores['time-focused'] || 0) + 1;
+        }
+        if (answer.toLowerCase().includes('quality') || answer.toLowerCase().includes('premium')) {
+          categoryScores['quality-focused'] = (categoryScores['quality-focused'] || 0) + 1;
+        }
+      });
+
+      const primaryCategory = Object.entries(categoryScores)
+        .sort(([,a], [,b]) => b - a)[0]?.[0] || 'balanced';
+
+      const results = {
+        totalAnswered: totalQuestions,
+        primaryCategory,
+        categoryScores,
+        recommendations: getQuizRecommendations(primaryCategory),
+        completionPercentage: Math.round((totalQuestions / 10) * 100) // Use 10 questions as default
+      };
+
+      setQuizResults(results);
+    }
   };
 
   const getQuizRecommendations = (category: string) => {

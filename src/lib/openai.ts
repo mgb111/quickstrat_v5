@@ -832,52 +832,52 @@ RETURN JSON IN THIS EXACT FORMAT:
     "title": "Professional Diagnostic Assessment",
     "questions": [
       {
-        "question": "[SPECIFIC QUESTION 1 ABOUT THE PROBLEM - e.g., 'When choosing colors for an outfit, what's your biggest struggle?']",
+        "question": "[SPECIFIC QUESTION 1 ABOUT THE PROBLEM - e.g., 'What's your biggest challenge with [topic]?']",
         "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
         "explanation": "This reveals your primary pain point and helps categorize your situation"
       },
       {
-        "question": "[SPECIFIC QUESTION 2 ABOUT CONFIDENCE - e.g., 'How often do you feel confident about your color choices?']",
+        "question": "[SPECIFIC QUESTION 2 ABOUT CONFIDENCE - e.g., 'How confident are you in your [topic] abilities?']",
         "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
         "explanation": "This helps determine your confidence level and experience"
       },
       {
-        "question": "[SPECIFIC QUESTION 3 ABOUT CURRENT BEHAVIOR - e.g., 'What's your typical process when putting together an outfit?']",
+        "question": "[SPECIFIC QUESTION 3 ABOUT CURRENT BEHAVIOR - e.g., 'What's your typical approach to [topic]?']",
         "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
         "explanation": "This shows your current approach and what might be missing"
       },
       {
-        "question": "[SPECIFIC QUESTION 4 ABOUT DESIRED OUTCOME - e.g., 'What would success look like for your personal style?']",
+        "question": "[SPECIFIC QUESTION 4 ABOUT DESIRED OUTCOME - e.g., 'What would success look like for your [topic] goals?']",
         "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
         "explanation": "This helps tailor the solution to your specific goals"
       },
       {
-        "question": "[SPECIFIC QUESTION 5 ABOUT OBSTACLES - e.g., 'What's stopping you from achieving your style goals?']",
+        "question": "[SPECIFIC QUESTION 5 ABOUT OBSTACLES - e.g., 'What's stopping you from achieving your [topic] goals?']",
         "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
         "explanation": "This identifies the main barriers to your success"
       },
       {
-        "question": "[SPECIFIC QUESTION 6 ABOUT KNOWLEDGE - e.g., 'How much do you know about color theory and styling principles?']",
+        "question": "[SPECIFIC QUESTION 6 ABOUT KNOWLEDGE - e.g., 'How much do you know about [topic] principles?']",
         "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
         "explanation": "This assesses your current knowledge level"
       },
       {
-        "question": "[SPECIFIC QUESTION 7 ABOUT RESOURCES - e.g., 'What styling resources do you currently use?']",
+        "question": "[SPECIFIC QUESTION 7 ABOUT RESOURCES - e.g., 'What [topic] resources do you currently use?']",
         "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
         "explanation": "This shows what tools and resources you're already using"
       },
       {
-        "question": "[SPECIFIC QUESTION 8 ABOUT TIMELINE - e.g., 'How quickly do you want to see improvement in your style?']",
+        "question": "[SPECIFIC QUESTION 8 ABOUT TIMELINE - e.g., 'How quickly do you want to see improvement in your [topic]?']",
         "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
         "explanation": "This helps set realistic expectations and timelines"
       },
       {
-        "question": "[SPECIFIC QUESTION 9 ABOUT SUPPORT - e.g., 'What kind of support do you need to improve your style?']",
+        "question": "[SPECIFIC QUESTION 9 ABOUT SUPPORT - e.g., 'What kind of support do you need to improve your [topic]?']",
         "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
         "explanation": "This identifies what type of guidance would be most helpful"
       },
       {
-        "question": "[SPECIFIC QUESTION 10 ABOUT COMMITMENT - e.g., 'How much time can you dedicate to improving your style?']",
+        "question": "[SPECIFIC QUESTION 10 ABOUT COMMITMENT - e.g., 'How much time can you dedicate to improving your [topic]?']",
         "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
         "explanation": "This determines the intensity and pace of your action plan"
       }
@@ -887,28 +887,28 @@ RETURN JSON IN THIS EXACT FORMAT:
         "category": "[SPECIFIC DIAGNOSIS TYPE - e.g., 'Color Theory Beginner']",
         "description": "[WRITE A DETAILED PARAGRAPH WITH 3 SPECIFIC SENTENCES EXPLAINING WHAT THIS DIAGNOSIS MEANS, WHY IT HAPPENS, AND WHAT THE USER SHOULD EXPECT]",
         "symptoms": ["[SPECIFIC SYMPTOM 1]", "[SPECIFIC SYMPTOM 2]", "[SPECIFIC SYMPTOM 3]"],
-        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE - e.g., 'Week 1: Learn basic color theory principles']", "[SPECIFIC STEP 2 WITH TIMELINE - e.g., 'Week 2: Practice with your existing wardrobe']", "[SPECIFIC STEP 3 WITH TIMELINE - e.g., 'Week 3: Experiment with new color combinations']"],
+        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE - e.g., 'Week 1: Learn basic [topic] principles']", "[SPECIFIC STEP 2 WITH TIMELINE - e.g., 'Week 2: Practice with your existing [topic] approach']", "[SPECIFIC STEP 3 WITH TIMELINE - e.g., 'Week 3: Experiment with new [topic] strategies']"],
         "timeline": "[SPECIFIC TIMELINE - e.g., '2-3 weeks to see improvement']",
         "success_metrics": ["[SPECIFIC METRIC 1]", "[SPECIFIC METRIC 2]", "[SPECIFIC METRIC 3]"],
-        "recommendations": ["[SPECIFIC RECOMMENDATION 1 - e.g., 'Start with monochromatic outfits to build confidence']", "[SPECIFIC RECOMMENDATION 2 - e.g., 'Use the color wheel to identify complementary colors']", "[SPECIFIC RECOMMENDATION 3 - e.g., 'Practice with neutral colors as your foundation']", "[SPECIFIC RECOMMENDATION 4 - e.g., 'Take photos of successful combinations for reference']"]
+        "recommendations": ["[SPECIFIC RECOMMENDATION 1 - e.g., 'Start with basic [topic] fundamentals to build confidence']", "[SPECIFIC RECOMMENDATION 2 - e.g., 'Use proven [topic] frameworks to identify opportunities']", "[SPECIFIC RECOMMENDATION 3 - e.g., 'Practice with your existing [topic] foundation']", "[SPECIFIC RECOMMENDATION 4 - e.g., 'Track your [topic] progress for continuous improvement']"]
       },
       {
         "category": "[SPECIFIC DIAGNOSIS TYPE - e.g., 'Style Confidence Builder']",
         "description": "[WRITE A DETAILED PARAGRAPH WITH 3 SPECIFIC SENTENCES EXPLAINING WHAT THIS DIAGNOSIS MEANS, WHY IT HAPPENS, AND WHAT THE USER SHOULD EXPECT]",
         "symptoms": ["[SPECIFIC SYMPTOM 1]", "[SPECIFIC SYMPTOM 2]", "[SPECIFIC SYMPTOM 3]"],
-        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE - e.g., 'Week 1: Identify your style personality type']", "[SPECIFIC STEP 2 WITH TIMELINE - e.g., 'Week 2: Build a capsule wardrobe foundation']", "[SPECIFIC STEP 3 WITH TIMELINE - e.g., 'Week 3: Practice daily styling exercises']"],
+        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE - e.g., 'Week 1: Identify your [topic] personality type']", "[SPECIFIC STEP 2 WITH TIMELINE - e.g., 'Week 2: Build a [topic] foundation']", "[SPECIFIC STEP 3 WITH TIMELINE - e.g., 'Week 3: Practice daily [topic] exercises']"],
         "timeline": "[SPECIFIC TIMELINE - e.g., '1-2 weeks to see improvement']",
         "success_metrics": ["[SPECIFIC METRIC 1]", "[SPECIFIC METRIC 2]", "[SPECIFIC METRIC 3]"],
-        "recommendations": ["[SPECIFIC RECOMMENDATION 1 - e.g., 'Create a style mood board for inspiration']", "[SPECIFIC RECOMMENDATION 2 - e.g., 'Start with outfits you feel comfortable in']", "[SPECIFIC RECOMMENDATION 3 - e.g., 'Gradually experiment with bolder choices']", "[SPECIFIC RECOMMENDATION 4 - e.g., 'Seek feedback from trusted friends or family']"]
+        "recommendations": ["[SPECIFIC RECOMMENDATION 1 - e.g., 'Create a [topic] mood board for inspiration']", "[SPECIFIC RECOMMENDATION 2 - e.g., 'Start with [topic] approaches you feel comfortable with']", "[SPECIFIC RECOMMENDATION 3 - e.g., 'Gradually experiment with bolder [topic] choices']", "[SPECIFIC RECOMMENDATION 4 - e.g., 'Seek feedback from trusted mentors or colleagues']"]
       },
       {
         "category": "[SPECIFIC DIAGNOSIS TYPE - e.g., 'Advanced Style Optimizer']",
         "description": "[WRITE A DETAILED PARAGRAPH WITH 3 SPECIFIC SENTENCES EXPLAINING WHAT THIS DIAGNOSIS MEANS, WHY IT HAPPENS, AND WHAT THE USER SHOULD EXPECT]",
         "symptoms": ["[SPECIFIC SYMPTOM 1]", "[SPECIFIC SYMPTOM 2]", "[SPECIFIC SYMPTOM 3]"],
-        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE - e.g., 'Week 1: Audit your current wardrobe and identify gaps']", "[SPECIFIC STEP 2 WITH TIMELINE - e.g., 'Week 2: Learn advanced styling techniques']", "[SPECIFIC STEP 3 WITH TIMELINE - e.g., 'Week 3: Create signature looks and refine your style']"],
+        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE - e.g., 'Week 1: Audit your current [topic] approach and identify gaps']", "[SPECIFIC STEP 2 WITH TIMELINE - e.g., 'Week 2: Learn advanced [topic] techniques']", "[SPECIFIC STEP 3 WITH TIMELINE - e.g., 'Week 3: Create signature [topic] strategies and refine your approach']"],
         "timeline": "[SPECIFIC TIMELINE - e.g., '3-5 days to see improvement']",
         "success_metrics": ["[SPECIFIC METRIC 1]", "[SPECIFIC METRIC 2]", "[SPECIFIC METRIC 3]"],
-        "recommendations": ["[SPECIFIC RECOMMENDATION 1 - e.g., 'Invest in quality pieces that reflect your personal brand']", "[SPECIFIC RECOMMENDATION 2 - e.g., 'Learn to mix high and low fashion effectively']", "[SPECIFIC RECOMMENDATION 3 - e.g., 'Develop a signature style that sets you apart']", "[SPECIFIC RECOMMENDATION 4 - e.g., 'Stay updated with current trends while maintaining your unique identity']"]
+        "recommendations": ["[SPECIFIC RECOMMENDATION 1 - e.g., 'Invest in quality [topic] tools that reflect your business goals']", "[SPECIFIC RECOMMENDATION 2 - e.g., 'Learn to mix high and low effort [topic] strategies effectively']", "[SPECIFIC RECOMMENDATION 3 - e.g., 'Develop a signature [topic] approach that sets you apart']", "[SPECIFIC RECOMMENDATION 4 - e.g., 'Stay updated with current [topic] trends while maintaining your unique approach']"]
       }
     ]
   }
