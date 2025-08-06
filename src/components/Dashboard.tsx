@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Copy, FileText, Mail, TrendingUp, Users, Download, MessageCircle, UserCheck } from 'lucide-react';
-import { Campaign, Lead } from '../types';
+
+import { Campaign, Lead, LeadMagnetFormat } from '../types';
 import { CampaignService } from '../lib/campaignService';
 import PDFGenerator from './PDFGenerator';
+import InteractiveDisplay from './InteractiveDisplay';
 import { supabase } from '../lib/supabase';
 import Modal from 'react-modal';
 
@@ -28,6 +29,37 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
   const [editError, setEditError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false); // New state for payment success modal
+
+  // Function to detect format from content structure
+  const detectFormatFromContent = (content: any): LeadMagnetFormat => {
+    if (!content || typeof content === 'string') {
+      try {
+        content = typeof content === 'string' ? JSON.parse(content) : content;
+      } catch {
+        return 'pdf'; // Default fallback
+      }
+    }
+
+    // Check for interactive format indicators
+    if (content.calculator_content) return 'roi_calculator';
+    if (content.quiz_content) return 'interactive_quiz';
+    if (content.action_plan_content) return 'action_plan';
+    if (content.benchmark_content) return 'benchmark_report';
+    if (content.opportunity_content) return 'opportunity_finder';
+    
+    // Check interactive_content field
+    if (content.interactive_content?.format) return content.interactive_content.format;
+    
+    // Check title for format indicators
+    const title = content.title_page?.title || content.title || '';
+    if (title.includes('Calculator') || title.includes('ROI Calculator')) return 'roi_calculator';
+    if (title.includes('Quiz') || title.includes('Interactive Quiz')) return 'interactive_quiz';
+    if (title.includes('Action Plan')) return 'action_plan';
+    if (title.includes('Benchmark Report')) return 'benchmark_report';
+    if (title.includes('Opportunity Finder')) return 'opportunity_finder';
+
+    return 'pdf'; // Default fallback
+  };
 
 
   useEffect(() => {
@@ -244,25 +276,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
                     onClick={() => setViewPdfCampaign(campaign)}
                   >
                     {(() => {
-                      // Extract format from lead_magnet_content
-                      if (campaign.lead_magnet_content) {
-                        const content = typeof campaign.lead_magnet_content === 'string' 
-                          ? JSON.parse(campaign.lead_magnet_content) 
-                          : campaign.lead_magnet_content;
-                        
-                        if (content.interactive_content?.format) {
-                          const format = content.interactive_content.format;
-                          switch (format) {
-                            case 'interactive_quiz': return 'Take Quiz';
-                            case 'roi_calculator': return 'Use Calculator';
-                            case 'action_plan': return 'Get Action Plan';
-                            case 'benchmark_report': return 'View Report';
-                            case 'opportunity_finder': return 'Find Opportunities';
-                            default: return 'View PDF';
-                          }
-                        }
+                      const format = detectFormatFromContent(campaign.lead_magnet_content);
+                      switch (format) {
+                        case 'interactive_quiz': return 'Take Quiz';
+                        case 'roi_calculator': return 'Use Calculator';
+                        case 'action_plan': return 'Get Action Plan';
+                        case 'benchmark_report': return 'View Report';
+                        case 'opportunity_finder': return 'Find Opportunities';
+                        default: return 'View PDF';
                       }
-                      return 'View PDF';
                     })()}
                   </button>
                   <button
@@ -270,25 +292,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
                     onClick={() => handleEditClick(campaign)}
                   >
                     {(() => {
-                      // Extract format from lead_magnet_content
-                      if (campaign.lead_magnet_content) {
-                        const content = typeof campaign.lead_magnet_content === 'string' 
-                          ? JSON.parse(campaign.lead_magnet_content) 
-                          : campaign.lead_magnet_content;
-                        
-                        if (content.interactive_content?.format) {
-                          const format = content.interactive_content.format;
-                          switch (format) {
-                            case 'interactive_quiz': return 'Edit Quiz';
-                            case 'roi_calculator': return 'Edit Calculator';
-                            case 'action_plan': return 'Edit Action Plan';
-                            case 'benchmark_report': return 'Edit Report';
-                            case 'opportunity_finder': return 'Edit Opportunities';
-                            default: return 'Edit PDF';
-                          }
-                        }
+                      const format = detectFormatFromContent(campaign.lead_magnet_content);
+                      switch (format) {
+                        case 'interactive_quiz': return 'Edit Quiz';
+                        case 'roi_calculator': return 'Edit Calculator';
+                        case 'action_plan': return 'Edit Action Plan';
+                        case 'benchmark_report': return 'Edit Report';
+                        case 'opportunity_finder': return 'Edit Opportunities';
+                        default: return 'Edit PDF';
                       }
-                      return 'Edit PDF';
                     })()}
                   </button>
                   <button
@@ -322,22 +334,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
         isOpen={!!viewPdfCampaign}
         onRequestClose={() => setViewPdfCampaign(null)}
         contentLabel={(() => {
-          // Extract format from lead_magnet_content
           if (viewPdfCampaign?.lead_magnet_content) {
-            const content = typeof viewPdfCampaign.lead_magnet_content === 'string' 
-              ? JSON.parse(viewPdfCampaign.lead_magnet_content) 
-              : viewPdfCampaign.lead_magnet_content;
-            
-            if (content.interactive_content?.format) {
-              const format = content.interactive_content.format;
-              switch (format) {
-                case 'interactive_quiz': return 'Take Quiz';
-                case 'roi_calculator': return 'Use Calculator';
-                case 'action_plan': return 'Get Action Plan';
-                case 'benchmark_report': return 'View Report';
-                case 'opportunity_finder': return 'Find Opportunities';
-                default: return 'View PDF';
-              }
+            const format = detectFormatFromContent(viewPdfCampaign.lead_magnet_content);
+            switch (format) {
+              case 'interactive_quiz': return 'Take Quiz';
+              case 'roi_calculator': return 'Use Calculator';
+              case 'action_plan': return 'Get Action Plan';
+              case 'benchmark_report': return 'View Report';
+              case 'opportunity_finder': return 'Find Opportunities';
+              default: return 'View PDF';
             }
           }
           return 'View PDF';
@@ -346,28 +351,40 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
         style={{ content: { maxWidth: 900, margin: 'auto', height: '90vh', overflow: 'auto' } }}
       >
                         <button className="mb-4 text-black" onClick={() => setViewPdfCampaign(null)}>Close</button>
-        {viewPdfCampaign && (
-          <PDFGenerator
-            data={typeof viewPdfCampaign.lead_magnet_content === 'string'
-              ? JSON.parse(viewPdfCampaign.lead_magnet_content)
-              : viewPdfCampaign.lead_magnet_content}
-            campaignId={''}
-            requirePayment={true}
-            selectedFormat={(() => {
-              // Extract format from lead_magnet_content
-              if (viewPdfCampaign.lead_magnet_content) {
-                const content = typeof viewPdfCampaign.lead_magnet_content === 'string' 
-                  ? JSON.parse(viewPdfCampaign.lead_magnet_content) 
-                  : viewPdfCampaign.lead_magnet_content;
-                
-                if (content.interactive_content?.format) {
-                  return content.interactive_content.format;
-                }
-              }
-              return 'pdf';
-            })()}
-          />
-        )}
+        {viewPdfCampaign && (() => {
+          const detectedFormat = detectFormatFromContent(viewPdfCampaign.lead_magnet_content);
+          const brandName = viewPdfCampaign.name?.split(' - ')[0] || '';
+          
+          console.log('🎯 Dashboard Modal: detectedFormat =', detectedFormat);
+          
+          // Show InteractiveDisplay for interactive formats
+          if (detectedFormat !== 'pdf') {
+            return (
+              <InteractiveDisplay 
+                results={{
+                  pdf_content: viewPdfCampaign.lead_magnet_content ?? '',
+                  landing_page: { headline: '', subheadline: '', benefit_bullets: [], cta_button_text: '' },
+                  social_posts: { linkedin: '', twitter: '', instagram: '', reddit: '' }
+                }}
+                selectedFormat={detectedFormat}
+                brandName={brandName}
+                requirePayment={true}
+              />
+            );
+          }
+          
+          // Show PDFGenerator for PDF format
+          return (
+            <PDFGenerator
+              data={typeof viewPdfCampaign.lead_magnet_content === 'string'
+                ? JSON.parse(viewPdfCampaign.lead_magnet_content)
+                : viewPdfCampaign.lead_magnet_content}
+              campaignId={''}
+              requirePayment={true}
+              selectedFormat={detectedFormat}
+            />
+          );
+        })()}
       </Modal>
       {/* Edit PDF Modal */}
       <Modal

@@ -1,11 +1,25 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { LeadMagnetFormat } from '../types';
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: (success: boolean) => void;
+  selectedFormat?: LeadMagnetFormat;
 }
 
-const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
+const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, selectedFormat = 'pdf' }) => {
+  
+  // Get format-aware content text
+  const getContentText = () => {
+    switch (selectedFormat) {
+      case 'interactive_quiz': return 'quiz';
+      case 'roi_calculator': return 'calculator';
+      case 'action_plan': return 'action plan';
+      case 'benchmark_report': return 'report';
+      case 'opportunity_finder': return 'opportunity finder';
+      default: return 'PDF';
+    }
+  };
   const formRef = useRef<HTMLFormElement>(null);
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'processing' | 'success' | 'failed'>('pending');
   const [paymentMessage, setPaymentMessage] = useState('');
@@ -57,7 +71,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       // Give user time to see the processing state
       setTimeout(() => {
         setPaymentStatus('success');
-        setPaymentMessage('Payment successful! Your PDF is ready to download.');
+        setPaymentMessage(`Payment successful! Your ${getContentText()} is ready to access.`);
         
         // Track payment success with Google Analytics
         if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -86,7 +100,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
       if (event.data && typeof event.data === 'object') {
         if (event.data.type === 'razorpay_payment_success') {
           setPaymentStatus('success');
-          setPaymentMessage('Payment successful! Your PDF is ready to download.');
+          setPaymentMessage(`Payment successful! Your ${getContentText()} is ready to access.`);
           
           // Track payment success with Google Analytics
           if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -264,7 +278,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
               className="mt-2 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 text-sm"
               onClick={() => {
                 setPaymentStatus('success');
-                setPaymentMessage('Payment successful! Your PDF is ready to download.');
+                setPaymentMessage(`Payment successful! Your ${getContentText()} is ready to access.`);
                 setTimeout(() => onClose(true), 2000);
               }}
             >
@@ -277,7 +291,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose }) => {
           <div className="text-center">
             <div className="text-4xl mb-4">✅</div>
             <h2 className="text-xl font-bold mb-2 text-gray-700">Payment Successful!</h2>
-            <p className="text-gray-600">Your PDF is now ready to download.</p>
+            <p className="text-gray-600">Your {getContentText()} is now ready to access.</p>
             <div className="mt-4 text-sm text-gray-500">
               The download will start automatically...
             </div>

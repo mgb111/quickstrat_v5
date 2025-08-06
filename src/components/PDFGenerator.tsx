@@ -1160,6 +1160,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
         {requirePayment && (
           <PaymentModal
             isOpen={showPaymentModal}
+            selectedFormat={selectedFormat}
             onClose={async (paymentSuccess = false) => {
               setShowPaymentModal(false);
               if (paymentSuccess) {
