@@ -469,8 +469,7 @@ Return JSON in this exact format:
     "Question 1: [Specific diagnostic question that rules out/confirms X]",
     "Question 2: [Builds on Q1 to narrow down to Y or Z]", 
     "Question 3: [Further diagnostic refinement]",
-    "Results Framework: [How answers combine to create diagnosis]",
-    "Action Protocol: [Specific next steps based on each diagnosis type]"
+    "Results Framework: [How answers combine to create diagnosis]"
   ],
   "cta": "Take the diagnostic quiz to get your personalized action plan",
   "example": "Example: A marketing agency discovered their lead generation wasn't working because they were targeting too broad an audience (Question 3 revelation), not because of poor ad copy (ruled out in Question 1)",
@@ -500,9 +499,7 @@ Return JSON in this exact format:
     "Input Variable 1: [Specific metric with industry context]",
     "Input Variable 2: [Another key metric most underestimate]",
     "Calculation Matrix: [How variables combine for total impact]",
-    "Benchmark Comparison: [How user compares to industry averages]",
-    "Opportunity Cost Analysis: [What inaction is costing them]",
-    "Action Recommendations: [Specific steps to improve each metric]"
+    "Benchmark Comparison: [How user compares to industry averages]"
   ],
   "cta": "Calculate your exact financial impact and see how you compare",
   "example": "Example: Most e-commerce stores discover they're losing $2,847/month in revenue from a 2.1% cart abandonment rate (vs 1.4% industry average) - a simple email sequence could recover 35% of that",
@@ -532,9 +529,7 @@ Return JSON in this exact format:
     "Week 1: [Specific setup tasks with templates provided]",
     "Week 2: [Implementation phase with scripts/tools]",
     "Week 3: [Optimization with measurement framework]",
-    "Success Metrics: [Exact KPIs to track with target numbers]",
-    "Troubleshooting Guide: [Common problems and solutions]",
-    "Templates & Tools: [List of provided resources]"
+    "Success Metrics: [Exact KPIs to track with target numbers]"
   ],
   "cta": "Get your complete implementation roadmap with templates and tools",
   "example": "Example: Following Week 2's email template and sending schedule, a consultant increased response rates from 8% to 34% and booked 12 calls in one week",
@@ -564,9 +559,7 @@ Return JSON in this exact format:
     "Performance Matrix: [10+ key metrics vs industry leaders]",
     "Competitive Gap Analysis: [Specific areas of underperformance]",
     "Opportunity Scoring: [Which gaps to prioritize by ROI potential]",
-    "Tactical Improvements: [Specific actions to close each gap]",
-    "Industry Trends: [What's changing and how to get ahead]",
-    "Implementation Priority: [Which changes to make first]"
+    "Tactical Improvements: [Specific actions to close each gap]"
   ],
   "cta": "Get your competitive intelligence report and gap analysis",
   "example": "Example: SaaS companies discovered their onboarding sequence was 40% longer than top performers, causing 23% higher churn - reducing it by 2 steps increased retention by 31%",
@@ -596,9 +589,7 @@ Return JSON in this exact format:
     "Revenue Stream Analysis: [Current vs potential revenue sources]",
     "Opportunity Categories: [5-7 specific areas to analyze]",
     "Value Quantification: [How to calculate potential from each opportunity]",
-    "Effort vs Impact Matrix: [Which opportunities to prioritize]",
-    "Implementation Roadmaps: [Step-by-step plans for top 3 opportunities]",
-    "Risk Assessment: [Success probability and mitigation strategies]"
+    "Effort vs Impact Matrix: [Which opportunities to prioritize]"
   ],
   "cta": "Discover your hidden revenue opportunities and implementation roadmap",
   "example": "Example: A coaching business discovered 3 untapped revenue streams worth $8,400/month: group programs (low effort, high impact), affiliate partnerships (medium effort, medium impact), and corporate workshops (high effort, very high impact)",
@@ -628,10 +619,7 @@ Return JSON in this exact format:
     "System Overview: [Complete process from start to finish]",
     "Phase 1 - Setup: [Exact steps with templates provided]",
     "Phase 2 - Implementation: [Step-by-step execution with tools]",
-    "Phase 3 - Optimization: [Improvement strategies with metrics]",
-    "Templates & Tools: [List of 10+ included resources]",
-    "Case Studies: [3+ specific examples with results]",
-    "Troubleshooting: [Common problems and solutions]"
+    "Phase 3 - Optimization: [Improvement strategies with metrics]"
   ],
   "cta": "Download the complete system with all templates and tools",
   "example": "Example: Using the provided email templates and sequence timing, a fitness coach increased course sales from $3,200/month to $12,800/month in 6 weeks",
