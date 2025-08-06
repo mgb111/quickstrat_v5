@@ -1376,72 +1376,96 @@ RETURN JSON IN THIS EXACT FORMAT:
     "title": "Why This System Eliminates All Guesswork",
     "content": "Explain the comprehensive approach and what complete results they'll achieve"
   },
-  "system_overview": {
-    "methodology": "The complete process from start to finish",
-    "phase_structure": "Why the system is organized this way",
-    "success_factors": "What makes this system foolproof"
-  },
-  "implementation_phases": [
-    {
-      "phase_number": 1,
-      "phase_name": "Foundation & Setup",
-      "duration": "Days 1-10",
-      "objectives": ["Objective 1", "Objective 2", "Objective 3"],
-      "step_by_step_process": [
-        {
-          "step_number": 1,
-          "step_title": "Specific action step",
-          "detailed_instructions": "Exact instructions with specifics",
-          "tools_provided": "Templates or tools included",
-          "success_checkpoint": "How to know it's completed correctly",
-          "common_mistakes": "What to avoid"
+  "structured_content": {
+    "title_page": {
+      "title": "${outline.title}",
+      "subtitle": "A step-by-step blueprint to help you achieve your goals"
+    },
+    "introduction": "Complete introduction explaining the system and what users will achieve",
+    "toolkit_sections": [
+      {
+        "title": "Strategy Analysis",
+        "type": "pros_and_cons_list",
+        "content": {
+          "items": [
+            {
+              "method_name": "Strategy 1: [Specific Method Name]",
+              "pros": "• Immediate impact on [specific metric]\n• Easy to implement with [specific tool]\n• Proven to work in [specific industry/situation]\n• Cost-effective with [specific budget range]",
+              "cons": "• Requires [specific time commitment]\n• May need [specific resources]\n• Initial learning curve of [specific timeframe]"
+            },
+            {
+              "method_name": "Strategy 2: [Specific Method Name]",
+              "pros": "• Delivers [specific result] within [timeframe]\n• Scalable to [specific growth level]\n• Integrates with [specific existing systems]\n• ROI of [specific percentage]",
+              "cons": "• Requires [specific investment]\n• Needs [specific expertise]\n• Takes [specific timeframe] to see results"
+            },
+            {
+              "method_name": "Strategy 3: [Specific Method Name]",
+              "pros": "• Addresses [specific pain point] directly\n• Provides [specific measurable outcome]\n• Works with [specific constraints]\n• Delivers [specific value proposition]",
+              "cons": "• Requires [specific upfront work]\n• May need [specific adjustments]\n• Initial setup takes [specific time]"
+            }
+          ]
         }
-      ],
-      "phase_deliverables": "What you'll have completed",
-      "success_metrics": "How to measure phase completion"
-    }
-  ],
-  "tool_arsenal": [
-    {
-      "tool_category": "Templates",
-      "tools": [
-        {
-          "tool_name": "Specific template name",
-          "purpose": "What this template accomplishes",
-          "usage_instructions": "How to customize and use it",
-          "success_tips": "How to get best results"
+      },
+      {
+        "title": "Action Checklist",
+        "type": "checklist",
+        "content": {
+          "phases": [
+            {
+              "phase_title": "Phase 1: Foundation Setup (Days 1-7)",
+              "items": [
+                "Set up your [specific tool/system]",
+                "Create your [specific tracking mechanism]",
+                "Establish your [specific baseline metrics]",
+                "Prepare your [specific resources]"
+              ]
+            },
+            {
+              "phase_title": "Phase 2: Implementation (Days 8-21)",
+              "items": [
+                "Execute [specific daily actions]",
+                "Track [specific key metrics]",
+                "Optimize based on [specific feedback]",
+                "Scale [specific successful elements]"
+              ]
+            },
+            {
+              "phase_title": "Phase 3: Optimization (Days 22-30)",
+              "items": [
+                "Analyze [specific performance data]",
+                "Refine [specific processes]",
+                "Implement [specific improvements]",
+                "Prepare for [specific next phase]"
+              ]
+            }
+          ]
         }
-      ]
-    }
-  ],
-  "case_studies": [
-    {
-      "case_title": "Specific industry/situation example",
-      "background": "Initial situation and challenges",
-      "implementation": "How they applied the system",
-      "specific_results": "Exact measurable outcomes",
-      "timeline": "How long it took to see results",
-      "key_lessons": "What made the difference"
-    }
-  ],
-  "troubleshooting_guide": [
-    {
-      "problem_category": "Common obstacle type",
-      "specific_problems": [
-        {
-          "problem": "Specific issue users face",
-          "symptoms": "How to recognize this problem",
-          "root_causes": "Why this happens",
-          "solution_steps": "Exact steps to fix it",
-          "prevention": "How to avoid it in the future"
+      },
+      {
+        "title": "Conversation Scripts",
+        "type": "scripts",
+        "content": {
+          "scenarios": [
+            {
+              "trigger": "When someone says [specific objection/question]",
+              "response": "You say: [specific proven response that addresses the concern]",
+              "explanation": "This works because [specific psychological principle or proven tactic]"
+            },
+            {
+              "trigger": "When someone asks [specific question]",
+              "response": "You say: [specific response that provides value and builds trust]",
+              "explanation": "This approach [specific benefit or outcome it delivers]"
+            },
+            {
+              "trigger": "When someone shows [specific interest signal]",
+              "response": "You say: [specific response that capitalizes on the opportunity]",
+              "explanation": "This converts because [specific conversion principle or tactic]"
+            }
+          ]
         }
-      ]
-    }
-  ],
-  "optimization_strategies": {
-    "performance_tracking": "What metrics to monitor",
-    "improvement_tactics": "How to enhance results over time",
-    "advanced_techniques": "Next-level strategies for power users"
+      }
+    ],
+    "cta": "Ready to take your business to the next level? Download your complete system now."
   }
 }`;
 
