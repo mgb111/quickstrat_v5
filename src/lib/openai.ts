@@ -86,25 +86,20 @@ function cleanJsonResponse(content: string): string {
     cleaned = cleaned.replace(/\s*```$/, '');
   }
   
-  // First, let's try to parse the JSON as-is to see if it's already valid
+  // Try to parse the JSON as-is first
   try {
     JSON.parse(cleaned);
     return cleaned; // If it parses successfully, return as-is
   } catch (e) {
-    // If parsing fails, try to fix common issues
+    // Only try to fix if parsing fails
     console.log('JSON parsing failed, attempting to fix...');
+    
+    // Only fix if there are actual newlines in strings (not in the JSON structure)
+    if (cleaned.includes('\n') && cleaned.includes('"')) {
+      // More conservative approach - only fix obvious string newlines
+      cleaned = cleaned.replace(/"([^"]*)\n([^"]*)"/g, '"$1\\n$2"');
+    }
   }
-  
-  // Fix newlines in JSON strings more carefully
-  // This regex finds strings that contain newlines and escapes them properly
-  cleaned = cleaned.replace(/"([^"]*(?:\\"[^"]*)*)"/g, (match, content) => {
-    // Escape newlines, carriage returns, and tabs within the string content
-    const escaped = content
-      .replace(/\n/g, '\\n')
-      .replace(/\r/g, '\\r')
-      .replace(/\t/g, '\\t');
-    return `"${escaped}"`;
-  });
   
   return cleaned.trim();
 }
