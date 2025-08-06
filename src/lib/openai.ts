@@ -1211,39 +1211,7 @@ RETURN JSON IN THIS EXACT FORMAT:
         "improvement_potential": "Could increase CLV by 35% with better retention"
       }
     ]
-  },
-    "benchmark_content": {
-    "title": "Industry Performance Analysis",
-    "metrics": [
-      {
-        "metric_name": "Conversion Rate",
-        "description": "How your conversion rate compares to industry standards",
-        "your_performance": "Your current conversion rate",
-        "industry_average": "Industry standard: 2.3%",
-        "top_performer": "Top 10%: 4.8%",
-        "gap_analysis": "You're performing 15% below industry average",
-        "improvement_potential": "Could increase revenue by $X with optimization"
-      },
-      {
-        "metric_name": "Customer Acquisition Cost",
-        "description": "Your CAC vs industry benchmarks",
-        "your_performance": "Your current CAC",
-        "industry_average": "Industry standard: $127",
-        "top_performer": "Top 10%: $89",
-        "gap_analysis": "Your costs are 23% higher than average",
-        "improvement_potential": "Could save $X per customer with optimization"
-      },
-      {
-        "metric_name": "Customer Lifetime Value",
-        "description": "How much value you extract from each customer",
-        "your_performance": "Your current CLV",
-        "industry_average": "Industry standard: $485",
-        "top_performer": "Top 10%: $742",
-        "gap_analysis": "Missing $X in potential value per customer",
-        "improvement_potential": "Could increase CLV by 35% with better retention"
-      }
-    ]
-  }
+
 }`;
 
     case 'opportunity_finder':
