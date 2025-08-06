@@ -1348,7 +1348,7 @@ RETURN JSON IN THIS EXACT FORMAT:
         "success_metrics": "New market segments contributing 20% of revenue"
       }
     ]
-  }
+}
 }`;
 
     case 'pdf':
@@ -1375,6 +1375,24 @@ CRITICAL REQUIREMENTS:
 - Include relevant tools, templates, and frameworks
 - Make everything specific to the topic and audience
 
+GENERATE COMPLETELY FREE-FORM CONTENT:
+
+Create comprehensive, actionable content based on the outline structure. Generate any content structure that makes sense for the topic. Do NOT follow any predefined framework or template.
+
+OUTLINE DETAILS:
+- Title: ${outline.title}
+- Introduction: ${outline.introduction}
+- Core Points: ${outline.core_points?.join(', ') || 'Not specified'}
+- Main Sections: ${outline.sections?.map(s => s.title).join(', ') || 'Not specified'}
+
+CRITICAL REQUIREMENTS:
+- Generate content that directly addresses the outline structure
+- Create any content structure that makes sense for the topic
+- Provide detailed implementation steps that match the outline
+- Include relevant tools, templates, and frameworks
+- Make everything specific to the topic and audience
+- Do NOT follow any predefined framework or template structure
+
 RETURN JSON IN THIS EXACT FORMAT:
 {
   "structured_content": {
@@ -1385,22 +1403,12 @@ RETURN JSON IN THIS EXACT FORMAT:
     "introduction": "Write a compelling introduction that explains the specific problem this guide solves and what results users will achieve. Make it personal and credible.",
     "toolkit_sections": [
       {
-        "title": "[Generate a relevant section title based on the outline]",
-        "type": "[Choose the most appropriate type: pros_and_cons_list, checklist, scripts, step_by_step_guide, template, mistakes_to_avoid]",
-        "content": "[Generate content that directly addresses the outline. Make it specific, actionable, and relevant to the topic. Do not use any template or framework - create unique content based on the outline.]"
-      },
-      {
-        "title": "[Generate another relevant section title based on the outline]",
-        "type": "[Choose the most appropriate type: pros_and_cons_list, checklist, scripts, step_by_step_guide, template, mistakes_to_avoid]",
-        "content": "[Generate content that directly addresses the outline. Make it specific, actionable, and relevant to the topic. Do not use any template or framework - create unique content based on the outline.]"
-      },
-      {
-        "title": "[Generate another relevant section title based on the outline]",
-        "type": "[Choose the most appropriate type: pros_and_cons_list, checklist, scripts, step_by_step_guide, template, mistakes_to_avoid]",
-        "content": "[Generate content that directly addresses the outline. Make it specific, actionable, and relevant to the topic. Do not use any template or framework - create unique content based on the outline.]"
+        "title": "Generate any relevant section title based on the outline",
+        "type": "Generate any content type that makes sense for this topic",
+        "content": "Generate any content structure that makes sense for this topic and outline"
       }
     ],
-    "cta": "Ready to implement these strategies? Download your complete guide now."
+    "cta": "Generate a relevant call-to-action based on the topic"
   }
 }`;
 
