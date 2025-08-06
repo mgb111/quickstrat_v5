@@ -7,15 +7,17 @@ interface InteractiveDisplayProps {
   selectedFormat: LeadMagnetFormat;
   brandName: string;
   requirePayment?: boolean;
+  emailAlreadySubmitted?: boolean;
 }
 
 const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({ 
   results, 
   selectedFormat, 
   brandName, 
-  requirePayment = false 
+  requirePayment = false,
+  emailAlreadySubmitted = false
 }) => {
-  const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [emailSubmitted, setEmailSubmitted] = useState(emailAlreadySubmitted);
   const [currentStep, setCurrentStep] = useState(0);
   
   // ROI Calculator State
@@ -112,6 +114,82 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
     setCalculationResults(results);
   };
 
+  // Quiz Logic
+  const handleQuizAnswer = (questionIndex: number, answer: string) => {
+    const newAnswers = { ...quizAnswers, [questionIndex]: answer };
+    setQuizAnswers(newAnswers);
+  };
+
+  const calculateQuizResults = () => {
+    const totalQuestions = Object.keys(quizAnswers).length;
+    if (totalQuestions === 0) return;
+
+    // Simple scoring logic - can be customized based on quiz content
+    const scores = Object.values(quizAnswers);
+    const categoryScores: Record<string, number> = {};
+    
+    // Analyze answers to determine user category/personality
+    scores.forEach((answer, index) => {
+      // This is a simplified scoring system
+      if (answer.toLowerCase().includes('budget') || answer.toLowerCase().includes('cost')) {
+        categoryScores['budget-conscious'] = (categoryScores['budget-conscious'] || 0) + 1;
+      }
+      if (answer.toLowerCase().includes('time') || answer.toLowerCase().includes('quick')) {
+        categoryScores['time-focused'] = (categoryScores['time-focused'] || 0) + 1;
+      }
+      if (answer.toLowerCase().includes('quality') || answer.toLowerCase().includes('premium')) {
+        categoryScores['quality-focused'] = (categoryScores['quality-focused'] || 0) + 1;
+      }
+    });
+
+    // Determine primary category
+    const primaryCategory = Object.entries(categoryScores)
+      .sort(([,a], [,b]) => b - a)[0]?.[0] || 'balanced';
+
+    const results = {
+      totalAnswered: totalQuestions,
+      primaryCategory,
+      categoryScores,
+      recommendations: getQuizRecommendations(primaryCategory),
+      completionPercentage: Math.round((totalQuestions / 5) * 100) // Assuming 5 questions
+    };
+
+    setQuizResults(results);
+  };
+
+  const getQuizRecommendations = (category: string) => {
+    switch (category) {
+      case 'budget-conscious':
+        return [
+          'Focus on cost-effective styling solutions',
+          'Look for multi-purpose pieces',
+          'Consider subscription services for better value',
+          'Invest in quality basics that last longer'
+        ];
+      case 'time-focused':
+        return [
+          'Use styling services to save time',
+          'Create a capsule wardrobe for quick decisions',
+          'Invest in versatile pieces',
+          'Use styling apps for quick outfit planning'
+        ];
+      case 'quality-focused':
+        return [
+          'Invest in high-quality, timeless pieces',
+          'Work with professional stylists',
+          'Focus on craftsmanship and materials',
+          'Build a curated, premium wardrobe'
+        ];
+      default:
+        return [
+          'Balance cost, time, and quality in your decisions',
+          'Start with basics and build gradually',
+          'Experiment with different styling approaches',
+          'Find what works best for your lifestyle'
+        ];
+    }
+  };
+
   const getFormatDisplayInfo = () => {
     switch (selectedFormat) {
       case 'interactive_quiz':
@@ -204,13 +282,95 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </ul>
             </div>
 
+            {/* Interactive Quiz Questions */}
+            <div className="bg-indigo-50 rounded-lg p-6 mb-6">
+              <h2 className="text-xl font-semibold text-indigo-900 mb-4">📝 Quick Assessment</h2>
+              <div className="space-y-4">
+                {[
+                  { question: "What's your primary concern when choosing styling services?", options: ["Budget and cost", "Time efficiency", "Quality and results", "Convenience"] },
+                  { question: "How often do you typically update your wardrobe?", options: ["Every few months", "Seasonally", "Once a year", "Only when necessary"] },
+                  { question: "What's your biggest styling challenge?", options: ["Finding time to shop", "Staying within budget", "Knowing what looks good", "Keeping up with trends"] },
+                  { question: "Which best describes your lifestyle?", options: ["Fast-paced professional", "Budget-conscious", "Quality-focused", "Balanced approach"] },
+                  { question: "What would make the biggest impact on your styling routine?", options: ["Saving money", "Saving time", "Better quality results", "More convenience"] }
+                ].map((q, index) => (
+                  <div key={index} className="bg-white rounded-lg p-4 border border-indigo-200">
+                    <h3 className="font-medium text-indigo-900 mb-3">{index + 1}. {q.question}</h3>
+                    <div className="space-y-2">
+                      {q.options.map((option, optIndex) => (
+                        <label key={optIndex} className="flex items-center cursor-pointer">
+                          <input
+                            type="radio"
+                            name={`question-${index}`}
+                            value={option}
+                            checked={quizAnswers[index] === option}
+                            onChange={(e) => {
+                              handleQuizAnswer(index, e.target.value);
+                              setTimeout(calculateQuizResults, 100);
+                            }}
+                            className="mr-3 text-indigo-600"
+                          />
+                          <span className="text-indigo-800">{option}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quiz Results */}
+            {quizResults && (
+              <div className="bg-green-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-green-900 mb-4">🎯 Your Styling Personality</h2>
+                <div className="bg-white rounded-lg p-4 border border-green-200 mb-4">
+                  <h3 className="font-bold text-green-900 text-lg mb-2">
+                    You're: <span className="capitalize">{quizResults.primaryCategory.replace('-', ' ')}</span>
+                  </h3>
+                  <div className="mb-3">
+                    <div className="bg-green-200 rounded-full h-2">
+                      <div 
+                        className="bg-green-600 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${quizResults.completionPercentage}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-sm text-green-700 mt-1">{quizResults.completionPercentage}% Complete</p>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-lg p-4 border border-green-200">
+                  <h4 className="font-semibold text-green-900 mb-2">📋 Personalized Recommendations:</h4>
+                  <ul className="space-y-2">
+                    {quizResults.recommendations.map((rec: string, index: number) => (
+                      <li key={index} className="text-green-800 flex items-start">
+                        <span className="text-green-600 mr-2">•</span>
+                        {rec}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+
             <div className="text-center">
-              <button 
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
-                onClick={() => alert('Quiz functionality would be implemented here')}
-              >
-                {formatInfo.actionText}
-              </button>
+              {quizResults ? (
+                <button 
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
+                  onClick={() => {
+                    const resultText = `Styling Personality Quiz Results:\n\nYour Type: ${quizResults.primaryCategory.replace('-', ' ')}\n\nRecommendations:\n${quizResults.recommendations.map((r: string) => `• ${r}`).join('\n')}`;
+                    navigator.clipboard.writeText(resultText);
+                    alert('Quiz results copied to clipboard!');
+                  }}
+                >
+                  📋 Copy Results
+                </button>
+              ) : (
+                <div className="bg-blue-100 border border-blue-300 rounded-lg p-4">
+                  <h3 className="text-lg font-semibold text-blue-800 mb-2">Ready to Start?</h3>
+                  <p className="text-blue-700">
+                    Answer the questions above to discover your unique styling personality!
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         );
@@ -514,12 +674,47 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </ul>
             </div>
 
+            {/* Interactive Action Plan */}
+            <div className="bg-purple-50 rounded-lg p-6 mb-6">
+              <h2 className="text-xl font-semibold text-purple-900 mb-4">📋 Your Action Plan Checklist</h2>
+              <div className="space-y-3">
+                {[
+                  "Assess your current situation and goals",
+                  "Identify your top 3 priorities for improvement",
+                  "Create a timeline with specific milestones",
+                  "Implement the first action step within 24 hours",
+                  "Track your progress weekly and adjust as needed"
+                ].map((step, index) => (
+                  <label key={index} className="flex items-center cursor-pointer bg-white rounded-lg p-3 border border-purple-200 hover:bg-purple-25">
+                    <input
+                      type="checkbox"
+                      className="mr-3 text-purple-600 rounded"
+                      onChange={(e) => {
+                        const checkbox = e.target;
+                        if (checkbox.checked) {
+                          checkbox.parentElement!.classList.add('bg-purple-100');
+                        } else {
+                          checkbox.parentElement!.classList.remove('bg-purple-100');
+                        }
+                      }}
+                    />
+                    <span className="text-purple-800 font-medium">Step {index + 1}: {step}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
             <div className="text-center">
               <button 
                 className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
-                onClick={() => alert('Action plan functionality would be implemented here')}
+                onClick={() => {
+                  const checkedSteps = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).length;
+                  const totalSteps = 5;
+                  const progress = Math.round((checkedSteps / totalSteps) * 100);
+                  alert(`Action Plan Progress: ${checkedSteps}/${totalSteps} steps completed (${progress}%)`);
+                }}
               >
-                {formatInfo.actionText}
+                📊 Check Progress
               </button>
             </div>
           </div>
@@ -553,12 +748,58 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </ul>
             </div>
 
+            {/* Interactive Benchmark Comparison */}
+            <div className="bg-orange-50 rounded-lg p-6 mb-6">
+              <h2 className="text-xl font-semibold text-orange-900 mb-4">📊 Industry Benchmark Comparison</h2>
+              <div className="space-y-4">
+                {[
+                  { metric: "Customer Satisfaction", yourScore: 75, industry: 68, unit: "%" },
+                  { metric: "Response Time", yourScore: 24, industry: 48, unit: " hours" },
+                  { metric: "Cost Efficiency", yourScore: 82, industry: 76, unit: "%" },
+                  { metric: "Quality Rating", yourScore: 4.2, industry: 3.8, unit: "/5.0" }
+                ].map((item, index) => (
+                  <div key={index} className="bg-white rounded-lg p-4 border border-orange-200">
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="font-semibold text-orange-900">{item.metric}</h3>
+                      <span className={`px-2 py-1 rounded text-sm font-medium ${
+                        item.yourScore > item.industry ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      }`}>
+                        {item.yourScore > item.industry ? '↗ Above Average' : '↘ Below Average'}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-orange-700">Your Score: </span>
+                        <span className="font-bold text-orange-900">{item.yourScore}{item.unit}</span>
+                      </div>
+                      <div>
+                        <span className="text-orange-700">Industry Average: </span>
+                        <span className="font-bold text-orange-900">{item.industry}{item.unit}</span>
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <div className="bg-gray-200 rounded-full h-2">
+                        <div 
+                          className={`h-2 rounded-full ${item.yourScore > item.industry ? 'bg-green-500' : 'bg-red-500'}`}
+                          style={{ width: `${Math.min((item.yourScore / (item.industry * 1.5)) * 100, 100)}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="text-center">
               <button 
                 className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
-                onClick={() => alert('Benchmark report functionality would be implemented here')}
+                onClick={() => {
+                  const reportData = "Benchmark Report Summary:\n\n• Customer Satisfaction: 75% (Above industry 68%)\n• Response Time: 24 hours (Better than industry 48 hours)\n• Cost Efficiency: 82% (Above industry 76%)\n• Quality Rating: 4.2/5.0 (Above industry 3.8/5.0)";
+                  navigator.clipboard.writeText(reportData);
+                  alert('Benchmark report copied to clipboard!');
+                }}
               >
-                {formatInfo.actionText}
+                📋 Copy Report
               </button>
             </div>
           </div>
@@ -592,12 +833,77 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </ul>
             </div>
 
+            {/* Interactive Opportunity Finder */}
+            <div className="bg-teal-50 rounded-lg p-6 mb-6">
+              <h2 className="text-xl font-semibold text-teal-900 mb-4">🔍 Opportunity Analysis</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { 
+                    category: "Market Opportunities", 
+                    opportunities: ["Untapped customer segment", "Seasonal trend leverage", "Partnership potential"],
+                    impact: "High",
+                    effort: "Medium"
+                  },
+                  { 
+                    category: "Service Improvements", 
+                    opportunities: ["Process automation", "Quality enhancement", "Customer experience"],
+                    impact: "Medium",
+                    effort: "Low"
+                  },
+                  { 
+                    category: "Cost Optimization", 
+                    opportunities: ["Supplier negotiations", "Operational efficiency", "Technology upgrades"],
+                    impact: "High",
+                    effort: "High"
+                  },
+                  { 
+                    category: "Revenue Streams", 
+                    opportunities: ["Premium services", "Subscription model", "Digital products"],
+                    impact: "Very High",
+                    effort: "Medium"
+                  }
+                ].map((item, index) => (
+                  <div key={index} className="bg-white rounded-lg p-4 border border-teal-200">
+                    <h3 className="font-semibold text-teal-900 mb-2">{item.category}</h3>
+                    <ul className="space-y-1 mb-3">
+                      {item.opportunities.map((opp, idx) => (
+                        <li key={idx} className="text-sm text-teal-700 flex items-center">
+                          <span className="text-teal-500 mr-2">•</span>
+                          {opp}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="flex justify-between text-xs">
+                      <span className={`px-2 py-1 rounded ${
+                        item.impact === 'Very High' ? 'bg-green-100 text-green-800' :
+                        item.impact === 'High' ? 'bg-blue-100 text-blue-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        Impact: {item.impact}
+                      </span>
+                      <span className={`px-2 py-1 rounded ${
+                        item.effort === 'Low' ? 'bg-green-100 text-green-800' :
+                        item.effort === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        Effort: {item.effort}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="text-center">
               <button 
                 className="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
-                onClick={() => alert('Opportunity finder functionality would be implemented here')}
+                onClick={() => {
+                  const opportunityData = "Opportunity Finder Results:\n\n🎯 Market Opportunities (High Impact, Medium Effort)\n• Untapped customer segment\n• Seasonal trend leverage\n• Partnership potential\n\n⚡ Service Improvements (Medium Impact, Low Effort)\n• Process automation\n• Quality enhancement\n• Customer experience\n\n💰 Cost Optimization (High Impact, High Effort)\n• Supplier negotiations\n• Operational efficiency\n• Technology upgrades\n\n🚀 Revenue Streams (Very High Impact, Medium Effort)\n• Premium services\n• Subscription model\n• Digital products";
+                  navigator.clipboard.writeText(opportunityData);
+                  alert('Opportunity analysis copied to clipboard!');
+                }}
               >
-                {formatInfo.actionText}
+                📋 Copy Analysis
               </button>
             </div>
           </div>

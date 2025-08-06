@@ -375,16 +375,17 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
           // Show InteractiveDisplay for interactive formats
           if (detectedFormat !== 'pdf') {
             return (
-              <InteractiveDisplay 
-                results={{
-                  pdf_content: viewPdfCampaign.lead_magnet_content ?? '',
-                  landing_page: { headline: '', subheadline: '', benefit_bullets: [], cta_button_text: '' },
-                  social_posts: { linkedin: '', twitter: '', instagram: '', reddit: '' }
-                }}
-                selectedFormat={detectedFormat}
-                brandName={brandName}
-                requirePayment={true}
-              />
+                                  <InteractiveDisplay
+                      results={{
+                        pdf_content: viewPdfCampaign.lead_magnet_content ?? '',
+                        landing_page: { headline: '', subheadline: '', benefit_bullets: [], cta_button_text: '' },
+                        social_posts: { linkedin: '', twitter: '', instagram: '', reddit: '' }
+                      }}
+                      selectedFormat={detectedFormat}
+                      brandName={brandName}
+                      requirePayment={true}
+                      emailAlreadySubmitted={false}
+                    />
             );
           }
           

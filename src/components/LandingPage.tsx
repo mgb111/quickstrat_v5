@@ -228,6 +228,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
                 selectedFormat={detectedFormat}
                 brandName={brandName}
                 requirePayment={false}
+                emailAlreadySubmitted={true}
               />
             );
           }

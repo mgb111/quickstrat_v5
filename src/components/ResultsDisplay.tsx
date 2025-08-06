@@ -340,7 +340,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
                   results={results} 
                   selectedFormat={selectedFormat} 
                   brandName={brandName} 
-                  requirePayment={requirePayment} 
+                  requirePayment={requirePayment}
+                  emailAlreadySubmitted={false}
                 />
               ) : (
                 pdfContent && <PDFGenerator data={pdfContent} campaignId={''} requirePayment={requirePayment} selectedFormat={selectedFormat} />
