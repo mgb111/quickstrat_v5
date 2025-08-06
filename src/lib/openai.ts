@@ -203,6 +203,18 @@ Return JSON in this exact format:
       "description": "A [X]-question diagnostic that reveals the ROOT CAUSE of [specific problem] and provides a custom action plan to fix it within [timeframe]",
       "value_proposition": "Get a professional-grade analysis of [specific issue] and discover the exact steps to [specific outcome] - normally costs $[amount] in consulting",
       "target_audience": "[Specific segment] struggling with [specific problem] who need immediate answers"
+    },
+    {
+      "title": "[Problem] Diagnosis Quiz - Find Out Why [Specific Issue] Isn't Working",
+      "description": "A [X]-question diagnostic that reveals the ROOT CAUSE of [specific problem] and provides a custom action plan to fix it within [timeframe]",
+      "value_proposition": "Get a professional-grade analysis of [specific issue] and discover the exact steps to [specific outcome] - normally costs $[amount] in consulting",
+      "target_audience": "[Specific segment] struggling with [specific problem] who need immediate answers"
+    },
+    {
+      "title": "[Problem] Diagnosis Quiz - Find Out Why [Specific Issue] Isn't Working",
+      "description": "A [X]-question diagnostic that reveals the ROOT CAUSE of [specific problem] and provides a custom action plan to fix it within [timeframe]",
+      "value_proposition": "Get a professional-grade analysis of [specific issue] and discover the exact steps to [specific outcome] - normally costs $[amount] in consulting",
+      "target_audience": "[Specific segment] struggling with [specific problem] who need immediate answers"
     }
   ]
 }`;
@@ -229,6 +241,18 @@ EXAMPLES OF HIGH-VALUE CALCULATOR CONCEPTS:
 Return JSON in this exact format:
 {
   "concepts": [
+    {
+      "title": "The [Specific Cost/Revenue] Calculator - See What [Problem] Is Really Costing You",
+      "description": "Input [X] simple numbers and discover the EXACT dollar amount [problem] is costing you per [timeframe], plus see how you compare to [industry] benchmarks",
+      "value_proposition": "Reveals the shocking true cost of [specific problem] - most [target audience] discover they're losing $[amount] per [timeframe] without realizing it",
+      "target_audience": "[Specific audience] who don't realize the true financial impact of [specific problem]"
+    },
+    {
+      "title": "The [Specific Cost/Revenue] Calculator - See What [Problem] Is Really Costing You",
+      "description": "Input [X] simple numbers and discover the EXACT dollar amount [problem] is costing you per [timeframe], plus see how you compare to [industry] benchmarks",
+      "value_proposition": "Reveals the shocking true cost of [specific problem] - most [target audience] discover they're losing $[amount] per [timeframe] without realizing it",
+      "target_audience": "[Specific audience] who don't realize the true financial impact of [specific problem]"
+    },
     {
       "title": "The [Specific Cost/Revenue] Calculator - See What [Problem] Is Really Costing You",
       "description": "Input [X] simple numbers and discover the EXACT dollar amount [problem] is costing you per [timeframe], plus see how you compare to [industry] benchmarks",
@@ -265,6 +289,18 @@ Return JSON in this exact format:
       "description": "A step-by-step roadmap with exact tasks, templates, and tools to achieve [specific measurable outcome] within [timeframe] - includes troubleshooting guide",
       "value_proposition": "Skip months of trial and error - follow this proven system to [specific result] with included templates, scripts, and tracking tools",
       "target_audience": "[Target audience] ready to take action but need a proven system with exact steps"
+    },
+    {
+      "title": "The [Timeframe] [Outcome] Action Plan - Get [Specific Result] in [X] Days",
+      "description": "A step-by-step roadmap with exact tasks, templates, and tools to achieve [specific measurable outcome] within [timeframe] - includes troubleshooting guide",
+      "value_proposition": "Skip months of trial and error - follow this proven system to [specific result] with included templates, scripts, and tracking tools",
+      "target_audience": "[Target audience] ready to take action but need a proven system with exact steps"
+    },
+    {
+      "title": "The [Timeframe] [Outcome] Action Plan - Get [Specific Result] in [X] Days",
+      "description": "A step-by-step roadmap with exact tasks, templates, and tools to achieve [specific measurable outcome] within [timeframe] - includes troubleshooting guide",
+      "value_proposition": "Skip months of trial and error - follow this proven system to [specific result] with included templates, scripts, and tracking tools",
+      "target_audience": "[Target audience] ready to take action but need a proven system with exact steps"
     }
   ]
 }`;
@@ -291,6 +327,18 @@ EXAMPLES OF HIGH-VALUE BENCHMARK CONCEPTS:
 Return JSON in this exact format:
 {
   "concepts": [
+    {
+      "title": "The [Industry] [Metric] Benchmark Report - See Exactly How You Compare",
+      "description": "Compare your [specific metrics] against [number]+ [competitors/industry leaders] and discover the exact gaps costing you [revenue/customers/growth]",
+      "value_proposition": "Get insider competitive intelligence usually available only to Fortune 500 companies - see exactly where you're falling behind and how to catch up",
+      "target_audience": "[Target audience] who suspect they're underperforming but need specific data to know where and by how much"
+    },
+    {
+      "title": "The [Industry] [Metric] Benchmark Report - See Exactly How You Compare",
+      "description": "Compare your [specific metrics] against [number]+ [competitors/industry leaders] and discover the exact gaps costing you [revenue/customers/growth]",
+      "value_proposition": "Get insider competitive intelligence usually available only to Fortune 500 companies - see exactly where you're falling behind and how to catch up",
+      "target_audience": "[Target audience] who suspect they're underperforming but need specific data to know where and by how much"
+    },
     {
       "title": "The [Industry] [Metric] Benchmark Report - See Exactly How You Compare",
       "description": "Compare your [specific metrics] against [number]+ [competitors/industry leaders] and discover the exact gaps costing you [revenue/customers/growth]",
@@ -327,6 +375,18 @@ Return JSON in this exact format:
       "description": "Analyze [specific business area] to uncover [X] untapped opportunities worth $[amount] each - includes implementation difficulty scores and ROI projections",
       "value_proposition": "Most [target audience] are sitting on $[amount]+ in missed opportunities - this finder reveals exactly what they are and how to capture them",
       "target_audience": "[Target audience] who have plateaued and need fresh growth strategies they haven't considered"
+    },
+    {
+      "title": "The [Type] Opportunity Finder - Discover $[Amount] in Hidden [Revenue/Savings]",
+      "description": "Analyze [specific business area] to uncover [X] untapped opportunities worth $[amount] each - includes implementation difficulty scores and ROI projections",
+      "value_proposition": "Most [target audience] are sitting on $[amount]+ in missed opportunities - this finder reveals exactly what they are and how to capture them",
+      "target_audience": "[Target audience] who have plateaued and need fresh growth strategies they haven't considered"
+    },
+    {
+      "title": "The [Type] Opportunity Finder - Discover $[Amount] in Hidden [Revenue/Savings]",
+      "description": "Analyze [specific business area] to uncover [X] untapped opportunities worth $[amount] each - includes implementation difficulty scores and ROI projections",
+      "value_proposition": "Most [target audience] are sitting on $[amount]+ in missed opportunities - this finder reveals exactly what they are and how to capture them",
+      "target_audience": "[Target audience] who have plateaued and need fresh growth strategies they haven't considered"
     }
   ]
 }`;
@@ -353,6 +413,18 @@ EXAMPLES OF HIGH-VALUE PDF Concepts:
 Return JSON in this exact format:
 {
   "concepts": [
+    {
+      "title": "The Complete [Topic] System - [Specific Outcome] in [Timeframe]",
+      "description": "A comprehensive [X]-page guide with step-by-step processes, [number] templates, case studies, and everything needed to [specific result]",
+      "value_proposition": "Get the complete system that took [time period] to develop and has generated [specific results] - includes all templates and tools",
+      "target_audience": "[Target audience] who want a comprehensive system they can implement immediately without missing any steps"
+    },
+    {
+      "title": "The Complete [Topic] System - [Specific Outcome] in [Timeframe]",
+      "description": "A comprehensive [X]-page guide with step-by-step processes, [number] templates, case studies, and everything needed to [specific result]",
+      "value_proposition": "Get the complete system that took [time period] to develop and has generated [specific results] - includes all templates and tools",
+      "target_audience": "[Target audience] who want a comprehensive system they can implement immediately without missing any steps"
+    },
     {
       "title": "The Complete [Topic] System - [Specific Outcome] in [Timeframe]",
       "description": "A comprehensive [X]-page guide with step-by-step processes, [number] templates, case studies, and everything needed to [specific result]",
