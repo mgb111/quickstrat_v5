@@ -203,18 +203,6 @@ Return JSON in this exact format:
       "description": "A [X]-question diagnostic that reveals the ROOT CAUSE of [specific problem] and provides a custom action plan to fix it within [timeframe]",
       "value_proposition": "Get a professional-grade analysis of [specific issue] and discover the exact steps to [specific outcome] - normally costs $[amount] in consulting",
       "target_audience": "[Specific segment] struggling with [specific problem] who need immediate answers"
-    },
-    {
-      "title": "[Problem] Diagnosis Quiz - Find Out Why [Specific Issue] Isn't Working",
-      "description": "A [X]-question diagnostic that reveals the ROOT CAUSE of [specific problem] and provides a custom action plan to fix it within [timeframe]",
-      "value_proposition": "Get a professional-grade analysis of [specific issue] and discover the exact steps to [specific outcome] - normally costs $[amount] in consulting",
-      "target_audience": "[Specific segment] struggling with [specific problem] who need immediate answers"
-    },
-    {
-      "title": "[Problem] Diagnosis Quiz - Find Out Why [Specific Issue] Isn't Working",
-      "description": "A [X]-question diagnostic that reveals the ROOT CAUSE of [specific problem] and provides a custom action plan to fix it within [timeframe]",
-      "value_proposition": "Get a professional-grade analysis of [specific issue] and discover the exact steps to [specific outcome] - normally costs $[amount] in consulting",
-      "target_audience": "[Specific segment] struggling with [specific problem] who need immediate answers"
     }
   ]
 }`;
@@ -241,18 +229,6 @@ EXAMPLES OF HIGH-VALUE CALCULATOR CONCEPTS:
 Return JSON in this exact format:
 {
   "concepts": [
-    {
-      "title": "The [Specific Cost/Revenue] Calculator - See What [Problem] Is Really Costing You",
-      "description": "Input [X] simple numbers and discover the EXACT dollar amount [problem] is costing you per [timeframe], plus see how you compare to [industry] benchmarks",
-      "value_proposition": "Reveals the shocking true cost of [specific problem] - most [target audience] discover they're losing $[amount] per [timeframe] without realizing it",
-      "target_audience": "[Specific audience] who don't realize the true financial impact of [specific problem]"
-    },
-    {
-      "title": "The [Specific Cost/Revenue] Calculator - See What [Problem] Is Really Costing You",
-      "description": "Input [X] simple numbers and discover the EXACT dollar amount [problem] is costing you per [timeframe], plus see how you compare to [industry] benchmarks",
-      "value_proposition": "Reveals the shocking true cost of [specific problem] - most [target audience] discover they're losing $[amount] per [timeframe] without realizing it",
-      "target_audience": "[Specific audience] who don't realize the true financial impact of [specific problem]"
-    },
     {
       "title": "The [Specific Cost/Revenue] Calculator - See What [Problem] Is Really Costing You",
       "description": "Input [X] simple numbers and discover the EXACT dollar amount [problem] is costing you per [timeframe], plus see how you compare to [industry] benchmarks",
@@ -289,18 +265,6 @@ Return JSON in this exact format:
       "description": "A step-by-step roadmap with exact tasks, templates, and tools to achieve [specific measurable outcome] within [timeframe] - includes troubleshooting guide",
       "value_proposition": "Skip months of trial and error - follow this proven system to [specific result] with included templates, scripts, and tracking tools",
       "target_audience": "[Target audience] ready to take action but need a proven system with exact steps"
-    },
-    {
-      "title": "The [Timeframe] [Outcome] Action Plan - Get [Specific Result] in [X] Days",
-      "description": "A step-by-step roadmap with exact tasks, templates, and tools to achieve [specific measurable outcome] within [timeframe] - includes troubleshooting guide",
-      "value_proposition": "Skip months of trial and error - follow this proven system to [specific result] with included templates, scripts, and tracking tools",
-      "target_audience": "[Target audience] ready to take action but need a proven system with exact steps"
-    },
-    {
-      "title": "The [Timeframe] [Outcome] Action Plan - Get [Specific Result] in [X] Days",
-      "description": "A step-by-step roadmap with exact tasks, templates, and tools to achieve [specific measurable outcome] within [timeframe] - includes troubleshooting guide",
-      "value_proposition": "Skip months of trial and error - follow this proven system to [specific result] with included templates, scripts, and tracking tools",
-      "target_audience": "[Target audience] ready to take action but need a proven system with exact steps"
     }
   ]
 }`;
@@ -327,18 +291,6 @@ EXAMPLES OF HIGH-VALUE BENCHMARK CONCEPTS:
 Return JSON in this exact format:
 {
   "concepts": [
-    {
-      "title": "The [Industry] [Metric] Benchmark Report - See Exactly How You Compare",
-      "description": "Compare your [specific metrics] against [number]+ [competitors/industry leaders] and discover the exact gaps costing you [revenue/customers/growth]",
-      "value_proposition": "Get insider competitive intelligence usually available only to Fortune 500 companies - see exactly where you're falling behind and how to catch up",
-      "target_audience": "[Target audience] who suspect they're underperforming but need specific data to know where and by how much"
-    },
-    {
-      "title": "The [Industry] [Metric] Benchmark Report - See Exactly How You Compare",
-      "description": "Compare your [specific metrics] against [number]+ [competitors/industry leaders] and discover the exact gaps costing you [revenue/customers/growth]",
-      "value_proposition": "Get insider competitive intelligence usually available only to Fortune 500 companies - see exactly where you're falling behind and how to catch up",
-      "target_audience": "[Target audience] who suspect they're underperforming but need specific data to know where and by how much"
-    },
     {
       "title": "The [Industry] [Metric] Benchmark Report - See Exactly How You Compare",
       "description": "Compare your [specific metrics] against [number]+ [competitors/industry leaders] and discover the exact gaps costing you [revenue/customers/growth]",
@@ -375,18 +327,6 @@ Return JSON in this exact format:
       "description": "Analyze [specific business area] to uncover [X] untapped opportunities worth $[amount] each - includes implementation difficulty scores and ROI projections",
       "value_proposition": "Most [target audience] are sitting on $[amount]+ in missed opportunities - this finder reveals exactly what they are and how to capture them",
       "target_audience": "[Target audience] who have plateaued and need fresh growth strategies they haven't considered"
-    },
-    {
-      "title": "The [Type] Opportunity Finder - Discover $[Amount] in Hidden [Revenue/Savings]",
-      "description": "Analyze [specific business area] to uncover [X] untapped opportunities worth $[amount] each - includes implementation difficulty scores and ROI projections",
-      "value_proposition": "Most [target audience] are sitting on $[amount]+ in missed opportunities - this finder reveals exactly what they are and how to capture them",
-      "target_audience": "[Target audience] who have plateaued and need fresh growth strategies they haven't considered"
-    },
-    {
-      "title": "The [Type] Opportunity Finder - Discover $[Amount] in Hidden [Revenue/Savings]",
-      "description": "Analyze [specific business area] to uncover [X] untapped opportunities worth $[amount] each - includes implementation difficulty scores and ROI projections",
-      "value_proposition": "Most [target audience] are sitting on $[amount]+ in missed opportunities - this finder reveals exactly what they are and how to capture them",
-      "target_audience": "[Target audience] who have plateaued and need fresh growth strategies they haven't considered"
     }
   ]
 }`;
@@ -418,24 +358,70 @@ Return JSON in this exact format:
       "description": "A comprehensive [X]-page guide with step-by-step processes, [number] templates, case studies, and everything needed to [specific result]",
       "value_proposition": "Get the complete system that took [time period] to develop and has generated [specific results] - includes all templates and tools",
       "target_audience": "[Target audience] who want a comprehensive system they can implement immediately without missing any steps"
-    },
-    {
-      "title": "The Complete [Topic] System - [Specific Outcome] in [Timeframe]",
-      "description": "A comprehensive [X]-page guide with step-by-step processes, [number] templates, case studies, and everything needed to [specific result]",
-      "value_proposition": "Get the complete system that took [time period] to develop and has generated [specific results] - includes all templates and tools",
-      "target_audience": "[Target audience] who want a comprehensive system they can implement immediately without missing any steps"
-    },
-    {
-      "title": "The Complete [Topic] System - [Specific Outcome] in [Timeframe]",
-      "description": "A comprehensive [X]-page guide with step-by-step processes, [number] templates, case studies, and everything needed to [specific result]",
-      "value_proposition": "Get the complete system that took [time period] to develop and has generated [specific results] - includes all templates and tools",
-      "target_audience": "[Target audience] who want a comprehensive system they can implement immediately without missing any steps"
     }
   ]
 }`;
 
     default:
       throw new Error(`Unknown format: ${format}`);
+  }
+}
+
+export async function generateContentOutline(input: CampaignInput, selected: LeadMagnetConcept): Promise<ContentOutline> {
+  const client = getOpenAIClient();
+  let content = '';
+
+  try {
+    const format = selected.format;
+    const formatSpecificPrompt = getFormatSpecificOutlinePrompt(format, input, selected);
+
+    const res = await client.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: 'You are a content strategist. Output strictly valid JSON as defined.' },
+        { role: 'user', content: formatSpecificPrompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 1000
+    });
+
+    if (!res.choices?.[0]?.message?.content) {
+      throw new Error('Empty response received from OpenAI API');
+    }
+
+    content = res.choices[0].message.content;
+    
+    // Clean the content to handle markdown-wrapped JSON
+    const cleanedContent = cleanJsonResponse(content);
+    console.log('🎯 OpenAI Response (cleaned):', cleanedContent);
+    const parsed = JSON.parse(cleanedContent);
+
+    // Validate the response structure
+    if (!parsed.title || !parsed.introduction || !Array.isArray(parsed.core_points) || !parsed.cta) {
+      throw new Error('Invalid response format from OpenAI API');
+    }
+
+    return parsed;
+  } catch (err: any) {
+    console.error('OpenAI API Error:', {
+      message: err.message,
+      status: err.status,
+      code: err.code,
+      type: err.type
+    });
+
+    if (err.code === 'rate_limit_exceeded') {
+      throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+    } else if (err.code === 'invalid_api_key') {
+      throw new Error('Invalid OpenAI API key. Please check your .env file.');
+    } else if (err.message.includes('timeout')) {
+      throw new Error('Request timed out. Please check your internet connection and try again.');
+    } else if (err.message.includes('JSON') || err.message.includes('Unexpected token')) {
+      console.error('JSON parsing error. Original content:', content);
+      throw new Error('Failed to process the response from OpenAI. Please try again.');
+    }
+
+    throw new Error(`Failed to generate content outline: ${err.message}`);
   }
 }
 
@@ -650,633 +636,6 @@ Return JSON in this exact format:
   }
 }
 
-function getFormatSpecificPdfPrompt(format: string, input: CampaignInput, outline: ContentOutline, customization?: PDFCustomization): string {
-  const baseContext = `
-User Context:
-- Niche: ${input.niche}
-- Target Audience: ${input.target_audience}
-- Tone: ${input.tone}
-- Brand Name: ${input.brand_name}
-- Position/Title: ${input.position || ''}
-- Selected Concept: A lead magnet about ${outline.title}.
-- Format: ${format}
-`;
-
-  const founderIntro = `
-PERSONALIZED FOUNDER INTRODUCTION:
-Before the content, write a short, authentic introduction in the founder's voice. Use these details:
-- Name: ${input.name}
-- Position/Title: ${input.position || ''}
-- Brand/company: ${input.brand_name}
-- Customer problem: ${input.problem_statement}
-- Desired outcome: ${input.desired_outcome}
-Make it personal and credible - explain WHY you created this and what specific results the reader will get.
-`;
-
-  const valueStandards = `
-EXTREME VALUE REQUIREMENTS (NON-NEGOTIABLE):
-
-1. TACTICAL DEPTH: Every section must provide HOW-TO, not just WHAT-TO
-2. IMPLEMENTABLE TOOLS: Include templates, scripts, checklists, frameworks
-3. SPECIFIC RESULTS: Use exact numbers, timelines, and success metrics
-4. CASE STUDIES: Include real examples with specific outcomes
-5. TROUBLESHOOTING: Address common obstacles and solutions
-6. NO FLUFF: Every paragraph must provide actionable value
-
-❌ FORBIDDEN: Generic advice, theory without application, vague percentages
-✅ REQUIRED: Specific tactics, exact steps, measurable outcomes
-`;
-
-  switch (format) {
-    case 'interactive_quiz':
-      return `${baseContext}
-
-${founderIntro}
-
-${valueStandards}
-
-CREATE A PROFESSIONAL DIAGNOSTIC QUIZ SYSTEM:
-
-This must be a complete diagnostic tool that provides professional-grade insights and actionable solutions.
-
-REQUIRED STRUCTURE:
-1. **Diagnostic Framework**: Explain the methodology behind the questions
-2. **Question Bank**: 10-15 strategic questions that build on each other
-3. **Scoring System**: How answers combine to create accurate diagnosis
-4. **Result Categories**: 4-6 specific diagnosis types with solutions
-5. **Action Protocols**: Exact next steps for each diagnosis type
-6. **Success Tracking**: How to measure improvement
-
-CRITICAL REQUIREMENTS:
-- Questions must reveal ROOT CAUSES, not just symptoms
-- Each result category needs SPECIFIC action steps
-- Include success metrics and timelines
-- Provide troubleshooting for each diagnosis type
-
-RETURN JSON IN THIS EXACT FORMAT:
-{
-  "founder_intro": "Personal introduction explaining why you created this diagnostic and what results users will get",
-  "title_page": {
-    "title": "${outline.title}",
-    "subtitle": "A Professional-Grade Diagnostic Tool for [Specific Problem]"
-  },
-  "introduction_page": {
-    "title": "How This Diagnostic Works",
-    "content": "Explain the professional methodology and what insights they'll receive"
-  },
-  "diagnostic_framework": {
-    "methodology": "The scientific approach behind this diagnostic",
-    "question_strategy": "How questions are designed to reveal root causes",
-    "accuracy_factors": "What makes this diagnostic reliable"
-  },
-  "question_bank": [
-    {
-      "question_number": 1,
-      "question_text": "Specific diagnostic question",
-      "answer_options": ["Option A", "Option B", "Option C"],
-      "diagnostic_purpose": "What this question reveals about the problem"
-    }
-  ],
-  "result_categories": [
-    {
-      "category_name": "Specific Diagnosis Type",
-      "description": "What this diagnosis means",
-      "symptoms": ["Symptom 1", "Symptom 2", "Symptom 3"],
-      "root_causes": ["Cause 1", "Cause 2"],
-      "action_protocol": ["Step 1", "Step 2", "Step 3"],
-      "success_metrics": "How to measure improvement",
-      "timeline": "Expected improvement timeframe"
-    }
-  ],
-  "implementation_guide": {
-    "how_to_use": "Step-by-step guide for taking and interpreting the quiz",
-    "action_planning": "How to create action plan from results",
-    "progress_tracking": "How to monitor improvement over time"
-  }
-}`;
-
-    case 'roi_calculator':
-      return `${baseContext}
-
-${founderIntro}
-
-${valueStandards}
-
-CREATE A FINANCIAL IMPACT CALCULATOR SYSTEM:
-
-This must be a comprehensive tool that reveals shocking financial insights and creates urgency.
-
-REQUIRED STRUCTURE:
-1. **Calculation Framework**: The methodology for financial analysis
-2. **Input Variables**: 8-12 key metrics with industry context
-3. **Calculation Matrix**: How variables combine for total impact
-4. **Scenario Analysis**: Conservative, realistic, and aggressive projections
-5. **Benchmark Comparison**: How user compares to industry leaders
-6. **Improvement Roadmap**: Specific tactics to improve each metric
-
-CRITICAL REQUIREMENTS:
-- Show exact dollar amounts, not vague percentages
-- Include opportunity cost of inaction
-- Provide industry benchmarks for context
-- Give specific improvement tactics for each metric
-
-RETURN JSON IN THIS EXACT FORMAT:
-{
-  "founder_intro": "Personal introduction explaining the financial impact this calculator reveals",
-  "title_page": {
-    "title": "${outline.title}",
-    "subtitle": "Discover the Exact Financial Impact of [Problem/Opportunity]"
-  },
-  "introduction_page": {
-    "title": "The Hidden Costs You're Not Calculating",
-    "content": "Explain why this financial analysis is crucial and what they'll discover"
-  },
-  "calculation_framework": {
-    "methodology": "The financial analysis approach used",
-    "variable_selection": "Why these specific metrics matter",
-    "accuracy_factors": "What makes these calculations reliable"
-  },
-  "input_variables": [
-    {
-      "variable_name": "Current Revenue",
-      "description": "Monthly or annual revenue figure",
-      "industry_context": "How this compares to industry averages",
-      "impact_factor": "How this affects the overall calculation"
-    }
-  ],
-  "calculation_scenarios": [
-    {
-      "scenario_name": "Conservative Impact",
-      "description": "Minimum expected financial impact",
-      "calculation_method": "How this scenario is calculated",
-      "typical_results": "What users typically discover"
-    }
-  ],
-  "benchmark_analysis": {
-    "industry_standards": "Key performance benchmarks",
-    "gap_identification": "How to spot underperformance",
-    "competitive_context": "How users compare to top performers"
-  },
-  "improvement_roadmap": [
-    {
-      "metric": "Specific financial metric",
-      "current_typical": "What most people currently achieve",
-      "improvement_target": "Realistic improvement goal",
-      "tactics": ["Tactic 1", "Tactic 2", "Tactic 3"],
-      "financial_impact": "Dollar impact of improvement"
-    }
-  ]
-}`;
-
-    case 'action_plan':
-      return `${baseContext}
-
-${founderIntro}
-
-${valueStandards}
-
-CREATE A COMPLETE IMPLEMENTATION SYSTEM:
-
-This must be a step-by-step execution plan with everything needed for success.
-
-REQUIRED STRUCTURE:
-1. **Implementation Framework**: The systematic approach to execution
-2. **Phase Breakdown**: 4-6 phases with specific tasks and timelines
-3. **Tool Arsenal**: Templates, scripts, checklists for each phase
-4. **Success Metrics**: Exact KPIs to track with target numbers
-5. **Troubleshooting Guide**: Common obstacles and solutions
-6. **Acceleration Tactics**: How to get faster results
-
-CRITICAL REQUIREMENTS:
-- Every task must have exact steps and timelines
-- Include templates and tools for execution
-- Provide specific success metrics and checkpoints
-- Address common problems and solutions
-
-RETURN JSON IN THIS EXACT FORMAT:
-{
-  "founder_intro": "Personal introduction explaining why this system works and what results users will get",
-  "title_page": {
-    "title": "${outline.title}",
-    "subtitle": "Your Complete Step-by-Step Implementation System"
-  },
-  "introduction_page": {
-    "title": "Why Most People Fail (And How This System Prevents That)",
-    "content": "Explain the systematic approach and what makes it effective"
-  },
-  "implementation_framework": {
-    "methodology": "The systematic approach to execution",
-    "phase_strategy": "Why the phases are structured this way",
-    "success_factors": "What makes this system work"
-  },
-  "phase_breakdown": [
-    {
-      "phase_number": 1,
-      "phase_name": "Foundation Setup",
-      "timeline": "Days 1-7",
-      "objectives": ["Objective 1", "Objective 2"],
-      "tasks": [
-        {
-          "task_name": "Specific task",
-          "instructions": "Exact steps to complete",
-          "tools_needed": "Templates or tools provided",
-          "success_criteria": "How to know it's done correctly"
-        }
-      ],
-      "success_metrics": "What to measure and target numbers"
-    }
-  ],
-  "tool_arsenal": [
-    {
-      "tool_name": "Template Name",
-      "purpose": "What this tool accomplishes",
-      "usage_instructions": "How to use it effectively",
-      "customization_tips": "How to adapt it to specific needs"
-    }
-  ],
-  "troubleshooting_guide": [
-    {
-      "common_problem": "Specific obstacle users face",
-      "symptoms": "How to recognize this problem",
-      "root_cause": "Why this happens",
-      "solution": "Exact steps to fix it"
-    }
-  ]
-}`;
-
-    case 'benchmark_report':
-      return `${baseContext}
-
-${founderIntro}
-
-${valueStandards}
-
-CREATE A COMPETITIVE INTELLIGENCE SYSTEM:
-
-This must provide insider competitive analysis that reveals specific performance gaps and improvement opportunities.
-
-REQUIRED STRUCTURE:
-1. **Benchmark Framework**: The methodology for competitive analysis
-2. **Performance Matrix**: 15+ key metrics vs industry leaders
-3. **Gap Analysis**: Specific areas of underperformance with impact
-4. **Competitive Intelligence**: What top performers do differently
-5. **Improvement Priorities**: Which gaps to fix first for maximum ROI
-6. **Implementation Tactics**: Specific strategies to close each gap
-
-CRITICAL REQUIREMENTS:
-- Include specific industry data and competitor insights
-- Quantify the impact of each performance gap
-- Provide tactical strategies for improvement
-- Show ROI potential for each improvement area
-
-RETURN JSON IN THIS EXACT FORMAT:
-{
-  "founder_intro": "Personal introduction explaining the competitive intelligence and insights users will get",
-  "title_page": {
-    "title": "${outline.title}",
-    "subtitle": "Industry Intelligence That Reveals Where You're Falling Behind"
-  },
-  "introduction_page": {
-    "title": "The Competitive Intelligence You Need",
-    "content": "Explain the insider analysis and what competitive advantages they'll discover"
-  },
-  "benchmark_framework": {
-    "methodology": "How this competitive analysis is conducted",
-    "data_sources": "Where the benchmark data comes from",
-    "reliability_factors": "What makes this analysis accurate"
-  },
-  "performance_matrix": [
-    {
-      "metric_name": "Conversion Rate",
-      "your_typical": "What most users currently achieve",
-      "industry_average": "Industry standard performance",
-      "top_performer": "What leaders achieve",
-      "gap_impact": "Financial impact of the performance gap",
-      "improvement_potential": "Realistic improvement target"
-    }
-  ],
-  "competitive_intelligence": [
-    {
-      "performance_area": "Specific business area",
-      "what_leaders_do": "Specific tactics top performers use",
-      "why_it_works": "The strategic reasoning behind it",
-      "implementation_complexity": "How difficult it is to implement",
-      "impact_timeline": "How quickly you see results"
-    }
-  ],
-  "gap_analysis": {
-    "priority_gaps": "Which performance gaps cost the most",
-    "quick_wins": "Easy improvements with high impact",
-    "strategic_initiatives": "Longer-term competitive advantages"
-  },
-  "improvement_roadmap": [
-    {
-      "gap_area": "Specific underperformance area",
-      "current_impact": "What the gap is costing you",
-      "improvement_tactics": ["Tactic 1", "Tactic 2", "Tactic 3"],
-      "implementation_timeline": "How long to see results",
-      "expected_roi": "Financial return on improvement"
-    }
-  ]
-}`;
-
-    case 'opportunity_finder':
-      return `${baseContext}
-
-${founderIntro}
-
-${valueStandards}
-
-CREATE AN OPPORTUNITY ANALYSIS SYSTEM:
-
-This must systematically reveal untapped revenue streams and growth opportunities with specific implementation plans.
-
-REQUIRED STRUCTURE:
-1. **Opportunity Framework**: The methodology for finding hidden opportunities
-2. **Analysis Categories**: 7-10 business areas to analyze for opportunities
-3. **Value Quantification**: How to calculate potential from each opportunity
-4. **Effort vs Impact Matrix**: Priority scoring for opportunity selection
-5. **Implementation Roadmaps**: Step-by-step plans for top opportunities
-6. **Risk Assessment**: Success probability and mitigation strategies
-
-CRITICAL REQUIREMENTS:
-- Quantify potential value for each opportunity type
-- Score opportunities by effort vs impact
-- Provide detailed implementation plans for top opportunities
-- Include risk assessment and success probability
-
-RETURN JSON IN THIS EXACT FORMAT:
-{
-  "founder_intro": "Personal introduction explaining the opportunity analysis system and potential discoveries",
-  "title_page": {
-    "title": "${outline.title}",
-    "subtitle": "Systematic Analysis to Uncover Hidden Revenue Opportunities"
-  },
-  "introduction_page": {
-    "title": "The Opportunities Hiding in Your Business",
-    "content": "Explain the systematic approach and what revenue opportunities they'll discover"
-  },
-  "opportunity_framework": {
-    "methodology": "The systematic approach to opportunity identification",
-    "analysis_process": "How to evaluate each potential opportunity",
-    "validation_criteria": "How to determine if an opportunity is viable"
-  },
-  "analysis_categories": [
-    {
-      "category_name": "Revenue Stream Diversification",
-      "description": "New ways to monetize existing assets",
-      "analysis_questions": ["Question 1", "Question 2", "Question 3"],
-      "opportunity_types": ["Opportunity type 1", "Opportunity type 2"],
-      "typical_value_range": "$X,000 - $XX,000 additional monthly revenue"
-    }
-  ],
-  "value_quantification": {
-    "calculation_method": "How to estimate opportunity value",
-    "variable_factors": "Key factors that affect potential value",
-    "validation_process": "How to test opportunity assumptions"
-  },
-  "priority_matrix": [
-    {
-      "opportunity_name": "Specific opportunity",
-      "effort_score": "Low/Medium/High effort required",
-      "impact_score": "Expected revenue/savings impact",
-      "risk_level": "Implementation risk assessment",
-      "timeline": "Expected time to results",
-      "priority_ranking": "Overall priority score"
-    }
-  ],
-  "implementation_roadmaps": [
-    {
-      "opportunity": "Top priority opportunity",
-      "implementation_phases": [
-        {
-          "phase": "Phase 1: Validation",
-          "timeline": "Weeks 1-2",
-          "tasks": ["Task 1", "Task 2", "Task 3"],
-          "success_criteria": "How to know you're ready for next phase"
-        }
-      ],
-      "resource_requirements": "What you need to implement",
-      "success_metrics": "How to measure progress and success"
-    }
-  ]
-}`;
-
-    case 'pdf':
-      return `${baseContext}
-
-${founderIntro}
-
-${valueStandards}
-
-CREATE A COMPREHENSIVE IMPLEMENTATION SYSTEM:
-
-This must be a complete, plug-and-play system with everything needed for success.
-
-REQUIRED STRUCTURE:
-1. **System Overview**: The complete process from start to finish
-2. **Implementation Phases**: 3-5 phases with exact steps and timelines
-3. **Tool Arsenal**: 15+ templates, scripts, checklists, and frameworks
-4. **Case Studies**: 3+ detailed examples with specific results
-5. **Troubleshooting Guide**: Common problems and exact solutions
-6. **Optimization Strategies**: How to improve results over time
-
-CRITICAL REQUIREMENTS:
-- Include step-by-step processes with exact instructions
-- Provide comprehensive tool kit with templates and scripts
-- Include detailed case studies with measurable results
-- Cover common mistakes and how to avoid them
-
-RETURN JSON IN THIS EXACT FORMAT:
-{
-  "founder_intro": "Personal introduction explaining the complete system and guaranteed results users will get",
-  "title_page": {
-    "title": "${outline.title}",
-    "subtitle": "The Complete System with Templates, Tools, and Case Studies"
-  },
-  "introduction_page": {
-    "title": "Why This System Eliminates All Guesswork",
-    "content": "Explain the comprehensive approach and what complete results they'll achieve"
-  },
-  "system_overview": {
-    "methodology": "The complete process from start to finish",
-    "phase_structure": "Why the system is organized this way",
-    "success_factors": "What makes this system foolproof"
-  },
-  "implementation_phases": [
-    {
-      "phase_number": 1,
-      "phase_name": "Foundation & Setup",
-      "duration": "Days 1-10",
-      "objectives": ["Objective 1", "Objective 2", "Objective 3"],
-      "step_by_step_process": [
-        {
-          "step_number": 1,
-          "step_title": "Specific action step",
-          "detailed_instructions": "Exact instructions with specifics",
-          "tools_provided": "Templates or tools included",
-          "success_checkpoint": "How to know it's completed correctly",
-          "common_mistakes": "What to avoid"
-        }
-      ],
-      "phase_deliverables": "What you'll have completed",
-      "success_metrics": "How to measure phase completion"
-    }
-  ],
-  "tool_arsenal": [
-    {
-      "tool_category": "Templates",
-      "tools": [
-        {
-          "tool_name": "Specific template name",
-          "purpose": "What this template accomplishes",
-          "usage_instructions": "How to customize and use it",
-          "success_tips": "How to get best results"
-        }
-      ]
-    }
-  ],
-  "case_studies": [
-    {
-      "case_title": "Specific industry/situation example",
-      "background": "Initial situation and challenges",
-      "implementation": "How they applied the system",
-      "specific_results": "Exact measurable outcomes",
-      "timeline": "How long it took to see results",
-      "key_lessons": "What made the difference"
-    }
-  ],
-  "troubleshooting_guide": [
-    {
-      "problem_category": "Common obstacle type",
-      "specific_problems": [
-        {
-          "problem": "Specific issue users face",
-          "symptoms": "How to recognize this problem",
-          "root_causes": "Why this happens",
-          "solution_steps": "Exact steps to fix it",
-          "prevention": "How to avoid it in the future"
-        }
-      ]
-    }
-  ],
-  "optimization_strategies": {
-    "performance_tracking": "What metrics to monitor",
-    "improvement_tactics": "How to enhance results over time",
-    "advanced_techniques": "Next-level strategies for power users"
-  }
-}`;
-
-    default:
-      throw new Error(`Unknown format: ${format}`);
-  }
-}
-
-// Helper function to format layout-focused section content into readable format
-function formatLayoutSectionContent(section: any): string {
-  switch (section.type) {
-    case 'checklist':
-      let checklistContent = '';
-      section.content.phases.forEach((phase: any) => {
-        checklistContent += `\n${phase.phase_title}\n`;
-        phase.items.forEach((item: string) => {
-          checklistContent += `${item}\n`;
-        });
-      });
-      return checklistContent;
-    
-    case 'scripts':
-      return section.content.scenarios.map((scenario: any, index: number) => {
-        return `Scenario ${index + 1}:\nWhen they say: "${scenario.trigger}"\nYou say: "${scenario.response}"\nStrategy: ${scenario.explanation}`;
-      }).join('\n\n');
-    
-    case 'mistakes_to_avoid':
-      return section.content.mistakes.map((mistake: any, index: number) => {
-        return `${index + 1}. The Mistake: ${mistake.mistake}\nThe Solution: ${mistake.solution}`;
-      }).join('\n\n');
-    
-    case 'pros_and_cons_list':
-      return section.content.items.map((item: any, index: number) => {
-        return `${index + 1}. ${item.method_name}\n\nPros: ${item.pros}\n\nCons: ${item.cons}`;
-      }).join('\n\n');
-    
-    case 'step_by_step_guide':
-      return section.content.steps.map((step: any, index: number) => {
-        return `${step.step_title}\n${step.description}`;
-      }).join('\n\n');
-    
-    case 'template':
-      return section.content.template || section.content;
-    
-    default:
-      return section.content || 'Content not available';
-  }
-}
-
-export async function generateContentOutline(input: CampaignInput, selected: LeadMagnetConcept): Promise<ContentOutline> {
-  const client = getOpenAIClient();
-  
-  try {
-    const formatSpecificPrompt = getFormatSpecificOutlinePrompt(input.selected_format || 'pdf', input, selected);
-    
-    const res = await client.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        { role: 'system', content: 'You are a content strategist. Create detailed content outlines that provide tactical value and clear implementation steps.' },
-        { role: 'user', content: formatSpecificPrompt }
-      ],
-      temperature: 0.7,
-      max_tokens: 2000
-    });
-
-    if (!res.choices?.[0]?.message?.content) {
-      throw new Error('Empty response received from OpenAI API');
-    }
-
-    const content = res.choices[0].message.content;
-    
-    // Clean the content to handle markdown-wrapped JSON
-    const cleanedContent = cleanJsonResponse(content);
-    console.log('🎯 OpenAI Outline Response (cleaned):', cleanedContent);
-    const parsed = JSON.parse(cleanedContent);
-
-    // Validate the response structure
-    if (!parsed.title || !parsed.introduction || !Array.isArray(parsed.core_points)) {
-      throw new Error('Invalid response format from OpenAI API');
-    }
-
-    return {
-      title: parsed.title,
-      introduction: parsed.introduction,
-      core_points: parsed.core_points,
-      sections: parsed.sections || [],
-      estimated_length: parsed.estimated_length || '5-10 minutes',
-      target_audience: parsed.target_audience || input.target_audience,
-      main_value_proposition: parsed.main_value_proposition || parsed.value_proposition || ''
-    };
-  } catch (err: any) {
-    console.error('OpenAI API Error:', {
-      message: err.message,
-      status: err.status,
-      code: err.code,
-      type: err.type
-    });
-
-    if (err.code === 'rate_limit_exceeded') {
-      throw new Error('Rate limit exceeded. Please wait a moment and try again.');
-    } else if (err.code === 'invalid_api_key') {
-      throw new Error('Invalid OpenAI API key. Please check your .env file.');
-    } else if (err.message.includes('timeout')) {
-      throw new Error('Request timed out while generating content outline. Please try again.');
-    } else if (err.message.includes('JSON') || err.message.includes('Unexpected token')) {
-      console.error('JSON parsing error. Original content:', 'No content available');
-      throw new Error('Failed to process the content outline. Please try again.');
-    }
-
-    throw new Error(`Failed to generate content outline: ${err.message}`);
-  }
-}
-
 export async function generateLeadMagnetContent(input: {
   selected_format: LeadMagnetFormat;
   name: string;
@@ -1398,64 +757,826 @@ IMPORTANT: Follow the exact JSON format specified in the format-specific prompt 
   }
 }
 
+function getFormatSpecificPdfPrompt(format: string, input: CampaignInput, outline: ContentOutline, customization?: PDFCustomization): string {
+  const baseContext = `
+User Context:
+- Niche: ${input.niche}
+- Target Audience: ${input.target_audience}
+- Tone: ${input.tone}
+- Brand Name: ${input.brand_name}
+- Position/Title: ${input.position || ''}
+- Selected Concept: A lead magnet about ${outline.title}.
+- Format: ${format}
+`;
+
+  const founderIntro = `
+PERSONALIZED FOUNDER INTRODUCTION:
+Before the content, write a short, authentic introduction in the founder's voice. Use these details:
+- Name: ${input.name}
+- Position/Title: ${input.position || ''}
+- Brand/company: ${input.brand_name}
+- Customer problem: ${input.problem_statement}
+- Desired outcome: ${input.desired_outcome}
+Make it personal and credible - explain WHY you created this and what specific results the reader will get.
+`;
+
+  const valueStandards = `
+EXTREME VALUE REQUIREMENTS (NON-NEGOTIABLE):
+
+1. TACTICAL DEPTH: Every section must provide HOW-TO, not just WHAT-TO
+2. IMPLEMENTABLE TOOLS: Include templates, scripts, checklists, frameworks
+3. SPECIFIC RESULTS: Use exact numbers, timelines, and success metrics
+4. CASE STUDIES: Include real examples with specific outcomes
+5. TROUBLESHOOTING: Address common obstacles and solutions
+6. NO FLUFF: Every paragraph must provide actionable value
+
+❌ FORBIDDEN: Generic advice, theory without application, vague percentages
+✅ REQUIRED: Specific tactics, exact steps, measurable outcomes
+`;
+
+  switch (format) {
+    case 'interactive_quiz':
+      return `${baseContext}
+
+${founderIntro}
+
+${valueStandards}
+
+CREATE A PROFESSIONAL DIAGNOSTIC QUIZ SYSTEM:
+
+This must be a complete diagnostic tool that provides professional-grade insights and actionable solutions.
+
+REQUIRED STRUCTURE:
+1. **Diagnostic Framework**: Explain the methodology behind the questions
+2. **Question Bank**: 10-15 strategic questions that build on each other
+3. **Scoring System**: How answers combine to create accurate diagnosis
+4. **Result Categories**: 4-6 specific diagnosis types with solutions
+5. **Action Protocols**: Exact next steps for each diagnosis type
+6. **Success Tracking**: How to measure improvement
+
+CRITICAL REQUIREMENTS:
+- Questions must reveal ROOT CAUSES, not just symptoms
+- Each result category needs SPECIFIC action steps
+- Include success metrics and timelines
+- Provide troubleshooting for each diagnosis type
+
+RETURN JSON IN THIS EXACT FORMAT:
+{
+  "founder_intro": "Personal introduction explaining why you created this diagnostic and what results users will get",
+  "title_page": {
+    "title": "${outline.title}",
+    "subtitle": "A Professional-Grade Diagnostic Tool for [Specific Problem]"
+  },
+  "introduction_page": {
+    "title": "How This Diagnostic Works",
+    "content": "Explain the professional methodology and what insights they'll receive"
+  },
+  "quiz_content": {
+    "title": "Professional Diagnostic Assessment",
+    "questions": [
+      {
+        "question": "What is your biggest challenge with [specific problem area]?",
+        "options": ["Option A - Specific issue 1", "Option B - Specific issue 2", "Option C - Specific issue 3", "Option D - Something else"],
+        "explanation": "This reveals your primary pain point and helps categorize your situation"
+      },
+      {
+        "question": "How long have you been experiencing this challenge?",
+        "options": ["Less than 3 months", "3-6 months", "6-12 months", "Over a year"],
+        "explanation": "Duration helps determine the urgency and approach needed"
+      },
+      {
+        "question": "What have you tried to solve this problem?",
+        "options": ["Nothing yet", "Basic research", "Tried some solutions", "Multiple attempts with no success"],
+        "explanation": "Shows your experience level and what hasn't worked"
+      }
+    ],
+    "results": [
+      {
+        "category": "Beginner Level",
+        "description": "You're just starting to identify the problem",
+        "symptoms": ["Recently noticed the issue", "Limited knowledge", "Feeling overwhelmed"],
+        "action_steps": ["Step 1: Start with basics", "Step 2: Build foundation", "Step 3: Track progress"],
+        "timeline": "2-4 weeks to see initial improvement"
+      },
+      {
+        "category": "Intermediate Level", 
+        "description": "You understand the problem but need better solutions",
+        "symptoms": ["Tried some approaches", "Partial success", "Need more targeted help"],
+        "action_steps": ["Step 1: Refine approach", "Step 2: Implement advanced tactics", "Step 3: Optimize results"],
+        "timeline": "1-2 weeks to see improvement"
+      }
+    ]
+  },
+  "quiz_content": {
+    "title": "Professional Diagnostic Assessment",
+    "questions": [
+      {
+        "question": "What is your biggest challenge with [specific problem area]?",
+        "options": ["Option A - Specific issue 1", "Option B - Specific issue 2", "Option C - Specific issue 3", "Option D - Something else"],
+        "explanation": "This reveals your primary pain point and helps categorize your situation"
+      },
+      {
+        "question": "How long have you been experiencing this challenge?",
+        "options": ["Less than 3 months", "3-6 months", "6-12 months", "Over a year"],
+        "explanation": "Duration helps determine the urgency and approach needed"
+      },
+      {
+        "question": "What have you tried to solve this problem?",
+        "options": ["Nothing yet", "Basic research", "Tried some solutions", "Multiple attempts with no success"],
+        "explanation": "Shows your experience level and what hasn't worked"
+      }
+    ],
+    "results": [
+      {
+        "category": "Beginner Level",
+        "description": "You're just starting to identify the problem",
+        "symptoms": ["Recently noticed the issue", "Limited knowledge", "Feeling overwhelmed"],
+        "action_steps": ["Step 1: Start with basics", "Step 2: Build foundation", "Step 3: Track progress"],
+        "timeline": "2-4 weeks to see initial improvement"
+      },
+      {
+        "category": "Intermediate Level", 
+        "description": "You understand the problem but need better solutions",
+        "symptoms": ["Tried some approaches", "Partial success", "Need more targeted help"],
+        "action_steps": ["Step 1: Refine approach", "Step 2: Implement advanced tactics", "Step 3: Optimize results"],
+        "timeline": "1-2 weeks to see improvement"
+      }
+    ]
+  }
+}`;
+
+    case 'roi_calculator':
+      return `${baseContext}
+
+${founderIntro}
+
+${valueStandards}
+
+CREATE A FINANCIAL IMPACT CALCULATOR SYSTEM:
+
+This must be a comprehensive tool that reveals shocking financial insights and creates urgency.
+
+REQUIRED STRUCTURE:
+1. **Calculation Framework**: The methodology for financial analysis
+2. **Input Variables**: 8-12 key metrics with industry context
+3. **Calculation Matrix**: How variables combine for total impact
+4. **Scenario Analysis**: Conservative, realistic, and aggressive projections
+5. **Benchmark Comparison**: How user compares to industry leaders
+6. **Improvement Roadmap**: Specific tactics to improve each metric
+
+CRITICAL REQUIREMENTS:
+- Show exact dollar amounts, not vague percentages
+- Include opportunity cost of inaction
+- Provide industry benchmarks for context
+- Give specific improvement tactics for each metric
+
+RETURN JSON IN THIS EXACT FORMAT:
+{
+  "founder_intro": "Personal introduction explaining the financial impact this calculator reveals",
+  "title_page": {
+    "title": "${outline.title}",
+    "subtitle": "Discover the Exact Financial Impact of [Problem/Opportunity]"
+  },
+  "introduction_page": {
+    "title": "The Hidden Costs You're Not Calculating",
+    "content": "Explain why this financial analysis is crucial and what they'll discover"
+  },
+  "calculator_content": {
+    "title": "Financial Impact Calculator",
+    "input_fields": [
+      {
+        "field_name": "Current Revenue",
+        "field_type": "number",
+        "placeholder": "Enter your monthly revenue",
+        "description": "Your current monthly revenue in dollars",
+        "validation": "Must be a positive number"
+      },
+      {
+        "field_name": "Current Costs",
+        "field_type": "number", 
+        "placeholder": "Enter your monthly costs",
+        "description": "Your current monthly operating costs",
+        "validation": "Must be a positive number"
+      },
+      {
+        "field_name": "Growth Target",
+        "field_type": "number",
+        "placeholder": "Enter target growth %",
+        "description": "Your desired growth percentage",
+        "validation": "Must be between 1-500%"
+      }
+    ],
+    "calculation_categories": [
+      {
+        "category_name": "Revenue Impact",
+        "description": "How this affects your revenue potential",
+        "potential_result": "Shows exact dollar amounts based on your specific situation",
+        "calculation_details": [
+          "Current monthly revenue × growth target = potential increase",
+          "Industry benchmark comparison shows your position",
+          "Opportunity cost calculation reveals what you're missing"
+        ]
+      },
+      {
+        "category_name": "Cost Optimization", 
+        "description": "Potential cost savings and efficiency gains",
+        "potential_result": "Identifies specific areas where you can reduce costs",
+        "calculation_details": [
+          "Current costs vs industry average efficiency",
+          "Automation potential saves X hours per month",
+          "Process improvements could reduce costs by Y%"
+        ]
+      },
+      {
+        "category_name": "ROI Analysis",
+        "description": "Return on investment for proposed changes",
+        "potential_result": "Shows payback period and long-term value",
+        "calculation_details": [
+          "Investment required vs expected returns",
+          "Break-even timeline calculation", 
+          "5-year projection shows total impact"
+        ]
+      }
+    ]
+  },
+  "calculator_content": {
+    "title": "Financial Impact Calculator",
+    "input_fields": [
+      {
+        "field_name": "Current Revenue",
+        "field_type": "number",
+        "placeholder": "Enter your monthly revenue",
+        "description": "Your current monthly revenue in dollars",
+        "validation": "Must be a positive number"
+      },
+      {
+        "field_name": "Current Costs",
+        "field_type": "number", 
+        "placeholder": "Enter your monthly costs",
+        "description": "Your current monthly operating costs",
+        "validation": "Must be a positive number"
+      },
+      {
+        "field_name": "Growth Target",
+        "field_type": "number",
+        "placeholder": "Enter target growth %",
+        "description": "Your desired growth percentage",
+        "validation": "Must be between 1-500%"
+      }
+    ],
+    "calculation_categories": [
+      {
+        "category_name": "Revenue Impact",
+        "description": "How this affects your revenue potential",
+        "potential_result": "Shows exact dollar amounts based on your specific situation",
+        "calculation_details": [
+          "Current monthly revenue × growth target = potential increase",
+          "Industry benchmark comparison shows your position",
+          "Opportunity cost calculation reveals what you're missing"
+        ]
+      },
+      {
+        "category_name": "Cost Optimization", 
+        "description": "Potential cost savings and efficiency gains",
+        "potential_result": "Identifies specific areas where you can reduce costs",
+        "calculation_details": [
+          "Current costs vs industry average efficiency",
+          "Automation potential saves X hours per month",
+          "Process improvements could reduce costs by Y%"
+        ]
+      },
+      {
+        "category_name": "ROI Analysis",
+        "description": "Return on investment for proposed changes",
+        "potential_result": "Shows payback period and long-term value",
+        "calculation_details": [
+          "Investment required vs expected returns",
+          "Break-even timeline calculation", 
+          "5-year projection shows total impact"
+        ]
+      }
+    ]
+  }
+}`;
+
+    case 'action_plan':
+      return `${baseContext}
+
+${founderIntro}
+
+${valueStandards}
+
+CREATE A COMPLETE IMPLEMENTATION SYSTEM:
+
+This must be a step-by-step execution plan with everything needed for success.
+
+REQUIRED STRUCTURE:
+1. **Implementation Framework**: The systematic approach to execution
+2. **Phase Breakdown**: 4-6 phases with specific tasks and timelines
+3. **Tool Arsenal**: Templates, scripts, checklists for each phase
+4. **Success Metrics**: Exact KPIs to track with target numbers
+5. **Troubleshooting Guide**: Common obstacles and solutions
+6. **Acceleration Tactics**: How to get faster results
+
+CRITICAL REQUIREMENTS:
+- Every task must have exact steps and timelines
+- Include templates and tools for execution
+- Provide specific success metrics and checkpoints
+- Address common problems and solutions
+
+RETURN JSON IN THIS EXACT FORMAT:
+{
+  "founder_intro": "Personal introduction explaining why this system works and what results users will get",
+  "title_page": {
+    "title": "${outline.title}",
+    "subtitle": "Your Complete Step-by-Step Implementation System"
+  },
+  "introduction_page": {
+    "title": "Why Most People Fail (And How This System Prevents That)",
+    "content": "Explain the systematic approach and what makes it effective"
+  },
+  "action_plan_content": {
+    "title": "Your Step-by-Step Implementation System",
+    "steps": [
+      {
+        "step_number": 1,
+        "step_title": "Foundation Setup (Days 1-7)",
+        "description": "Build the essential foundation for success",
+        "tasks": ["Set up your workspace", "Gather required tools", "Create your tracking system"],
+        "deliverables": ["Organized workspace", "Tool checklist completed", "Progress tracker ready"],
+        "success_metrics": "All foundation elements in place and tested"
+      },
+      {
+        "step_number": 2,
+        "step_title": "Implementation Phase (Days 8-21)",
+        "description": "Execute the core strategies systematically",
+        "tasks": ["Begin daily implementation", "Track key metrics", "Adjust approach based on results"],
+        "deliverables": ["Daily progress logs", "Performance metrics", "Optimization notes"],
+        "success_metrics": "Consistent daily execution with measurable progress"
+      },
+      {
+        "step_number": 3,
+        "step_title": "Optimization & Scale (Days 22-30)",
+        "description": "Refine your approach and scale successful elements",
+        "tasks": ["Analyze performance data", "Optimize successful strategies", "Scale what works"],
+        "deliverables": ["Performance analysis", "Optimization plan", "Scaling strategy"],
+        "success_metrics": "Improved results and sustainable system in place"
+      }
+    ]
+  },
+  "action_plan_content": {
+    "title": "Your Step-by-Step Implementation System",
+    "steps": [
+      {
+        "step_number": 1,
+        "step_title": "Foundation Setup (Days 1-7)",
+        "description": "Build the essential foundation for success",
+        "tasks": ["Set up your workspace", "Gather required tools", "Create your tracking system"],
+        "deliverables": ["Organized workspace", "Tool checklist completed", "Progress tracker ready"],
+        "success_metrics": "All foundation elements in place and tested"
+      },
+      {
+        "step_number": 2,
+        "step_title": "Implementation Phase (Days 8-21)",
+        "description": "Execute the core strategies systematically",
+        "tasks": ["Begin daily implementation", "Track key metrics", "Adjust approach based on results"],
+        "deliverables": ["Daily progress logs", "Performance metrics", "Optimization notes"],
+        "success_metrics": "Consistent daily execution with measurable progress"
+      },
+      {
+        "step_number": 3,
+        "step_title": "Optimization & Scale (Days 22-30)",
+        "description": "Refine your approach and scale successful elements",
+        "tasks": ["Analyze performance data", "Optimize successful strategies", "Scale what works"],
+        "deliverables": ["Performance analysis", "Optimization plan", "Scaling strategy"],
+        "success_metrics": "Improved results and sustainable system in place"
+      }
+    ]
+  }
+}`;
+
+    case 'benchmark_report':
+      return `${baseContext}
+
+${founderIntro}
+
+${valueStandards}
+
+CREATE A COMPETITIVE INTELLIGENCE SYSTEM:
+
+This must provide insider competitive analysis that reveals specific performance gaps and improvement opportunities.
+
+REQUIRED STRUCTURE:
+1. **Benchmark Framework**: The methodology for competitive analysis
+2. **Performance Matrix**: 15+ key metrics vs industry leaders
+3. **Gap Analysis**: Specific areas of underperformance with impact
+4. **Competitive Intelligence**: What top performers do differently
+5. **Improvement Priorities**: Which gaps to fix first for maximum ROI
+6. **Implementation Tactics**: Specific strategies to close each gap
+
+CRITICAL REQUIREMENTS:
+- Include specific industry data and competitor insights
+- Quantify the impact of each performance gap
+- Provide tactical strategies for improvement
+- Show ROI potential for each improvement area
+
+RETURN JSON IN THIS EXACT FORMAT:
+{
+  "founder_intro": "Personal introduction explaining the competitive intelligence and insights users will get",
+  "title_page": {
+    "title": "${outline.title}",
+    "subtitle": "Industry Intelligence That Reveals Where You're Falling Behind"
+  },
+  "introduction_page": {
+    "title": "The Competitive Intelligence You Need",
+    "content": "Explain the insider analysis and what competitive advantages they'll discover"
+  },
+  "benchmark_content": {
+    "title": "Industry Performance Analysis",
+    "metrics": [
+      {
+        "metric_name": "Conversion Rate",
+        "description": "How your conversion rate compares to industry standards",
+        "your_performance": "Your current conversion rate",
+        "industry_average": "Industry standard: 2.3%",
+        "top_performer": "Top 10%: 4.8%",
+        "gap_analysis": "You're performing 15% below industry average",
+        "improvement_potential": "Could increase revenue by $X with optimization"
+      },
+      {
+        "metric_name": "Customer Acquisition Cost",
+        "description": "Your CAC vs industry benchmarks",
+        "your_performance": "Your current CAC",
+        "industry_average": "Industry standard: $127",
+        "top_performer": "Top 10%: $89",
+        "gap_analysis": "Your costs are 23% higher than average",
+        "improvement_potential": "Could save $X per customer with optimization"
+      },
+      {
+        "metric_name": "Customer Lifetime Value",
+        "description": "How much value you extract from each customer",
+        "your_performance": "Your current CLV",
+        "industry_average": "Industry standard: $485",
+        "top_performer": "Top 10%: $742",
+        "gap_analysis": "Missing $X in potential value per customer",
+        "improvement_potential": "Could increase CLV by 35% with better retention"
+      }
+    ]
+
+}`;
+
+    case 'opportunity_finder':
+      return `${baseContext}
+
+${founderIntro}
+
+${valueStandards}
+
+CREATE AN OPPORTUNITY ANALYSIS SYSTEM:
+
+This must systematically reveal untapped revenue streams and growth opportunities with specific implementation plans.
+
+REQUIRED STRUCTURE:
+1. **Opportunity Framework**: The methodology for finding hidden opportunities
+2. **Analysis Categories**: 7-10 business areas to analyze for opportunities
+3. **Value Quantification**: How to calculate potential from each opportunity
+4. **Effort vs Impact Matrix**: Priority scoring for opportunity selection
+5. **Implementation Roadmaps**: Step-by-step plans for top opportunities
+6. **Risk Assessment**: Success probability and mitigation strategies
+
+CRITICAL REQUIREMENTS:
+- Quantify potential value for each opportunity type
+- Score opportunities by effort vs impact
+- Provide detailed implementation plans for top opportunities
+- Include risk assessment and success probability
+
+RETURN JSON IN THIS EXACT FORMAT:
+{
+  "founder_intro": "Personal introduction explaining the opportunity analysis system and potential discoveries",
+  "title_page": {
+    "title": "${outline.title}",
+    "subtitle": "Systematic Analysis to Uncover Hidden Revenue Opportunities"
+  },
+  "introduction_page": {
+    "title": "The Opportunities Hiding in Your Business",
+    "content": "Explain the systematic approach and what revenue opportunities they'll discover"
+  },
+  "opportunity_content": {
+    "title": "Hidden Revenue Opportunity Analysis",
+    "categories": [
+      {
+        "category_name": "Revenue Stream Diversification",
+        "description": "New ways to monetize your existing assets and expertise",
+        "potential_value": "$2,500 - $8,000 additional monthly revenue",
+        "effort_level": "Medium",
+        "opportunities": [
+          "Create digital products from your expertise",
+          "Develop affiliate partnerships", 
+          "Launch subscription-based services"
+        ],
+        "implementation_steps": ["Audit existing assets", "Identify monetization gaps", "Test new revenue streams"],
+        "success_metrics": "New revenue streams generating $X within 90 days"
+      },
+      {
+        "category_name": "Customer Value Optimization",
+        "description": "Increase revenue from existing customers",
+        "potential_value": "$1,800 - $5,200 additional monthly revenue",
+        "effort_level": "Low",
+        "opportunities": [
+          "Upsell complementary services",
+          "Create premium service tiers",
+          "Implement customer retention programs"
+        ],
+        "implementation_steps": ["Analyze customer behavior", "Design upsell sequences", "Launch retention campaigns"],
+        "success_metrics": "Customer lifetime value increased by 25%"
+      },
+      {
+        "category_name": "Market Expansion",
+        "description": "Reach new customer segments and markets",
+        "potential_value": "$3,200 - $12,000 additional monthly revenue",
+        "effort_level": "High",
+        "opportunities": [
+          "Target adjacent market segments",
+          "Expand to new geographic markets",
+          "Develop B2B offerings from B2C products"
+        ],
+        "implementation_steps": ["Research new markets", "Adapt offerings", "Launch targeted campaigns"],
+        "success_metrics": "New market segments contributing 20% of revenue"
+      }
+    ]
+  },
+  "opportunity_content": {
+    "title": "Hidden Revenue Opportunity Analysis",
+    "categories": [
+      {
+        "category_name": "Revenue Stream Diversification",
+        "description": "New ways to monetize your existing assets and expertise",
+        "potential_value": "$2,500 - $8,000 additional monthly revenue",
+        "effort_level": "Medium",
+        "opportunities": [
+          "Create digital products from your expertise",
+          "Develop affiliate partnerships", 
+          "Launch subscription-based services"
+        ],
+        "implementation_steps": ["Audit existing assets", "Identify monetization gaps", "Test new revenue streams"],
+        "success_metrics": "New revenue streams generating $X within 90 days"
+      },
+      {
+        "category_name": "Customer Value Optimization",
+        "description": "Increase revenue from existing customers",
+        "potential_value": "$1,800 - $5,200 additional monthly revenue",
+        "effort_level": "Low",
+        "opportunities": [
+          "Upsell complementary services",
+          "Create premium service tiers",
+          "Implement customer retention programs"
+        ],
+        "implementation_steps": ["Analyze customer behavior", "Design upsell sequences", "Launch retention campaigns"],
+        "success_metrics": "Customer lifetime value increased by 25%"
+      },
+      {
+        "category_name": "Market Expansion",
+        "description": "Reach new customer segments and markets",
+        "potential_value": "$3,200 - $12,000 additional monthly revenue",
+        "effort_level": "High",
+        "opportunities": [
+          "Target adjacent market segments",
+          "Expand to new geographic markets",
+          "Develop B2B offerings from B2C products"
+        ],
+        "implementation_steps": ["Research new markets", "Adapt offerings", "Launch targeted campaigns"],
+        "success_metrics": "New market segments contributing 20% of revenue"
+      }
+    ]
+}
+}`;
+
+    case 'pdf':
+      return `${baseContext}
+
+${founderIntro}
+
+${valueStandards}
+
+GENERATE CONTENT ENTIRELY FROM THE OUTLINE:
+
+Create comprehensive, actionable content based ONLY on the outline structure. Do NOT use any predefined framework, template, or generic structure.
+
+OUTLINE DETAILS:
+- Title: ${outline.title}
+- Introduction: ${outline.introduction}
+- Core Points: ${outline.core_points?.join(', ') || 'Not specified'}
+- Main Sections: ${outline.sections?.map(s => s.title).join(', ') || 'Not specified'}
+
+CRITICAL REQUIREMENTS:
+- Generate content that directly addresses the outline structure
+- Create sections based on the outline sections, not predefined frameworks
+- Provide specific, actionable content based on the outline
+- Make everything specific to the topic and audience
+- Do NOT use any predefined section titles or structures
+
+RETURN JSON IN THIS EXACT FORMAT:
+{
+  "structured_content": {
+    "title_page": {
+      "title": "${outline.title}",
+      "subtitle": "A comprehensive guide to help you achieve your goals"
+    },
+    "introduction": "Write a compelling introduction that explains the specific problem this guide solves and what results users will achieve. Make it personal and credible.",
+    "toolkit_sections": [
+      {
+        "title": "[Generate section title based on outline]",
+        "type": "pros_and_cons_list",
+        "content": {
+          "items": [
+            {
+              "method_name": "[Generate specific method based on outline]",
+              "pros": "• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]",
+              "cons": "• [Specific challenge based on outline]\n• [Specific challenge based on outline]\n• [Specific challenge based on outline]"
+            },
+            {
+              "method_name": "[Generate specific method based on outline]",
+              "pros": "• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]",
+              "cons": "• [Specific challenge based on outline]\n• [Specific challenge based on outline]\n• [Specific challenge based on outline]"
+            },
+            {
+              "method_name": "[Generate specific method based on outline]",
+              "pros": "• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]\n• [Specific benefit based on outline]",
+              "cons": "• [Specific challenge based on outline]\n• [Specific challenge based on outline]\n• [Specific challenge based on outline]"
+            }
+          ]
+        }
+      },
+      {
+        "title": "[Generate section title based on outline]",
+        "type": "checklist",
+        "content": {
+          "phases": [
+            {
+              "phase_title": "[Generate phase title based on outline]",
+              "items": [
+                "[Generate specific action based on outline]",
+                "[Generate specific action based on outline]",
+                "[Generate specific action based on outline]",
+                "[Generate specific action based on outline]"
+              ]
+            },
+            {
+              "phase_title": "[Generate phase title based on outline]",
+              "items": [
+                "[Generate specific action based on outline]",
+                "[Generate specific action based on outline]",
+                "[Generate specific action based on outline]",
+                "[Generate specific action based on outline]"
+              ]
+            },
+            {
+              "phase_title": "[Generate phase title based on outline]",
+              "items": [
+                "[Generate specific action based on outline]",
+                "[Generate specific action based on outline]",
+                "[Generate specific action based on outline]",
+                "[Generate specific action based on outline]"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "title": "[Generate section title based on outline]",
+        "type": "scripts",
+        "content": {
+          "scenarios": [
+            {
+              "trigger": "[Generate specific scenario based on outline topic]",
+              "response": "You say: [Generate specific response based on outline]",
+              "explanation": "This works because [Generate specific explanation based on outline]"
+            },
+            {
+              "trigger": "[Generate specific scenario based on outline topic]",
+              "response": "You say: [Generate specific response based on outline]",
+              "explanation": "This approach [Generate specific explanation based on outline]"
+            },
+            {
+              "trigger": "[Generate specific scenario based on outline topic]",
+              "response": "You say: [Generate specific response based on outline]",
+              "explanation": "This converts because [Generate specific explanation based on outline]"
+            }
+          ]
+        }
+      }
+    ],
+    "cta": "Ready to implement these strategies? Download your complete guide now."
+  }
+}`;
+
+    default:
+      throw new Error(`Unknown format: ${format}`);
+  }
+}
+
+// Helper function to format layout-focused section content into readable format
+function formatLayoutSectionContent(section: any): string {
+  switch (section.type) {
+    case 'checklist':
+      let checklistContent = '';
+      section.content.phases.forEach((phase: any) => {
+        checklistContent += `\n${phase.phase_title}\n`;
+        phase.items.forEach((item: string) => {
+          checklistContent += `${item}\n`;
+        });
+      });
+      return checklistContent;
+    
+    case 'scripts':
+      return section.content.scenarios.map((scenario: any, index: number) => {
+        return `Scenario ${index + 1}:\nWhen they say: "${scenario.trigger}"\nYou say: "${scenario.response}"\nStrategy: ${scenario.explanation}`;
+      }).join('\n\n');
+    
+    case 'mistakes_to_avoid':
+      return section.content.mistakes.map((mistake: any, index: number) => {
+        return `${index + 1}. The Mistake: ${mistake.mistake}\nThe Solution: ${mistake.solution}`;
+      }).join('\n\n');
+    
+    case 'pros_and_cons_list':
+      return section.content.items.map((item: any, index: number) => {
+        return `${index + 1}. ${item.method_name}\n\nPros: ${item.pros}\n\nCons: ${item.cons}`;
+      }).join('\n\n');
+    
+    case 'step_by_step_guide':
+      return section.content.steps.map((step: any, index: number) => {
+        return `${step.step_title}\n${step.description}`;
+      }).join('\n\n');
+    
+    case 'template':
+      return section.content.template || section.content;
+    
+    default:
+      return section.content || 'Content not available';
+  }
+}
+
 export async function generateLandingPageCopy(input: CampaignInput, outline: ContentOutline): Promise<LandingPageCopy> {
   const client = getOpenAIClient();
   let content = '';
 
   try {
-    const prompt = `You are a conversion copywriter. Create compelling landing page copy for a lead magnet.
+    const prompt = `You are a direct-response copywriter. Your task is to create high-converting copy for a landing page to promote a lead magnet.
 
-LEAD MAGNET DETAILS:
+Lead Magnet Details:
 - Title: ${outline.title}
-- Main Benefit: ${outline.introduction}
+- Core Points: ${JSON.stringify(outline.core_points, null, 2)}
 - Target Audience: ${input.target_audience}
-- Brand Name: ${input.brand_name}
+- Brand: ${input.brand_name}
 - Tone: ${input.tone}
 
 INSTRUCTIONS:
-Create high-converting landing page copy that:
-1. Grabs attention with a compelling headline
-2. Builds desire with benefit-focused subheadline
-3. Includes 3-4 specific benefit bullets
-4. Has a clear, action-oriented CTA button
-5. Matches the brand's tone: ${input.tone}
+1. Headline: Create a compelling, benefit-focused headline (under 10 words)
+2. Subheadline: Write a clear subheadline that expands on the headline (15-25 words)
+3. Benefit Bullets: Convert the core points into 3-4 powerful benefit statements (each 10-15 words)
+4. CTA Button: Create a strong, action-oriented call-to-action (2-5 words)
+5. Example: Add a real-life example or micro-case study (1-2 sentences) showing the transformation or benefit.
+6. Template: If possible, include a plug-and-play template or swipe file for the user to use immediately.
+
+IMPORTANT:
+- Focus on the transformation the user will experience
+- Use clear, concise, actionable language—avoid generic advice
+- Match the tone: ${input.tone}
+- Include a sense of urgency or exclusivity
+- Make it scannable and easy to read
 
 Return JSON in this exact format:
 {
-  "headline": "Compelling headline that addresses the main pain point",
-  "subheadline": "Benefit-focused subheadline that builds desire",
+  "headline": "Compelling headline here...",
+  "subheadline": "Clear subheadline that expands on the headline here...",
   "benefit_bullets": [
-    "Specific benefit 1 with measurable outcome",
-    "Specific benefit 2 with measurable outcome", 
-    "Specific benefit 3 with measurable outcome",
-    "Specific benefit 4 with measurable outcome"
+    "First compelling benefit...",
+    "Second compelling benefit...",
+    "Third compelling benefit..."
   ],
-  "cta_button_text": "Action-oriented button text"
+  "cta_button_text": "Get Instant Access",
+  "example": "A real-life example or micro-case study (1-2 sentences)",
+  "template": "A plug-and-play template or swipe file (if applicable)"
 }`;
 
     const res = await client.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
-        {
-          role: 'system',
-          content: 'You are a conversion copywriter who creates high-converting landing page copy. Always return valid JSON.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
+        { role: 'system', content: 'You are a direct-response copywriter. Output strictly valid JSON as defined.' },
+        { role: 'user', content: prompt }
       ],
       temperature: 0.7,
-      max_tokens: 1500
+      max_tokens: 1200
     });
 
-    const responseContent = res.choices[0].message.content;
-    if (!responseContent) {
-      throw new Error('No content received from OpenAI');
+    if (!res.choices?.[0]?.message?.content) {
+      throw new Error('Empty response received from OpenAI API');
     }
+
+    content = res.choices[0].message.content;
     
     // Clean the content to handle markdown-wrapped JSON
-    const cleanedContent = cleanJsonResponse(responseContent);
+    const cleanedContent = cleanJsonResponse(content);
     console.log('🎯 OpenAI Landing Page Response (cleaned):', cleanedContent);
     const parsed = JSON.parse(cleanedContent);
 
@@ -1464,7 +1585,7 @@ Return JSON in this exact format:
       throw new Error('Invalid response format from OpenAI API');
     }
 
-    // Ensure benefit_bullets is a usable array, even if the AI messes up. This is better than crashing.
+    // Ensure benefit_bullets is a usable array, even if the AI messes up.
 if (!parsed.benefit_bullets || !Array.isArray(parsed.benefit_bullets) || parsed.benefit_bullets.length === 0) {
     // If the AI failed to provide bullets, create some safe defaults. This is better than crashing.
     parsed.benefit_bullets = [
@@ -1493,7 +1614,7 @@ parsed.benefit_bullets = parsed.benefit_bullets.slice(0, 4);
     } else if (err.message.includes('timeout')) {
       throw new Error('Request timed out while generating landing page copy. Please try again.');
     } else if (err.message.includes('JSON') || err.message.includes('Unexpected token')) {
-      console.error('JSON parsing error. Original content:', 'No content available');
+      console.error('JSON parsing error. Original content:', content);
       throw new Error('Failed to process the landing page content. Please try again.');
     }
 
@@ -1551,41 +1672,44 @@ PLATFORM REQUIREMENTS:
 
 Return JSON in this exact format:
 {
-  "linkedin": "Professional LinkedIn post with hashtags",
-  "twitter": "Concise Twitter post with hashtags",
-  "instagram": "Engaging Instagram post with hashtags and emojis",
-  "reddit": "Conversational Reddit post with subreddit suggestions"
+  "linkedin": "Professional post text with 1-2 hashtags... #example #marketing",
+  "twitter": "Engaging tweet under 280 chars with 1-2 hashtags... #example",
+  "instagram": "Engaging Instagram caption with 2-3 hashtags... #example #socialmedia #tips",
+  "reddit": "Conversational Reddit post, longer, no hashtags, invites discussion.",
+  "subreddits": ["subreddit1", "subreddit2", "subreddit3"],
+  "example": "A real-life example or micro-case study (1-2 sentences)",
+  "template": "A plug-and-play template or swipe file (if applicable)"
 }`;
 
     const res = await client.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
-        {
-          role: 'system',
-          content: 'You are a social media manager who creates engaging promotional posts. Always return valid JSON.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
+        { role: 'system', content: 'You are a social media manager. Output strictly valid JSON as defined.' },
+        { role: 'user', content: prompt }
       ],
-      temperature: 0.7,
-      max_tokens: 2000
+      temperature: 0.8,
+      max_tokens: 1500
     });
 
-    const responseContent = res.choices[0].message.content;
-    if (!responseContent) {
-      throw new Error('No content received from OpenAI');
+    if (!res.choices?.[0]?.message?.content) {
+      throw new Error('Empty response received from OpenAI API');
     }
+
+    content = res.choices[0].message.content;
     
     // Clean the content to handle markdown-wrapped JSON
-    const cleanedContent = cleanJsonResponse(responseContent);
+    const cleanedContent = cleanJsonResponse(content);
     console.log('🎯 OpenAI Social Posts Response (cleaned):', cleanedContent);
     const parsed = JSON.parse(cleanedContent);
 
     // Validate the response structure
-    if (!parsed.linkedin || !parsed.twitter || !parsed.instagram || !parsed.reddit) {
+    if (!parsed.linkedin || !parsed.twitter || !parsed.instagram || !parsed.reddit || !parsed.subreddits) {
       throw new Error('Invalid response format from OpenAI API');
+    }
+
+    // Validate content length for each platform
+    if (parsed.twitter.length > 280) {
+      throw new Error('Twitter post exceeds 280 characters');
     }
 
     return parsed;
@@ -1602,21 +1726,29 @@ Return JSON in this exact format:
     } else if (err.code === 'invalid_api_key') {
       throw new Error('Invalid OpenAI API key. Please check your .env file.');
     } else if (err.message.includes('timeout')) {
-      throw new Error('Request timed out while generating social posts. Please try again.');
+      throw new Error('Request timed out while generating social media posts. Please try again.');
     } else if (err.message.includes('JSON') || err.message.includes('Unexpected token')) {
-      console.error('JSON parsing error. Original content:', 'No content available');
-      throw new Error('Failed to process the social posts content. Please try again.');
+      console.error('JSON parsing error. Original content:', content);
+      throw new Error('Failed to process the social media content. Please try again.');
     }
 
-    throw new Error(`Failed to generate social posts: ${err.message}`);
+    throw new Error(`Failed to generate social media posts: ${err.message}`);
   }
 }
 
 export async function generateFinalCampaign(input: CampaignInput, outline: ContentOutline, customization?: PDFCustomization): Promise<CampaignOutput> {
+  const client = getOpenAIClient();
+
   try {
-    // Generate the lead magnet content
+    // Generate content sequentially instead of in parallel for better error handling
+    const format = input.selected_format || 'pdf';
+    const formatDisplayName = format === 'pdf' ? 'PDF' : format.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    
+    console.log(`Starting ${formatDisplayName} content generation...`);
+    
+    // Create the input object for the new generateLeadMagnetContent signature
     const contentInput = {
-      selected_format: input.selected_format || 'pdf',
+      selected_format: format,
       name: input.name || '',
       brand_name: input.brand_name,
       target_audience: input.target_audience,
@@ -1625,32 +1757,73 @@ export async function generateFinalCampaign(input: CampaignInput, outline: Conte
       desired_outcome: input.desired_outcome,
       tone: input.tone || 'professional',
       position: input.position || '',
-      concept: {
-        id: 'generated-concept',
-        title: outline.title,
-        description: outline.introduction,
-        value_proposition: outline.main_value_proposition,
-        target_audience: input.target_audience,
-        format: input.selected_format || 'pdf'
-      },
+      concept: { id: '1', title: 'Generated Concept', description: '', value_proposition: '', target_audience: '', format: format },
       outline: outline
     };
-
-    const pdfContent = await generateLeadMagnetContent(contentInput);
     
-    // Generate landing page copy
-    const landingPageCopy = await generateLandingPageCopy(input, outline);
-    
-    // Generate social posts
-    const socialPosts = await generateSocialPosts(input, outline);
+    const lead_magnet_content = await generateLeadMagnetContent(contentInput).catch(err => {
+      console.error(`${formatDisplayName} Generation Error:`, err);
+      throw new Error(`${formatDisplayName} Generation Failed: ${err.message}`);
+    });
 
-    return {
-      pdf_content: pdfContent,
-      landing_page: landingPageCopy,
-      social_posts: socialPosts
+    console.log('Starting landing page generation...');
+    const landing_page = await generateLandingPageCopy(input, outline).catch(err => {
+      console.error('Landing Page Generation Error:', err);
+      throw new Error(`Landing Page Generation Failed: ${err.message}`);
+    });
+
+    console.log('Starting social posts generation...');
+    const social_posts = await generateSocialPosts(input, outline).catch(err => {
+      console.error('Social Posts Generation Error:', err);
+      throw new Error(`Social Posts Generation Failed: ${err.message}`);
+    });
+
+    // Validate all required content was generated
+    if (!lead_magnet_content) throw new Error(`${formatDisplayName} content generation failed`);
+    if (!landing_page) throw new Error('Landing page generation failed');
+    if (!social_posts) throw new Error('Social posts generation failed');
+
+    // Use the structured content that was already generated by generateLeadMagnetContent
+    const structured_content: PDFContent = {
+      ...lead_magnet_content,
+      // Keep the original structured_content that was generated by generateLeadMagnetContent
+      structured_content: lead_magnet_content.structured_content
     };
-  } catch (error) {
-    console.error('Error generating final campaign:', error);
-    throw new Error('Failed to generate final campaign');
+
+    console.log('Campaign generation completed successfully');
+    return {
+      pdf_content: structured_content,
+      landing_page,
+      social_posts
+    };
+  } catch (err: any) {
+    console.error('Campaign Generation Error:', {
+      message: err.message,
+      stack: err.stack,
+      cause: err.cause,
+      type: err.type,
+      code: err.code
+    });
+
+    // Handle specific OpenAI API errors
+    if (err.code === 'insufficient_quota') {
+      throw new Error('OpenAI API quota exceeded. Please check your billing status.');
+    } else if (err.code === 'rate_limit_exceeded') {
+      throw new Error('OpenAI API rate limit exceeded. Please wait a moment and try again.');
+    } else if (err.code === 'invalid_api_key') {
+      throw new Error('Invalid OpenAI API key. Please check your API key configuration.');
+    } else if (err.message.includes('timeout')) {
+      throw new Error('Request timed out. The server is taking too long to respond. Please try again.');
+    } else if (err.message.includes('JSON')) {
+      throw new Error('Failed to process AI response. Please try again.');
+    }
+
+    // If it's a specific generation error, pass it through
+    if (err.message.includes('Generation Failed:')) {
+      throw err;
+    }
+
+    // For unknown errors, provide a generic message
+    throw new Error('Failed to generate campaign content. Please try again.');
   }
 }
