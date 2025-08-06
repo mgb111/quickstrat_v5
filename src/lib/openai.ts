@@ -1099,3 +1099,486 @@ RETURN JSON IN THIS EXACT FORMAT:
       throw new Error(`Unknown format: ${format}`);
   }
 }
+
+// Helper function to format layout-focused section content into readable format
+function formatLayoutSectionContent(section: any): string {
+  switch (section.type) {
+    case 'checklist':
+      let checklistContent = '';
+      section.content.phases.forEach((phase: any) => {
+        checklistContent += `\n${phase.phase_title}\n`;
+        phase.items.forEach((item: string) => {
+          checklistContent += `${item}\n`;
+        });
+      });
+      return checklistContent;
+    
+    case 'scripts':
+      return section.content.scenarios.map((scenario: any, index: number) => {
+        return `Scenario ${index + 1}:\nWhen they say: "${scenario.trigger}"\nYou say: "${scenario.response}"\nStrategy: ${scenario.explanation}`;
+      }).join('\n\n');
+    
+    case 'mistakes_to_avoid':
+      return section.content.mistakes.map((mistake: any, index: number) => {
+        return `${index + 1}. The Mistake: ${mistake.mistake}\nThe Solution: ${mistake.solution}`;
+      }).join('\n\n');
+    
+    case 'pros_and_cons_list':
+      return section.content.items.map((item: any, index: number) => {
+        return `${index + 1}. ${item.method_name}\n\nPros: ${item.pros}\n\nCons: ${item.cons}`;
+      }).join('\n\n');
+    
+    case 'step_by_step_guide':
+      return section.content.steps.map((step: any, index: number) => {
+        return `${step.step_title}\n${step.description}`;
+      }).join('\n\n');
+    
+    case 'template':
+      return section.content.template || section.content;
+    
+    default:
+      return section.content || 'Content not available';
+  }
+}
+
+export async function generateContentOutline(input: CampaignInput, selected: LeadMagnetConcept): Promise<ContentOutline> {
+  const client = getOpenAIClient();
+  
+  try {
+    const formatSpecificPrompt = getFormatSpecificOutlinePrompt(input.selected_format || 'pdf', input, selected);
+    
+    const res = await client.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: 'You are a content strategist. Create detailed content outlines that provide tactical value and clear implementation steps.' },
+        { role: 'user', content: formatSpecificPrompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 2000
+    });
+
+    if (!res.choices?.[0]?.message?.content) {
+      throw new Error('Empty response received from OpenAI API');
+    }
+
+    const content = res.choices[0].message.content;
+    
+    // Clean the content to handle markdown-wrapped JSON
+    const cleanedContent = cleanJsonResponse(content);
+    console.log('🎯 OpenAI Outline Response (cleaned):', cleanedContent);
+    const parsed = JSON.parse(cleanedContent);
+
+    // Validate the response structure
+    if (!parsed.title || !parsed.introduction || !Array.isArray(parsed.core_points)) {
+      throw new Error('Invalid response format from OpenAI API');
+    }
+
+    return {
+      title: parsed.title,
+      introduction: parsed.introduction,
+      core_points: parsed.core_points,
+      sections: parsed.sections || [],
+      estimated_length: parsed.estimated_length || '5-10 minutes',
+      target_audience: parsed.target_audience || input.target_audience,
+      main_value_proposition: parsed.main_value_proposition || parsed.value_proposition || ''
+    };
+  } catch (err: any) {
+    console.error('OpenAI API Error:', {
+      message: err.message,
+      status: err.status,
+      code: err.code,
+      type: err.type
+    });
+
+    if (err.code === 'rate_limit_exceeded') {
+      throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+    } else if (err.code === 'invalid_api_key') {
+      throw new Error('Invalid OpenAI API key. Please check your .env file.');
+    } else if (err.message.includes('timeout')) {
+      throw new Error('Request timed out while generating content outline. Please try again.');
+    } else if (err.message.includes('JSON') || err.message.includes('Unexpected token')) {
+      console.error('JSON parsing error. Original content:', 'No content available');
+      throw new Error('Failed to process the content outline. Please try again.');
+    }
+
+    throw new Error(`Failed to generate content outline: ${err.message}`);
+  }
+}
+
+export async function generateLeadMagnetContent(input: {
+  selected_format: LeadMagnetFormat;
+  name: string;
+  brand_name: string;
+  target_audience: string;
+  niche: string;
+  problem_statement: string;
+  desired_outcome: string;
+  tone: string;
+  position: string;
+  concept: LeadMagnetConcept;
+  outline: ContentOutline;
+}): Promise<PDFContent> {
+  const client = getOpenAIClient();
+  
+  // Create a CampaignInput object for the format-specific prompt
+  // This function generates content for all formats: PDF, Interactive Quiz, ROI Calculator, etc.
+  const campaignInput: CampaignInput = {
+    name: input.name,
+    brand_name: input.brand_name,
+    target_audience: input.target_audience,
+    niche: input.niche,
+    problem_statement: input.problem_statement,
+    desired_outcome: input.desired_outcome,
+    tone: input.tone,
+    position: input.position,
+    selected_format: input.selected_format
+  };
+  
+  const formatSpecificPrompt = getFormatSpecificPdfPrompt(input.selected_format, campaignInput, input.outline);
+  
+  const prompt = `You are an expert content creator specializing in ${input.selected_format} lead magnets.
+
+Context:
+- Creator: ${input.name} (${input.position})
+- Brand: ${input.brand_name}
+- Niche: ${input.niche}
+- Target audience: ${input.target_audience}
+- Problem: ${input.problem_statement}
+- Desired outcome: ${input.desired_outcome}
+- Tone: ${input.tone}
+- Format: ${input.selected_format}
+
+${formatSpecificPrompt}
+
+IMPORTANT: Follow the exact JSON format specified in the format-specific prompt above. Do not override it with a different structure.`;
+
+  try {
+    const response = await client.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an expert content creator who creates high-quality, actionable lead magnet content. Always return valid JSON.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 4000
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) {
+      throw new Error('No content received from OpenAI');
+    }
+
+    // Clean the content to handle markdown-wrapped JSON
+    const cleanedContent = cleanJsonResponse(content);
+    console.log('🎯 OpenAI PDF Response (cleaned):', cleanedContent);
+    
+    // Parse the JSON response
+    const pdfContent = JSON.parse(cleanedContent) as PDFContent;
+    
+    // Always return the PDF content structure for PDF format
+    if (input.selected_format === 'pdf') {
+      return pdfContent;
+    } else {
+      // For interactive formats, return the PDF content structure but with interactive elements
+      return {
+        ...pdfContent,
+        title: `${pdfContent.title || 'Lead Magnet'} (${input.selected_format.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())})`,
+        // Keep the structured_content for PDF display
+        structured_content: pdfContent.structured_content,
+        // Add interactive content for interactive display
+        interactive_content: {
+          format: input.selected_format,
+          title: pdfContent.title || 'Lead Magnet',
+          description: pdfContent.introduction,
+          // Add format-specific interactive elements
+          ...(input.selected_format === 'interactive_quiz' && {
+            questions: [],
+            results: []
+          }),
+          ...(input.selected_format === 'roi_calculator' && {
+            inputs: [],
+            calculations: []
+          }),
+          ...(input.selected_format === 'action_plan' && {
+            steps: [],
+            timeline: []
+          }),
+          ...(input.selected_format === 'benchmark_report' && {
+            metrics: [],
+            comparisons: []
+          }),
+          ...(input.selected_format === 'opportunity_finder' && {
+            categories: [],
+            opportunities: []
+          })
+        }
+      };
+    }
+  } catch (error) {
+    console.error('Error generating PDF content:', error);
+    throw new Error('Failed to generate content');
+  }
+}
+
+export async function generateLandingPageCopy(input: CampaignInput, outline: ContentOutline): Promise<LandingPageCopy> {
+  const client = getOpenAIClient();
+  let content = '';
+
+  try {
+    const prompt = `You are a conversion copywriter. Create compelling landing page copy for a lead magnet.
+
+LEAD MAGNET DETAILS:
+- Title: ${outline.title}
+- Main Benefit: ${outline.introduction}
+- Target Audience: ${input.target_audience}
+- Brand Name: ${input.brand_name}
+- Tone: ${input.tone}
+
+INSTRUCTIONS:
+Create high-converting landing page copy that:
+1. Grabs attention with a compelling headline
+2. Builds desire with benefit-focused subheadline
+3. Includes 3-4 specific benefit bullets
+4. Has a clear, action-oriented CTA button
+5. Matches the brand's tone: ${input.tone}
+
+Return JSON in this exact format:
+{
+  "headline": "Compelling headline that addresses the main pain point",
+  "subheadline": "Benefit-focused subheadline that builds desire",
+  "benefit_bullets": [
+    "Specific benefit 1 with measurable outcome",
+    "Specific benefit 2 with measurable outcome", 
+    "Specific benefit 3 with measurable outcome",
+    "Specific benefit 4 with measurable outcome"
+  ],
+  "cta_button_text": "Action-oriented button text"
+}`;
+
+    const res = await client.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a conversion copywriter who creates high-converting landing page copy. Always return valid JSON.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 1500
+    });
+
+    const responseContent = res.choices[0].message.content;
+    if (!responseContent) {
+      throw new Error('No content received from OpenAI');
+    }
+    
+    // Clean the content to handle markdown-wrapped JSON
+    const cleanedContent = cleanJsonResponse(responseContent);
+    console.log('🎯 OpenAI Landing Page Response (cleaned):', cleanedContent);
+    const parsed = JSON.parse(cleanedContent);
+
+    // Validate the response structure
+    if (!parsed.headline || !parsed.subheadline || !Array.isArray(parsed.benefit_bullets) || !parsed.cta_button_text) {
+      throw new Error('Invalid response format from OpenAI API');
+    }
+
+    // Ensure benefit_bullets is a usable array, even if the AI messes up. This is better than crashing.
+if (!parsed.benefit_bullets || !Array.isArray(parsed.benefit_bullets) || parsed.benefit_bullets.length === 0) {
+    // If the AI failed to provide bullets, create some safe defaults. This is better than crashing.
+    parsed.benefit_bullets = [
+        `Unlock ${input.desired_outcome}`,
+        `Solve ${input.pain_point} Instantly`,
+        `Get Actionable Insights Today`
+    ];
+}
+
+// If the AI was overeager and gave too many bullets, just take the first 4.
+parsed.benefit_bullets = parsed.benefit_bullets.slice(0, 4);
+
+    return parsed;
+  } catch (err: any) {
+    console.error('OpenAI API Error:', {
+      message: err.message,
+      status: err.status,
+      code: err.code,
+      type: err.type
+    });
+
+    if (err.code === 'rate_limit_exceeded') {
+      throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+    } else if (err.code === 'invalid_api_key') {
+      throw new Error('Invalid OpenAI API key. Please check your .env file.');
+    } else if (err.message.includes('timeout')) {
+      throw new Error('Request timed out while generating landing page copy. Please try again.');
+    } else if (err.message.includes('JSON') || err.message.includes('Unexpected token')) {
+      console.error('JSON parsing error. Original content:', 'No content available');
+      throw new Error('Failed to process the landing page content. Please try again.');
+    }
+
+    throw new Error(`Failed to generate landing page copy: ${err.message}`);
+  }
+}
+
+export async function generateSocialPosts(input: CampaignInput, outline: ContentOutline): Promise<SocialPosts> {
+  const client = getOpenAIClient();
+  let content = '';
+
+  try {
+    const prompt = `You are a social media manager. Your task is to create promotional posts for a new lead magnet.
+
+LEAD MAGNET DETAILS:
+- Title: ${outline.title}
+- Main Benefit: ${outline.introduction}
+- Target Audience: ${input.target_audience}
+- Brand Name: ${input.brand_name}
+- Tone: ${input.tone}
+
+INSTRUCTIONS:
+Create four distinct social media posts to drive downloads. Each post should:
+1. Be platform-appropriate and engaging
+2. Include relevant hashtags (2-3 per post, except Reddit)
+3. Have a clear call-to-action
+4. Match the brand's tone: ${input.tone}
+5. For at least one post, include a real-life example, micro-case study, or plug-and-play template/swipe file (1-2 sentences).
+6. Use sharp, actionable language—avoid generic advice.
+
+PLATFORM REQUIREMENTS:
+1. LinkedIn (Professional):
+   - Focus on professional value and career impact
+   - 3-4 sentences
+   - Include 1-2 relevant hashtags
+
+2. Twitter (Concise & Engaging):
+   - Max 280 characters including hashtags
+   - Attention-grabbing first line
+   - Include 1-2 relevant hashtags
+
+3. Instagram (Visual & Engaging):
+   - 1-2 short paragraphs
+   - Include a question to encourage comments
+   - Include 2-3 relevant hashtags
+   - Add emojis where appropriate
+
+4. Reddit (Conversational & Community-Focused):
+   - Write as if posting to a relevant subreddit
+   - Be longer, more detailed, and invite discussion
+   - Ask a question or share a personal experience
+   - No hashtags, no emojis
+   - Use a conversational, authentic tone
+   - At the end, suggest 2-3 relevant subreddits (as a list) where this post could be shared, based on the topic and audience.
+
+Return JSON in this exact format:
+{
+  "linkedin": "Professional LinkedIn post with hashtags",
+  "twitter": "Concise Twitter post with hashtags",
+  "instagram": "Engaging Instagram post with hashtags and emojis",
+  "reddit": "Conversational Reddit post with subreddit suggestions"
+}`;
+
+    const res = await client.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a social media manager who creates engaging promotional posts. Always return valid JSON.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 2000
+    });
+
+    const responseContent = res.choices[0].message.content;
+    if (!responseContent) {
+      throw new Error('No content received from OpenAI');
+    }
+    
+    // Clean the content to handle markdown-wrapped JSON
+    const cleanedContent = cleanJsonResponse(responseContent);
+    console.log('🎯 OpenAI Social Posts Response (cleaned):', cleanedContent);
+    const parsed = JSON.parse(cleanedContent);
+
+    // Validate the response structure
+    if (!parsed.linkedin || !parsed.twitter || !parsed.instagram || !parsed.reddit) {
+      throw new Error('Invalid response format from OpenAI API');
+    }
+
+    return parsed;
+  } catch (err: any) {
+    console.error('OpenAI API Error:', {
+      message: err.message,
+      status: err.status,
+      code: err.code,
+      type: err.type
+    });
+
+    if (err.code === 'rate_limit_exceeded') {
+      throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+    } else if (err.code === 'invalid_api_key') {
+      throw new Error('Invalid OpenAI API key. Please check your .env file.');
+    } else if (err.message.includes('timeout')) {
+      throw new Error('Request timed out while generating social posts. Please try again.');
+    } else if (err.message.includes('JSON') || err.message.includes('Unexpected token')) {
+      console.error('JSON parsing error. Original content:', 'No content available');
+      throw new Error('Failed to process the social posts content. Please try again.');
+    }
+
+    throw new Error(`Failed to generate social posts: ${err.message}`);
+  }
+}
+
+export async function generateFinalCampaign(input: CampaignInput, outline: ContentOutline, customization?: PDFCustomization): Promise<CampaignOutput> {
+  try {
+    // Generate the lead magnet content
+    const contentInput = {
+      selected_format: input.selected_format || 'pdf',
+      name: input.name || '',
+      brand_name: input.brand_name,
+      target_audience: input.target_audience,
+      niche: input.niche,
+      problem_statement: input.problem_statement,
+      desired_outcome: input.desired_outcome,
+      tone: input.tone || 'professional',
+      position: input.position || '',
+      concept: {
+        id: 'generated-concept',
+        title: outline.title,
+        description: outline.introduction,
+        value_proposition: outline.main_value_proposition,
+        target_audience: input.target_audience,
+        format: input.selected_format || 'pdf'
+      },
+      outline: outline
+    };
+
+    const pdfContent = await generateLeadMagnetContent(contentInput);
+    
+    // Generate landing page copy
+    const landingPageCopy = await generateLandingPageCopy(input, outline);
+    
+    // Generate social posts
+    const socialPosts = await generateSocialPosts(input, outline);
+
+    return {
+      pdf_content: pdfContent,
+      landing_page: landingPageCopy,
+      social_posts: socialPosts
+    };
+  } catch (error) {
+    console.error('Error generating final campaign:', error);
+    throw new Error('Failed to generate final campaign');
+  }
+}
