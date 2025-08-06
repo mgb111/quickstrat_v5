@@ -86,6 +86,14 @@ function cleanJsonResponse(content: string): string {
     cleaned = cleaned.replace(/\s*```$/, '');
   }
   
+  // Fix newline characters in JSON strings
+  // Replace literal newlines with escaped newlines
+  cleaned = cleaned.replace(/\n/g, '\\n');
+  
+  // Fix other problematic control characters
+  cleaned = cleaned.replace(/\r/g, '\\r');
+  cleaned = cleaned.replace(/\t/g, '\\t');
+  
   return cleaned.trim();
 }
 
