@@ -452,16 +452,15 @@ Format: ${format}
 Create a TACTICAL content outline for a diagnostic quiz that provides professional-grade insights.
 
 REQUIREMENTS:
-- 7-12 diagnostic questions that reveal ROOT CAUSES
+- EXACTLY 4 core points in the outline
 - Questions must build on each other logically
 - Each question should eliminate possible causes
 - Final diagnosis must include SPECIFIC next steps
-- Include success metrics and timelines
 
 ❌ AVOID: Surface-level questions, generic results
 ✅ FOCUS ON: Professional diagnostic methodology with actionable outcomes
 
-Return JSON in this exact format:
+Return JSON in this exact format with EXACTLY 4 core_points:
 {
   "title": "${selected.title}",
   "introduction": "Professional hook explaining the diagnostic process and what insights they'll receive",
@@ -474,7 +473,9 @@ Return JSON in this exact format:
   "cta": "Take the diagnostic quiz to get your personalized action plan",
   "example": "Example: A marketing agency discovered their lead generation wasn't working because they were targeting too broad an audience (Question 3 revelation), not because of poor ad copy (ruled out in Question 1)",
   "template": "Quiz flow: Symptom identification → Root cause analysis → Diagnosis confirmation → Action prescription"
-}`;
+}
+
+CRITICAL: You must return EXACTLY 4 core_points. Do not add more or fewer points.`;
 
     case 'roi_calculator':
       return `${baseContext}
