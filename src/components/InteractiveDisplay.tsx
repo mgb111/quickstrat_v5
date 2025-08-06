@@ -360,69 +360,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               )}
             </div>
 
-            {/* Educational Content - After Quiz */}
-            {quizResults && content.educational_content && (
-              <div className="bg-purple-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-purple-900 mb-4">📚 Insights & Tips</h2>
-                {content.educational_content.insights && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-purple-800 mb-2">Key Insights:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.insights.map((insight: string, index: number) => (
-                        <li key={index}>• {insight}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.educational_content.benchmarks && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-purple-800 mb-2">Industry Benchmarks:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.benchmarks.map((benchmark: string, index: number) => (
-                        <li key={index}>• {benchmark}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.educational_content.case_studies && (
-                  <div>
-                    <h3 className="font-semibold text-purple-800 mb-2">Case Studies:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.case_studies.map((caseStudy: string, index: number) => (
-                        <li key={index}>• {caseStudy}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
 
-            {/* Next Steps - After Quiz */}
-            {quizResults && content.interactive_elements && (
-              <div className="bg-orange-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-orange-900 mb-4">🚀 Next Steps</h2>
-                {content.interactive_elements.next_steps && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-orange-800 mb-2">Recommended Actions:</h3>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      {content.interactive_elements.next_steps.map((step: string, index: number) => (
-                        <li key={index}>• {step}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.interactive_elements.action_items && (
-                  <div>
-                    <h3 className="font-semibold text-orange-800 mb-2">Action Items:</h3>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      {content.interactive_elements.action_items.map((item: string, index: number) => (
-                        <li key={index}>• {item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         );
 
@@ -573,69 +511,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
             )}
             </div>
 
-            {/* Educational Content - After Calculator */}
-            {calculationResults.summary?.hasResults && content.educational_content && (
-              <div className="bg-purple-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-purple-900 mb-4">📚 Insights & Tips</h2>
-                {content.educational_content.insights && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-purple-800 mb-2">Key Insights:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.insights.map((insight: string, index: number) => (
-                        <li key={index}>• {insight}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.educational_content.benchmarks && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-purple-800 mb-2">Industry Benchmarks:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.benchmarks.map((benchmark: string, index: number) => (
-                        <li key={index}>• {benchmark}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.educational_content.case_studies && (
-                  <div>
-                    <h3 className="font-semibold text-purple-800 mb-2">Case Studies:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.case_studies.map((caseStudy: string, index: number) => (
-                        <li key={index}>• {caseStudy}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
 
-            {/* Next Steps - After Calculator */}
-            {calculationResults.summary?.hasResults && content.interactive_elements && (
-              <div className="bg-orange-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-orange-900 mb-4">🚀 Next Steps</h2>
-                {content.interactive_elements.next_steps && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-orange-800 mb-2">Recommended Actions:</h3>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      {content.interactive_elements.next_steps.map((step: string, index: number) => (
-                        <li key={index}>• {step}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.interactive_elements.action_items && (
-                  <div>
-                    <h3 className="font-semibold text-orange-800 mb-2">Action Items:</h3>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      {content.interactive_elements.action_items.map((item: string, index: number) => (
-                        <li key={index}>• {item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         );
 
@@ -722,69 +598,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </button>
             </div>
 
-            {/* Educational Content - After Action Plan */}
-            {content.educational_content && (
-              <div className="bg-purple-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-purple-900 mb-4">📚 Insights & Tips</h2>
-                {content.educational_content.insights && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-purple-800 mb-2">Key Insights:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.insights.map((insight: string, index: number) => (
-                        <li key={index}>• {insight}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.educational_content.benchmarks && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-purple-800 mb-2">Industry Benchmarks:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.benchmarks.map((benchmark: string, index: number) => (
-                        <li key={index}>• {benchmark}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.educational_content.case_studies && (
-                  <div>
-                    <h3 className="font-semibold text-purple-800 mb-2">Case Studies:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.case_studies.map((caseStudy: string, index: number) => (
-                        <li key={index}>• {caseStudy}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
 
-            {/* Next Steps - After Action Plan */}
-            {content.interactive_elements && (
-              <div className="bg-orange-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-orange-900 mb-4">🚀 Next Steps</h2>
-                {content.interactive_elements.next_steps && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-orange-800 mb-2">Recommended Actions:</h3>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      {content.interactive_elements.next_steps.map((step: string, index: number) => (
-                        <li key={index}>• {step}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.interactive_elements.action_items && (
-                  <div>
-                    <h3 className="font-semibold text-orange-800 mb-2">Action Items:</h3>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      {content.interactive_elements.action_items.map((item: string, index: number) => (
-                        <li key={index}>• {item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         );
 
@@ -881,69 +695,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </button>
             </div>
 
-            {/* Educational Content - After Benchmark Report */}
-            {content.educational_content && (
-              <div className="bg-purple-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-purple-900 mb-4">📚 Insights & Tips</h2>
-                {content.educational_content.insights && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-purple-800 mb-2">Key Insights:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.insights.map((insight: string, index: number) => (
-                        <li key={index}>• {insight}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.educational_content.benchmarks && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-purple-800 mb-2">Industry Benchmarks:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.benchmarks.map((benchmark: string, index: number) => (
-                        <li key={index}>• {benchmark}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.educational_content.case_studies && (
-                  <div>
-                    <h3 className="font-semibold text-purple-800 mb-2">Case Studies:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.case_studies.map((caseStudy: string, index: number) => (
-                        <li key={index}>• {caseStudy}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
 
-            {/* Next Steps - After Benchmark Report */}
-            {content.interactive_elements && (
-              <div className="bg-orange-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-orange-900 mb-4">🚀 Next Steps</h2>
-                {content.interactive_elements.next_steps && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-orange-800 mb-2">Recommended Actions:</h3>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      {content.interactive_elements.next_steps.map((step: string, index: number) => (
-                        <li key={index}>• {step}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.interactive_elements.action_items && (
-                  <div>
-                    <h3 className="font-semibold text-orange-800 mb-2">Action Items:</h3>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      {content.interactive_elements.action_items.map((item: string, index: number) => (
-                        <li key={index}>• {item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         );
 
@@ -1045,69 +797,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </button>
             </div>
 
-            {/* Educational Content - After Opportunity Finder */}
-            {content.educational_content && (
-              <div className="bg-purple-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-purple-900 mb-4">📚 Insights & Tips</h2>
-                {content.educational_content.insights && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-purple-800 mb-2">Key Insights:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.insights.map((insight: string, index: number) => (
-                        <li key={index}>• {insight}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.educational_content.benchmarks && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-purple-800 mb-2">Industry Benchmarks:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.benchmarks.map((benchmark: string, index: number) => (
-                        <li key={index}>• {benchmark}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.educational_content.case_studies && (
-                  <div>
-                    <h3 className="font-semibold text-purple-800 mb-2">Case Studies:</h3>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      {content.educational_content.case_studies.map((caseStudy: string, index: number) => (
-                        <li key={index}>• {caseStudy}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
 
-            {/* Next Steps - After Opportunity Finder */}
-            {content.interactive_elements && (
-              <div className="bg-orange-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-orange-900 mb-4">🚀 Next Steps</h2>
-                {content.interactive_elements.next_steps && (
-                  <div className="mb-4">
-                    <h3 className="font-semibold text-orange-800 mb-2">Recommended Actions:</h3>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      {content.interactive_elements.next_steps.map((step: string, index: number) => (
-                        <li key={index}>• {step}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {content.interactive_elements.action_items && (
-                  <div>
-                    <h3 className="font-semibold text-orange-800 mb-2">Action Items:</h3>
-                    <ul className="text-sm text-orange-700 space-y-1">
-                      {content.interactive_elements.action_items.map((item: string, index: number) => (
-                        <li key={index}>• {item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         );
 

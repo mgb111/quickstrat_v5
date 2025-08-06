@@ -265,9 +265,12 @@ const AdminLeadMagnetCreator: React.FC = () => {
                 </p>
               </div>
               <ResultsDisplay 
-                finalOutput={wizardState.finalOutput}
-                onStartOver={handleStartOver}
-                onBack={handleGoBack}
+                results={wizardState.finalOutput}
+                brandName={wizardState.input?.brand_name || ''}
+                userName={wizardState.input?.name || ''}
+                problemStatement={wizardState.input?.problem_statement || ''}
+                desiredOutcome={wizardState.input?.desired_outcome || ''}
+                selectedFormat={wizardState.input?.selected_format}
                 requirePayment={false}
               />
             </div>

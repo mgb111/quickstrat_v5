@@ -856,14 +856,41 @@ RETURN JSON IN THIS EXACT FORMAT:
       }
     ]
   },
-  "educational_content": {
-    "insights": ["Key insight about the diagnostic process", "Why this approach works", "What makes it different"],
-    "tips": ["Practical tip for better results", "Common mistake to avoid", "Success strategy"],
-    "case_studies": ["Real example of someone who improved", "Specific results they achieved"]
-  },
-  "interactive_elements": {
-    "next_steps": ["Implement your personalized action plan", "Track your progress weekly", "Adjust approach based on results"],
-    "action_items": ["Download your results summary", "Schedule follow-up assessment", "Join our community for support"]
+  "quiz_content": {
+    "title": "Professional Diagnostic Assessment",
+    "questions": [
+      {
+        "question": "What is your biggest challenge with [specific problem area]?",
+        "options": ["Option A - Specific issue 1", "Option B - Specific issue 2", "Option C - Specific issue 3", "Option D - Something else"],
+        "explanation": "This reveals your primary pain point and helps categorize your situation"
+      },
+      {
+        "question": "How long have you been experiencing this challenge?",
+        "options": ["Less than 3 months", "3-6 months", "6-12 months", "Over a year"],
+        "explanation": "Duration helps determine the urgency and approach needed"
+      },
+      {
+        "question": "What have you tried to solve this problem?",
+        "options": ["Nothing yet", "Basic research", "Tried some solutions", "Multiple attempts with no success"],
+        "explanation": "Shows your experience level and what hasn't worked"
+      }
+    ],
+    "results": [
+      {
+        "category": "Beginner Level",
+        "description": "You're just starting to identify the problem",
+        "symptoms": ["Recently noticed the issue", "Limited knowledge", "Feeling overwhelmed"],
+        "action_steps": ["Step 1: Start with basics", "Step 2: Build foundation", "Step 3: Track progress"],
+        "timeline": "2-4 weeks to see initial improvement"
+      },
+      {
+        "category": "Intermediate Level", 
+        "description": "You understand the problem but need better solutions",
+        "symptoms": ["Tried some approaches", "Partial success", "Need more targeted help"],
+        "action_steps": ["Step 1: Refine approach", "Step 2: Implement advanced tactics", "Step 3: Optimize results"],
+        "timeline": "1-2 weeks to see improvement"
+      }
+    ]
   }
 }`;
 
@@ -961,14 +988,63 @@ RETURN JSON IN THIS EXACT FORMAT:
       }
     ]
   },
-  "educational_content": {
-    "insights": ["Why most businesses underestimate their true potential", "The hidden costs that eat into profits", "How small changes create exponential results"],
-    "benchmarks": ["Industry average performance metrics", "Top performer comparison data", "Your competitive position analysis"],
-    "case_studies": ["Company that increased revenue by 67% with these changes", "Business that cut costs by $15k/month", "Organization that achieved 300% ROI in 6 months"]
-  },
-  "interactive_elements": {
-    "action_steps": ["Calculate your current baseline", "Identify your biggest opportunity", "Create your improvement plan"],
-    "next_steps": ["Download your personalized report", "Schedule implementation review", "Track your progress monthly"]
+  "calculator_content": {
+    "title": "Financial Impact Calculator",
+    "input_fields": [
+      {
+        "field_name": "Current Revenue",
+        "field_type": "number",
+        "placeholder": "Enter your monthly revenue",
+        "description": "Your current monthly revenue in dollars",
+        "validation": "Must be a positive number"
+      },
+      {
+        "field_name": "Current Costs",
+        "field_type": "number", 
+        "placeholder": "Enter your monthly costs",
+        "description": "Your current monthly operating costs",
+        "validation": "Must be a positive number"
+      },
+      {
+        "field_name": "Growth Target",
+        "field_type": "number",
+        "placeholder": "Enter target growth %",
+        "description": "Your desired growth percentage",
+        "validation": "Must be between 1-500%"
+      }
+    ],
+    "calculation_categories": [
+      {
+        "category_name": "Revenue Impact",
+        "description": "How this affects your revenue potential",
+        "potential_result": "Shows exact dollar amounts based on your specific situation",
+        "calculation_details": [
+          "Current monthly revenue × growth target = potential increase",
+          "Industry benchmark comparison shows your position",
+          "Opportunity cost calculation reveals what you're missing"
+        ]
+      },
+      {
+        "category_name": "Cost Optimization", 
+        "description": "Potential cost savings and efficiency gains",
+        "potential_result": "Identifies specific areas where you can reduce costs",
+        "calculation_details": [
+          "Current costs vs industry average efficiency",
+          "Automation potential saves X hours per month",
+          "Process improvements could reduce costs by Y%"
+        ]
+      },
+      {
+        "category_name": "ROI Analysis",
+        "description": "Return on investment for proposed changes",
+        "potential_result": "Shows payback period and long-term value",
+        "calculation_details": [
+          "Investment required vs expected returns",
+          "Break-even timeline calculation", 
+          "5-year projection shows total impact"
+        ]
+      }
+    ]
   }
 }`;
 
@@ -1037,14 +1113,34 @@ RETURN JSON IN THIS EXACT FORMAT:
       }
     ]
   },
-  "educational_content": {
-    "insights": ["Core strategy explanation", "Why this approach works", "How to adapt it to your situation"],
-    "benchmarks": ["Practical implementation tip", "Common mistake to avoid", "Success accelerator"],
-    "case_studies": ["Real example of successful implementation", "Specific results achieved", "Key lessons learned"]
-  },
-  "interactive_elements": {
-    "next_steps": ["Daily task completion", "Weekly milestone review", "Monthly results assessment"],
-    "action_items": ["Download your implementation checklist", "Set up your tracking system", "Schedule your first review"]
+  "action_plan_content": {
+    "title": "Your Step-by-Step Implementation System",
+    "steps": [
+      {
+        "step_number": 1,
+        "step_title": "Foundation Setup (Days 1-7)",
+        "description": "Build the essential foundation for success",
+        "tasks": ["Set up your workspace", "Gather required tools", "Create your tracking system"],
+        "deliverables": ["Organized workspace", "Tool checklist completed", "Progress tracker ready"],
+        "success_metrics": "All foundation elements in place and tested"
+      },
+      {
+        "step_number": 2,
+        "step_title": "Implementation Phase (Days 8-21)",
+        "description": "Execute the core strategies systematically",
+        "tasks": ["Begin daily implementation", "Track key metrics", "Adjust approach based on results"],
+        "deliverables": ["Daily progress logs", "Performance metrics", "Optimization notes"],
+        "success_metrics": "Consistent daily execution with measurable progress"
+      },
+      {
+        "step_number": 3,
+        "step_title": "Optimization & Scale (Days 22-30)",
+        "description": "Refine your approach and scale successful elements",
+        "tasks": ["Analyze performance data", "Optimize successful strategies", "Scale what works"],
+        "deliverables": ["Performance analysis", "Optimization plan", "Scaling strategy"],
+        "success_metrics": "Improved results and sustainable system in place"
+      }
+    ]
   }
 }`;
 
@@ -1116,15 +1212,38 @@ RETURN JSON IN THIS EXACT FORMAT:
       }
     ]
   },
-  "educational_content": {
-    "insights": ["Why these benchmarks matter for your business", "How top performers achieve better results", "The real cost of underperformance"],
-    "benchmarks": ["Tactical strategy used by top performers", "Common optimization approach", "Advanced competitive technique"],
-    "case_studies": ["Company that improved conversion by 67%", "Business that reduced CAC by 45%", "Organization that doubled CLV"]
-  },
-  "interactive_elements": {
-    "next_steps": ["30-day conversion optimization plan", "CAC reduction strategy", "CLV improvement roadmap"],
-    "action_items": ["Audit your current performance", "Implement top performer tactics", "Track your improvement progress"]
-}
+    "benchmark_content": {
+    "title": "Industry Performance Analysis",
+    "metrics": [
+      {
+        "metric_name": "Conversion Rate",
+        "description": "How your conversion rate compares to industry standards",
+        "your_performance": "Your current conversion rate",
+        "industry_average": "Industry standard: 2.3%",
+        "top_performer": "Top 10%: 4.8%",
+        "gap_analysis": "You're performing 15% below industry average",
+        "improvement_potential": "Could increase revenue by $X with optimization"
+      },
+      {
+        "metric_name": "Customer Acquisition Cost",
+        "description": "Your CAC vs industry benchmarks",
+        "your_performance": "Your current CAC",
+        "industry_average": "Industry standard: $127",
+        "top_performer": "Top 10%: $89",
+        "gap_analysis": "Your costs are 23% higher than average",
+        "improvement_potential": "Could save $X per customer with optimization"
+      },
+      {
+        "metric_name": "Customer Lifetime Value",
+        "description": "How much value you extract from each customer",
+        "your_performance": "Your current CLV",
+        "industry_average": "Industry standard: $485",
+        "top_performer": "Top 10%: $742",
+        "gap_analysis": "Missing $X in potential value per customer",
+        "improvement_potential": "Could increase CLV by 35% with better retention"
+      }
+    ]
+  }
 }`;
 
     case 'opportunity_finder':
@@ -1207,14 +1326,49 @@ RETURN JSON IN THIS EXACT FORMAT:
       }
     ]
   },
-  "educational_content": {
-    "insights": ["Systematic opportunity identification process", "How to validate opportunities quickly", "Risk vs reward analysis framework"],
-    "benchmarks": ["Emerging market opportunities in your industry", "Customer behavior shifts creating new openings", "Technology trends enabling new business models"],
-    "case_studies": ["Company that discovered $15k/month opportunity in 30 days", "Business that doubled revenue through market expansion", "Entrepreneur who found 3 hidden revenue streams"]
-  },
-  "interactive_elements": {
-    "next_steps": ["30-day opportunity validation plan", "Revenue diversification roadmap", "Market expansion strategy"],
-    "action_items": ["Complete opportunity audit", "Prioritize top 3 opportunities", "Start validation process"]
+  "opportunity_content": {
+    "title": "Hidden Revenue Opportunity Analysis",
+    "categories": [
+      {
+        "category_name": "Revenue Stream Diversification",
+        "description": "New ways to monetize your existing assets and expertise",
+        "potential_value": "$2,500 - $8,000 additional monthly revenue",
+        "effort_level": "Medium",
+        "opportunities": [
+          "Create digital products from your expertise",
+          "Develop affiliate partnerships", 
+          "Launch subscription-based services"
+        ],
+        "implementation_steps": ["Audit existing assets", "Identify monetization gaps", "Test new revenue streams"],
+        "success_metrics": "New revenue streams generating $X within 90 days"
+      },
+      {
+        "category_name": "Customer Value Optimization",
+        "description": "Increase revenue from existing customers",
+        "potential_value": "$1,800 - $5,200 additional monthly revenue",
+        "effort_level": "Low",
+        "opportunities": [
+          "Upsell complementary services",
+          "Create premium service tiers",
+          "Implement customer retention programs"
+        ],
+        "implementation_steps": ["Analyze customer behavior", "Design upsell sequences", "Launch retention campaigns"],
+        "success_metrics": "Customer lifetime value increased by 25%"
+      },
+      {
+        "category_name": "Market Expansion",
+        "description": "Reach new customer segments and markets",
+        "potential_value": "$3,200 - $12,000 additional monthly revenue",
+        "effort_level": "High",
+        "opportunities": [
+          "Target adjacent market segments",
+          "Expand to new geographic markets",
+          "Develop B2B offerings from B2C products"
+        ],
+        "implementation_steps": ["Research new markets", "Adapt offerings", "Launch targeted campaigns"],
+        "success_metrics": "New market segments contributing 20% of revenue"
+      }
+    ]
   }
 }`;
 
