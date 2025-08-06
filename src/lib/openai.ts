@@ -198,16 +198,16 @@ Each quiz MUST:
 ✅ FOCUS ON: "Why is X not working?" diagnostic quizzes with tactical solutions
 
 EXAMPLES OF HIGH-VALUE QUIZ CONCEPTS:
-- "The Conversion Killer Audit" - 7 questions that reveal exactly why your landing page isn't converting
-- "The Lead Generation Leak Detector" - 10 questions that pinpoint where you're losing prospects in your funnel
-- "The Pricing Strategy Analyzer" - 8 questions that reveal if you're under-pricing and by how much
+- "The Conversion Killer Audit" - Reveals exactly why your landing page isn't converting
+- "The Lead Generation Leak Detector" - Pinpoints where you're losing prospects in your funnel
+- "The Pricing Strategy Analyzer" - Reveals if you're under-pricing and by how much
 
 Return JSON in this exact format:
 {
   "concepts": [
     {
       "title": "[Problem] Diagnosis Quiz - Find Out Why [Specific Issue] Isn't Working",
-      "description": "A [X]-question diagnostic that reveals the ROOT CAUSE of [specific problem] and provides a custom action plan to fix it within [timeframe]",
+      "description": "A professional diagnostic that reveals the ROOT CAUSE of [specific problem] and provides a custom action plan to fix it within [timeframe]",
       "value_proposition": "Get a professional-grade analysis of [specific issue] and discover the exact steps to [specific outcome] - normally costs $[amount] in consulting",
       "target_audience": "[Specific segment] struggling with [specific problem] who need immediate answers"
     }
