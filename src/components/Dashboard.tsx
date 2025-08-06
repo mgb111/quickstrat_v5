@@ -232,7 +232,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-
+      {/* Create New Campaign Button */}
+      <div className="mb-8">
+        <button
+          onClick={onNewCampaign}
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
+        >
+          Create New Campaign
+        </button>
+      </div>
       
       {/* Navigation or tab bar would be here if present */}
       {draftCampaigns.length > 0 && (
@@ -310,6 +318,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
                     Landing Page
                   </button>
                   <button
+                    className="px-3 py-1 bg-blue-100 text-blue-800 rounded hover:bg-blue-200 text-xs font-semibold"
+                    onClick={() => copyLandingPageUrl(campaign.landing_page_slug)}
+                  >
+                    Copy Link
+                  </button>
+                  <button
                                           className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-xs font-semibold"
                     onClick={exportLeads}
                   >
@@ -323,6 +337,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
                       {' '}| Emails: {stats.totalEmails ?? 0}
                     </>
                   )}
+                  {isLoadingStats && <span className="ml-2 text-gray-700">Loading stats...</span>}
                 </div>
               </div>
             </li>

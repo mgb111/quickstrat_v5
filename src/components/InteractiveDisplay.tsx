@@ -17,9 +17,99 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
 }) => {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  
+  // ROI Calculator State
+  const [calculatorInputs, setCalculatorInputs] = useState<Record<string, number>>({});
+  const [calculationResults, setCalculationResults] = useState<Record<string, any>>({});
+  
+  // Quiz State
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
+  const [quizResults, setQuizResults] = useState<any>(null);
+  const [currentQuizStep, setCurrentQuizStep] = useState(0);
 
   const handleEmailSubmitted = () => {
     setEmailSubmitted(true);
+  };
+
+  // Handle calculator input changes
+  const handleCalculatorInputChange = (fieldName: string, value: string) => {
+    const numericValue = parseFloat(value) || 0;
+    const newInputs = { ...calculatorInputs, [fieldName]: numericValue };
+    setCalculatorInputs(newInputs);
+    
+    // Perform real-time calculations
+    calculateROI(newInputs);
+  };
+
+  // ROI Calculation Logic
+  const calculateROI = (inputs: Record<string, number>) => {
+    const results: Record<string, any> = {};
+    
+    // Get common input values
+    const currentRevenue = inputs['Current Revenue'] || inputs['Current Spending on Styling'] || 0;
+    const currentCosts = inputs['Current Costs'] || 0;
+    const conversionRate = inputs['Conversion Rate'] || inputs['Number of Styling Sessions'] || 0;
+    const averageTime = inputs['Average Time Spent on Styling'] || 0;
+    
+    // Revenue Optimization Calculations
+    if (currentRevenue > 0) {
+      const optimizedRevenue = currentRevenue * 1.25; // 25% improvement
+      const revenueGain = optimizedRevenue - currentRevenue;
+      const monthlyGain = revenueGain;
+      const yearlyGain = revenueGain * 12;
+      
+      results.revenueOptimization = {
+        current: currentRevenue,
+        optimized: optimizedRevenue,
+        monthlyGain: monthlyGain,
+        yearlyGain: yearlyGain,
+        percentage: 25
+      };
+    }
+    
+    // Cost Reduction Calculations
+    if (currentCosts > 0) {
+      const optimizedCosts = currentCosts * 0.8; // 20% cost reduction
+      const costSavings = currentCosts - optimizedCosts;
+      const monthlySavings = costSavings;
+      const yearlySavings = costSavings * 12;
+      
+      results.costReduction = {
+        current: currentCosts,
+        optimized: optimizedCosts,
+        monthlySavings: monthlySavings,
+        yearlySavings: yearlySavings,
+        percentage: 20
+      };
+    }
+    
+    // Time Efficiency Calculations
+    if (averageTime > 0) {
+      const optimizedTime = averageTime * 0.7; // 30% time savings
+      const timeSaved = averageTime - optimizedTime;
+      const sessionsPerMonth = conversionRate || 4;
+      const monthlyTimeSaved = timeSaved * sessionsPerMonth;
+      
+      results.timeEfficiency = {
+        currentTime: averageTime,
+        optimizedTime: optimizedTime,
+        timeSavedPerSession: timeSaved,
+        monthlyTimeSaved: monthlyTimeSaved,
+        percentage: 30
+      };
+    }
+    
+    // ROI Summary
+    const totalMonthlyBenefit = (results.revenueOptimization?.monthlyGain || 0) + (results.costReduction?.monthlySavings || 0);
+    const totalYearlyBenefit = totalMonthlyBenefit * 12;
+    
+    results.summary = {
+      totalMonthlyBenefit,
+      totalYearlyBenefit,
+      hasResults: Object.keys(inputs).length > 0 && Object.values(inputs).some(v => v > 0)
+    };
+    
+    setCalculationResults(results);
   };
 
   const getFormatDisplayInfo = () => {
@@ -155,8 +245,11 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                       </label>
                       <p className="text-sm text-green-700 mb-2">{field.description}</p>
                       <input
-                        type="text"
+                        type="number"
+                        step="0.01"
                         placeholder={field.placeholder}
+                        value={calculatorInputs[field.field_name] || ''}
+                        onChange={(e) => handleCalculatorInputChange(field.field_name, e.target.value)}
                         className="w-full px-3 py-2 border border-green-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       />
                     </div>
@@ -165,46 +258,132 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </div>
             )}
 
-            {/* Calculation Categories */}
-            {content.calculator_content?.calculation_categories && (
-              <div className="bg-blue-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-blue-900 mb-4">💰 Calculation Results</h2>
+            {/* Real-Time Calculation Results */}
+            <div className="bg-blue-50 rounded-lg p-6 mb-6">
+              <h2 className="text-xl font-semibold text-blue-900 mb-4">💰 Real-Time Calculation Results</h2>
+              {!calculationResults.summary?.hasResults ? (
+                <div className="text-center py-8 text-blue-700">
+                  <p className="text-lg">👆 Enter your data above to see instant calculations!</p>
+                  <p className="text-sm mt-2">Your results will update automatically as you type.</p>
+                </div>
+              ) : (
                 <div className="space-y-4">
-                  {content.calculator_content.calculation_categories.map((category: any, index: number) => (
-                    <div key={index} className="bg-white rounded-lg p-4 border border-blue-200">
-                      <h3 className="font-semibold text-blue-900 mb-2">{category.category_name}</h3>
-                      <p className="text-sm text-blue-700 mb-3">{category.description}</p>
-                      
-                      {category.savings && (
-                        <div className="mb-3">
-                          <h4 className="text-sm font-medium text-blue-800 mb-1">Potential Savings:</h4>
-                          <ul className="text-sm text-blue-700 space-y-1">
-                            {category.savings.map((saving: string, idx: number) => (
-                              <li key={idx}>• {saving}</li>
-                            ))}
-                          </ul>
+                  {/* Revenue Optimization */}
+                  {calculationResults.revenueOptimization && (
+                    <div className="bg-white rounded-lg p-4 border border-blue-200">
+                      <h3 className="font-semibold text-blue-900 mb-2">📈 Revenue Optimization</h3>
+                      <p className="text-sm text-blue-700 mb-3">Potential revenue gains from optimization</p>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-blue-800 font-medium">Current: </span>
+                          <span className="text-blue-900">${calculationResults.revenueOptimization.current.toLocaleString()}</span>
                         </div>
-                      )}
-                      
-                      {category.improvements && (
-                        <div className="mb-3">
-                          <h4 className="text-sm font-medium text-blue-800 mb-1">Improvements:</h4>
-                          <ul className="text-sm text-blue-700 space-y-1">
-                            {category.improvements.map((improvement: string, idx: number) => (
-                              <li key={idx}>• {improvement}</li>
-                            ))}
-                          </ul>
+                        <div>
+                          <span className="text-blue-800 font-medium">Optimized: </span>
+                          <span className="text-green-600 font-bold">${calculationResults.revenueOptimization.optimized.toLocaleString()}</span>
                         </div>
-                      )}
-                      
-                      <div className="text-sm font-medium text-blue-900">
-                        {category.potential_savings || category.potential_gains}
+                        <div>
+                          <span className="text-blue-800 font-medium">Monthly Gain: </span>
+                          <span className="text-green-600 font-bold">+${calculationResults.revenueOptimization.monthlyGain.toLocaleString()}</span>
+                        </div>
+                        <div>
+                          <span className="text-blue-800 font-medium">Yearly Gain: </span>
+                          <span className="text-green-600 font-bold">+${calculationResults.revenueOptimization.yearlyGain.toLocaleString()}</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-sm">
+                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded">
+                          {calculationResults.revenueOptimization.percentage}% improvement
+                        </span>
                       </div>
                     </div>
-                  ))}
+                  )}
+
+                  {/* Cost Reduction */}
+                  {calculationResults.costReduction && (
+                    <div className="bg-white rounded-lg p-4 border border-blue-200">
+                      <h3 className="font-semibold text-blue-900 mb-2">💰 Cost Reduction</h3>
+                      <p className="text-sm text-blue-700 mb-3">Potential cost savings opportunities</p>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-blue-800 font-medium">Current Costs: </span>
+                          <span className="text-blue-900">${calculationResults.costReduction.current.toLocaleString()}</span>
+                        </div>
+                        <div>
+                          <span className="text-blue-800 font-medium">Optimized Costs: </span>
+                          <span className="text-green-600 font-bold">${calculationResults.costReduction.optimized.toLocaleString()}</span>
+                        </div>
+                        <div>
+                          <span className="text-blue-800 font-medium">Monthly Savings: </span>
+                          <span className="text-green-600 font-bold">${calculationResults.costReduction.monthlySavings.toLocaleString()}</span>
+                        </div>
+                        <div>
+                          <span className="text-blue-800 font-medium">Yearly Savings: </span>
+                          <span className="text-green-600 font-bold">${calculationResults.costReduction.yearlySavings.toLocaleString()}</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-sm">
+                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded">
+                          {calculationResults.costReduction.percentage}% cost reduction
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Time Efficiency */}
+                  {calculationResults.timeEfficiency && (
+                    <div className="bg-white rounded-lg p-4 border border-blue-200">
+                      <h3 className="font-semibold text-blue-900 mb-2">⏱️ Time Efficiency</h3>
+                      <p className="text-sm text-blue-700 mb-3">Time savings from optimization</p>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-blue-800 font-medium">Current Time: </span>
+                          <span className="text-blue-900">{calculationResults.timeEfficiency.currentTime} min</span>
+                        </div>
+                        <div>
+                          <span className="text-blue-800 font-medium">Optimized Time: </span>
+                          <span className="text-green-600 font-bold">{calculationResults.timeEfficiency.optimizedTime.toFixed(1)} min</span>
+                        </div>
+                        <div>
+                          <span className="text-blue-800 font-medium">Time Saved/Session: </span>
+                          <span className="text-green-600 font-bold">{calculationResults.timeEfficiency.timeSavedPerSession.toFixed(1)} min</span>
+                        </div>
+                        <div>
+                          <span className="text-blue-800 font-medium">Monthly Time Saved: </span>
+                          <span className="text-green-600 font-bold">{calculationResults.timeEfficiency.monthlyTimeSaved.toFixed(1)} min</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-sm">
+                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded">
+                          {calculationResults.timeEfficiency.percentage}% time savings
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Summary */}
+                  {calculationResults.summary && calculationResults.summary.totalMonthlyBenefit > 0 && (
+                    <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 border-2 border-green-200">
+                      <h3 className="font-bold text-green-900 mb-2">🎯 Total ROI Summary</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="text-center">
+                          <p className="text-sm text-green-700">Total Monthly Benefit</p>
+                          <p className="text-2xl font-bold text-green-600">
+                            ${calculationResults.summary.totalMonthlyBenefit.toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm text-green-700">Total Yearly Benefit</p>
+                          <p className="text-2xl font-bold text-green-600">
+                            ${calculationResults.summary.totalYearlyBenefit.toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Educational Content */}
             {content.educational_content && (
@@ -271,12 +450,38 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
             )}
 
             <div className="text-center">
-              <button 
-                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
-                onClick={() => alert('Advanced calculator functionality with real-time calculations would be implemented here')}
-              >
-                Calculate Results
-              </button>
+              {calculationResults.summary?.hasResults ? (
+                <div className="space-y-4">
+                  <div className="bg-green-100 border border-green-300 rounded-lg p-4">
+                    <h3 className="text-lg font-semibold text-green-800 mb-2">✅ Calculator Complete!</h3>
+                    <p className="text-green-700">
+                      Your personalized ROI analysis is ready. Scroll up to see your detailed results.
+                    </p>
+                  </div>
+                  <button 
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
+                    onClick={() => {
+                      const inputs = Object.entries(calculatorInputs)
+                        .filter(([_, value]) => value > 0)
+                        .map(([key, value]) => `${key}: ${value}`)
+                        .join(', ');
+                      const summary = calculationResults.summary;
+                      const reportText = `ROI Calculator Results:\n\nInputs: ${inputs}\n\nMonthly Benefit: $${summary.totalMonthlyBenefit.toLocaleString()}\nYearly Benefit: $${summary.totalYearlyBenefit.toLocaleString()}`;
+                      navigator.clipboard.writeText(reportText);
+                      alert('Calculator results copied to clipboard!');
+                    }}
+                  >
+                    📋 Copy Results to Clipboard
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">Ready to Calculate?</h3>
+                  <p className="text-gray-600">
+                    Enter your data in the fields above to see real-time ROI calculations.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         );
