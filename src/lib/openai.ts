@@ -924,15 +924,6 @@ RETURN JSON IN THIS EXACT FORMAT:
       }
     ]
   }
-      {
-        "category": "Intermediate Level", 
-        "description": "You understand the problem but need better solutions",
-        "symptoms": ["Tried some approaches", "Partial success", "Need more targeted help"],
-        "action_steps": ["Step 1: Refine approach", "Step 2: Implement advanced tactics", "Step 3: Optimize results"],
-        "timeline": "1-2 weeks to see improvement"
-      }
-    ]
-  }
 }`;
 
     case 'roi_calculator':
