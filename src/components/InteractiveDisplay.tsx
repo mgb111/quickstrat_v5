@@ -140,22 +140,139 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </p>
             </div>
 
-            <div className="bg-green-50 rounded-lg p-6 mb-6">
-              <h2 className="text-xl font-semibold text-green-900 mb-4">💰 What You'll Calculate</h2>
-              <ul className="space-y-2 text-green-800">
-                <li>• Revenue optimization opportunities</li>
-                <li>• Cost reduction potential</li>
-                <li>• Efficiency improvement impact</li>
-                <li>• ROI projections for different strategies</li>
-              </ul>
-            </div>
+            {/* Calculator Input Fields */}
+            {content.calculator_content?.input_fields && (
+              <div className="bg-green-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-green-900 mb-4">📊 Enter Your Data</h2>
+                <div className="space-y-4">
+                  {content.calculator_content.input_fields.map((field: any, index: number) => (
+                    <div key={index} className="bg-white rounded-lg p-4 border border-green-200">
+                      <label className="block text-sm font-medium text-green-900 mb-2">
+                        {field.field_name}
+                      </label>
+                      <p className="text-sm text-green-700 mb-2">{field.description}</p>
+                      <input
+                        type="text"
+                        placeholder={field.placeholder}
+                        className="w-full px-3 py-2 border border-green-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Calculation Categories */}
+            {content.calculator_content?.calculation_categories && (
+              <div className="bg-blue-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-blue-900 mb-4">💰 Calculation Results</h2>
+                <div className="space-y-4">
+                  {content.calculator_content.calculation_categories.map((category: any, index: number) => (
+                    <div key={index} className="bg-white rounded-lg p-4 border border-blue-200">
+                      <h3 className="font-semibold text-blue-900 mb-2">{category.category_name}</h3>
+                      <p className="text-sm text-blue-700 mb-3">{category.description}</p>
+                      
+                      {category.savings && (
+                        <div className="mb-3">
+                          <h4 className="text-sm font-medium text-blue-800 mb-1">Potential Savings:</h4>
+                          <ul className="text-sm text-blue-700 space-y-1">
+                            {category.savings.map((saving: string, idx: number) => (
+                              <li key={idx}>• {saving}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {category.improvements && (
+                        <div className="mb-3">
+                          <h4 className="text-sm font-medium text-blue-800 mb-1">Improvements:</h4>
+                          <ul className="text-sm text-blue-700 space-y-1">
+                            {category.improvements.map((improvement: string, idx: number) => (
+                              <li key={idx}>• {improvement}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      <div className="text-sm font-medium text-blue-900">
+                        {category.potential_savings || category.potential_gains}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Educational Content */}
+            {content.educational_content && (
+              <div className="bg-purple-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-purple-900 mb-4">📚 Insights & Tips</h2>
+                {content.educational_content.insights && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-purple-800 mb-2">Key Insights:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.insights.map((insight: string, index: number) => (
+                        <li key={index}>• {insight}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.educational_content.benchmarks && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-purple-800 mb-2">Industry Benchmarks:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.benchmarks.map((benchmark: string, index: number) => (
+                        <li key={index}>• {benchmark}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.educational_content.case_studies && (
+                  <div>
+                    <h3 className="font-semibold text-purple-800 mb-2">Case Studies:</h3>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      {content.educational_content.case_studies.map((caseStudy: string, index: number) => (
+                        <li key={index}>• {caseStudy}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Interactive Elements */}
+            {content.interactive_elements && (
+              <div className="bg-orange-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-orange-900 mb-4">🚀 Next Steps</h2>
+                {content.interactive_elements.next_steps && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-orange-800 mb-2">Recommended Actions:</h3>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      {content.interactive_elements.next_steps.map((step: string, index: number) => (
+                        <li key={index}>• {step}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {content.interactive_elements.action_items && (
+                  <div>
+                    <h3 className="font-semibold text-orange-800 mb-2">Action Items:</h3>
+                    <ul className="text-sm text-orange-700 space-y-1">
+                      {content.interactive_elements.action_items.map((item: string, index: number) => (
+                        <li key={index}>• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="text-center">
               <button 
                 className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
-                onClick={() => alert('Calculator functionality would be implemented here')}
+                onClick={() => alert('Advanced calculator functionality with real-time calculations would be implemented here')}
               >
-                {formatInfo.actionText}
+                Calculate Results
               </button>
             </div>
           </div>
