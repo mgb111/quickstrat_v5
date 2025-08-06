@@ -80,7 +80,10 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
   const renderInteractiveContent = () => {
     if (!results.pdf_content) return null;
 
-    const content = results.pdf_content;
+    // Parse content if it's a string
+    const content = typeof results.pdf_content === 'string' 
+      ? JSON.parse(results.pdf_content) 
+      : results.pdf_content;
     
     switch (selectedFormat) {
       case 'interactive_quiz':
@@ -407,10 +410,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
         {!emailSubmitted && (
           <div className="mb-8">
             <EmailCapture
-              brandName={brandName}
               onEmailSubmitted={handleEmailSubmitted}
-              description={formatInfo.description}
-              requirePayment={requirePayment}
             />
           </div>
         )}

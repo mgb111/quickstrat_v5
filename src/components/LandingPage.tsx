@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Check, Download, ArrowRight } from 'lucide-react';
-import { Campaign } from '../types';
+import { Campaign, LeadMagnetFormat } from '../types';
 import { CampaignService } from '../lib/campaignService';
+import InteractiveDisplay from './InteractiveDisplay';
 import PDFGenerator from './PDFGenerator';
 
 interface LandingPageProps {
@@ -16,6 +17,34 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
   const [error, setError] = useState<string | null>(null);
   const [showPDF, setShowPDF] = useState(false);
   const [localSubmitting, setLocalSubmitting] = useState(false);
+
+  // Function to detect format from content structure
+  const detectFormatFromContent = (content: any): LeadMagnetFormat => {
+    if (!content || typeof content === 'string') {
+      try {
+        content = typeof content === 'string' ? JSON.parse(content) : content;
+      } catch {
+        return 'pdf'; // Default fallback
+      }
+    }
+
+    // Check for interactive format indicators
+    if (content.calculator_content) return 'roi_calculator';
+    if (content.quiz_content) return 'interactive_quiz';
+    if (content.action_plan_content) return 'action_plan';
+    if (content.benchmark_content) return 'benchmark_report';
+    if (content.opportunity_content) return 'opportunity_finder';
+    
+    // Check title for format indicators
+    const title = content.title_page?.title || content.title || '';
+    if (title.includes('Calculator') || title.includes('ROI Calculator')) return 'roi_calculator';
+    if (title.includes('Quiz') || title.includes('Interactive Quiz')) return 'interactive_quiz';
+    if (title.includes('Action Plan')) return 'action_plan';
+    if (title.includes('Benchmark Report')) return 'benchmark_report';
+    if (title.includes('Opportunity Finder')) return 'opportunity_finder';
+
+    return 'pdf'; // Default fallback
+  };
   
   
 
@@ -179,58 +208,83 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
             </p>
           </div>
         ) : null}
-        {/* PDF Download */}
-        {isSubmitted && showPDF && campaign.lead_magnet_content && (
-          <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Your Free Guide</h3>
-            <PDFGenerator
-              data={(() => {
-                const parsedContent = typeof campaign.lead_magnet_content === 'string'
-                  ? JSON.parse(campaign.lead_magnet_content)
-                  : campaign.lead_magnet_content;
-                if (parsedContent.structured_content && parsedContent.structured_content.toolkit_sections) {
-                  const hasProperTypes = parsedContent.structured_content.toolkit_sections.some((section: any) => section.type);
-                  if (!hasProperTypes) {
-                    console.log('Fixing missing types in LandingPage...');
-                    const fixedStructuredContent = {
-                      ...parsedContent.structured_content,
-                      toolkit_sections: parsedContent.structured_content.toolkit_sections.map((section: any) => ({
-                        ...section,
-                        type: section.title?.toLowerCase().includes('script') ? 'scripts' : 
-                              section.title?.toLowerCase().includes('checklist') ? 'checklist' : 'pros_and_cons_list'
-                      }))
-                    };
-                    parsedContent.structured_content = fixedStructuredContent;
+        {/* Content Display - Interactive or PDF based on detected format */}
+        {isSubmitted && showPDF && campaign.lead_magnet_content && (() => {
+          const detectedFormat = detectFormatFromContent(campaign.lead_magnet_content);
+          const brandName = campaign.name?.split(' - ')[0] || '';
+          
+          console.log('🎯 LandingPage: detectedFormat =', detectedFormat);
+          console.log('🎯 LandingPage: campaign.lead_magnet_content =', campaign.lead_magnet_content);
+          
+          // Show InteractiveDisplay for interactive formats
+          if (detectedFormat !== 'pdf') {
+            return (
+              <InteractiveDisplay 
+                results={{
+                  pdf_content: campaign.lead_magnet_content,
+                  landing_page: campaign.landing_page_copy || { headline: '', subheadline: '', benefit_bullets: [], cta_button_text: '' },
+                  social_posts: { linkedin: '', twitter: '', instagram: '', reddit: '' }
+                }}
+                selectedFormat={detectedFormat}
+                brandName={brandName}
+                requirePayment={false}
+              />
+            );
+          }
+          
+          // Show PDFGenerator for PDF format
+          return (
+            <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Your Free Guide</h3>
+              <PDFGenerator
+                data={(() => {
+                  const parsedContent = typeof campaign.lead_magnet_content === 'string'
+                    ? JSON.parse(campaign.lead_magnet_content)
+                    : campaign.lead_magnet_content;
+                  if (parsedContent.structured_content && parsedContent.structured_content.toolkit_sections) {
+                    const hasProperTypes = parsedContent.structured_content.toolkit_sections.some((section: any) => section.type);
+                    if (!hasProperTypes) {
+                      console.log('Fixing missing types in LandingPage...');
+                      const fixedStructuredContent = {
+                        ...parsedContent.structured_content,
+                        toolkit_sections: parsedContent.structured_content.toolkit_sections.map((section: any) => ({
+                          ...section,
+                          type: section.title?.toLowerCase().includes('script') ? 'scripts' : 
+                                section.title?.toLowerCase().includes('checklist') ? 'checklist' : 'pros_and_cons_list'
+                        }))
+                      };
+                      parsedContent.structured_content = fixedStructuredContent;
+                    }
                   }
-                }
-                
-                // Extract founder information for old campaigns
-                const founderName = campaign.customer_profile?.split(' ')[0] || '';
-                const brandName = campaign.name?.split(' - ')[0] || '';
-                
-                return {
-                  ...parsedContent,
-                  founderName: parsedContent.founderName || founderName,
-                  brandName: parsedContent.brandName || brandName,
-                  problemStatement: parsedContent.problemStatement || campaign.problem_statement || '',
-                  desiredOutcome: parsedContent.desiredOutcome || campaign.desired_outcome || '',
-                  // Add customization fields with defaults for old campaigns
-                  ctaText: parsedContent.ctaText || 'Ready to take your business to the next level?',
-                  mainAction: parsedContent.mainAction || 'Book a Free Strategy Call',
-                  bookingLink: parsedContent.bookingLink || '',
-                  website: parsedContent.website || '',
-                  supportEmail: parsedContent.supportEmail || '',
-                  logo: parsedContent.logo || '',
-                  primaryColor: parsedContent.primaryColor || '#1a365d',
-                  secondaryColor: parsedContent.secondaryColor || '#4a90e2',
-                  font: parsedContent.font || 'Inter'
-                };
-              })()}
-              campaignId={campaign.id}
-              requirePayment={false}
-            />
-          </div>
-        )}
+                  
+                  // Extract founder information for old campaigns
+                  const founderName = campaign.customer_profile?.split(' ')[0] || '';
+                  
+                  return {
+                    ...parsedContent,
+                    founderName: parsedContent.founderName || founderName,
+                    brandName: parsedContent.brandName || brandName,
+                    problemStatement: parsedContent.problemStatement || campaign.problem_statement || '',
+                    desiredOutcome: parsedContent.desiredOutcome || campaign.desired_outcome || '',
+                    // Add customization fields with defaults for old campaigns
+                    ctaText: parsedContent.ctaText || 'Ready to take your business to the next level?',
+                    mainAction: parsedContent.mainAction || 'Book a Free Strategy Call',
+                    bookingLink: parsedContent.bookingLink || '',
+                    website: parsedContent.website || '',
+                    supportEmail: parsedContent.supportEmail || '',
+                    logo: parsedContent.logo || '',
+                    primaryColor: parsedContent.primaryColor || '#1a365d',
+                    secondaryColor: parsedContent.secondaryColor || '#4a90e2',
+                    font: parsedContent.font || 'Inter'
+                  };
+                })()}
+                campaignId={campaign.id}
+                requirePayment={false}
+                selectedFormat={detectedFormat}
+              />
+            </div>
+          );
+        })()}
       </main>
 
       {/* Footer */}

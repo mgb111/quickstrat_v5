@@ -258,8 +258,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
     }
   };
 
-  // Get the processed content
-  const pdfContentRaw = emailSubmitted ? processPdfContent() : null;
+  // Get the processed content - only process as PDF if it's actually a PDF format
+  const pdfContentRaw = emailSubmitted && selectedFormat === 'pdf' ? processPdfContent() : null;
   // Provide required PDFContent fields, using props for founder intro
   const pdfContent = pdfContentRaw ? {
     ...pdfContentRaw,
@@ -334,7 +334,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
               {pdfError ? `⚠️ ${pdfError}` : formatInfo.successMessage}
             </p>
           </div>
-                      {pdfContent && (
+                      {(pdfContent || (selectedFormat && selectedFormat !== 'pdf' && results.pdf_content)) && (
               selectedFormat && selectedFormat !== 'pdf' ? (
                 <InteractiveDisplay 
                   results={results} 
@@ -343,7 +343,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
                   requirePayment={requirePayment} 
                 />
               ) : (
-                <PDFGenerator data={pdfContent} campaignId={''} requirePayment={requirePayment} selectedFormat={selectedFormat} />
+                pdfContent && <PDFGenerator data={pdfContent} campaignId={''} requirePayment={requirePayment} selectedFormat={selectedFormat} />
               )
             )}
         </div>
