@@ -232,15 +232,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* Create New Campaign Button */}
-      <div className="mb-8">
-        <button
-          onClick={onNewCampaign}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
-        >
-          Create New Campaign
-        </button>
-      </div>
       
       {/* Navigation or tab bar would be here if present */}
       {draftCampaigns.length > 0 && (

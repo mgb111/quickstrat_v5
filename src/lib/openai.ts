@@ -1358,116 +1358,49 @@ ${founderIntro}
 
 ${valueStandards}
 
-CREATE A COMPREHENSIVE IMPLEMENTATION SYSTEM:
+GENERATE CONTENT DIRECTLY FROM THE OUTLINE:
 
-This must be a complete, plug-and-play system with everything needed for success.
+Create comprehensive, actionable content based on the outline structure. Do NOT use any template or generic structure.
 
-REQUIRED STRUCTURE:
-1. **System Overview**: The complete process from start to finish
-2. **Implementation Phases**: 3-5 phases with exact steps and timelines
-3. **Tool Arsenal**: 15+ templates, scripts, checklists, and frameworks
-4. **Case Studies**: 3+ detailed examples with specific results
-5. **Troubleshooting Guide**: Common problems and exact solutions
-6. **Optimization Strategies**: How to improve results over time
+OUTLINE DETAILS:
+- Title: ${outline.title}
+- Introduction: ${outline.introduction}
+- Core Points: ${outline.core_points?.join(', ') || 'Not specified'}
+- Main Sections: ${outline.sections?.map(s => s.title).join(', ') || 'Not specified'}
 
 CRITICAL REQUIREMENTS:
-- Include step-by-step processes with exact instructions
-- Provide comprehensive tool kit with templates and scripts
-- Include detailed case studies with measurable results
-- Cover common mistakes and how to avoid them
+- Generate content that directly addresses the outline structure
+- Create specific, actionable strategies based on the outline
+- Provide detailed implementation steps that match the outline
+- Include relevant tools, templates, and frameworks
+- Make everything specific to the topic and audience
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
   "structured_content": {
     "title_page": {
       "title": "${outline.title}",
-      "subtitle": "A step-by-step blueprint to help you achieve your goals"
+      "subtitle": "A comprehensive guide to help you achieve your goals"
     },
-    "introduction": "Complete introduction explaining the system and what users will achieve",
+    "introduction": "Write a compelling introduction that explains the specific problem this guide solves and what results users will achieve. Make it personal and credible.",
     "toolkit_sections": [
       {
-        "title": "Strategy Analysis",
-        "type": "pros_and_cons_list",
-        "content": {
-          "items": [
-            {
-              "method_name": "Strategy 1: [Specific Method Name]",
-              "pros": "• Immediate impact on [specific metric]\n• Easy to implement with [specific tool]\n• Proven to work in [specific industry/situation]\n• Cost-effective with [specific budget range]",
-              "cons": "• Requires [specific time commitment]\n• May need [specific resources]\n• Initial learning curve of [specific timeframe]"
-            },
-            {
-              "method_name": "Strategy 2: [Specific Method Name]",
-              "pros": "• Delivers [specific result] within [timeframe]\n• Scalable to [specific growth level]\n• Integrates with [specific existing systems]\n• ROI of [specific percentage]",
-              "cons": "• Requires [specific investment]\n• Needs [specific expertise]\n• Takes [specific timeframe] to see results"
-            },
-            {
-              "method_name": "Strategy 3: [Specific Method Name]",
-              "pros": "• Addresses [specific pain point] directly\n• Provides [specific measurable outcome]\n• Works with [specific constraints]\n• Delivers [specific value proposition]",
-              "cons": "• Requires [specific upfront work]\n• May need [specific adjustments]\n• Initial setup takes [specific time]"
-            }
-          ]
-        }
+        "title": "[Generate a relevant section title based on the outline]",
+        "type": "[Choose the most appropriate type: pros_and_cons_list, checklist, scripts, step_by_step_guide, template, mistakes_to_avoid]",
+        "content": "[Generate content that directly addresses the outline. Make it specific, actionable, and relevant to the topic. Do not use any template or framework - create unique content based on the outline.]"
       },
       {
-        "title": "Action Checklist",
-        "type": "checklist",
-        "content": {
-          "phases": [
-            {
-              "phase_title": "Phase 1: Foundation Setup (Days 1-7)",
-              "items": [
-                "Set up your [specific tool/system]",
-                "Create your [specific tracking mechanism]",
-                "Establish your [specific baseline metrics]",
-                "Prepare your [specific resources]"
-              ]
-            },
-            {
-              "phase_title": "Phase 2: Implementation (Days 8-21)",
-              "items": [
-                "Execute [specific daily actions]",
-                "Track [specific key metrics]",
-                "Optimize based on [specific feedback]",
-                "Scale [specific successful elements]"
-              ]
-            },
-            {
-              "phase_title": "Phase 3: Optimization (Days 22-30)",
-              "items": [
-                "Analyze [specific performance data]",
-                "Refine [specific processes]",
-                "Implement [specific improvements]",
-                "Prepare for [specific next phase]"
-              ]
-            }
-          ]
-        }
+        "title": "[Generate another relevant section title based on the outline]",
+        "type": "[Choose the most appropriate type: pros_and_cons_list, checklist, scripts, step_by_step_guide, template, mistakes_to_avoid]",
+        "content": "[Generate content that directly addresses the outline. Make it specific, actionable, and relevant to the topic. Do not use any template or framework - create unique content based on the outline.]"
       },
       {
-        "title": "Conversation Scripts",
-        "type": "scripts",
-        "content": {
-          "scenarios": [
-            {
-              "trigger": "When someone says [specific objection/question]",
-              "response": "You say: [specific proven response that addresses the concern]",
-              "explanation": "This works because [specific psychological principle or proven tactic]"
-            },
-            {
-              "trigger": "When someone asks [specific question]",
-              "response": "You say: [specific response that provides value and builds trust]",
-              "explanation": "This approach [specific benefit or outcome it delivers]"
-            },
-            {
-              "trigger": "When someone shows [specific interest signal]",
-              "response": "You say: [specific response that capitalizes on the opportunity]",
-              "explanation": "This converts because [specific conversion principle or tactic]"
-            }
-          ]
-        }
+        "title": "[Generate another relevant section title based on the outline]",
+        "type": "[Choose the most appropriate type: pros_and_cons_list, checklist, scripts, step_by_step_guide, template, mistakes_to_avoid]",
+        "content": "[Generate content that directly addresses the outline. Make it specific, actionable, and relevant to the topic. Do not use any template or framework - create unique content based on the outline.]"
       }
     ],
-    "cta": "Ready to take your business to the next level? Download your complete system now."
+    "cta": "Ready to implement these strategies? Download your complete guide now."
   }
 }`;
 
