@@ -1367,15 +1367,6 @@ CRITICAL REQUIREMENTS:
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
-  "founder_intro": "Personal introduction explaining the complete system and guaranteed results users will get",
-  "title_page": {
-    "title": "${outline.title}",
-    "subtitle": "The Complete System with Templates, Tools, and Case Studies"
-  },
-  "introduction_page": {
-    "title": "Why This System Eliminates All Guesswork",
-    "content": "Explain the comprehensive approach and what complete results they'll achieve"
-  },
   "structured_content": {
     "title_page": {
       "title": "${outline.title}",
