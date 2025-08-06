@@ -232,6 +232,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+
       
       {/* Navigation or tab bar would be here if present */}
       {draftCampaigns.length > 0 && (

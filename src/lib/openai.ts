@@ -1379,31 +1379,31 @@ CRITICAL REQUIREMENTS:
 RETURN JSON IN THIS EXACT FORMAT:
 {
   "structured_content": {
-    "title_page": {
+  "title_page": {
       "title": "${outline.title}",
       "subtitle": "A step-by-step blueprint to help you achieve your goals"
     },
-    "introduction": "${outline.introduction}",
-    "toolkit_sections": [
-      {
+    "introduction": "Complete introduction explaining the system and what users will achieve",
+  "toolkit_sections": [
+    {
         "title": "Strategy Analysis",
         "type": "pros_and_cons_list",
         "content": {
           "items": [
             {
-              "method_name": "Strategy 1: ${outline.sections?.[0]?.title || 'Primary Strategy'}",
-              "pros": "${outline.sections?.[0]?.key_points?.join('\\n• ') || '• Immediate impact on results\\n• Easy to implement\\n• Proven to work\\n• Cost-effective'}",
-              "cons": "• Requires time commitment\\n• May need resources\\n• Initial learning curve"
+              "method_name": "Strategy 1: [Specific Method Name]",
+              "pros": "• Immediate impact on [specific metric]\n• Easy to implement with [specific tool]\n• Proven to work in [specific industry/situation]\n• Cost-effective with [specific budget range]",
+              "cons": "• Requires [specific time commitment]\n• May need [specific resources]\n• Initial learning curve of [specific timeframe]"
             },
             {
-              "method_name": "Strategy 2: ${outline.sections?.[1]?.title || 'Secondary Strategy'}",
-              "pros": "${outline.sections?.[1]?.key_points?.join('\\n• ') || '• Delivers specific results\\n• Scalable approach\\n• Integrates with existing systems\\n• High ROI'}",
-              "cons": "• Requires investment\\n• Needs expertise\\n• Takes time to see results"
+              "method_name": "Strategy 2: [Specific Method Name]",
+              "pros": "• Delivers [specific result] within [timeframe]\n• Scalable to [specific growth level]\n• Integrates with [specific existing systems]\n• ROI of [specific percentage]",
+              "cons": "• Requires [specific investment]\n• Needs [specific expertise]\n• Takes [specific timeframe] to see results"
             },
             {
-              "method_name": "Strategy 3: ${outline.sections?.[2]?.title || 'Advanced Strategy'}",
-              "pros": "${outline.sections?.[2]?.key_points?.join('\\n• ') || '• Addresses core challenges\\n• Provides measurable outcomes\\n• Works with constraints\\n• Delivers value'}",
-              "cons": "• Requires upfront work\\n• May need adjustments\\n• Initial setup time"
+              "method_name": "Strategy 3: [Specific Method Name]",
+              "pros": "• Addresses [specific pain point] directly\n• Provides [specific measurable outcome]\n• Works with [specific constraints]\n• Delivers [specific value proposition]",
+              "cons": "• Requires [specific upfront work]\n• May need [specific adjustments]\n• Initial setup takes [specific time]"
             }
           ]
         }
@@ -1416,28 +1416,28 @@ RETURN JSON IN THIS EXACT FORMAT:
             {
               "phase_title": "Phase 1: Foundation Setup (Days 1-7)",
               "items": [
-                "Set up your foundation based on ${outline.sections?.[0]?.content || 'your specific needs'}",
-                "Create your tracking system for ${outline.sections?.[1]?.content || 'measuring progress'}",
-                "Establish your baseline using ${outline.sections?.[2]?.content || 'current metrics'}",
-                "Prepare your resources for ${outline.sections?.[3]?.content || 'implementation'}"
+                "Set up your [specific tool/system]",
+                "Create your [specific tracking mechanism]",
+                "Establish your [specific baseline metrics]",
+                "Prepare your [specific resources]"
               ]
             },
             {
               "phase_title": "Phase 2: Implementation (Days 8-21)",
               "items": [
-                "Execute daily actions from ${outline.sections?.[0]?.title || 'your strategy'}",
-                "Track key metrics related to ${outline.sections?.[1]?.title || 'your goals'}",
-                "Optimize based on feedback from ${outline.sections?.[2]?.title || 'your progress'}",
-                "Scale successful elements of ${outline.sections?.[3]?.title || 'your approach'}"
+                "Execute [specific daily actions]",
+                "Track [specific key metrics]",
+                "Optimize based on [specific feedback]",
+                "Scale [specific successful elements]"
               ]
             },
             {
               "phase_title": "Phase 3: Optimization (Days 22-30)",
               "items": [
-                "Analyze performance data from ${outline.sections?.[0]?.content || 'your implementation'}",
-                "Refine processes based on ${outline.sections?.[1]?.content || 'your results'}",
-                "Implement improvements from ${outline.sections?.[2]?.content || 'your learnings'}",
-                "Prepare for next phase using ${outline.sections?.[3]?.content || 'your insights'}"
+                "Analyze [specific performance data]",
+                "Refine [specific processes]",
+                "Implement [specific improvements]",
+                "Prepare for [specific next phase]"
               ]
             }
           ]
@@ -1449,25 +1449,25 @@ RETURN JSON IN THIS EXACT FORMAT:
         "content": {
           "scenarios": [
             {
-              "trigger": "When someone shows interest in ${outline.title}",
-              "response": "You say: Let me show you how ${outline.main_value_proposition} can help you achieve your goals.",
-              "explanation": "This works because it addresses their specific needs and provides immediate value."
+              "trigger": "When someone says [specific objection/question]",
+              "response": "You say: [specific proven response that addresses the concern]",
+              "explanation": "This works because [specific psychological principle or proven tactic]"
             },
             {
-              "trigger": "When someone asks about ${outline.sections?.[0]?.title || 'your approach'}",
-              "response": "You say: Great question! Let me explain how ${outline.sections?.[0]?.content} specifically addresses that concern.",
-              "explanation": "This approach builds trust by providing personalized, relevant information."
+              "trigger": "When someone asks [specific question]",
+              "response": "You say: [specific response that provides value and builds trust]",
+              "explanation": "This approach [specific benefit or outcome it delivers]"
             },
             {
-              "trigger": "When someone is ready to take action on ${outline.title}",
-              "response": "You say: Perfect! Let's get you started with ${outline.sections?.[0]?.key_points?.[0] || 'the first step'} right now.",
-              "explanation": "This converts because it capitalizes on their momentum and provides immediate next steps."
+              "trigger": "When someone shows [specific interest signal]",
+              "response": "You say: [specific response that capitalizes on the opportunity]",
+              "explanation": "This converts because [specific conversion principle or tactic]"
             }
           ]
         }
       }
     ],
-    "cta": "Ready to take your ${input.niche} to the next level? Download your complete system now."
+    "cta": "Ready to take your business to the next level? Download your complete system now."
   }
 }`;
 
