@@ -225,7 +225,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
             </div>
 
             {/* Dynamic Quiz - Based on AI Content */}
-            {content.quiz_content?.questions && (
+            {Array.isArray(content.quiz_content?.questions) && content.quiz_content.questions.length > 0 ? (
               <div className="bg-blue-50 rounded-lg p-6 mb-6">
                 <h2 className="text-xl font-semibold text-blue-900 mb-4">📋 {content.quiz_content.title || 'Your Diagnostic Checklist'}</h2>
                 <p className="text-blue-700 mb-6">{content.quiz_content.description}</p>
@@ -290,6 +290,11 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                     </button>
                   </div>
                 )}
+              </div>
+            ) : (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center mb-6">
+                <h3 className="text-lg font-semibold text-red-800 mb-2">Quiz Not Available</h3>
+                <p className="text-red-700">Sorry, the interactive quiz could not be loaded. Please try again later or contact support if this issue persists.</p>
               </div>
             )}
 

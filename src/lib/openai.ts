@@ -559,7 +559,7 @@ REQUIRED STRUCTURE:
 4. **Action Protocols**: Exact next steps for each diagnosis type
 5. **Success Tracking**: How to measure improvement
 
-RETURN JSON IN THIS EXACT FORMAT:
+RETURN ONLY VALID JSON IN THIS EXACT FORMAT. DO NOT INCLUDE MARKDOWN, EXPLANATION, OR EXTRA TEXT. IF YOU CANNOT GENERATE THE QUIZ, RETURN A STATIC FALLBACK QUIZ WITH 10 GENERIC QUESTIONS IN THE SAME FORMAT:
 {
   "structured_content": {
     "title_page": {
