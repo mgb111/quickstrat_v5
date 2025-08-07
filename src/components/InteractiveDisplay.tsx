@@ -38,6 +38,11 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
     ? JSON.parse(results.pdf_content)
     : results.pdf_content;
 
+  // For interactive quizzes, the quiz content is nested under structured_content
+  const quizContent = selectedFormat === 'interactive_quiz' 
+    ? content?.structured_content?.quiz_content 
+    : content?.quiz_content;
+
 
   // Handle calculator input changes
   const handleCalculatorInputChange = (fieldName: string, value: string) => {
@@ -87,7 +92,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
     }
 
     // Find the matching result from the quiz content
-    const matchingResult = content?.quiz_content?.results?.find((result: any) => 
+    const matchingResult = quizContent?.results?.find((result: any) => 
       result.category === resultCategory
     );
 
@@ -225,13 +230,13 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
             </div>
 
             {/* Dynamic Quiz - Based on AI Content */}
-            {Array.isArray(content.quiz_content?.questions) && content.quiz_content.questions.length > 0 ? (
+            {Array.isArray(quizContent?.questions) && quizContent.questions.length > 0 ? (
               <div className="bg-blue-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-blue-900 mb-4">📋 {content.quiz_content.title || 'Your Diagnostic Checklist'}</h2>
-                <p className="text-blue-700 mb-6">{content.quiz_content.description}</p>
+                <h2 className="text-xl font-semibold text-blue-900 mb-4">📋 {quizContent.title || 'Your Diagnostic Checklist'}</h2>
+                <p className="text-blue-700 mb-6">{quizContent.description}</p>
                 
                 <div className="space-y-6">
-                  {content.quiz_content.questions.map((question: any, index: number) => (
+                  {quizContent.questions.map((question: any, index: number) => (
                     <div key={question.id || index} className="bg-white rounded-lg p-6 border border-blue-200">
                       <h3 className="font-semibold text-blue-900 mb-4">
                         Question {question.id || index + 1}: {question.question}
