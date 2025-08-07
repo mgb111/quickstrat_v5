@@ -567,9 +567,14 @@ RESULTS REQUIREMENTS:
   - success_metrics: 3-5, measurable, specific to [topic/problem]
   - recommendations: 3-5, actionable, specific to [topic/problem]
 - The 'category' string must match exactly as above.
-- If you cannot generate a result, use a static fallback with [topic/problem] inserted.
 
-RETURN ONLY VALID JSON IN THIS EXACT FORMAT. DO NOT INCLUDE MARKDOWN, EXPLANATION, OR EXTRA TEXT. IF YOU CANNOT GENERATE THE QUIZ, RETURN A STATIC FALLBACK QUIZ WITH 10 GENERIC QUESTIONS IN THE SAME FORMAT:
+STRICT OUTPUT POLICY:
+- Return ONLY valid JSON. DO NOT include markdown, explanation, or extra text.
+- DO NOT return any static fallback or generic content. If you cannot generate a fully customized, topic-specific result for ALL 4 categories, you must try again internally until you succeed.
+- Any generic, fallback, or non-topic-specific content is UNACCEPTABLE and will be rejected.
+- The response must be fully customized, topic-specific, and valid JSON, or nothing.
+
+RETURN ONLY VALID JSON IN THIS EXACT FORMAT:
 {
   "structured_content": {
     "title_page": {
