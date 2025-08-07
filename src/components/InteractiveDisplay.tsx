@@ -91,10 +91,11 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
       resultCategory = 'Strategic Master';
     }
 
-    // Find the matching result from the quiz content
-    const matchingResult = quizContent?.results?.find((result: any) => 
-      result.category === resultCategory
-    );
+    // Find the matching result from the quiz content (prefer AI-generated, customized result)
+    let matchingResult = null;
+    if (quizContent?.results && Array.isArray(quizContent.results)) {
+      matchingResult = quizContent.results.find((result: any) => result.category === resultCategory);
+    }
 
     if (matchingResult) {
       setQuizResults({
@@ -103,7 +104,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
         categoryScores: totalScores
       });
     } else {
-      // Fallback result if no matching category found
+      // Only use the fallback if the AI result is missing or malformed
       setQuizResults({
         category: resultCategory,
         description: 'Based on your answers, we\'ve identified your current level and created a personalized action plan.',
