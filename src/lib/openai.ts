@@ -552,89 +552,89 @@ ${founderIntro}
 
 ${valueStandards}
 
-CREATE A GENERIC VALIDATION CHECKLIST QUIZ:
+CREATE A SPECIFIC VALIDATION CHECKLIST QUIZ FOR ${input.niche.toUpperCase()}:
 
-This must be a comprehensive validation checklist that provides immediate scoring and actionable feedback for any scenario.
+This must be a comprehensive validation checklist that provides immediate scoring and actionable feedback specifically for ${input.niche} problems.
 
 REQUIRED STRUCTURE:
-1. **Quiz Title**: "[Topic] Validation Checklist"
-2. **Subtitle**: "Validate your [topic] in 2 minutes. Get your score and actionable feedback."
-3. **Introduction**: Brief explanation of the validation process
-4. **Checklist Items**: 10-12 validation criteria with clear yes/no options
+1. **Quiz Title**: "${input.niche} Validation Checklist"
+2. **Subtitle**: "Validate your ${input.niche} approach in 2 minutes. Get your score and actionable feedback."
+3. **Introduction**: Brief explanation of the validation process for ${input.niche}
+4. **Checklist Items**: 10-12 validation criteria specific to ${input.niche} with clear yes/no options
 5. **Scoring System**: 0-10 scale with specific score ranges
 6. **Results Categories**: 3-4 result categories based on score ranges
 7. **Actionable Feedback**: Specific next steps for each result category
 
 CRITICAL REQUIREMENTS:
-- Make it applicable to ANY industry or scenario
-- Use generic validation criteria that work across domains
+- Make it specific to ${input.niche} and ${input.problem_statement}
+- Use validation criteria that work for ${input.niche} problems
 - Provide clear scoring logic (1 point per checked item)
 - Include specific actionable feedback for each score range
-- Make the language adaptable to any topic
+- Make the language specific to ${input.niche} challenges
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
   "structured_content": {
     "title_page": {
-      "title": "[Topic] Validation Checklist",
-      "subtitle": "Validate your [topic] in 2 minutes. Get your score and actionable feedback."
+      "title": "${input.niche} Validation Checklist",
+      "subtitle": "Validate your ${input.niche} approach in 2 minutes. Get your score and actionable feedback."
     },
     "introduction_page": {
-      "title": "[Topic] Validation Checklist",
-      "content": "Complete the checklist below to get your personalized validation score. Each item you check will improve your score and help you understand how well-validated your [topic] is."
+      "title": "${input.niche} Validation Checklist",
+      "content": "Complete the checklist below to get your personalized validation score. Each item you check will improve your score and help you understand how well-validated your ${input.niche} approach is."
     },
     "quiz_content": {
-      "title": "[Topic] Validation Checklist",
-      "introduction": "Complete the checklist below to get your personalized validation score. Each item you check will improve your score and help you understand how well-validated your [topic] is.",
+      "title": "${input.niche} Validation Checklist",
+      "introduction": "Complete the checklist below to get your personalized validation score. Each item you check will improve your score and help you understand how well-validated your ${input.niche} approach is.",
       "checklist_items": [
         {
           "id": 1,
-          "text": "I clearly understand the problem I'm solving",
+          "text": "I clearly understand the ${input.niche} problem I'm solving",
           "category": "problem_validation"
         },
         {
           "id": 2,
-          "text": "I can identify my target audience precisely",
+          "text": "I can identify my ${input.niche} target audience precisely",
           "category": "audience_validation"
         },
         {
           "id": 3,
-          "text": "I've seen this problem discussed online (e.g. Reddit, forums)",
+          "text": "I've seen this ${input.niche} problem discussed online (e.g. Reddit, forums)",
           "category": "market_validation"
         },
         {
           "id": 4,
-          "text": "I've spoken to at least 3 real users about this",
+          "text": "I've spoken to at least 3 real ${input.niche} users about this",
           "category": "user_validation"
         },
         {
           "id": 5,
-          "text": "I know how users currently solve this problem",
+          "text": "I know how ${input.niche} users currently solve this problem",
           "category": "solution_validation"
         },
         {
           "id": 6,
-          "text": "I've identified weaknesses in existing solutions",
+          "text": "I've identified weaknesses in existing ${input.niche} solutions",
           "category": "competitive_validation"
         },
         {
           "id": 7,
-          "text": "I have a simple MVP idea to test",
+          "text": "I have a simple ${input.niche} MVP idea to test",
           "category": "execution_validation"
         },
         {
           "id": 8,
-          "text": "I've validated interest with a landing page or post",
+          "text": "I've validated ${input.niche} interest with a landing page or post",
           "category": "demand_validation"
         },
         {
           "id": 9,
-          "text": "I know how I'll reach my first 10 users",
+          "text": "I know how I'll reach my first 10 ${input.niche} users",
           "category": "distribution_validation"
         },
         {
           "id": 10,
-          "text": "I've received feedback and iterated",
+          "text": "I've received ${input.niche} feedback and iterated",
           "category": "iteration_validation"
         }
       ],
@@ -644,45 +644,45 @@ RETURN JSON IN THIS EXACT FORMAT:
           {
             "range": "0-3",
             "title": "❌ Too risky right now",
-            "description": "Your [topic] needs significant validation before considering moving forward. You're missing critical validation steps that successful [industry] typically complete. Focus on market research, user interviews, and problem validation. Moving forward now would be risky - invest time in validation to increase your chances of success.",
+            "description": "Your ${input.niche} approach needs significant validation before considering moving forward. You're missing critical validation steps that successful ${input.niche} professionals typically complete. Focus on market research, user interviews, and problem validation. Moving forward now would be risky - invest time in validation to increase your chances of success.",
             "next_steps": [
-              "Conduct 5+ user interviews",
-              "Research online discussions about your problem",
-              "Create a simple landing page to test interest",
-              "Identify your exact target audience"
+              "Conduct 5+ ${input.niche} user interviews",
+              "Research online discussions about your ${input.niche} problem",
+              "Create a simple ${input.niche} landing page to test interest",
+              "Identify your exact ${input.niche} target audience"
             ]
           },
           {
             "range": "4-6",
             "title": "⚠️ Needs more validation",
-            "description": "Your [topic] shows some promise but needs more validation before proceeding. You've completed some key validation steps but are missing critical elements. Focus on the areas you haven't validated yet to reduce risk and increase confidence.",
+            "description": "Your ${input.niche} approach shows some promise but needs more validation before proceeding. You've completed some key validation steps but are missing critical elements. Focus on the areas you haven't validated yet to reduce risk and increase confidence.",
             "next_steps": [
-              "Fill the gaps in your validation",
-              "Test your assumptions with real users",
-              "Refine your target audience definition",
-              "Research competitive solutions more deeply"
+              "Fill the gaps in your ${input.niche} validation",
+              "Test your ${input.niche} assumptions with real users",
+              "Refine your ${input.niche} target audience definition",
+              "Research competitive ${input.niche} solutions more deeply"
             ]
           },
           {
             "range": "7-8",
             "title": "✅ Well validated",
-            "description": "Your [topic] is well-validated and ready for the next phase. You've completed most critical validation steps and have a solid foundation. You can proceed with confidence, but continue gathering feedback as you move forward.",
+            "description": "Your ${input.niche} approach is well-validated and ready for the next phase. You've completed most critical validation steps and have a solid foundation. You can proceed with confidence, but continue gathering feedback as you move forward.",
             "next_steps": [
-              "Start building your MVP",
-              "Begin user acquisition efforts",
-              "Set up feedback collection systems",
-              "Plan your launch strategy"
+              "Start building your ${input.niche} MVP",
+              "Begin ${input.niche} user acquisition efforts",
+              "Set up ${input.niche} feedback collection systems",
+              "Plan your ${input.niche} launch strategy"
             ]
           },
           {
             "range": "9-10",
             "title": "🚀 Highly validated",
-            "description": "Excellent! Your [topic] is highly validated and you're ready to execute. You've completed all critical validation steps and have strong evidence that your idea has merit. You can proceed with high confidence.",
+            "description": "Excellent! Your ${input.niche} approach is highly validated and you're ready to execute. You've completed all critical validation steps and have strong evidence that your idea has merit. You can proceed with high confidence.",
             "next_steps": [
-              "Execute your plan with confidence",
-              "Focus on execution and iteration",
-              "Scale your user acquisition",
-              "Monitor and optimize based on feedback"
+              "Execute your ${input.niche} plan with confidence",
+              "Focus on ${input.niche} execution and iteration",
+              "Scale your ${input.niche} user acquisition",
+              "Monitor and optimize your ${input.niche} approach based on feedback"
             ]
           }
         ]
