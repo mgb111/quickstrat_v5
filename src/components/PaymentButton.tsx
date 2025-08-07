@@ -173,7 +173,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, selectedFo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full flex flex-col items-center relative">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full flex flex-col items-center relative max-h-[90vh] overflow-y-auto">
         {paymentStatus === 'pending' && (
           <>
             <h2 className="text-xl font-bold mb-4">Upgrade to Premium</h2>
