@@ -77,62 +77,21 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, brandName, use
   };
 
   // Format-aware text and actions
-  const getFormatDisplayInfo = () => {
-    const format = selectedFormat || 'pdf';
-    
+  const getFormatDisplayName = (format: LeadMagnetFormat): string => {
     switch (format) {
-      case 'interactive_quiz':
-        return {
-          title: 'Take Quiz',
-          description: 'Enter your email to access your personalized interactive quiz',
-          successMessage: '✅ Email submitted! Your quiz is ready below.',
-          downloadText: 'Take Quiz Now',
-          isInteractive: true
-        };
-      case 'roi_calculator':
-        return {
-          title: 'Use Calculator',
-          description: 'Enter your email to access your personalized ROI calculator',
-          successMessage: '✅ Email submitted! Your calculator is ready below.',
-          downloadText: 'Use Calculator Now',
-          isInteractive: true
-        };
-      case 'action_plan':
-        return {
-          title: 'Get Action Plan',
-          description: 'Enter your email to access your personalized action plan',
-          successMessage: '✅ Email submitted! Your action plan is ready below.',
-          downloadText: 'Get Action Plan',
-          isInteractive: true
-        };
-      case 'benchmark_report':
-        return {
-          title: 'View Report',
-          description: 'Enter your email to access your personalized benchmark report',
-          successMessage: '✅ Email submitted! Your report is ready below.',
-          downloadText: 'View Report Now',
-          isInteractive: true
-        };
-      case 'opportunity_finder':
-        return {
-          title: 'Find Opportunities',
-          description: 'Enter your email to access your personalized opportunity finder',
-          successMessage: '✅ Email submitted! Your opportunity finder is ready below.',
-          downloadText: 'Find Opportunities',
-          isInteractive: true
-        };
-      default: // pdf
-        return {
-          title: 'Download PDF',
-          description: 'Enter your email to access your personalized PDF guide',
-          successMessage: '✅ Email submitted! Your guide is ready below.',
-          downloadText: 'Download as PDF',
-          isInteractive: false
-        };
+      case 'interactive_quiz': return 'Interactive Quiz';
+      case 'pdf': return 'PDF Guide';
+      default: return 'PDF Guide';
     }
   };
 
-  const formatInfo = getFormatDisplayInfo();
+  const formatInfo = {
+    title: getFormatDisplayName(selectedFormat || 'pdf'),
+    description: selectedFormat === 'interactive_quiz' ? 'Enter your email to access your personalized interactive quiz' : 'Enter your email to access your personalized PDF guide',
+    successMessage: '✅ Email submitted! Your guide is ready below.',
+    downloadText: selectedFormat === 'interactive_quiz' ? 'Take Quiz Now' : 'Download as PDF',
+    isInteractive: selectedFormat === 'interactive_quiz'
+  };
 
   // Process PDF content
   const processPdfContent = () => {

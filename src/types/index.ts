@@ -18,10 +18,6 @@ export interface CampaignInput {
 // New types for the 5 lead magnet formats
 export type LeadMagnetFormat = 
   | 'interactive_quiz'
-  | 'roi_calculator'
-  | 'action_plan'
-  | 'benchmark_report'
-  | 'opportunity_finder'
   | 'pdf'; // Keep PDF as an option for backward compatibility
 
 export interface LeadMagnetFormatOption {

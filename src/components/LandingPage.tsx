@@ -18,32 +18,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ campaignSlug }) => {
   const [showPDF, setShowPDF] = useState(false);
   const [localSubmitting, setLocalSubmitting] = useState(false);
 
-  // Function to detect format from content structure
+  // Detect format from content structure
   const detectFormatFromContent = (content: any): LeadMagnetFormat => {
-    if (!content || typeof content === 'string') {
-      try {
-        content = typeof content === 'string' ? JSON.parse(content) : content;
-      } catch {
-        return 'pdf'; // Default fallback
-      }
-    }
+    if (content.interactive_content?.questions) return 'interactive_quiz';
+    if (content.structured_content) return 'pdf';
+    return 'pdf'; // Default to PDF
+  };
 
-    // Check for interactive format indicators
-    if (content.calculator_content) return 'roi_calculator';
-    if (content.quiz_content) return 'interactive_quiz';
-    if (content.action_plan_content) return 'action_plan';
-    if (content.benchmark_content) return 'benchmark_report';
-    if (content.opportunity_content) return 'opportunity_finder';
-    
-    // Check title for format indicators
-    const title = content.title_page?.title || content.title || '';
-    if (title.includes('Calculator') || title.includes('ROI Calculator')) return 'roi_calculator';
-    if (title.includes('Quiz') || title.includes('Interactive Quiz')) return 'interactive_quiz';
-    if (title.includes('Action Plan')) return 'action_plan';
-    if (title.includes('Benchmark Report')) return 'benchmark_report';
-    if (title.includes('Opportunity Finder')) return 'opportunity_finder';
-
-    return 'pdf'; // Default fallback
+  // Detect format from title
+  const detectFormatFromTitle = (title: string): LeadMagnetFormat => {
+    if (title.includes('Quiz') || title.includes('Diagnosis')) return 'interactive_quiz';
+    return 'pdf'; // Default to PDF
   };
   
   

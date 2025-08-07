@@ -2,10 +2,6 @@ import React from 'react';
 import { LeadMagnetFormat, LeadMagnetFormatOption } from '../types';
 import { 
   HelpCircle, 
-  Calculator, 
-  Target, 
-  BarChart3, 
-  Search,
   Check,
   FileText,
   ExternalLink
@@ -30,50 +26,6 @@ const formatOptions: LeadMagnetFormatOption[] = [
     demoLink: '/demo/quiz'
   },
   {
-    id: 'roi_calculator',
-    title: 'Instant ROI or Cost-Savings Calculator',
-    description: 'User inputs numbers (current revenue, traffic, conversion rate, costs, etc.) → calculator shows potential gains if they fix certain issues.',
-    flow: 'User inputs numbers (current revenue, traffic, conversion rate, costs, etc.) → calculator shows potential gains if they fix certain issues.',
-    example: 'A restaurant sees "Increase bookings by 20% → +$X/month"; a SaaS company sees "Lower churn by 5% → +$X/year."',
-    whyItWorks: 'Makes benefits tangible for any business type.',
-    icon: 'Calculator',
-    isInteractive: true,
-    demoLink: '/demo/calculator'
-  },
-  {
-    id: 'action_plan',
-    title: 'Quick Wins Action Plan',
-    description: 'User answers niche, goal, and timeframe → tool outputs a short, visual action plan they can start today.',
-    flow: 'User answers niche, goal, and timeframe → tool outputs a short, visual action plan they can start today.',
-    example: '"Get 50 more leads in 30 days" → 5 steps for a real estate agent vs. 5 steps for a B2B SaaS founder.',
-    whyItWorks: 'Simple, practical, and feels tailored to them.',
-    icon: 'Target',
-    isInteractive: true,
-    demoLink: '/demo/action-plan'
-  },
-  {
-    id: 'benchmark_report',
-    title: 'Industry Benchmark Report',
-    description: 'User inputs their metrics (sales, social followers, email list size, conversion rate) → tool compares them to average performance in their industry.',
-    flow: 'User inputs their metrics (sales, social followers, email list size, conversion rate) → tool compares them to average performance in their industry.',
-    example: '"Your email open rate is 7% below industry average — here\'s how to fix it."',
-    whyItWorks: 'People hate feeling behind their competition — this creates urgency to act.',
-    icon: 'BarChart3',
-    isInteractive: true,
-    demoLink: '/demo/benchmark'
-  },
-  {
-    id: 'opportunity_finder',
-    title: 'Opportunity Finder Blueprint',
-    description: 'User answers questions or uploads a link → tool highlights missed opportunities in marketing, customer engagement, or product offering.',
-    flow: 'User answers questions or uploads a link → tool highlights missed opportunities in marketing, customer engagement, or product offering.',
-    example: 'A clothing store gets "You\'re missing Instagram Reels — competitors see 40% more engagement from them."',
-    whyItWorks: 'Turns vague "you could improve" into specific, actionable suggestions that are easy to start.',
-    icon: 'Search',
-    isInteractive: true,
-    demoLink: '/demo/opportunity-finder'
-  },
-  {
     id: 'pdf',
     title: 'Traditional PDF Guide',
     description: 'Classic PDF lead magnet with comprehensive content, checklists, and actionable insights.',
@@ -90,14 +42,6 @@ const getIconComponent = (iconName: string) => {
   switch (iconName) {
     case 'HelpCircle':
       return HelpCircle;
-    case 'Calculator':
-      return Calculator;
-    case 'Target':
-      return Target;
-    case 'BarChart3':
-      return BarChart3;
-    case 'Search':
-      return Search;
     case 'FileText':
       return FileText;
     default:

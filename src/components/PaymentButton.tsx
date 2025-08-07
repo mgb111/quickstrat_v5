@@ -13,10 +13,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, selectedFo
   const getContentText = () => {
     switch (selectedFormat) {
       case 'interactive_quiz': return 'quiz';
-      case 'roi_calculator': return 'calculator';
-      case 'action_plan': return 'action plan';
-      case 'benchmark_report': return 'report';
-      case 'opportunity_finder': return 'opportunity finder';
+      case 'pdf': return 'PDF';
       default: return 'PDF';
     }
   };

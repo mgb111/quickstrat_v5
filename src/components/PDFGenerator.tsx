@@ -53,14 +53,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data, campaignId, requirePa
     switch (format) {
       case 'interactive_quiz':
         return paymentComplete && requirePayment ? 'Take Quiz Again' : 'Take Quiz Now';
-      case 'roi_calculator':
-        return paymentComplete && requirePayment ? 'Use Calculator Again' : 'Use Calculator Now';
-      case 'action_plan':
-        return paymentComplete && requirePayment ? 'Get Action Plan Again' : 'Get Action Plan';
-      case 'benchmark_report':
-        return paymentComplete && requirePayment ? 'View Report Again' : 'View Report Now';
-      case 'opportunity_finder':
-        return paymentComplete && requirePayment ? 'Find Opportunities Again' : 'Find Opportunities';
       default: // pdf
         return paymentComplete && requirePayment ? 'Download PDF Again' : 'Download as PDF';
     }

@@ -120,6 +120,22 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
     );
   };
 
+  const getFormatDisplayName = (format: LeadMagnetFormat): string => {
+    switch (format) {
+      case 'interactive_quiz': return 'Interactive Quiz';
+      case 'pdf': return 'PDF Guide';
+      default: return 'PDF Guide';
+    }
+  };
+
+  const getFormatDescription = (format: LeadMagnetFormat): string => {
+    switch (format) {
+      case 'interactive_quiz': return 'A personalized diagnostic quiz that provides immediate insights and actionable next steps';
+      case 'pdf': return 'A comprehensive PDF guide with step-by-step instructions, templates, and resources';
+      default: return 'A comprehensive PDF guide with step-by-step instructions, templates, and resources';
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div className="text-center">
@@ -238,14 +254,6 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
                       return 'Generate My PDF';
                     case 'interactive_quiz':
                       return 'Generate My Quiz';
-                    case 'roi_calculator':
-                      return 'Generate My Calculator';
-                    case 'action_plan':
-                      return 'Generate My Action Plan';
-                    case 'benchmark_report':
-                      return 'Generate My Benchmark Report';
-                    case 'opportunity_finder':
-                      return 'Generate My Opportunity Finder';
                     default:
                       return 'Generate My Lead Magnet';
                   }
@@ -261,14 +269,6 @@ const OutlineReview: React.FC<OutlineReviewProps> = ({
                   return 'AI will expand your outline into a complete, professional PDF guide';
                 case 'interactive_quiz':
                   return 'AI will create an interactive quiz with personalized results';
-                case 'roi_calculator':
-                  return 'AI will build a calculator that shows potential ROI gains';
-                case 'action_plan':
-                  return 'AI will create a personalized action plan with specific steps';
-                case 'benchmark_report':
-                  return 'AI will generate a benchmark report comparing to industry standards';
-                case 'opportunity_finder':
-                  return 'AI will create an opportunity finder that identifies missed chances';
                 default:
                   return 'AI will expand your outline into a complete, professional lead magnet';
               }

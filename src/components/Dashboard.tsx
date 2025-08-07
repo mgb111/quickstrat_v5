@@ -30,35 +30,17 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
   const [isSaving, setIsSaving] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false); // New state for payment success modal
 
-  // Function to detect format from content structure
+  // Detect format from content structure
   const detectFormatFromContent = (content: any): LeadMagnetFormat => {
-    if (!content || typeof content === 'string') {
-      try {
-        content = typeof content === 'string' ? JSON.parse(content) : content;
-      } catch {
-        return 'pdf'; // Default fallback
-      }
-    }
+    if (content.interactive_content?.questions) return 'interactive_quiz';
+    if (content.structured_content) return 'pdf';
+    return 'pdf'; // Default to PDF
+  };
 
-    // Check for interactive format indicators
-    if (content.calculator_content) return 'roi_calculator';
-    if (content.quiz_content) return 'interactive_quiz';
-    if (content.action_plan_content) return 'action_plan';
-    if (content.benchmark_content) return 'benchmark_report';
-    if (content.opportunity_content) return 'opportunity_finder';
-    
-    // Check interactive_content field
-    if (content.interactive_content?.format) return content.interactive_content.format;
-    
-    // Check title for format indicators
-    const title = content.title_page?.title || content.title || '';
-    if (title.includes('Calculator') || title.includes('ROI Calculator')) return 'roi_calculator';
-    if (title.includes('Quiz') || title.includes('Interactive Quiz')) return 'interactive_quiz';
-    if (title.includes('Action Plan')) return 'action_plan';
-    if (title.includes('Benchmark Report')) return 'benchmark_report';
-    if (title.includes('Opportunity Finder')) return 'opportunity_finder';
-
-    return 'pdf'; // Default fallback
+  // Detect format from title
+  const detectFormatFromTitle = (title: string): LeadMagnetFormat => {
+    if (title.includes('Quiz') || title.includes('Diagnosis')) return 'interactive_quiz';
+    return 'pdf'; // Default to PDF
   };
 
 
@@ -279,10 +261,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
                       const format = detectFormatFromContent(campaign.lead_magnet_content);
                       switch (format) {
                         case 'interactive_quiz': return 'Take Quiz';
-                        case 'roi_calculator': return 'Use Calculator';
-                        case 'action_plan': return 'Get Action Plan';
-                        case 'benchmark_report': return 'View Report';
-                        case 'opportunity_finder': return 'Find Opportunities';
+                        case 'pdf': return 'View PDF';
                         default: return 'View PDF';
                       }
                     })()}
@@ -295,10 +274,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
                       const format = detectFormatFromContent(campaign.lead_magnet_content);
                       switch (format) {
                         case 'interactive_quiz': return 'Edit Quiz';
-                        case 'roi_calculator': return 'Edit Calculator';
-                        case 'action_plan': return 'Edit Action Plan';
-                        case 'benchmark_report': return 'Edit Report';
-                        case 'opportunity_finder': return 'Edit Opportunities';
+                        case 'pdf': return 'Edit PDF';
                         default: return 'Edit PDF';
                       }
                     })()}
@@ -345,10 +321,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNewCampaign, onResumeDraft }) =
             const format = detectFormatFromContent(viewPdfCampaign.lead_magnet_content);
             switch (format) {
               case 'interactive_quiz': return 'Take Quiz';
-              case 'roi_calculator': return 'Use Calculator';
-              case 'action_plan': return 'Get Action Plan';
-              case 'benchmark_report': return 'View Report';
-              case 'opportunity_finder': return 'Find Opportunities';
+              case 'pdf': return 'View PDF';
               default: return 'View PDF';
             }
           }
