@@ -11,7 +11,6 @@ import {
   PDFCustomization,
   LeadMagnetFormat
 } from '../types/index';
-import { jsonrepair } from 'jsonrepair';
 
 // Get API key from environment variables
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
@@ -89,7 +88,7 @@ function cleanJsonResponse(content: string): string {
   
   // Try to parse the JSON as-is first
   try {
-    JSON.parse(jsonrepair(cleaned));
+    JSON.parse(cleaned);
     return cleaned; // If it parses successfully, return as-is
   } catch (e) {
     // Only try to fix if parsing fails
@@ -135,7 +134,7 @@ export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<
     // Clean the content to handle markdown-wrapped JSON
     const cleanedContent = cleanJsonResponse(content);
     console.log('🎯 OpenAI Response (cleaned):', cleanedContent);
-    const parsed = JSON.parse(jsonrepair(cleanedContent));
+    const parsed = JSON.parse(cleanedContent);
 
     // Validate the response structure
     if (!Array.isArray(parsed.concepts) || parsed.concepts.length === 0) {
@@ -278,7 +277,7 @@ export async function generateContentOutline(input: CampaignInput, selected: Lea
     // Clean the content to handle markdown-wrapped JSON
     const cleanedContent = cleanJsonResponse(content);
     console.log('🎯 OpenAI Response (cleaned):', cleanedContent);
-    const parsed = JSON.parse(jsonrepair(cleanedContent));
+    const parsed = JSON.parse(cleanedContent);
 
     // Validate the response structure
     if (!parsed.title || !parsed.introduction || !Array.isArray(parsed.core_points) || !parsed.cta) {
@@ -465,7 +464,7 @@ IMPORTANT: Follow the exact JSON format specified in the format-specific prompt 
     console.log('🎯 OpenAI PDF Response (cleaned):', cleanedContent);
     
     // Parse the JSON response
-    const pdfContent = JSON.parse(jsonrepair(cleanedContent)) as PDFContent;
+    const pdfContent = JSON.parse(cleanedContent) as PDFContent;
     
     // Always return the PDF content structure for PDF format
     if (input.selected_format === 'pdf') {
@@ -553,43 +552,29 @@ CRITICAL REQUIREMENTS:
 - Results must include actionable next steps with timelines
 - Include success metrics and troubleshooting
 
-RESULTS REQUIREMENTS:
-- You MUST return a 'results' array with EXACTLY these 4 categories:
-  - 'Foundation Builder'
-  - 'Implementation Specialist'
-  - 'Optimization Expert'
-  - 'Strategic Master'
-- For each, provide:
-  - description: tailored to the user's [topic/problem]
-  - symptoms: 3-5 bullet points, specific to [topic/problem]
-  - action_steps: 4-6, step-by-step, specific to [topic/problem]
-  - timeline: realistic for [topic/problem]
-  - success_metrics: 3-5, measurable, specific to [topic/problem]
-  - recommendations: 3-5, actionable, specific to [topic/problem]
-- The 'category' string must match exactly as above.
+REQUIRED STRUCTURE:
+1. **Question Framework**: 10 strategic questions that reveal root causes
+2. **Answer Scoring**: Each answer contributes to specific diagnosis categories
+3. **Result Categories**: 4-6 specific diagnosis types with solutions
+4. **Action Protocols**: Exact next steps for each diagnosis type
+5. **Success Tracking**: How to measure improvement
 
-STRICT OUTPUT POLICY:
-- Return ONLY valid JSON. DO NOT include markdown, explanation, or extra text.
-- DO NOT return any static fallback or generic content. If you cannot generate a fully customized, topic-specific result for ALL 4 categories, you must try again internally until you succeed.
-- Any generic, fallback, or non-topic-specific content is UNACCEPTABLE and will be rejected.
-- The response must be fully customized, topic-specific, and valid JSON, or nothing.
-
-RETURN ONLY VALID JSON IN THIS EXACT FORMAT:
+RETURN ONLY VALID JSON IN THIS EXACT FORMAT. DO NOT INCLUDE MARKDOWN, EXPLANATION, OR EXTRA TEXT. IF YOU CANNOT GENERATE THE QUIZ, RETURN A STATIC FALLBACK QUIZ WITH 10 GENERIC QUESTIONS IN THE SAME FORMAT:
 {
   "structured_content": {
-    "title_page": {
-      "title": "${outline.title}",
+  "title_page": {
+    "title": "${outline.title}",
       "subtitle": "10-Question Diagnostic to Identify Your Core Challenges"
-    },
-    "introduction_page": {
+  },
+  "introduction_page": {
       "title": "Professional Problem Diagnosis",
       "content": "This 10-question diagnostic will reveal the root causes of your [specific problem] and provide a personalized action plan with exact next steps."
-    },
-    "quiz_content": {
+  },
+  "quiz_content": {
       "title": "Your Diagnostic Checklist",
       "description": "Answer each question honestly to get your personalized diagnosis and action plan.",
-      "questions": [
-        {
+    "questions": [
+      {
           "id": 1,
           "question": "[SPECIFIC QUESTION 1 ABOUT AWARENESS - e.g., 'How would you rate your current understanding of [topic]?']",
           "options": [
@@ -1222,7 +1207,7 @@ Return JSON in this exact format:
     // Clean the content to handle markdown-wrapped JSON
     const cleanedContent = cleanJsonResponse(content);
     console.log('🎯 OpenAI Landing Page Response (cleaned):', cleanedContent);
-    const parsed = JSON.parse(jsonrepair(cleanedContent));
+    const parsed = JSON.parse(cleanedContent);
 
     // Validate the response structure
     if (!parsed.headline || !parsed.subheadline || !Array.isArray(parsed.benefit_bullets) || !parsed.cta_button_text) {
@@ -1344,7 +1329,7 @@ Return JSON in this exact format:
     // Clean the content to handle markdown-wrapped JSON
     const cleanedContent = cleanJsonResponse(content);
     console.log('🎯 OpenAI Social Posts Response (cleaned):', cleanedContent);
-    const parsed = JSON.parse(jsonrepair(cleanedContent));
+    const parsed = JSON.parse(cleanedContent);
 
     // Validate the response structure
     if (!parsed.linkedin || !parsed.twitter || !parsed.instagram || !parsed.reddit || !parsed.subreddits) {

@@ -57,7 +57,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
       alert('Please answer all 10 questions to get your results.');
       return;
     }
-
+    
     // Calculate total scores for each category
     const totalScores = {
       awareness: 0,
@@ -91,11 +91,10 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
       resultCategory = 'Strategic Master';
     }
 
-    // Find the matching result from the quiz content (prefer AI-generated, customized result)
-    let matchingResult = null;
-    if (quizContent?.results && Array.isArray(quizContent.results)) {
-      matchingResult = quizContent.results.find((result: any) => result.category === resultCategory);
-    }
+    // Find the matching result from the quiz content
+    const matchingResult = quizContent?.results?.find((result: any) => 
+      result.category === resultCategory
+    );
 
     if (matchingResult) {
       setQuizResults({
@@ -103,11 +102,18 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
         totalScore,
         categoryScores: totalScores
       });
+    } else if (quizContent?.results && Array.isArray(quizContent.results) && quizContent.results.length > 0) {
+      // Use the first available AI-generated result as a fallback
+      setQuizResults({
+        ...quizContent.results[0],
+        totalScore,
+        categoryScores: totalScores
+      });
     } else {
-      // Only use the fallback if the AI result is missing or malformed
+      // Only use the hardcoded fallback if the AI result is missing or malformed
       setQuizResults({
         category: resultCategory,
-        description: 'Based on your answers, we\'ve identified your current level and created a personalized action plan.',
+        description: "Based on your answers, we've identified your current level and created a personalized action plan.",
         totalScore,
         categoryScores: totalScores,
         action_steps: [
@@ -200,7 +206,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
 
   const renderInteractiveContent = () => {
     if (!content) return null;
-
+    
     switch (selectedFormat) {
       case 'interactive_quiz':
         return (
@@ -349,9 +355,9 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                         <span className="text-gray-700">{step}</span>
                       </div>
                     ))}
-                  </div>
+                    </div>
                 </div>
-
+                
                 <div className="bg-white rounded-lg p-6 border border-green-200">
                   <h3 className="text-lg font-semibold text-green-900 mb-4">💡 Key Recommendations</h3>
                   <ul className="space-y-2">
@@ -365,16 +371,16 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                 </div>
 
                 <div className="text-center mt-6">
-                  <button 
+              <button 
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors mr-4"
-                    onClick={() => {
+                  onClick={() => {
                       const resultsText = `Diagnostic Results:\n\nCategory: ${quizResults.category}\n\nDescription: ${quizResults.description}\n\nAction Plan:\n${quizResults.action_steps?.map((step: string, idx: number) => `${idx + 1}. ${step}`).join('\n')}\n\nTimeline: ${quizResults.timeline}`;
                       navigator.clipboard.writeText(resultsText);
                       alert('Results copied to clipboard!');
-                    }}
-                  >
-                    📋 Copy Results
-                  </button>
+                  }}
+                >
+                  📋 Copy Results
+              </button>
                   
                   <button 
                     className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
