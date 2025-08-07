@@ -552,90 +552,90 @@ ${founderIntro}
 
 ${valueStandards}
 
-CREATE A SPECIFIC VALIDATION CHECKLIST QUIZ FOR ${input.niche.toUpperCase()}:
+CREATE A FLEXIBLE CHECKLIST FOR ANY TOPIC:
 
-This must be a comprehensive validation checklist that provides immediate scoring and actionable feedback specifically for ${input.niche} problems.
+You are a creative expert who can break down any goal, topic, or challenge into a simple 10-step checklist.
+
+The user can enter anything — serious, playful, personal, creative, business — and you'll respond with a helpful checklist.
 
 REQUIRED STRUCTURE:
-1. **Quiz Title**: "${input.niche} Validation Checklist"
-2. **Subtitle**: "Validate your ${input.niche} approach in 2 minutes. Get your score and actionable feedback."
-3. **Introduction**: Brief explanation of the validation process for ${input.niche}
-4. **Checklist Items**: 10-12 validation criteria specific to ${input.niche} with clear yes/no options
-5. **Scoring System**: 0-10 scale with specific score ranges
-6. **Results Categories**: 3-4 result categories based on score ranges
-7. **Actionable Feedback**: Specific next steps for each result category
+1. **Quiz Title**: "📋 ${input.problem_statement} Checklist"
+2. **Subtitle**: Auto-generate a short intro, no more than 2 lines
+3. **Checklist Items**: 10 yes/no statements that represent essential aspects of the topic
+4. **Scoring System**: 0-10 scale with friendly, encouraging feedback
+5. **Next Steps**: 3 personalized suggestions based on unchecked items
 
 CRITICAL REQUIREMENTS:
-- Make it specific to ${input.niche} and ${input.problem_statement}
-- Use validation criteria that work for ${input.niche} problems
-- Provide clear scoring logic (1 point per checked item)
-- Include specific actionable feedback for each score range
-- Make the language specific to ${input.niche} challenges
+- Make it specific to ${input.problem_statement} and ${input.desired_outcome}
+- Vary tone based on topic (fun, serious, casual, nerdy — match the mood)
+- Be clear, helpful, and friendly
+- Each checklist item should represent one essential or useful aspect
+- Use encouraging language that makes users feel good about their progress
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
   "structured_content": {
     "title_page": {
-      "title": "${input.niche} Validation Checklist",
-      "subtitle": "Validate your ${input.niche} approach in 2 minutes. Get your score and actionable feedback."
+      "title": "📋 ${input.problem_statement} Checklist",
+      "subtitle": "Here's a simple checklist to help you assess where you are and what you might be missing."
     },
     "introduction_page": {
-      "title": "${input.niche} Validation Checklist",
-      "content": "Complete the checklist below to get your personalized validation score. Each item you check will improve your score and help you understand how well-validated your ${input.niche} approach is."
+      "title": "📋 ${input.problem_statement} Checklist",
+      "content": "Here's a simple checklist to help you assess where you are and what you might be missing."
     },
     "quiz_content": {
-      "title": "${input.niche} Validation Checklist",
-      "introduction": "Complete the checklist below to get your personalized validation score. Each item you check will improve your score and help you understand how well-validated your ${input.niche} approach is.",
+      "title": "📋 ${input.problem_statement} Checklist",
+      "introduction": "Here's a simple checklist to help you assess where you are and what you might be missing.",
       "checklist_items": [
         {
           "id": 1,
-          "text": "I clearly understand the ${input.niche} problem I'm solving",
-          "category": "problem_validation"
+          "text": "I have a clear understanding of what I want to achieve with ${input.problem_statement}",
+          "category": "goal_setting"
         },
         {
           "id": 2,
-          "text": "I can identify my ${input.niche} target audience precisely",
-          "category": "audience_validation"
+          "text": "I've identified the main challenges or obstacles I might face",
+          "category": "challenge_identification"
         },
         {
           "id": 3,
-          "text": "I've seen this ${input.niche} problem discussed online (e.g. Reddit, forums)",
-          "category": "market_validation"
+          "text": "I've done some research or gathered information about ${input.problem_statement}",
+          "category": "research"
         },
         {
           "id": 4,
-          "text": "I've spoken to at least 3 real ${input.niche} users about this",
-          "category": "user_validation"
+          "text": "I have a basic plan or strategy in mind",
+          "category": "planning"
         },
         {
           "id": 5,
-          "text": "I know how ${input.niche} users currently solve this problem",
-          "category": "solution_validation"
+          "text": "I've gathered the resources or tools I'll need",
+          "category": "resource_gathering"
         },
         {
           "id": 6,
-          "text": "I've identified weaknesses in existing ${input.niche} solutions",
-          "category": "competitive_validation"
+          "text": "I've started taking action or making progress",
+          "category": "action"
         },
         {
           "id": 7,
-          "text": "I have a simple ${input.niche} MVP idea to test",
-          "category": "execution_validation"
+          "text": "I'm tracking my progress or measuring my results",
+          "category": "tracking"
         },
         {
           "id": 8,
-          "text": "I've validated ${input.niche} interest with a landing page or post",
-          "category": "demand_validation"
+          "text": "I've received feedback or input from others",
+          "category": "feedback"
         },
         {
           "id": 9,
-          "text": "I know how I'll reach my first 10 ${input.niche} users",
-          "category": "distribution_validation"
+          "text": "I've made adjustments based on what I've learned",
+          "category": "optimization"
         },
         {
           "id": 10,
-          "text": "I've received ${input.niche} feedback and iterated",
-          "category": "iteration_validation"
+          "text": "I have a clear next step or action planned",
+          "category": "next_steps"
         }
       ],
       "scoring_system": {
@@ -643,46 +643,42 @@ RETURN JSON IN THIS EXACT FORMAT:
         "score_ranges": [
           {
             "range": "0-3",
-            "title": "❌ Too risky right now",
-            "description": "Your ${input.niche} approach needs significant validation before considering moving forward. You're missing critical validation steps that successful ${input.niche} professionals typically complete. Focus on market research, user interviews, and problem validation. Moving forward now would be risky - invest time in validation to increase your chances of success.",
+            "title": "🎯 What Your Score Means",
+            "description": "You're just getting started. That's great! Lots of room to grow.",
             "next_steps": [
-              "Conduct 5+ ${input.niche} user interviews",
-              "Research online discussions about your ${input.niche} problem",
-              "Create a simple ${input.niche} landing page to test interest",
-              "Identify your exact ${input.niche} target audience"
+              "Start with the basics - define your main goal clearly",
+              "Do some research to understand what you're getting into",
+              "Break down your goal into smaller, manageable steps"
             ]
           },
           {
             "range": "4-6",
-            "title": "⚠️ Needs more validation",
-            "description": "Your ${input.niche} approach shows some promise but needs more validation before proceeding. You've completed some key validation steps but are missing critical elements. Focus on the areas you haven't validated yet to reduce risk and increase confidence.",
+            "title": "🎯 What Your Score Means",
+            "description": "You've made some progress, but still have key areas to explore.",
             "next_steps": [
-              "Fill the gaps in your ${input.niche} validation",
-              "Test your ${input.niche} assumptions with real users",
-              "Refine your ${input.niche} target audience definition",
-              "Research competitive ${input.niche} solutions more deeply"
+              "Focus on the checklist items you haven't checked yet",
+              "Start taking action on the areas you've planned",
+              "Seek feedback or input from others to improve your approach"
             ]
           },
           {
-            "range": "7-8",
-            "title": "✅ Well validated",
-            "description": "Your ${input.niche} approach is well-validated and ready for the next phase. You've completed most critical validation steps and have a solid foundation. You can proceed with confidence, but continue gathering feedback as you move forward.",
+            "range": "7-9",
+            "title": "🎯 What Your Score Means",
+            "description": "You're well on your way. Just a few things left to tighten.",
             "next_steps": [
-              "Start building your ${input.niche} MVP",
-              "Begin ${input.niche} user acquisition efforts",
-              "Set up ${input.niche} feedback collection systems",
-              "Plan your ${input.niche} launch strategy"
+              "Fine-tune the remaining areas on your checklist",
+              "Optimize your current approach based on results",
+              "Share your progress and help others on similar journeys"
             ]
           },
           {
-            "range": "9-10",
-            "title": "🚀 Highly validated",
-            "description": "Excellent! Your ${input.niche} approach is highly validated and you're ready to execute. You've completed all critical validation steps and have strong evidence that your idea has merit. You can proceed with high confidence.",
+            "range": "10",
+            "title": "🎯 What Your Score Means",
+            "description": "You're all set. Go forth and enjoy the journey!",
             "next_steps": [
-              "Execute your ${input.niche} plan with confidence",
-              "Focus on ${input.niche} execution and iteration",
-              "Scale your ${input.niche} user acquisition",
-              "Monitor and optimize your ${input.niche} approach based on feedback"
+              "Celebrate your preparation and start implementing",
+              "Share your checklist with others who might benefit",
+              "Consider mentoring others on their own journeys"
             ]
           }
         ]
