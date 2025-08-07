@@ -486,19 +486,7 @@ IMPORTANT: Follow the exact JSON format specified in the format-specific prompt 
             questions: [],
             results: []
           })
-        },
-        // Extract quiz content from structured_content for interactive display
-        ...(input.selected_format === 'interactive_quiz' && {
-          quiz_content: {
-            title: pdfContent.structured_content?.title_page?.title || 'Validation Checklist',
-            introduction: pdfContent.structured_content?.introduction_page?.content || 'Complete the checklist below to get your personalized validation score.',
-            checklist_items: (pdfContent.structured_content as any)?.quiz_content?.checklist_items || [],
-            scoring_system: (pdfContent.structured_content as any)?.quiz_content?.scoring_system || {
-              max_score: 10,
-              score_ranges: []
-            }
-          }
-        })
+        }
       };
     }
   } catch (error) {
@@ -552,137 +540,433 @@ ${founderIntro}
 
 ${valueStandards}
 
-CREATE A FLEXIBLE CHECKLIST FOR ANY TOPIC:
+CREATE A BULLETPROOF 10-QUESTION DIAGNOSTIC CHECKLIST SYSTEM:
 
-You are a creative expert who can break down any goal, topic, or challenge into a simple 10-step checklist.
-
-The user can enter anything — serious, playful, personal, creative, business — and you'll respond with a helpful checklist.
-
-REQUIRED STRUCTURE:
-1. **Quiz Title**: "📋 ${input.problem_statement} Checklist"
-2. **Subtitle**: Auto-generate a short intro, no more than 2 lines
-3. **Checklist Items**: 10 yes/no statements that represent essential aspects of the topic
-4. **Scoring System**: 0-10 scale with friendly, encouraging feedback
-5. **Next Steps**: 3 personalized suggestions based on unchecked items
+This must be a comprehensive diagnostic tool that provides professional-grade insights and actionable solutions.
 
 CRITICAL REQUIREMENTS:
-- Make it specific to ${input.problem_statement} and ${input.desired_outcome}
-- Vary tone based on topic (fun, serious, casual, nerdy — match the mood)
-- Be clear, helpful, and friendly
-- Each checklist item should represent one essential or useful aspect
-- Use encouraging language that makes users feel good about their progress
+- EXACTLY 10 questions (no more, no less)
+- Each question must have 4 answer options (A, B, C, D)
+- Questions must build on each other logically
+- Each answer must contribute to a specific diagnosis category
+- Results must include actionable next steps with timelines
+- Include success metrics and troubleshooting
+
+REQUIRED STRUCTURE:
+1. **Question Framework**: 10 strategic questions that reveal root causes
+2. **Answer Scoring**: Each answer contributes to specific diagnosis categories
+3. **Result Categories**: 4-6 specific diagnosis types with solutions
+4. **Action Protocols**: Exact next steps for each diagnosis type
+5. **Success Tracking**: How to measure improvement
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
   "structured_content": {
     "title_page": {
-      "title": "📋 ${input.problem_statement} Checklist",
-      "subtitle": "Here's a simple checklist to help you assess where you are and what you might be missing."
+      "title": "${outline.title}",
+      "subtitle": "10-Question Diagnostic to Identify Your Core Challenges"
     },
     "introduction_page": {
-      "title": "📋 ${input.problem_statement} Checklist",
-      "content": "Here's a simple checklist to help you assess where you are and what you might be missing."
+      "title": "Professional Problem Diagnosis",
+      "content": "This 10-question diagnostic will reveal the root causes of your [specific problem] and provide a personalized action plan with exact next steps."
     },
     "quiz_content": {
-      "title": "📋 ${input.problem_statement} Checklist",
-      "introduction": "Here's a simple checklist to help you assess where you are and what you might be missing.",
-      "checklist_items": [
+      "title": "Your Diagnostic Checklist",
+      "description": "Answer each question honestly to get your personalized diagnosis and action plan.",
+      "questions": [
         {
           "id": 1,
-          "text": "I have a clear understanding of what I want to achieve with ${input.problem_statement}",
-          "category": "goal_setting"
+          "question": "[SPECIFIC QUESTION 1 ABOUT AWARENESS - e.g., 'How would you rate your current understanding of [topic]?']",
+          "options": [
+            {
+              "id": "A",
+              "text": "[OPTION A - Beginner level]",
+              "score": { "awareness": 1, "implementation": 1, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "B", 
+              "text": "[OPTION B - Some knowledge]",
+              "score": { "awareness": 2, "implementation": 1, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "C",
+              "text": "[OPTION C - Good understanding]",
+              "score": { "awareness": 3, "implementation": 2, "optimization": 1, "strategy": 0 }
+            },
+            {
+              "id": "D",
+              "text": "[OPTION D - Expert level]",
+              "score": { "awareness": 4, "implementation": 3, "optimization": 2, "strategy": 1 }
+            }
+          ],
+          "explanation": "This identifies your current knowledge level and learning needs"
         },
         {
           "id": 2,
-          "text": "I've identified the main challenges or obstacles I might face",
-          "category": "challenge_identification"
+          "question": "[SPECIFIC QUESTION 2 ABOUT CURRENT PRACTICES - e.g., 'What is your current approach to [specific aspect]?']",
+          "options": [
+            {
+              "id": "A",
+              "text": "[OPTION A - No systematic approach]",
+              "score": { "awareness": 0, "implementation": 0, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "B",
+              "text": "[OPTION B - Basic approach]",
+              "score": { "awareness": 1, "implementation": 1, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "C",
+              "text": "[OPTION C - Structured approach]",
+              "score": { "awareness": 2, "implementation": 2, "optimization": 1, "strategy": 1 }
+            },
+            {
+              "id": "D",
+              "text": "[OPTION D - Advanced system]",
+              "score": { "awareness": 3, "implementation": 3, "optimization": 2, "strategy": 2 }
+            }
+          ],
+          "explanation": "This reveals your current implementation level and gaps"
         },
         {
           "id": 3,
-          "text": "I've done some research or gathered information about ${input.problem_statement}",
-          "category": "research"
+          "question": "[SPECIFIC QUESTION 3 ABOUT CHALLENGES - e.g., 'What is your biggest challenge with [topic]?']",
+          "options": [
+            {
+              "id": "A",
+              "text": "[OPTION A - Lack of knowledge]",
+              "score": { "awareness": 0, "implementation": 0, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "B",
+              "text": "[OPTION B - Inconsistent execution]",
+              "score": { "awareness": 1, "implementation": 0, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "C",
+              "text": "[OPTION C - Optimization issues]",
+              "score": { "awareness": 2, "implementation": 1, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "D",
+              "text": "[OPTION D - Strategic gaps]",
+              "score": { "awareness": 3, "implementation": 2, "optimization": 1, "strategy": 0 }
+            }
+          ],
+          "explanation": "This identifies your primary obstacle and focus area"
         },
         {
           "id": 4,
-          "text": "I have a basic plan or strategy in mind",
-          "category": "planning"
+          "question": "[SPECIFIC QUESTION 4 ABOUT RESOURCES - e.g., 'What resources do you have available for [topic]?']",
+          "options": [
+            {
+              "id": "A",
+              "text": "[OPTION A - Limited resources]",
+              "score": { "awareness": 0, "implementation": 0, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "B",
+              "text": "[OPTION B - Basic resources]",
+              "score": { "awareness": 1, "implementation": 1, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "C",
+              "text": "[OPTION C - Good resources]",
+              "score": { "awareness": 2, "implementation": 2, "optimization": 1, "strategy": 1 }
+            },
+            {
+              "id": "D",
+              "text": "[OPTION D - Excellent resources]",
+              "score": { "awareness": 3, "implementation": 3, "optimization": 2, "strategy": 2 }
+            }
+          ],
+          "explanation": "This determines your resource constraints and opportunities"
         },
         {
           "id": 5,
-          "text": "I've gathered the resources or tools I'll need",
-          "category": "resource_gathering"
+          "question": "[SPECIFIC QUESTION 5 ABOUT TIMELINE - e.g., 'What is your timeline for improving [topic]?']",
+          "options": [
+            {
+              "id": "A",
+              "text": "[OPTION A - Immediate (1-2 weeks)]",
+              "score": { "awareness": 1, "implementation": 2, "optimization": 1, "strategy": 0 }
+            },
+            {
+              "id": "B",
+              "text": "[OPTION B - Short-term (1-3 months)]",
+              "score": { "awareness": 2, "implementation": 2, "optimization": 1, "strategy": 1 }
+            },
+            {
+              "id": "C",
+              "text": "[OPTION C - Medium-term (3-6 months)]",
+              "score": { "awareness": 2, "implementation": 2, "optimization": 2, "strategy": 2 }
+            },
+            {
+              "id": "D",
+              "text": "[OPTION D - Long-term (6+ months)]",
+              "score": { "awareness": 3, "implementation": 3, "optimization": 3, "strategy": 3 }
+            }
+          ],
+          "explanation": "This determines the pace and intensity of your action plan"
         },
         {
           "id": 6,
-          "text": "I've started taking action or making progress",
-          "category": "action"
+          "question": "[SPECIFIC QUESTION 6 ABOUT PAST EXPERIENCE - e.g., 'What has been your experience with [topic] so far?']",
+          "options": [
+            {
+              "id": "A",
+              "text": "[OPTION A - No experience]",
+              "score": { "awareness": 0, "implementation": 0, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "B",
+              "text": "[OPTION B - Limited success]",
+              "score": { "awareness": 1, "implementation": 1, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "C",
+              "text": "[OPTION C - Moderate success]",
+              "score": { "awareness": 2, "implementation": 2, "optimization": 1, "strategy": 1 }
+            },
+            {
+              "id": "D",
+              "text": "[OPTION D - Good success]",
+              "score": { "awareness": 3, "implementation": 3, "optimization": 2, "strategy": 2 }
+            }
+          ],
+          "explanation": "This reveals your learning curve and what works for you"
         },
         {
           "id": 7,
-          "text": "I'm tracking my progress or measuring my results",
-          "category": "tracking"
+          "question": "[SPECIFIC QUESTION 7 ABOUT GOALS - e.g., 'What is your primary goal with [topic]?']",
+          "options": [
+            {
+              "id": "A",
+              "text": "[OPTION A - Basic understanding]",
+              "score": { "awareness": 2, "implementation": 1, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "B",
+              "text": "[OPTION B - Practical implementation]",
+              "score": { "awareness": 1, "implementation": 2, "optimization": 1, "strategy": 0 }
+            },
+            {
+              "id": "C",
+              "text": "[OPTION C - Optimization and improvement]",
+              "score": { "awareness": 1, "implementation": 1, "optimization": 2, "strategy": 1 }
+            },
+            {
+              "id": "D",
+              "text": "[OPTION D - Strategic mastery]",
+              "score": { "awareness": 1, "implementation": 1, "optimization": 1, "strategy": 2 }
+            }
+          ],
+          "explanation": "This determines your desired outcome and focus areas"
         },
         {
           "id": 8,
-          "text": "I've received feedback or input from others",
-          "category": "feedback"
+          "question": "[SPECIFIC QUESTION 8 ABOUT SUPPORT - e.g., 'What kind of support do you need for [topic]?']",
+          "options": [
+            {
+              "id": "A",
+              "text": "[OPTION A - Basic guidance]",
+              "score": { "awareness": 1, "implementation": 1, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "B",
+              "text": "[OPTION B - Step-by-step instructions]",
+              "score": { "awareness": 1, "implementation": 2, "optimization": 1, "strategy": 0 }
+            },
+            {
+              "id": "C",
+              "text": "[OPTION C - Advanced techniques]",
+              "score": { "awareness": 1, "implementation": 1, "optimization": 2, "strategy": 1 }
+            },
+            {
+              "id": "D",
+              "text": "[OPTION D - Strategic consulting]",
+              "score": { "awareness": 1, "implementation": 1, "optimization": 1, "strategy": 2 }
+            }
+          ],
+          "explanation": "This identifies your support needs and learning style"
         },
         {
           "id": 9,
-          "text": "I've made adjustments based on what I've learned",
-          "category": "optimization"
+          "question": "[SPECIFIC QUESTION 9 ABOUT COMMITMENT - e.g., 'How much time can you dedicate to [topic]?']",
+          "options": [
+            {
+              "id": "A",
+              "text": "[OPTION A - 1-2 hours per week]",
+              "score": { "awareness": 1, "implementation": 1, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "B",
+              "text": "[OPTION B - 3-5 hours per week]",
+              "score": { "awareness": 2, "implementation": 2, "optimization": 1, "strategy": 0 }
+            },
+            {
+              "id": "C",
+              "text": "[OPTION C - 6-10 hours per week]",
+              "score": { "awareness": 2, "implementation": 2, "optimization": 2, "strategy": 1 }
+            },
+            {
+              "id": "D",
+              "text": "[OPTION D - 10+ hours per week]",
+              "score": { "awareness": 3, "implementation": 3, "optimization": 3, "strategy": 2 }
+            }
+          ],
+          "explanation": "This determines the intensity and pace of your action plan"
         },
         {
           "id": 10,
-          "text": "I have a clear next step or action planned",
-          "category": "next_steps"
+          "question": "[SPECIFIC QUESTION 10 ABOUT MEASUREMENT - e.g., 'How do you plan to measure success with [topic]?']",
+          "options": [
+            {
+              "id": "A",
+              "text": "[OPTION A - No specific metrics]",
+              "score": { "awareness": 0, "implementation": 0, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "B",
+              "text": "[OPTION B - Basic tracking]",
+              "score": { "awareness": 1, "implementation": 1, "optimization": 0, "strategy": 0 }
+            },
+            {
+              "id": "C",
+              "text": "[OPTION C - Detailed metrics]",
+              "score": { "awareness": 2, "implementation": 2, "optimization": 1, "strategy": 1 }
+            },
+            {
+              "id": "D",
+              "text": "[OPTION D - Advanced analytics]",
+              "score": { "awareness": 3, "implementation": 3, "optimization": 2, "strategy": 2 }
+            }
+          ],
+          "explanation": "This determines your measurement approach and success tracking"
         }
       ],
-      "scoring_system": {
-        "max_score": 10,
-        "score_ranges": [
-          {
-            "range": "0-3",
-            "title": "🎯 What Your Score Means",
-            "description": "You're just getting started. That's great! Lots of room to grow.",
-            "next_steps": [
-              "Start with the basics - define your main goal clearly",
-              "Do some research to understand what you're getting into",
-              "Break down your goal into smaller, manageable steps"
-            ]
-          },
-          {
-            "range": "4-6",
-            "title": "🎯 What Your Score Means",
-            "description": "You've made some progress, but still have key areas to explore.",
-            "next_steps": [
-              "Focus on the checklist items you haven't checked yet",
-              "Start taking action on the areas you've planned",
-              "Seek feedback or input from others to improve your approach"
-            ]
-          },
-          {
-            "range": "7-9",
-            "title": "🎯 What Your Score Means",
-            "description": "You're well on your way. Just a few things left to tighten.",
-            "next_steps": [
-              "Fine-tune the remaining areas on your checklist",
-              "Optimize your current approach based on results",
-              "Share your progress and help others on similar journeys"
-            ]
-          },
-          {
-            "range": "10",
-            "title": "🎯 What Your Score Means",
-            "description": "You're all set. Go forth and enjoy the journey!",
-            "next_steps": [
-              "Celebrate your preparation and start implementing",
-              "Share your checklist with others who might benefit",
-              "Consider mentoring others on their own journeys"
-            ]
-          }
-        ]
-      }
+      "results": [
+        {
+          "category": "Foundation Builder",
+          "description": "You're just starting your journey with [topic]. You need to build a solid foundation with basic knowledge and simple implementation steps.",
+          "score_range": { "min": 0, "max": 15 },
+          "symptoms": [
+            "Limited understanding of [topic] fundamentals",
+            "No systematic approach to implementation",
+            "Lack of basic tools and resources",
+            "Unclear success metrics"
+          ],
+          "action_steps": [
+            "Week 1: Complete [topic] fundamentals course (2 hours)",
+            "Week 2: Set up basic tracking system (1 hour)",
+            "Week 3: Implement first simple strategy (3 hours)",
+            "Week 4: Review and adjust approach (1 hour)"
+          ],
+          "timeline": "4 weeks to see initial results",
+          "success_metrics": [
+            "Complete understanding of [topic] basics",
+            "Basic implementation system in place",
+            "First successful application documented",
+            "Clear measurement framework established"
+          ],
+          "recommendations": [
+            "Start with proven fundamentals to build confidence",
+            "Use simple templates and checklists",
+            "Focus on consistency over perfection",
+            "Track progress with basic metrics"
+          ]
+        },
+        {
+          "category": "Implementation Specialist",
+          "description": "You have good knowledge of [topic] but need help with consistent implementation and optimization. Focus on systematic execution and improvement.",
+          "score_range": { "min": 16, "max": 25 },
+          "symptoms": [
+            "Good theoretical knowledge but inconsistent practice",
+            "Some successful implementations but not systematic",
+            "Need help with optimization and scaling",
+            "Looking for proven frameworks and systems"
+          ],
+          "action_steps": [
+            "Week 1: Audit current practices and identify gaps (3 hours)",
+            "Week 2: Implement systematic approach (5 hours)",
+            "Week 3: Optimize based on initial results (3 hours)",
+            "Week 4: Scale successful elements (4 hours)"
+          ],
+          "timeline": "3-4 weeks to see significant improvement",
+          "success_metrics": [
+            "Consistent implementation of [topic] strategies",
+            "20-30% improvement in key metrics",
+            "Systematic approach documented and refined",
+            "Clear optimization process established"
+          ],
+          "recommendations": [
+            "Focus on systematic implementation over theory",
+            "Use proven frameworks and templates",
+            "Optimize based on data and results",
+            "Build scalable processes for growth"
+          ]
+        },
+        {
+          "category": "Optimization Expert",
+          "description": "You have solid implementation skills and are ready to optimize and refine your [topic] approach. Focus on advanced techniques and strategic improvements.",
+          "score_range": { "min": 26, "max": 35 },
+          "symptoms": [
+            "Strong implementation foundation in place",
+            "Looking for advanced optimization techniques",
+            "Ready to refine and improve existing systems",
+            "Interested in strategic enhancements"
+          ],
+          "action_steps": [
+            "Week 1: Advanced optimization techniques (4 hours)",
+            "Week 2: Strategic refinement of current systems (5 hours)",
+            "Week 3: Implementation of advanced strategies (6 hours)",
+            "Week 4: Performance analysis and further optimization (3 hours)"
+          ],
+          "timeline": "2-3 weeks to see advanced results",
+          "success_metrics": [
+            "Advanced optimization techniques implemented",
+            "40-50% improvement in performance metrics",
+            "Strategic enhancements documented",
+            "Advanced measurement systems in place"
+          ],
+          "recommendations": [
+            "Focus on advanced optimization techniques",
+            "Implement strategic enhancements",
+            "Use sophisticated measurement systems",
+            "Develop competitive advantages"
+          ]
+        },
+        {
+          "category": "Strategic Master",
+          "description": "You have mastered the fundamentals and optimization of [topic]. Now focus on strategic mastery and becoming an industry leader in this area.",
+          "score_range": { "min": 36, "max": 40 },
+          "symptoms": [
+            "Advanced knowledge and implementation skills",
+            "Looking for strategic mastery and leadership",
+            "Ready to innovate and create new approaches",
+            "Interested in industry leadership and influence"
+          ],
+          "action_steps": [
+            "Week 1: Strategic innovation and leadership (6 hours)",
+            "Week 2: Industry positioning and influence (5 hours)",
+            "Week 3: Advanced strategic implementation (7 hours)",
+            "Week 4: Leadership development and mentoring (4 hours)"
+          ],
+          "timeline": "2-3 weeks to establish leadership position",
+          "success_metrics": [
+            "Strategic mastery demonstrated",
+            "Industry leadership position established",
+            "Innovation and influence documented",
+            "Mentoring and teaching capabilities developed"
+          ],
+          "recommendations": [
+            "Focus on strategic innovation and leadership",
+            "Develop industry influence and positioning",
+            "Create new approaches and methodologies",
+            "Mentor others and share expertise"
+          ]
+        }
+      ]
     }
   }
 }`;

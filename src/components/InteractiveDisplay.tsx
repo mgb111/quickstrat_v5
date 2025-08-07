@@ -25,14 +25,9 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
   const [calculationResults, setCalculationResults] = useState<Record<string, any>>({});
   
   // Quiz State
-  const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, any>>({});
   const [quizResults, setQuizResults] = useState<any>(null);
   const [currentQuizStep, setCurrentQuizStep] = useState(0);
-  
-  // Checklist State
-  const [checklistItems, setChecklistItems] = useState<Record<string, boolean>>({});
-  const [checklistScore, setChecklistScore] = useState<number>(0);
-  const [checklistResults, setChecklistResults] = useState<any>(null);
 
   const handleEmailSubmitted = () => {
     setEmailSubmitted(true);
@@ -49,55 +44,87 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
     const numericValue = parseFloat(value) || 0;
     const newInputs = { ...calculatorInputs, [fieldName]: numericValue };
     setCalculatorInputs(newInputs);
-    
-    // Perform real-time calculations
-    calculateResults(newInputs);
   };
 
-  // Generic Calculation Logic - works with any calculator content
-  const calculateResults = (inputs: Record<string, number>) => {
-    const results: Record<string, any> = {};
-    
-    // Get all input values that have been entered
-    const inputEntries = Object.entries(inputs).filter(([_, value]) => value > 0);
-    
-    if (inputEntries.length === 0) {
-      results.summary = { hasResults: false };
-      setCalculationResults(results);
+  // Quiz calculation logic
+  const calculateQuizResults = () => {
+    if (Object.keys(quizAnswers).length !== 10) {
+      alert('Please answer all 10 questions to get your results.');
       return;
     }
-    
-    // Use the AI-generated calculation categories if available
-    if (content.calculator_content?.calculation_categories) {
-      content.calculator_content.calculation_categories.forEach((category: any, index: number) => {
-        const categoryKey = `category_${index}`;
-        
-        results[categoryKey] = {
-          name: category.category_name || `Category ${index + 1}`,
-          description: category.description || '',
-          potential_result: category.potential_savings || category.potential_gains || 'Result calculated from your inputs',
-          details: category.savings || category.improvements || [],
-          inputData: inputEntries
-        };
+
+    // Calculate total scores for each category
+    const totalScores = {
+      awareness: 0,
+      implementation: 0,
+      optimization: 0,
+      strategy: 0
+    };
+
+    // Sum up all scores from answered questions
+    Object.values(quizAnswers).forEach((answer: any) => {
+      if (answer.scores) {
+        totalScores.awareness += answer.scores.awareness || 0;
+        totalScores.implementation += answer.scores.implementation || 0;
+        totalScores.optimization += answer.scores.optimization || 0;
+        totalScores.strategy += answer.scores.strategy || 0;
+      }
+    });
+
+    // Calculate total score
+    const totalScore = totalScores.awareness + totalScores.implementation + totalScores.optimization + totalScores.strategy;
+
+    // Determine result category based on score ranges
+    let resultCategory;
+    if (totalScore >= 0 && totalScore <= 15) {
+      resultCategory = 'Foundation Builder';
+    } else if (totalScore >= 16 && totalScore <= 25) {
+      resultCategory = 'Implementation Specialist';
+    } else if (totalScore >= 26 && totalScore <= 35) {
+      resultCategory = 'Optimization Expert';
+    } else {
+      resultCategory = 'Strategic Master';
+    }
+
+    // Find the matching result from the quiz content
+    const matchingResult = content?.quiz_content?.results?.find((result: any) => 
+      result.category === resultCategory
+    );
+
+    if (matchingResult) {
+      setQuizResults({
+        ...matchingResult,
+        totalScore,
+        categoryScores: totalScores
       });
     } else {
-      // Fallback: Show input summary
-      const totalValue = inputEntries.reduce((sum, [_, value]) => sum + value, 0);
-      
-      results.inputSummary = {
-        name: 'Input Summary',
-        description: 'Your entered values',
-        totalValue: totalValue,
-        inputs: inputEntries.map(([key, value]) => ({ field: key, value: value }))
-      };
+      // Fallback result if no matching category found
+      setQuizResults({
+        category: resultCategory,
+        description: 'Based on your answers, we\'ve identified your current level and created a personalized action plan.',
+        totalScore,
+        categoryScores: totalScores,
+        action_steps: [
+          'Review your current approach',
+          'Identify key improvement areas',
+          'Implement recommended strategies',
+          'Track progress and adjust'
+        ],
+        timeline: '4-6 weeks to see improvement',
+        success_metrics: [
+          'Clear understanding of current level',
+          'Specific improvement areas identified',
+          'Action plan implemented',
+          'Progress tracking established'
+        ],
+        recommendations: [
+          'Focus on your identified improvement areas',
+          'Follow the recommended timeline',
+          'Track your progress regularly',
+          'Adjust your approach based on results'
+        ]
+      });
     }
-    
-    results.summary = {
-      hasResults: true,
-      totalInputs: inputEntries.length
-    };
-    
-    setCalculationResults(results);
   };
 
   // Quiz Logic
@@ -106,165 +133,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
     setQuizAnswers(newAnswers);
   };
 
-  // Checklist Logic
-  const handleChecklistItem = (itemId: string, checked: boolean) => {
-    const newItems = { ...checklistItems, [itemId]: checked };
-    setChecklistItems(newItems);
-    
-    // Calculate score
-    const score = Object.values(newItems).filter(Boolean).length;
-    setChecklistScore(score);
-    
-    // Calculate results
-    calculateChecklistResults(score);
-  };
 
-  const calculateChecklistResults = (score: number) => {
-    const content = typeof results.pdf_content === 'string' 
-      ? JSON.parse(results.pdf_content) 
-      : results.pdf_content;
-    
-    const scoringSystem = content.quiz_content?.scoring_system;
-    if (!scoringSystem) return;
-    
-    // Find the appropriate score range
-    const scoreRange = scoringSystem.score_ranges.find((range: any) => {
-      const [min, max] = range.range.split('-').map(Number);
-      return score >= min && score <= max;
-    });
-    
-    if (scoreRange) {
-      setChecklistResults({
-        score: score,
-        maxScore: scoringSystem.max_score,
-        percentage: Math.round((score / scoringSystem.max_score) * 100),
-        title: scoreRange.title,
-        description: scoreRange.description,
-        nextSteps: scoreRange.next_steps || []
-      });
-    }
-  };
-
-  const calculateQuizResults = () => {
-    const totalQuestions = Object.keys(quizAnswers).length;
-    if (totalQuestions === 0) return;
-
-    // Use AI-generated quiz content if available
-    if (content.quiz_content?.results) {
-      const totalQuizQuestions = content.quiz_content.questions?.length || 10;
-      
-      // Create a proper scoring system based on answer patterns
-      const answerPatterns: Record<string, number> = {};
-      
-      // Analyze each answer and create patterns
-      Object.entries(quizAnswers).forEach(([questionIndex, answer]) => {
-        const answerLower = answer.toLowerCase();
-        
-        // Score based on answer content patterns
-        if (answerLower.includes('low') || answerLower.includes('poor') || answerLower.includes('not confident')) {
-          answerPatterns['beginner'] = (answerPatterns['beginner'] || 0) + 1;
-        }
-        if (answerLower.includes('medium') || answerLower.includes('somewhat') || answerLower.includes('neutral')) {
-          answerPatterns['intermediate'] = (answerPatterns['intermediate'] || 0) + 1;
-        }
-        if (answerLower.includes('high') || answerLower.includes('very') || answerLower.includes('expert')) {
-          answerPatterns['advanced'] = (answerPatterns['advanced'] || 0) + 1;
-        }
-        if (answerLower.includes('budget') || answerLower.includes('cost') || answerLower.includes('limited')) {
-          answerPatterns['budget-conscious'] = (answerPatterns['budget-conscious'] || 0) + 1;
-        }
-        if (answerLower.includes('time') || answerLower.includes('quick') || answerLower.includes('immediately')) {
-          answerPatterns['time-focused'] = (answerPatterns['time-focused'] || 0) + 1;
-        }
-        if (answerLower.includes('quality') || answerLower.includes('premium') || answerLower.includes('expert')) {
-          answerPatterns['quality-focused'] = (answerPatterns['quality-focused'] || 0) + 1;
-        }
-        if (answerLower.includes('seo') || answerLower.includes('content') || answerLower.includes('organic')) {
-          answerPatterns['organic-focused'] = (answerPatterns['organic-focused'] || 0) + 1;
-        }
-        if (answerLower.includes('ads') || answerLower.includes('paid') || answerLower.includes('social')) {
-          answerPatterns['paid-focused'] = (answerPatterns['paid-focused'] || 0) + 1;
-        }
-      });
-
-      // Determine primary category based on highest score
-      const primaryCategory = Object.entries(answerPatterns)
-        .sort(([,a], [,b]) => b - a)[0]?.[0] || 'balanced';
-
-      // Find the best matching result from AI content
-      let matchingResult = content.quiz_content.results[0]; // Default to first result
-      
-      // Try to find a result that matches the primary category
-      for (const result of content.quiz_content.results) {
-        const resultCategory = result.category.toLowerCase();
-        if (resultCategory.includes(primaryCategory) || primaryCategory.includes(resultCategory)) {
-          matchingResult = result;
-          break;
-        }
-      }
-
-      // If no direct match, use the result that best fits the answer patterns
-      if (!matchingResult || matchingResult === content.quiz_content.results[0]) {
-        // Find result based on answer patterns
-        if (answerPatterns['beginner'] > answerPatterns['advanced']) {
-          matchingResult = content.quiz_content.results.find((r: any) => 
-            r.category.toLowerCase().includes('beginner') || 
-            r.category.toLowerCase().includes('novice') ||
-            r.category.toLowerCase().includes('basic')
-          ) || content.quiz_content.results[0];
-        } else if (answerPatterns['advanced'] > answerPatterns['beginner']) {
-          matchingResult = content.quiz_content.results.find((r: any) => 
-            r.category.toLowerCase().includes('advanced') || 
-            r.category.toLowerCase().includes('expert') ||
-            r.category.toLowerCase().includes('professional')
-          ) || content.quiz_content.results[0];
-        }
-      }
-
-      const results = {
-        totalAnswered: totalQuestions,
-        primaryCategory: matchingResult?.category || primaryCategory,
-        categoryScores: answerPatterns,
-        recommendations: matchingResult?.recommendations || [],
-        description: matchingResult?.description || '',
-        action_steps: matchingResult?.action_steps || [],
-        timeline: matchingResult?.timeline || '',
-        success_metrics: matchingResult?.success_metrics || [],
-        completionPercentage: Math.min(100, Math.round((totalQuestions / totalQuizQuestions) * 100))
-      };
-
-      setQuizResults(results);
-    } else {
-      // Fallback to original logic
-      const scores = Object.values(quizAnswers);
-      const categoryScores: Record<string, number> = {};
-      
-      scores.forEach((answer, index) => {
-        if (answer.toLowerCase().includes('budget') || answer.toLowerCase().includes('cost')) {
-          categoryScores['budget-conscious'] = (categoryScores['budget-conscious'] || 0) + 1;
-        }
-        if (answer.toLowerCase().includes('time') || answer.toLowerCase().includes('quick')) {
-          categoryScores['time-focused'] = (categoryScores['time-focused'] || 0) + 1;
-        }
-        if (answer.toLowerCase().includes('quality') || answer.toLowerCase().includes('premium')) {
-          categoryScores['quality-focused'] = (categoryScores['quality-focused'] || 0) + 1;
-        }
-      });
-
-      const primaryCategory = Object.entries(categoryScores)
-        .sort(([,a], [,b]) => b - a)[0]?.[0] || 'balanced';
-
-      const results = {
-        totalAnswered: totalQuestions,
-        primaryCategory,
-        categoryScores,
-        recommendations: getQuizRecommendations(primaryCategory),
-        completionPercentage: Math.min(100, Math.round((totalQuestions / 10) * 100))
-      };
-
-      setQuizResults(results);
-    }
-  };
 
   const getQuizRecommendations = (category: string) => {
     switch (category) {
@@ -324,207 +193,190 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
   };
 
   const renderInteractiveContent = () => {
-    if (!results.pdf_content) return null;
+    if (!content) return null;
 
-    // Parse content if it's a string
-    const content = typeof results.pdf_content === 'string' 
-      ? JSON.parse(results.pdf_content) 
-      : results.pdf_content;
-    
     switch (selectedFormat) {
       case 'interactive_quiz':
         return (
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                {content.title_page?.title || 'Validation Checklist'}
+                {content.title_page?.title || 'Interactive Diagnostic Quiz'}
               </h1>
               <p className="text-lg text-gray-600">
-                {content.title_page?.subtitle || 'Validate your idea in 2 minutes. Get your score and actionable feedback.'}
+                {content.title_page?.subtitle || '10-Question Diagnostic to Identify Your Core Challenges'}
               </p>
             </div>
 
             <div className="mb-8">
               <p className="text-gray-700 leading-relaxed">
-                {content.founder_intro || content.quiz_content?.introduction || 'Complete the checklist below to get your personalized validation score. Each item you check will improve your score and help you understand how well-validated your idea is.'}
+                {content.founder_intro || 'This comprehensive diagnostic will reveal the root causes of your challenges and provide a personalized action plan with exact next steps.'}
               </p>
             </div>
 
-            {/* Checklist Format */}
-            {content.quiz_content?.checklist_items && (
-              <div className="bg-blue-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-blue-900 mb-4">📋 Validation Checklist</h2>
-                <div className="space-y-3">
-                  {content.quiz_content.checklist_items.map((item: any) => (
-                    <label key={item.id} className="flex items-start cursor-pointer bg-white rounded-lg p-4 border border-blue-200 hover:bg-blue-25 transition-colors">
-                      <input
-                        type="checkbox"
-                        checked={checklistItems[item.id] || false}
-                        onChange={(e) => handleChecklistItem(item.id, e.target.checked)}
-                        className="mt-1 mr-3 text-blue-600 rounded focus:ring-blue-500"
-                      />
-                      <span className="text-blue-800 leading-relaxed">{item.text}</span>
-                    </label>
-                  ))}
-                </div>
-                
-                {/* Score Display */}
-                <div className="mt-6 bg-white rounded-lg p-4 border border-blue-200">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-blue-700">Your Score:</span>
-                    <span className="text-lg font-bold text-blue-900">{checklistScore}/{content.quiz_content.scoring_system?.max_score || 10}</span>
-                  </div>
-                  <div className="bg-blue-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(checklistScore / (content.quiz_content.scoring_system?.max_score || 10)) * 100}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            )}
+            <div className="bg-blue-50 rounded-lg p-6 mb-6">
+              <h2 className="text-xl font-semibold text-blue-900 mb-4">🎯 What You'll Discover</h2>
+              <ul className="space-y-2 text-blue-800">
+                <li>• Your current knowledge and implementation level</li>
+                <li>• Specific challenges and obstacles</li>
+                <li>• Personalized action plan with timelines</li>
+                <li>• Success metrics and tracking methods</li>
+              </ul>
+            </div>
 
-            {/* Traditional Quiz Questions (fallback) */}
-            {!content.quiz_content?.checklist_items && content.quiz_content?.questions && (
-              <div className="bg-indigo-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-indigo-900 mb-4">📝 {content.quiz_content.title || 'Assessment'}</h2>
-                <div className="space-y-4">
-                  {content.quiz_content.questions.map((q: any, index: number) => (
-                    <div key={index} className="bg-white rounded-lg p-4 border border-indigo-200">
-                      <h3 className="font-medium text-indigo-900 mb-3">{index + 1}. {q.question || q.text}</h3>
-                      <div className="space-y-2">
-                        {(q.options || q.answers || []).map((option: string, optIndex: number) => (
-                          <label key={optIndex} className="flex items-center cursor-pointer">
+            {/* Dynamic Quiz - Based on AI Content */}
+            {content.quiz_content?.questions && (
+              <div className="bg-blue-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-blue-900 mb-4">📋 {content.quiz_content.title || 'Your Diagnostic Checklist'}</h2>
+                <p className="text-blue-700 mb-6">{content.quiz_content.description}</p>
+                
+                <div className="space-y-6">
+                  {content.quiz_content.questions.map((question: any, index: number) => (
+                    <div key={question.id || index} className="bg-white rounded-lg p-6 border border-blue-200">
+                      <h3 className="font-semibold text-blue-900 mb-4">
+                        Question {question.id || index + 1}: {question.question}
+                      </h3>
+                      
+                      <div className="space-y-3">
+                        {question.options?.map((option: any, optionIndex: number) => (
+                          <label key={option.id || optionIndex} className="flex items-start cursor-pointer bg-gray-50 rounded-lg p-4 border border-gray-200 hover:bg-blue-25 transition-colors">
                             <input
                               type="radio"
-                              name={`question-${index}`}
-                              value={option}
-                              checked={quizAnswers[index] === option}
+                              name={`question-${question.id || index}`}
+                              value={option.id || optionIndex}
+                              className="mt-1 mr-3 text-blue-600"
                               onChange={(e) => {
-                                handleQuizAnswer(index, e.target.value);
-                                setTimeout(calculateQuizResults, 100);
+                                const selectedOption = option;
+                                const questionId = question.id || index;
+                                
+                                // Update quiz answers
+                                setQuizAnswers(prev => ({
+                                  ...prev,
+                                  [questionId]: {
+                                    question: question.question,
+                                    selectedOption: selectedOption,
+                                    scores: selectedOption.score || {}
+                                  }
+                                }));
                               }}
-                              className="mr-3 text-indigo-600"
                             />
-                            <span className="text-indigo-800">{option}</span>
+                            <div className="flex-1">
+                              <span className="font-medium text-gray-900">
+                                {option.id}: {option.text}
+                              </span>
+                            </div>
                           </label>
                         ))}
                       </div>
+                      
+                      {question.explanation && (
+                        <p className="text-sm text-blue-600 mt-3 italic">
+                          💡 {question.explanation}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-            
-            {/* Fallback if no quiz content */}
-            {!content.quiz_content?.checklist_items && !content.quiz_content?.questions && (
-              <div className="bg-indigo-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-indigo-900 mb-4">📝 Quick Assessment</h2>
-                <p className="text-indigo-700 text-center py-8">
-                  Quiz questions will be generated based on your specific topic and displayed here.
-                </p>
-              </div>
-            )}
 
-            {/* Checklist Results */}
-            {checklistResults && (
-              <div className="bg-green-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-green-900 mb-4">🎯 Your Validation Results</h2>
-                <div className="bg-white rounded-lg p-4 border border-green-200 mb-4">
-                  <h3 className="font-bold text-green-900 text-lg mb-2">
-                    {checklistResults.title}
-                  </h3>
-                  <div className="mb-3">
-                    <div className="bg-green-200 rounded-full h-2">
-                      <div 
-                        className="bg-green-600 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${checklistResults.percentage}%` }}
-                      ></div>
-                    </div>
-                    <p className="text-sm text-green-700 mt-1">{checklistResults.score}/{checklistResults.maxScore} points ({checklistResults.percentage}%)</p>
-                  </div>
-                  <div className="mt-3 p-3 bg-green-50 rounded-lg">
-                    <p className="text-green-800 leading-relaxed">{checklistResults.description}</p>
-                  </div>
-                </div>
-                
-                {checklistResults.nextSteps.length > 0 && (
-                  <div className="bg-white rounded-lg p-4 border border-green-200">
-                    <h4 className="font-semibold text-green-900 mb-2">📋 Next Steps:</h4>
-                    <ul className="space-y-2">
-                      {checklistResults.nextSteps.map((step: string, index: number) => (
-                        <li key={index} className="text-green-800 flex items-start">
-                          <span className="text-green-600 mr-2">•</span>
-                          {step}
-                        </li>
-                      ))}
-                    </ul>
+                {/* Results Section */}
+                {Object.keys(quizAnswers).length === 10 && (
+                  <div className="mt-8 bg-green-50 rounded-lg p-6 border border-green-200">
+                    <h3 className="text-xl font-semibold text-green-900 mb-4">🎉 Your Results Are Ready!</h3>
+                    <button 
+                      className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
+                      onClick={calculateQuizResults}
+                    >
+                      📊 View Your Personalized Results
+                    </button>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Traditional Quiz Results (fallback) */}
-            {quizResults && !checklistResults && (
+            {/* Results Display */}
+            {quizResults && (
               <div className="bg-green-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-green-900 mb-4">🎯 Your Results</h2>
-                <div className="bg-white rounded-lg p-4 border border-green-200 mb-4">
-                  <h3 className="font-bold text-green-900 text-lg mb-2">
-                    Result: <span className="capitalize">{quizResults.primaryCategory.replace('-', ' ')}</span>
-                  </h3>
-                  <div className="mb-3">
-                    <div className="bg-green-200 rounded-full h-2">
-                      <div 
-                        className="bg-green-600 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${quizResults.completionPercentage}%` }}
-                      ></div>
-                    </div>
-                    <p className="text-sm text-green-700 mt-1">{quizResults.completionPercentage}% Complete</p>
-                  </div>
-                  {quizResults.description && (
-                    <div className="mt-3 p-3 bg-green-50 rounded-lg">
-                      <p className="text-green-800 leading-relaxed">{quizResults.description}</p>
-                    </div>
-                  )}
-                </div>
+                <h2 className="text-xl font-semibold text-green-900 mb-4">📊 Your Personalized Diagnosis</h2>
                 
-                <div className="bg-white rounded-lg p-4 border border-green-200">
-                  <h4 className="font-semibold text-green-900 mb-2">📋 Recommendations:</h4>
+                <div className="bg-white rounded-lg p-6 border border-green-200 mb-6">
+                  <h3 className="text-lg font-semibold text-green-900 mb-3">
+                    {quizResults.category}
+                  </h3>
+                  <p className="text-gray-700 mb-4">{quizResults.description}</p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="font-semibold text-green-800 mb-2">🔍 Your Symptoms:</h4>
+                      <ul className="space-y-1 text-sm text-gray-700">
+                        {quizResults.symptoms?.map((symptom: string, idx: number) => (
+                          <li key={idx}>• {symptom}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-green-800 mb-2">📈 Success Metrics:</h4>
+                      <ul className="space-y-1 text-sm text-gray-700">
+                        {quizResults.success_metrics?.map((metric: string, idx: number) => (
+                          <li key={idx}>• {metric}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-6 border border-green-200 mb-6">
+                  <h3 className="text-lg font-semibold text-green-900 mb-4">📋 Your Action Plan</h3>
+                  <p className="text-sm text-gray-600 mb-4">Timeline: {quizResults.timeline}</p>
+                  
+                  <div className="space-y-4">
+                    {quizResults.action_steps?.map((step: string, idx: number) => (
+                      <div key={idx} className="flex items-start bg-gray-50 rounded-lg p-4">
+                        <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold mr-3 mt-0.5">
+                          {idx + 1}
+                        </span>
+                        <span className="text-gray-700">{step}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-6 border border-green-200">
+                  <h3 className="text-lg font-semibold text-green-900 mb-4">💡 Key Recommendations</h3>
                   <ul className="space-y-2">
-                    {quizResults.recommendations.map((rec: string, index: number) => (
-                      <li key={index} className="text-green-800 flex items-start">
-                        <span className="text-green-600 mr-2">•</span>
-                        {rec}
+                    {quizResults.recommendations?.map((rec: string, idx: number) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="text-green-500 mr-2 mt-1">•</span>
+                        <span className="text-gray-700">{rec}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
+
+                <div className="text-center mt-6">
+                  <button 
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors mr-4"
+                    onClick={() => {
+                      const resultsText = `Diagnostic Results:\n\nCategory: ${quizResults.category}\n\nDescription: ${quizResults.description}\n\nAction Plan:\n${quizResults.action_steps?.map((step: string, idx: number) => `${idx + 1}. ${step}`).join('\n')}\n\nTimeline: ${quizResults.timeline}`;
+                      navigator.clipboard.writeText(resultsText);
+                      alert('Results copied to clipboard!');
+                    }}
+                  >
+                    📋 Copy Results
+                  </button>
+                  
+                  <button 
+                    className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
+                    onClick={() => {
+                      setQuizAnswers({});
+                      setQuizResults(null);
+                    }}
+                  >
+                    🔄 Take Quiz Again
+                  </button>
+                </div>
               </div>
             )}
-
-            <div className="text-center">
-              {(checklistResults || quizResults) ? (
-                <button 
-                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
-                  onClick={() => {
-                    const resultsText = checklistResults 
-                      ? `Validation Results:\n\nScore: ${checklistResults.score}/${checklistResults.maxScore}\nResult: ${checklistResults.title}\n\nDescription: ${checklistResults.description}\n\nNext Steps:\n${checklistResults.nextSteps.map((step: string) => `• ${step}`).join('\n')}`
-                      : `Quiz Results:\n\nResult: ${quizResults.primaryCategory}\nDescription: ${quizResults.description}\n\nRecommendations:\n${quizResults.recommendations.map((rec: string) => `• ${rec}`).join('\n')}`;
-                    navigator.clipboard.writeText(resultsText);
-                    alert('Results copied to clipboard!');
-                  }}
-                >
-                  📋 Copy Results
-                </button>
-              ) : (
-                <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-600 mb-2">Ready to Validate?</h3>
-                  <p className="text-gray-600">
-                    {content.quiz_content?.checklist_items ? 'Check the items that apply to your situation to get your validation score.' : 'Answer the questions above to see your personalized results.'}
-                  </p>
-                </div>
-              )}
-            </div>
           </div>
         );
 
@@ -562,7 +414,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                 {content.guide_content?.sections?.map((section: any, index: number) => (
                   <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
                     <h3 className="font-semibold text-gray-900 mb-3">{section.title || `Section ${index + 1}`}</h3>
-                    <div className="space-y-3">
+                <div className="space-y-3">
                       {section.content?.map((item: any, itemIndex: number) => (
                         <div key={itemIndex} className="bg-gray-50 rounded-lg p-3 border border-gray-100">
                           <h4 className="font-medium text-gray-900 mb-2">{item.title || `Sub-section ${itemIndex + 1}`}</h4>
@@ -580,10 +432,10 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                         </div>
                       ))}
                     </div>
-                  </div>
-                ))}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
 
             <div className="text-center">
               <button 
