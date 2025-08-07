@@ -540,120 +540,142 @@ ${founderIntro}
 
 ${valueStandards}
 
-CREATE A PROFESSIONAL DIAGNOSTIC QUIZ SYSTEM:
+CREATE A GENERIC VALIDATION CHECKLIST QUIZ:
 
-This must be a complete diagnostic tool that provides professional-grade insights and actionable solutions.
+This must be a comprehensive validation checklist that provides immediate scoring and actionable feedback for any scenario.
 
 REQUIRED STRUCTURE:
-1. **Diagnostic Framework**: Explain the methodology behind the questions
-2. **Question Bank**: 8-12 strategic questions that build on each other
-3. **Scoring System**: How answers combine to create accurate diagnosis
-4. **Result Categories**: 4-6 specific diagnosis types with solutions
-5. **Action Protocols**: Exact next steps for each diagnosis type
-6. **Success Tracking**: How to measure improvement
+1. **Quiz Title**: "[Topic] Validation Checklist"
+2. **Subtitle**: "Validate your [topic] in 2 minutes. Get your score and actionable feedback."
+3. **Introduction**: Brief explanation of the validation process
+4. **Checklist Items**: 10-12 validation criteria with clear yes/no options
+5. **Scoring System**: 0-10 scale with specific score ranges
+6. **Results Categories**: 3-4 result categories based on score ranges
+7. **Actionable Feedback**: Specific next steps for each result category
 
 CRITICAL REQUIREMENTS:
-- Questions must reveal ROOT CAUSES, not just symptoms
-- Each result category needs SPECIFIC action steps
-- Include success metrics and timelines
-- Provide troubleshooting for each diagnosis type
-- Questions must be SPECIFIC to the niche and problem
-- Results must be ACTIONABLE and TIMELINE-BASED
+- Make it applicable to ANY industry or scenario
+- Use generic validation criteria that work across domains
+- Provide clear scoring logic (1 point per checked item)
+- Include specific actionable feedback for each score range
+- Make the language adaptable to any topic
 
 RETURN JSON IN THIS EXACT FORMAT:
 {
-  "founder_intro": "Personal introduction explaining why you created this diagnostic and what results users will get",
-  "title_page": {
-    "title": "${outline.title}",
-    "subtitle": "A Professional-Grade Diagnostic Tool for [Specific Problem]"
-  },
-  "introduction_page": {
-    "title": "How This Diagnostic Works",
-    "content": "Explain the professional methodology and what insights they'll receive"
-  },
-  "quiz_content": {
-    "title": "Professional Diagnostic Assessment",
-    "questions": [
-      {
-        "question": "[SPECIFIC QUESTION 1 ABOUT THE PROBLEM - e.g., 'What's your biggest challenge with [topic]?']",
-        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
-        "explanation": "This reveals your primary pain point and helps categorize your situation"
-      },
-      {
-        "question": "[SPECIFIC QUESTION 2 ABOUT CONFIDENCE - e.g., 'How confident are you in your [topic] abilities?']",
-        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
-        "explanation": "This helps determine your confidence level and experience"
-      },
-      {
-        "question": "[SPECIFIC QUESTION 3 ABOUT CURRENT BEHAVIOR - e.g., 'What's your typical approach to [topic]?']",
-        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
-        "explanation": "This shows your current approach and what might be missing"
-      },
-      {
-        "question": "[SPECIFIC QUESTION 4 ABOUT DESIRED OUTCOME - e.g., 'What would success look like for your [topic] goals?']",
-        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
-        "explanation": "This helps tailor the solution to your specific goals"
-      },
-      {
-        "question": "[SPECIFIC QUESTION 5 ABOUT OBSTACLES - e.g., 'What's stopping you from achieving your [topic] goals?']",
-        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
-        "explanation": "This identifies the main barriers to your success"
-      },
-      {
-        "question": "[SPECIFIC QUESTION 6 ABOUT KNOWLEDGE - e.g., 'How much do you know about [topic] principles?']",
-        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
-        "explanation": "This assesses your current knowledge level"
-      },
-      {
-        "question": "[SPECIFIC QUESTION 7 ABOUT RESOURCES - e.g., 'What [topic] resources do you currently use?']",
-        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
-        "explanation": "This shows what tools and resources you're already using"
-      },
-      {
-        "question": "[SPECIFIC QUESTION 8 ABOUT TIMELINE - e.g., 'How quickly do you want to see improvement in your [topic]?']",
-        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
-        "explanation": "This helps set realistic expectations and timelines"
-      },
-      {
-        "question": "[SPECIFIC QUESTION 9 ABOUT SUPPORT - e.g., 'What kind of support do you need to improve your [topic]?']",
-        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
-        "explanation": "This identifies what type of guidance would be most helpful"
-      },
-      {
-        "question": "[SPECIFIC QUESTION 10 ABOUT COMMITMENT - e.g., 'How much time can you dedicate to improving your [topic]?']",
-        "options": ["[SPECIFIC OPTION 1]", "[SPECIFIC OPTION 2]", "[SPECIFIC OPTION 3]", "[SPECIFIC OPTION 4]"],
-        "explanation": "This determines the intensity and pace of your action plan"
+  "structured_content": {
+    "title_page": {
+      "title": "[Topic] Validation Checklist",
+      "subtitle": "Validate your [topic] in 2 minutes. Get your score and actionable feedback."
+    },
+    "introduction_page": {
+      "title": "[Topic] Validation Checklist",
+      "content": "Complete the checklist below to get your personalized validation score. Each item you check will improve your score and help you understand how well-validated your [topic] is."
+    },
+    "quiz_content": {
+      "title": "[Topic] Validation Checklist",
+      "introduction": "Complete the checklist below to get your personalized validation score. Each item you check will improve your score and help you understand how well-validated your [topic] is.",
+      "checklist_items": [
+        {
+          "id": 1,
+          "text": "I clearly understand the problem I'm solving",
+          "category": "problem_validation"
+        },
+        {
+          "id": 2,
+          "text": "I can identify my target audience precisely",
+          "category": "audience_validation"
+        },
+        {
+          "id": 3,
+          "text": "I've seen this problem discussed online (e.g. Reddit, forums)",
+          "category": "market_validation"
+        },
+        {
+          "id": 4,
+          "text": "I've spoken to at least 3 real users about this",
+          "category": "user_validation"
+        },
+        {
+          "id": 5,
+          "text": "I know how users currently solve this problem",
+          "category": "solution_validation"
+        },
+        {
+          "id": 6,
+          "text": "I've identified weaknesses in existing solutions",
+          "category": "competitive_validation"
+        },
+        {
+          "id": 7,
+          "text": "I have a simple MVP idea to test",
+          "category": "execution_validation"
+        },
+        {
+          "id": 8,
+          "text": "I've validated interest with a landing page or post",
+          "category": "demand_validation"
+        },
+        {
+          "id": 9,
+          "text": "I know how I'll reach my first 10 users",
+          "category": "distribution_validation"
+        },
+        {
+          "id": 10,
+          "text": "I've received feedback and iterated",
+          "category": "iteration_validation"
+        }
+      ],
+      "scoring_system": {
+        "max_score": 10,
+        "score_ranges": [
+          {
+            "range": "0-3",
+            "title": "❌ Too risky right now",
+            "description": "Your [topic] needs significant validation before considering moving forward. You're missing critical validation steps that successful [industry] typically complete. Focus on market research, user interviews, and problem validation. Moving forward now would be risky - invest time in validation to increase your chances of success.",
+            "next_steps": [
+              "Conduct 5+ user interviews",
+              "Research online discussions about your problem",
+              "Create a simple landing page to test interest",
+              "Identify your exact target audience"
+            ]
+          },
+          {
+            "range": "4-6",
+            "title": "⚠️ Needs more validation",
+            "description": "Your [topic] shows some promise but needs more validation before proceeding. You've completed some key validation steps but are missing critical elements. Focus on the areas you haven't validated yet to reduce risk and increase confidence.",
+            "next_steps": [
+              "Fill the gaps in your validation",
+              "Test your assumptions with real users",
+              "Refine your target audience definition",
+              "Research competitive solutions more deeply"
+            ]
+          },
+          {
+            "range": "7-8",
+            "title": "✅ Well validated",
+            "description": "Your [topic] is well-validated and ready for the next phase. You've completed most critical validation steps and have a solid foundation. You can proceed with confidence, but continue gathering feedback as you move forward.",
+            "next_steps": [
+              "Start building your MVP",
+              "Begin user acquisition efforts",
+              "Set up feedback collection systems",
+              "Plan your launch strategy"
+            ]
+          },
+          {
+            "range": "9-10",
+            "title": "🚀 Highly validated",
+            "description": "Excellent! Your [topic] is highly validated and you're ready to execute. You've completed all critical validation steps and have strong evidence that your idea has merit. You can proceed with high confidence.",
+            "next_steps": [
+              "Execute your plan with confidence",
+              "Focus on execution and iteration",
+              "Scale your user acquisition",
+              "Monitor and optimize based on feedback"
+            ]
+          }
+        ]
       }
-    ],
-    "results": [
-      {
-        "category": "[SPECIFIC DIAGNOSIS TYPE - e.g., 'Color Theory Beginner']",
-        "description": "[WRITE A DETAILED PARAGRAPH WITH 3 SPECIFIC SENTENCES EXPLAINING WHAT THIS DIAGNOSIS MEANS, WHY IT HAPPENS, AND WHAT THE USER SHOULD EXPECT]",
-        "symptoms": ["[SPECIFIC SYMPTOM 1]", "[SPECIFIC SYMPTOM 2]", "[SPECIFIC SYMPTOM 3]"],
-        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE - e.g., 'Week 1: Learn basic [topic] principles']", "[SPECIFIC STEP 2 WITH TIMELINE - e.g., 'Week 2: Practice with your existing [topic] approach']", "[SPECIFIC STEP 3 WITH TIMELINE - e.g., 'Week 3: Experiment with new [topic] strategies']"],
-        "timeline": "[SPECIFIC TIMELINE - e.g., '2-3 weeks to see improvement']",
-        "success_metrics": ["[SPECIFIC METRIC 1]", "[SPECIFIC METRIC 2]", "[SPECIFIC METRIC 3]"],
-        "recommendations": ["[SPECIFIC RECOMMENDATION 1 - e.g., 'Start with basic [topic] fundamentals to build confidence']", "[SPECIFIC RECOMMENDATION 2 - e.g., 'Use proven [topic] frameworks to identify opportunities']", "[SPECIFIC RECOMMENDATION 3 - e.g., 'Practice with your existing [topic] foundation']", "[SPECIFIC RECOMMENDATION 4 - e.g., 'Track your [topic] progress for continuous improvement']"]
-      },
-      {
-        "category": "[SPECIFIC DIAGNOSIS TYPE - e.g., 'Style Confidence Builder']",
-        "description": "[WRITE A DETAILED PARAGRAPH WITH 3 SPECIFIC SENTENCES EXPLAINING WHAT THIS DIAGNOSIS MEANS, WHY IT HAPPENS, AND WHAT THE USER SHOULD EXPECT]",
-        "symptoms": ["[SPECIFIC SYMPTOM 1]", "[SPECIFIC SYMPTOM 2]", "[SPECIFIC SYMPTOM 3]"],
-        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE - e.g., 'Week 1: Identify your [topic] personality type']", "[SPECIFIC STEP 2 WITH TIMELINE - e.g., 'Week 2: Build a [topic] foundation']", "[SPECIFIC STEP 3 WITH TIMELINE - e.g., 'Week 3: Practice daily [topic] exercises']"],
-        "timeline": "[SPECIFIC TIMELINE - e.g., '1-2 weeks to see improvement']",
-        "success_metrics": ["[SPECIFIC METRIC 1]", "[SPECIFIC METRIC 2]", "[SPECIFIC METRIC 3]"],
-        "recommendations": ["[SPECIFIC RECOMMENDATION 1 - e.g., 'Create a [topic] mood board for inspiration']", "[SPECIFIC RECOMMENDATION 2 - e.g., 'Start with [topic] approaches you feel comfortable with']", "[SPECIFIC RECOMMENDATION 3 - e.g., 'Gradually experiment with bolder [topic] choices']", "[SPECIFIC RECOMMENDATION 4 - e.g., 'Seek feedback from trusted mentors or colleagues']"]
-      },
-      {
-        "category": "[SPECIFIC DIAGNOSIS TYPE - e.g., 'Advanced Style Optimizer']",
-        "description": "[WRITE A DETAILED PARAGRAPH WITH 3 SPECIFIC SENTENCES EXPLAINING WHAT THIS DIAGNOSIS MEANS, WHY IT HAPPENS, AND WHAT THE USER SHOULD EXPECT]",
-        "symptoms": ["[SPECIFIC SYMPTOM 1]", "[SPECIFIC SYMPTOM 2]", "[SPECIFIC SYMPTOM 3]"],
-        "action_steps": ["[SPECIFIC STEP 1 WITH TIMELINE - e.g., 'Week 1: Audit your current [topic] approach and identify gaps']", "[SPECIFIC STEP 2 WITH TIMELINE - e.g., 'Week 2: Learn advanced [topic] techniques']", "[SPECIFIC STEP 3 WITH TIMELINE - e.g., 'Week 3: Create signature [topic] strategies and refine your approach']"],
-        "timeline": "[SPECIFIC TIMELINE - e.g., '3-5 days to see improvement']",
-        "success_metrics": ["[SPECIFIC METRIC 1]", "[SPECIFIC METRIC 2]", "[SPECIFIC METRIC 3]"],
-        "recommendations": ["[SPECIFIC RECOMMENDATION 1 - e.g., 'Invest in quality [topic] tools that reflect your business goals']", "[SPECIFIC RECOMMENDATION 2 - e.g., 'Learn to mix high and low effort [topic] strategies effectively']", "[SPECIFIC RECOMMENDATION 3 - e.g., 'Develop a signature [topic] approach that sets you apart']", "[SPECIFIC RECOMMENDATION 4 - e.g., 'Stay updated with current [topic] trends while maintaining your unique approach']"]
-      }
-    ]
+    }
   }
 }`;
 

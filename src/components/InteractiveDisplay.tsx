@@ -28,6 +28,11 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [quizResults, setQuizResults] = useState<any>(null);
   const [currentQuizStep, setCurrentQuizStep] = useState(0);
+  
+  // Checklist State
+  const [checklistItems, setChecklistItems] = useState<Record<string, boolean>>({});
+  const [checklistScore, setChecklistScore] = useState<number>(0);
+  const [checklistResults, setChecklistResults] = useState<any>(null);
 
   const handleEmailSubmitted = () => {
     setEmailSubmitted(true);
@@ -99,6 +104,45 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
   const handleQuizAnswer = (questionIndex: number, answer: string) => {
     const newAnswers = { ...quizAnswers, [questionIndex]: answer };
     setQuizAnswers(newAnswers);
+  };
+
+  // Checklist Logic
+  const handleChecklistItem = (itemId: string, checked: boolean) => {
+    const newItems = { ...checklistItems, [itemId]: checked };
+    setChecklistItems(newItems);
+    
+    // Calculate score
+    const score = Object.values(newItems).filter(Boolean).length;
+    setChecklistScore(score);
+    
+    // Calculate results
+    calculateChecklistResults(score);
+  };
+
+  const calculateChecklistResults = (score: number) => {
+    const content = typeof results.pdf_content === 'string' 
+      ? JSON.parse(results.pdf_content) 
+      : results.pdf_content;
+    
+    const scoringSystem = content.quiz_content?.scoring_system;
+    if (!scoringSystem) return;
+    
+    // Find the appropriate score range
+    const scoreRange = scoringSystem.score_ranges.find((range: any) => {
+      const [min, max] = range.range.split('-').map(Number);
+      return score >= min && score <= max;
+    });
+    
+    if (scoreRange) {
+      setChecklistResults({
+        score: score,
+        maxScore: scoringSystem.max_score,
+        percentage: Math.round((score / scoringSystem.max_score) * 100),
+        title: scoreRange.title,
+        description: scoreRange.description,
+        nextSteps: scoreRange.next_steps || []
+      });
+    }
   };
 
   const calculateQuizResults = () => {
@@ -293,31 +337,55 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                {content.title_page?.title || 'Style Personality Quiz'}
+                {content.title_page?.title || 'Validation Checklist'}
               </h1>
               <p className="text-lg text-gray-600">
-                {content.title_page?.subtitle || 'Discover your unique style personality'}
+                {content.title_page?.subtitle || 'Validate your idea in 2 minutes. Get your score and actionable feedback.'}
               </p>
             </div>
 
             <div className="mb-8">
               <p className="text-gray-700 leading-relaxed">
-                {content.founder_intro || 'Take this quiz to discover your unique style personality and get personalized recommendations.'}
+                {content.founder_intro || content.quiz_content?.introduction || 'Complete the checklist below to get your personalized validation score. Each item you check will improve your score and help you understand how well-validated your idea is.'}
               </p>
             </div>
 
-            <div className="bg-blue-50 rounded-lg p-6 mb-6">
-              <h2 className="text-xl font-semibold text-blue-900 mb-4">🎯 What You'll Discover</h2>
-              <ul className="space-y-2 text-blue-800">
-                <li>• Your unique {content.niche?.toLowerCase() || 'business'} personality type</li>
-                <li>• {content.niche || 'Business'} strategies that work best for you</li>
-                <li>• Personalized {content.niche?.toLowerCase() || 'business'} recommendations</li>
-                <li>• Confidence-boosting {content.niche?.toLowerCase() || 'business'} tips</li>
-              </ul>
-            </div>
+            {/* Checklist Format */}
+            {content.quiz_content?.checklist_items && (
+              <div className="bg-blue-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-blue-900 mb-4">📋 Validation Checklist</h2>
+                <div className="space-y-3">
+                  {content.quiz_content.checklist_items.map((item: any) => (
+                    <label key={item.id} className="flex items-start cursor-pointer bg-white rounded-lg p-4 border border-blue-200 hover:bg-blue-25 transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={checklistItems[item.id] || false}
+                        onChange={(e) => handleChecklistItem(item.id, e.target.checked)}
+                        className="mt-1 mr-3 text-blue-600 rounded focus:ring-blue-500"
+                      />
+                      <span className="text-blue-800 leading-relaxed">{item.text}</span>
+                    </label>
+                  ))}
+                </div>
+                
+                {/* Score Display */}
+                <div className="mt-6 bg-white rounded-lg p-4 border border-blue-200">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-blue-700">Your Score:</span>
+                    <span className="text-lg font-bold text-blue-900">{checklistScore}/{content.quiz_content.scoring_system?.max_score || 10}</span>
+                  </div>
+                  <div className="bg-blue-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${(checklistScore / (content.quiz_content.scoring_system?.max_score || 10)) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            )}
 
-            {/* Dynamic Quiz Questions - Based on AI Content */}
-            {content.quiz_content?.questions && (
+            {/* Traditional Quiz Questions (fallback) */}
+            {!content.quiz_content?.checklist_items && content.quiz_content?.questions && (
               <div className="bg-indigo-50 rounded-lg p-6 mb-6">
                 <h2 className="text-xl font-semibold text-indigo-900 mb-4">📝 {content.quiz_content.title || 'Assessment'}</h2>
                 <div className="space-y-4">
@@ -348,8 +416,8 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </div>
             )}
             
-            {/* Fallback Quiz if no AI content */}
-            {!content.quiz_content?.questions && (
+            {/* Fallback if no quiz content */}
+            {!content.quiz_content?.checklist_items && !content.quiz_content?.questions && (
               <div className="bg-indigo-50 rounded-lg p-6 mb-6">
                 <h2 className="text-xl font-semibold text-indigo-900 mb-4">📝 Quick Assessment</h2>
                 <p className="text-indigo-700 text-center py-8">
@@ -358,8 +426,46 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
               </div>
             )}
 
-            {/* Dynamic Quiz Results */}
-            {quizResults && (
+            {/* Checklist Results */}
+            {checklistResults && (
+              <div className="bg-green-50 rounded-lg p-6 mb-6">
+                <h2 className="text-xl font-semibold text-green-900 mb-4">🎯 Your Validation Results</h2>
+                <div className="bg-white rounded-lg p-4 border border-green-200 mb-4">
+                  <h3 className="font-bold text-green-900 text-lg mb-2">
+                    {checklistResults.title}
+                  </h3>
+                  <div className="mb-3">
+                    <div className="bg-green-200 rounded-full h-2">
+                      <div 
+                        className="bg-green-600 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${checklistResults.percentage}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-sm text-green-700 mt-1">{checklistResults.score}/{checklistResults.maxScore} points ({checklistResults.percentage}%)</p>
+                  </div>
+                  <div className="mt-3 p-3 bg-green-50 rounded-lg">
+                    <p className="text-green-800 leading-relaxed">{checklistResults.description}</p>
+                  </div>
+                </div>
+                
+                {checklistResults.nextSteps.length > 0 && (
+                  <div className="bg-white rounded-lg p-4 border border-green-200">
+                    <h4 className="font-semibold text-green-900 mb-2">📋 Next Steps:</h4>
+                    <ul className="space-y-2">
+                      {checklistResults.nextSteps.map((step: string, index: number) => (
+                        <li key={index} className="text-green-800 flex items-start">
+                          <span className="text-green-600 mr-2">•</span>
+                          {step}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Traditional Quiz Results (fallback) */}
+            {quizResults && !checklistResults && (
               <div className="bg-green-50 rounded-lg p-6 mb-6">
                 <h2 className="text-xl font-semibold text-green-900 mb-4">🎯 Your Results</h2>
                 <div className="bg-white rounded-lg p-4 border border-green-200 mb-4">
@@ -397,28 +503,28 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
             )}
 
             <div className="text-center">
-              {quizResults ? (
-              <button 
+              {(checklistResults || quizResults) ? (
+                <button 
                   className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors"
                   onClick={() => {
-                    const resultText = `${content.niche || 'Business'} Quiz Results:\n\nYour Type: ${quizResults.primaryCategory.replace('-', ' ')}\n\n${quizResults.description ? `Description: ${quizResults.description}\n\n` : ''}Recommendations:\n${quizResults.recommendations.map((r: string) => `• ${r}`).join('\n')}`;
-                    navigator.clipboard.writeText(resultText);
-                    alert('Quiz results copied to clipboard!');
+                    const resultsText = checklistResults 
+                      ? `Validation Results:\n\nScore: ${checklistResults.score}/${checklistResults.maxScore}\nResult: ${checklistResults.title}\n\nDescription: ${checklistResults.description}\n\nNext Steps:\n${checklistResults.nextSteps.map((step: string) => `• ${step}`).join('\n')}`
+                      : `Quiz Results:\n\nResult: ${quizResults.primaryCategory}\nDescription: ${quizResults.description}\n\nRecommendations:\n${quizResults.recommendations.map((rec: string) => `• ${rec}`).join('\n')}`;
+                    navigator.clipboard.writeText(resultsText);
+                    alert('Results copied to clipboard!');
                   }}
                 >
                   📋 Copy Results
-              </button>
+                </button>
               ) : (
-                <div className="bg-blue-100 border border-blue-300 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-2">Ready to Start?</h3>
-                  <p className="text-blue-700">
-                    Answer the questions above to discover your unique {content.niche?.toLowerCase() || 'business'} approach!
+                <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">Ready to Validate?</h3>
+                  <p className="text-gray-600">
+                    {content.quiz_content?.checklist_items ? 'Check the items that apply to your situation to get your validation score.' : 'Answer the questions above to see your personalized results.'}
                   </p>
                 </div>
               )}
             </div>
-
-
           </div>
         );
 
