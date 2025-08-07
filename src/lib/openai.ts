@@ -552,12 +552,21 @@ CRITICAL REQUIREMENTS:
 - Results must include actionable next steps with timelines
 - Include success metrics and troubleshooting
 
-REQUIRED STRUCTURE:
-1. **Question Framework**: 10 strategic questions that reveal root causes
-2. **Answer Scoring**: Each answer contributes to specific diagnosis categories
-3. **Result Categories**: 4-6 specific diagnosis types with solutions
-4. **Action Protocols**: Exact next steps for each diagnosis type
-5. **Success Tracking**: How to measure improvement
+RESULTS REQUIREMENTS:
+- You MUST return a 'results' array with EXACTLY these 4 categories:
+  - 'Foundation Builder'
+  - 'Implementation Specialist'
+  - 'Optimization Expert'
+  - 'Strategic Master'
+- For each, provide:
+  - description: tailored to the user's [topic/problem]
+  - symptoms: 3-5 bullet points, specific to [topic/problem]
+  - action_steps: 4-6, step-by-step, specific to [topic/problem]
+  - timeline: realistic for [topic/problem]
+  - success_metrics: 3-5, measurable, specific to [topic/problem]
+  - recommendations: 3-5, actionable, specific to [topic/problem]
+- The 'category' string must match exactly as above.
+- If you cannot generate a result, use a static fallback with [topic/problem] inserted.
 
 RETURN ONLY VALID JSON IN THIS EXACT FORMAT. DO NOT INCLUDE MARKDOWN, EXPLANATION, OR EXTRA TEXT. IF YOU CANNOT GENERATE THE QUIZ, RETURN A STATIC FALLBACK QUIZ WITH 10 GENERIC QUESTIONS IN THE SAME FORMAT:
 {
