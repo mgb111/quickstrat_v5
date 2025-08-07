@@ -134,6 +134,24 @@ export interface PDFContent {
       title: string;
       content: string;
     };
+    quiz_content?: {
+      title: string;
+      introduction: string;
+      checklist_items: {
+        id: number;
+        text: string;
+        category: string;
+      }[];
+      scoring_system: {
+        max_score: number;
+        score_ranges: {
+          range: string;
+          title: string;
+          description: string;
+          next_steps: string[];
+        }[];
+      };
+    };
   };
   // Interactive content for non-PDF formats
   interactive_content?: {
@@ -150,6 +168,25 @@ export interface PDFContent {
     comparisons?: any[];
     categories?: any[];
     opportunities?: any[];
+  };
+  // Quiz content for interactive quiz format
+  quiz_content?: {
+    title: string;
+    introduction: string;
+    checklist_items: {
+      id: number;
+      text: string;
+      category: string;
+    }[];
+    scoring_system: {
+      max_score: number;
+      score_ranges: {
+        range: string;
+        title: string;
+        description: string;
+        next_steps: string[];
+      }[];
+    };
   };
   // Branding and CTA customization fields
   logo?: string;

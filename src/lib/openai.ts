@@ -486,7 +486,19 @@ IMPORTANT: Follow the exact JSON format specified in the format-specific prompt 
             questions: [],
             results: []
           })
-        }
+        },
+        // Extract quiz content from structured_content for interactive display
+        ...(input.selected_format === 'interactive_quiz' && {
+          quiz_content: {
+            title: pdfContent.structured_content?.title_page?.title || 'Validation Checklist',
+            introduction: pdfContent.structured_content?.introduction_page?.content || 'Complete the checklist below to get your personalized validation score.',
+            checklist_items: (pdfContent.structured_content as any)?.quiz_content?.checklist_items || [],
+            scoring_system: (pdfContent.structured_content as any)?.quiz_content?.scoring_system || {
+              max_score: 10,
+              score_ranges: []
+            }
+          }
+        })
       };
     }
   } catch (error) {
