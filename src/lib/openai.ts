@@ -11,6 +11,7 @@ import {
   PDFCustomization,
   LeadMagnetFormat
 } from '../types/index';
+import { jsonrepair } from 'jsonrepair';
 
 // Get API key from environment variables
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
@@ -88,7 +89,7 @@ function cleanJsonResponse(content: string): string {
   
   // Try to parse the JSON as-is first
   try {
-    JSON.parse(cleaned);
+    JSON.parse(jsonrepair(cleaned));
     return cleaned; // If it parses successfully, return as-is
   } catch (e) {
     // Only try to fix if parsing fails
@@ -134,7 +135,7 @@ export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<
     // Clean the content to handle markdown-wrapped JSON
     const cleanedContent = cleanJsonResponse(content);
     console.log('🎯 OpenAI Response (cleaned):', cleanedContent);
-    const parsed = JSON.parse(cleanedContent);
+    const parsed = JSON.parse(jsonrepair(cleanedContent));
 
     // Validate the response structure
     if (!Array.isArray(parsed.concepts) || parsed.concepts.length === 0) {
@@ -277,7 +278,7 @@ export async function generateContentOutline(input: CampaignInput, selected: Lea
     // Clean the content to handle markdown-wrapped JSON
     const cleanedContent = cleanJsonResponse(content);
     console.log('🎯 OpenAI Response (cleaned):', cleanedContent);
-    const parsed = JSON.parse(cleanedContent);
+    const parsed = JSON.parse(jsonrepair(cleanedContent));
 
     // Validate the response structure
     if (!parsed.title || !parsed.introduction || !Array.isArray(parsed.core_points) || !parsed.cta) {
@@ -464,7 +465,7 @@ IMPORTANT: Follow the exact JSON format specified in the format-specific prompt 
     console.log('🎯 OpenAI PDF Response (cleaned):', cleanedContent);
     
     // Parse the JSON response
-    const pdfContent = JSON.parse(cleanedContent) as PDFContent;
+    const pdfContent = JSON.parse(jsonrepair(cleanedContent)) as PDFContent;
     
     // Always return the PDF content structure for PDF format
     if (input.selected_format === 'pdf') {
@@ -1216,7 +1217,7 @@ Return JSON in this exact format:
     // Clean the content to handle markdown-wrapped JSON
     const cleanedContent = cleanJsonResponse(content);
     console.log('🎯 OpenAI Landing Page Response (cleaned):', cleanedContent);
-    const parsed = JSON.parse(cleanedContent);
+    const parsed = JSON.parse(jsonrepair(cleanedContent));
 
     // Validate the response structure
     if (!parsed.headline || !parsed.subheadline || !Array.isArray(parsed.benefit_bullets) || !parsed.cta_button_text) {
@@ -1338,7 +1339,7 @@ Return JSON in this exact format:
     // Clean the content to handle markdown-wrapped JSON
     const cleanedContent = cleanJsonResponse(content);
     console.log('🎯 OpenAI Social Posts Response (cleaned):', cleanedContent);
-    const parsed = JSON.parse(cleanedContent);
+    const parsed = JSON.parse(jsonrepair(cleanedContent));
 
     // Validate the response structure
     if (!parsed.linkedin || !parsed.twitter || !parsed.instagram || !parsed.reddit || !parsed.subreddits) {
