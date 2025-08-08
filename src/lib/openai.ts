@@ -16,11 +16,9 @@ import {
 const isBrowser = typeof window !== 'undefined';
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
+import { supabase } from './supabase';
+
 async function callOpenAIThroughProxy(args: { model: string; messages: any[]; temperature?: number; max_tokens?: number }) {
-  const { createClient } = await import('@supabase/supabase-js');
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
   const { data, error } = await supabase.functions.invoke('proxy-openai', { body: args });
   if (error) throw new Error(error.message || 'OpenAI proxy error');
   return data;
