@@ -1,3 +1,87 @@
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true, // Keep for now since changing to backend may break other parts
+});
+
+function cleanJsonResponse(responseText) {
+  try {
+    // 1. Extract first valid JSON block
+    const jsonMatch = responseText.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+    if (!jsonMatch) throw new Error("No JSON object found in response");
+
+    let cleaned = jsonMatch[0];
+
+    // 2. Remove trailing commas
+    cleaned = cleaned.replace(/,\s*([}\]])/g, "$1");
+
+    // 3. Normalize quotes
+    cleaned = cleaned.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
+
+    // 4. Parse
+    return JSON.parse(cleaned);
+
+  } catch (err) {
+    console.warn("Initial JSON parse failed:", err);
+
+    // Optional self-healing with GPT
+    return {
+      error: "Invalid JSON returned from AI",
+      raw: responseText
+    };
+  }
+}
+
+// Core function for both lead magnet types
+async function generateLeadMagnet(prompt, format) {
+  const messages = [
+    {
+      role: "system",
+      content: `You are an expert marketing content generator. Always return valid JSON matching the required format. No commentary, no markdown fences.`,
+    },
+    { role: "user", content: prompt }
+  ];
+
+  try {
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini", // More robust for longer prompts
+      messages,
+      temperature: 0.7,
+      max_tokens: 3000, // Keeps under context limit
+    });
+
+    const responseText = completion.choices[0]?.message?.content || "";
+    const parsed = cleanJsonResponse(responseText);
+
+    // Extra validation for quizzes
+    if (format === "quiz" && parsed?.questions) {
+      parsed.questions = parsed.questions.filter(q => q.question && q.options?.length >= 2);
+    }
+
+    // Extra validation for PDFs
+    if (format === "pdf" && parsed?.sections) {
+      parsed.sections = parsed.sections.filter(s => s.title && s.content);
+    }
+
+    return parsed;
+  } catch (error) {
+    console.error(`Error generating ${format}:`, error);
+    return { error: error.message };
+  }
+}
+
+// PDF-specific generator
+export async function generatePDFLeadMagnet(prompt) {
+  return await generateLeadMagnet(prompt, "pdf");
+}
+
+// Quiz-specific generator
+export async function generateQuizLeadMagnet(prompt) {
+  return await generateLeadMagnet(prompt, "quiz");
+}
+
+export { cleanJsonResponse };
 import OpenAI from 'openai';
 import {
   CampaignInput,
@@ -36,7 +120,7 @@ function getOpenAIClient(): OpenAI {
     try {
       openai = new OpenAI({ 
         apiKey,
-        dangerouslyAllowBrowser: true,
+        dangerouslyAllowBrowser: true, // NOTE: exposes key to client devtools. Prefer backend in prod
         timeout: 60000, // Configure timeout at client level (60 seconds)
         // Add default headers for better debugging
         defaultHeaders: {
@@ -48,18 +132,16 @@ function getOpenAIClient(): OpenAI {
       console.log('OpenAI client initialized successfully');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      // avoid printing sensitive apiKey fragments
       console.error('Failed to initialize OpenAI client:', {
         message: errorMessage,
-        error: error,
-        apiKeyPresent: !!apiKey,
-        apiKeyLength: apiKey?.length,
-        apiKeyStartsWith: apiKey?.substring(0, 3) + '...' + apiKey?.substring(apiKey.length - 3)
+        apiKeyPresent: !!apiKey
       });
       
       // Provide more specific error messages for common issues
-      if (errorMessage.includes('Incorrect API key provided')) {
+      if (errorMessage.includes('Incorrect API key provided') || errorMessage.includes('invalid_api_key')) {
         throw new Error('Invalid OpenAI API key. Please check your .env file and ensure the key is correct.');
-      } else if (errorMessage.includes('rate limit')) {
+      } else if (errorMessage.toLowerCase().includes('rate limit')) {
         throw new Error('Rate limit exceeded. Please try again later.');
       } else {
         throw new Error(`Failed to initialize OpenAI client: ${errorMessage}`);
@@ -70,38 +152,108 @@ function getOpenAIClient(): OpenAI {
   return openai;
 }
 
-// Helper function to clean JSON responses that might be wrapped in markdown
-function cleanJsonResponse(content: string): string {
-  // Remove markdown code blocks if present
-  let cleaned = content.trim();
-  
-  // Remove ```json and ``` markers
-  if (cleaned.startsWith('```json')) {
-    cleaned = cleaned.replace(/^```json\s*/, '');
+/**
+ * Robust JSON cleaning helper
+ * - Returns a CLEANED JSON string (so callers can still call JSON.parse)
+ * - Attempts local fixes (strip fences, extract JSON block, normalize quotes, remove trailing commas, escape raw newlines inside strings)
+ * - If local fixes fail it will call the OpenAI client once as a strict JSON fixer (temperature 0)
+ */
+async function cleanJsonResponse(content: string): Promise<string> {
+  let cleaned = (content || '').trim();
+
+  // Remove markdown code fences if present
+  cleaned = cleaned.replace(/^\s*```(?:json)?\s*/i, '');
+  cleaned = cleaned.replace(/\s*```\s*$/i, '');
+
+  // If there's leading commentary before the first { or [, drop it
+  const firstJsonIdx = Math.min(
+    ...['{', '['].map(c => {
+      const idx = cleaned.indexOf(c);
+      return idx === -1 ? Number.MAX_SAFE_INTEGER : idx;
+    })
+  );
+  if (firstJsonIdx > 0 && firstJsonIdx !== Number.MAX_SAFE_INTEGER) {
+    cleaned = cleaned.substring(firstJsonIdx);
   }
-  if (cleaned.startsWith('```')) {
-    cleaned = cleaned.replace(/^```\s*/, '');
+
+  // Extract the first balanced JSON block (object or array) if possible
+  const match = cleaned.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
+  if (match) {
+    cleaned = match[0];
   }
-  if (cleaned.endsWith('```')) {
-    cleaned = cleaned.replace(/\s*```$/, '');
+
+  // Normalize smart quotes to straight quotes
+  cleaned = cleaned.replace(/[\u2018\u2019\u201A\u201B\u2032]/g, "'");
+  cleaned = cleaned.replace(/[\u201C\u201D\u201E\u201F\u2033]/g, '"');
+
+  // Remove trailing commas before } or ]
+  cleaned = cleaned.replace(/,\s*([}\]])/g, '$1');
+
+  // Escape raw newlines inside JSON string literals (conservative approach)
+  // Replace occurrences inside quoted strings only
+  cleaned = cleaned.replace(/"([^"\\]*(\\.[^"\\]*)*)"/gs, (m) => {
+    // inside each string, escape newlines and remove nulls
+    return m.replace(/\r\n|\n|\r/g, '\\n').replace(/\u0000/g, '');
+  });
+
+  // Try to trim to a balanced block if possible
+  function findBalanced(s: string, openChar: string, closeChar: string) {
+    let depth = 0;
+    for (let i = 0; i < s.length; i++) {
+      if (s[i] === openChar) depth++;
+      if (s[i] === closeChar) depth--;
+      if (depth === 0 && i >= 0) {
+        return s.slice(0, i + 1);
+      }
+    }
+    return null;
   }
-  
-  // Try to parse the JSON as-is first
+
+  if (cleaned.startsWith('{')) {
+    const balanced = findBalanced(cleaned, '{', '}');
+    if (balanced) cleaned = balanced;
+  } else if (cleaned.startsWith('[')) {
+    const balanced = findBalanced(cleaned, '[', ']');
+    if (balanced) cleaned = balanced;
+  }
+
+  cleaned = cleaned.trim();
+
+  // First local parse attempt
   try {
     JSON.parse(cleaned);
-    return cleaned; // If it parses successfully, return as-is
-  } catch (e) {
-    // Only try to fix if parsing fails
-    console.log('JSON parsing failed, attempting to fix...');
-    
-    // Only fix if there are actual newlines in strings (not in the JSON structure)
-    if (cleaned.includes('\n') && cleaned.includes('"')) {
-      // More conservative approach - only fix obvious string newlines
-      cleaned = cleaned.replace(/"([^"]*)\n([^"]*)"/g, '"$1\\n$2"');
+    return cleaned;
+  } catch (localErr) {
+    console.warn('Local JSON parse failed, attempting auto-fix with model. Error:', (localErr as Error).message);
+    // Fallback: ask the model to return valid JSON only
+    try {
+      const client = getOpenAIClient();
+      const fixRes = await client.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: 'You are a strict JSON fixer. Return only valid JSON that matches the structure in the user input. No explanation, no code fences.' },
+          { role: 'user', content: `Fix this text into valid JSON only. Do not add or remove keys. Input:\n\n${content}` }
+        ],
+        temperature: 0,
+        max_tokens: 1200
+      });
+
+      const fixed = fixRes.choices?.[0]?.message?.content;
+      if (!fixed) throw new Error('No content returned by JSON fixer');
+
+      let fixedClean = (fixed || '').trim();
+      fixedClean = fixedClean.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+
+      // Final validation
+      JSON.parse(fixedClean);
+      return fixedClean;
+    } catch (fixErr) {
+      console.error('JSON auto-fix failed. Original response:', content);
+      console.error('Local cleaned attempt:', cleaned);
+      console.error('Auto-fix error:', fixErr);
+      throw new Error('Failed to parse JSON response and automatic fix also failed. See server logs for original response.');
     }
   }
-  
-  return cleaned.trim();
 }
 
 export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<LeadMagnetConcept[]> {
@@ -132,7 +284,7 @@ export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<
     const content = res.choices[0].message.content;
     
     // Clean the content to handle markdown-wrapped JSON
-    const cleanedContent = cleanJsonResponse(content);
+    const cleanedContent = await cleanJsonResponse(content);
     console.log('🎯 OpenAI Response (cleaned):', cleanedContent);
     const parsed = JSON.parse(cleanedContent);
 
@@ -275,7 +427,7 @@ export async function generateContentOutline(input: CampaignInput, selected: Lea
     content = res.choices[0].message.content;
     
     // Clean the content to handle markdown-wrapped JSON
-    const cleanedContent = cleanJsonResponse(content);
+    const cleanedContent = await cleanJsonResponse(content);
     console.log('🎯 OpenAI Response (cleaned):', cleanedContent);
     const parsed = JSON.parse(cleanedContent);
 
@@ -352,8 +504,6 @@ Return JSON in this exact format with EXACTLY 4 core_points:
 }
 
 CRITICAL: You must return EXACTLY 4 core_points. Do not add more or fewer points.`;
-
-
 
     case 'pdf':
       return `${baseContext}
@@ -460,7 +610,7 @@ IMPORTANT: Follow the exact JSON format specified in the format-specific prompt 
     }
 
     // Clean the content to handle markdown-wrapped JSON
-    const cleanedContent = cleanJsonResponse(content);
+    const cleanedContent = await cleanJsonResponse(content);
     console.log('🎯 OpenAI PDF Response (cleaned):', cleanedContent);
     
     // Parse the JSON response
@@ -762,340 +912,9 @@ RETURN ONLY VALID JSON IN THIS EXACT FORMAT. DO NOT INCLUDE MARKDOWN, EXPLANATIO
             }
           ],
           "explanation": "This determines your desired outcome and focus areas"
-        },
-        {
-          "id": 8,
-          "question": "[SPECIFIC QUESTION 8 ABOUT SUPPORT - e.g., 'What kind of support do you need for [topic]?']",
-          "options": [
-            {
-              "id": "A",
-              "text": "[OPTION A - Basic guidance]",
-              "score": { "awareness": 1, "implementation": 1, "optimization": 0, "strategy": 0 }
-            },
-            {
-              "id": "B",
-              "text": "[OPTION B - Step-by-step instructions]",
-              "score": { "awareness": 1, "implementation": 2, "optimization": 1, "strategy": 0 }
-            },
-            {
-              "id": "C",
-              "text": "[OPTION C - Advanced techniques]",
-              "score": { "awareness": 1, "implementation": 1, "optimization": 2, "strategy": 1 }
-            },
-            {
-              "id": "D",
-              "text": "[OPTION D - Strategic consulting]",
-              "score": { "awareness": 1, "implementation": 1, "optimization": 1, "strategy": 2 }
-            }
-          ],
-          "explanation": "This identifies your support needs and learning style"
-        },
-        {
-          "id": 9,
-          "question": "[SPECIFIC QUESTION 9 ABOUT COMMITMENT - e.g., 'How much time can you dedicate to [topic]?']",
-          "options": [
-            {
-              "id": "A",
-              "text": "[OPTION A - 1-2 hours per week]",
-              "score": { "awareness": 1, "implementation": 1, "optimization": 0, "strategy": 0 }
-            },
-            {
-              "id": "B",
-              "text": "[OPTION B - 3-5 hours per week]",
-              "score": { "awareness": 2, "implementation": 2, "optimization": 1, "strategy": 0 }
-            },
-            {
-              "id": "C",
-              "text": "[OPTION C - 6-10 hours per week]",
-              "score": { "awareness": 2, "implementation": 2, "optimization": 2, "strategy": 1 }
-            },
-            {
-              "id": "D",
-              "text": "[OPTION D - 10+ hours per week]",
-              "score": { "awareness": 3, "implementation": 3, "optimization": 3, "strategy": 2 }
-            }
-          ],
-          "explanation": "This determines the intensity and pace of your action plan"
-        },
-        {
-          "id": 10,
-          "question": "[SPECIFIC QUESTION 10 ABOUT MEASUREMENT - e.g., 'How do you plan to measure success with [topic]?']",
-          "options": [
-            {
-              "id": "A",
-              "text": "[OPTION A - No specific metrics]",
-              "score": { "awareness": 0, "implementation": 0, "optimization": 0, "strategy": 0 }
-            },
-            {
-              "id": "B",
-              "text": "[OPTION B - Basic tracking]",
-              "score": { "awareness": 1, "implementation": 1, "optimization": 0, "strategy": 0 }
-            },
-            {
-              "id": "C",
-              "text": "[OPTION C - Detailed metrics]",
-              "score": { "awareness": 2, "implementation": 2, "optimization": 1, "strategy": 1 }
-            },
-            {
-              "id": "D",
-              "text": "[OPTION D - Advanced analytics]",
-              "score": { "awareness": 3, "implementation": 3, "optimization": 2, "strategy": 2 }
-            }
-          ],
-          "explanation": "This determines your measurement approach and success tracking"
-        }
-      ],
-      "results": [
-        {
-          "category": "Foundation Builder",
-          "description": "You're just starting your journey with [topic]. You need to build a solid foundation with basic knowledge and simple implementation steps.",
-          "score_range": { "min": 0, "max": 15 },
-          "symptoms": [
-            "Limited understanding of [topic] fundamentals",
-            "No systematic approach to implementation",
-            "Lack of basic tools and resources",
-            "Unclear success metrics"
-          ],
-          "action_steps": [
-            "Week 1: Complete [topic] fundamentals course (2 hours)",
-            "Week 2: Set up basic tracking system (1 hour)",
-            "Week 3: Implement first simple strategy (3 hours)",
-            "Week 4: Review and adjust approach (1 hour)"
-          ],
-          "timeline": "4 weeks to see initial results",
-          "success_metrics": [
-            "Complete understanding of [topic] basics",
-            "Basic implementation system in place",
-            "First successful application documented",
-            "Clear measurement framework established"
-          ],
-          "recommendations": [
-            "Start with proven fundamentals to build confidence",
-            "Use simple templates and checklists",
-            "Focus on consistency over perfection",
-            "Track progress with basic metrics"
-          ]
-        },
-        {
-          "category": "Implementation Specialist",
-          "description": "You have good knowledge of [topic] but need help with consistent implementation and optimization. Focus on systematic execution and improvement.",
-          "score_range": { "min": 16, "max": 25 },
-          "symptoms": [
-            "Good theoretical knowledge but inconsistent practice",
-            "Some successful implementations but not systematic",
-            "Need help with optimization and scaling",
-            "Looking for proven frameworks and systems"
-          ],
-          "action_steps": [
-            "Week 1: Audit current practices and identify gaps (3 hours)",
-            "Week 2: Implement systematic approach (5 hours)",
-            "Week 3: Optimize based on initial results (3 hours)",
-            "Week 4: Scale successful elements (4 hours)"
-          ],
-          "timeline": "3-4 weeks to see significant improvement",
-          "success_metrics": [
-            "Consistent implementation of [topic] strategies",
-            "20-30% improvement in key metrics",
-            "Systematic approach documented and refined",
-            "Clear optimization process established"
-          ],
-          "recommendations": [
-            "Focus on systematic implementation over theory",
-            "Use proven frameworks and templates",
-            "Optimize based on data and results",
-            "Build scalable processes for growth"
-          ]
-        },
-        {
-          "category": "Optimization Expert",
-          "description": "You have solid implementation skills and are ready to optimize and refine your [topic] approach. Focus on advanced techniques and strategic improvements.",
-          "score_range": { "min": 26, "max": 35 },
-          "symptoms": [
-            "Strong implementation foundation in place",
-            "Looking for advanced optimization techniques",
-            "Ready to refine and improve existing systems",
-            "Interested in strategic enhancements"
-          ],
-          "action_steps": [
-            "Week 1: Advanced optimization techniques (4 hours)",
-            "Week 2: Strategic refinement of current systems (5 hours)",
-            "Week 3: Implementation of advanced strategies (6 hours)",
-            "Week 4: Performance analysis and further optimization (3 hours)"
-          ],
-          "timeline": "2-3 weeks to see advanced results",
-          "success_metrics": [
-            "Advanced optimization techniques implemented",
-            "40-50% improvement in performance metrics",
-            "Strategic enhancements documented",
-            "Advanced measurement systems in place"
-          ],
-          "recommendations": [
-            "Focus on advanced optimization techniques",
-            "Implement strategic enhancements",
-            "Use sophisticated measurement systems",
-            "Develop competitive advantages"
-          ]
-        },
-        {
-          "category": "Strategic Master",
-          "description": "You have mastered the fundamentals and optimization of [topic]. Now focus on strategic mastery and becoming an industry leader in this area.",
-          "score_range": { "min": 36, "max": 40 },
-          "symptoms": [
-            "Advanced knowledge and implementation skills",
-            "Looking for strategic mastery and leadership",
-            "Ready to innovate and create new approaches",
-            "Interested in industry leadership and influence"
-          ],
-          "action_steps": [
-            "Week 1: Strategic innovation and leadership (6 hours)",
-            "Week 2: Industry positioning and influence (5 hours)",
-            "Week 3: Advanced strategic implementation (7 hours)",
-            "Week 4: Leadership development and mentoring (4 hours)"
-          ],
-          "timeline": "2-3 weeks to establish leadership position",
-          "success_metrics": [
-            "Strategic mastery demonstrated",
-            "Industry leadership position established",
-            "Innovation and influence documented",
-            "Mentoring and teaching capabilities developed"
-          ],
-          "recommendations": [
-            "Focus on strategic innovation and leadership",
-            "Develop industry influence and positioning",
-            "Create new approaches and methodologies",
-            "Mentor others and share expertise"
-          ]
         }
       ]
     }
-  }
-}`;
-
-
-
-
-
-
-
-
-
-    case 'pdf':
-      return `${baseContext}
-
-${founderIntro}
-
-${valueStandards}
-
-CREATE A COMPREHENSIVE IMPLEMENTATION SYSTEM:
-
-This must be a complete, plug-and-play system with everything needed for success.
-
-REQUIRED STRUCTURE:
-1. **System Overview**: The complete process from start to finish
-2. **Implementation Phases**: 3-5 phases with exact steps and timelines
-3. **Tool Arsenal**: 15+ templates, scripts, checklists, and frameworks
-4. **Case Studies**: 3+ detailed examples with specific results
-5. **Troubleshooting Guide**: Common problems and exact solutions
-6. **Optimization Strategies**: How to improve results over time
-
-CRITICAL REQUIREMENTS:
-- Include step-by-step processes with exact instructions
-- Provide comprehensive tool kit with templates and scripts
-- Include detailed case studies with measurable results
-- Cover common mistakes and how to avoid them
-
-RETURN JSON IN THIS EXACT FORMAT:
-{
-  "structured_content": {
-  "title_page": {
-      "title": "${outline.title}",
-      "subtitle": "A step-by-step blueprint to help you achieve your goals"
-    },
-    "introduction": "Complete introduction explaining the system and what users will achieve",
-  "toolkit_sections": [
-    {
-        "title": "Strategy Analysis",
-        "type": "pros_and_cons_list",
-        "content": {
-          "items": [
-            {
-              "method_name": "Strategy 1: [Specific Method Name]",
-              "pros": "• Immediate impact on [specific metric]\n• Easy to implement with [specific tool]\n• Proven to work in [specific industry/situation]\n• Cost-effective with [specific budget range]",
-              "cons": "• Requires [specific time commitment]\n• May need [specific resources]\n• Initial learning curve of [specific timeframe]"
-            },
-            {
-              "method_name": "Strategy 2: [Specific Method Name]",
-              "pros": "• Delivers [specific result] within [timeframe]\n• Scalable to [specific growth level]\n• Integrates with [specific existing systems]\n• ROI of [specific percentage]",
-              "cons": "• Requires [specific investment]\n• Needs [specific expertise]\n• Takes [specific timeframe] to see results"
-            },
-            {
-              "method_name": "Strategy 3: [Specific Method Name]",
-              "pros": "• Addresses [specific pain point] directly\n• Provides [specific measurable outcome]\n• Works with [specific constraints]\n• Delivers [specific value proposition]",
-              "cons": "• Requires [specific upfront work]\n• May need [specific adjustments]\n• Initial setup takes [specific time]"
-            }
-          ]
-        }
-      },
-      {
-        "title": "Action Checklist",
-        "type": "checklist",
-        "content": {
-          "phases": [
-            {
-              "phase_title": "Phase 1: Foundation Setup (Days 1-7)",
-              "items": [
-                "Set up your [specific tool/system]",
-                "Create your [specific tracking mechanism]",
-                "Establish your [specific baseline metrics]",
-                "Prepare your [specific resources]"
-              ]
-            },
-            {
-              "phase_title": "Phase 2: Implementation (Days 8-21)",
-              "items": [
-                "Execute [specific daily actions]",
-                "Track [specific key metrics]",
-                "Optimize based on [specific feedback]",
-                "Scale [specific successful elements]"
-              ]
-            },
-            {
-              "phase_title": "Phase 3: Optimization (Days 22-30)",
-              "items": [
-                "Analyze [specific performance data]",
-                "Refine [specific processes]",
-                "Implement [specific improvements]",
-                "Prepare for [specific next phase]"
-              ]
-            }
-          ]
-        }
-      },
-      {
-        "title": "Conversation Scripts",
-        "type": "scripts",
-        "content": {
-          "scenarios": [
-            {
-              "trigger": "When someone says [specific objection/question]",
-              "response": "You say: [specific proven response that addresses the concern]",
-              "explanation": "This works because [specific psychological principle or proven tactic]"
-            },
-            {
-              "trigger": "When someone asks [specific question]",
-              "response": "You say: [specific response that provides value and builds trust]",
-              "explanation": "This approach [specific benefit or outcome it delivers]"
-            },
-            {
-              "trigger": "When someone shows [specific interest signal]",
-              "response": "You say: [specific response that capitalizes on the opportunity]",
-              "explanation": "This converts because [specific conversion principle or tactic]"
-            }
-          ]
-        }
-      }
-    ],
-    "cta": "Ready to take your business to the next level? Download your complete system now."
   }
 }`;
 
@@ -1205,7 +1024,7 @@ Return JSON in this exact format:
     content = res.choices[0].message.content;
     
     // Clean the content to handle markdown-wrapped JSON
-    const cleanedContent = cleanJsonResponse(content);
+    const cleanedContent = await cleanJsonResponse(content);
     console.log('🎯 OpenAI Landing Page Response (cleaned):', cleanedContent);
     const parsed = JSON.parse(cleanedContent);
 
@@ -1215,17 +1034,17 @@ Return JSON in this exact format:
     }
 
     // Ensure benefit_bullets is a usable array, even if the AI messes up.
-if (!parsed.benefit_bullets || !Array.isArray(parsed.benefit_bullets) || parsed.benefit_bullets.length === 0) {
-    // If the AI failed to provide bullets, create some safe defaults. This is better than crashing.
-    parsed.benefit_bullets = [
-        `Unlock ${input.desired_outcome}`,
-        `Solve ${input.pain_point} Instantly`,
-        `Get Actionable Insights Today`
-    ];
-}
+    if (!parsed.benefit_bullets || !Array.isArray(parsed.benefit_bullets) || parsed.benefit_bullets.length === 0) {
+      // If the AI failed to provide bullets, create some safe defaults. This is better than crashing.
+      parsed.benefit_bullets = [
+          `Unlock ${input.desired_outcome}`,
+          `Solve ${input.problem_statement} Instantly`,
+          `Get Actionable Insights Today`
+      ];
+    }
 
-// If the AI was overeager and gave too many bullets, just take the first 4.
-parsed.benefit_bullets = parsed.benefit_bullets.slice(0, 4);
+    // If the AI was overeager and gave too many bullets, just take the first 4.
+    parsed.benefit_bullets = parsed.benefit_bullets.slice(0, 4);
 
     return parsed;
   } catch (err: any) {
@@ -1327,7 +1146,7 @@ Return JSON in this exact format:
     content = res.choices[0].message.content;
     
     // Clean the content to handle markdown-wrapped JSON
-    const cleanedContent = cleanJsonResponse(content);
+    const cleanedContent = await cleanJsonResponse(content);
     console.log('🎯 OpenAI Social Posts Response (cleaned):', cleanedContent);
     const parsed = JSON.parse(cleanedContent);
 
@@ -1336,8 +1155,8 @@ Return JSON in this exact format:
       throw new Error('Invalid response format from OpenAI API');
     }
 
-    // Validate content length for each platform
-    if (parsed.twitter.length > 280) {
+    // Validate content length for each platform - Unicode safe
+    if ([...parsed.twitter].length > 280) {
       throw new Error('Twitter post exceeds 280 characters');
     }
 
