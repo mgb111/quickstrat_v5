@@ -102,18 +102,11 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
         totalScore,
         categoryScores: totalScores
       });
-    } else if (quizContent?.results && Array.isArray(quizContent.results) && quizContent.results.length > 0) {
-      // Use the first available AI-generated result as a fallback
-      setQuizResults({
-        ...quizContent.results[0],
-        totalScore,
-        categoryScores: totalScores
-      });
     } else {
-      // Only use the hardcoded fallback if the AI result is missing or malformed
+      // Fallback result if no matching category found
       setQuizResults({
         category: resultCategory,
-        description: "Based on your answers, we've identified your current level and created a personalized action plan.",
+        description: 'Based on your answers, we\'ve identified your current level and created a personalized action plan.',
         totalScore,
         categoryScores: totalScores,
         action_steps: [

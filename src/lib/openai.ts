@@ -404,39 +404,78 @@ export async function generateLeadMagnetContent(input: {
   outline: ContentOutline;
 }): Promise<PDFContent> {
   const client = getOpenAIClient();
-  
-  // Create a CampaignInput object for the format-specific prompt
-  // This function generates content for all formats: PDF, Interactive Quiz, ROI Calculator, etc.
-  const campaignInput: CampaignInput = {
-    name: input.name,
-    brand_name: input.brand_name,
-    target_audience: input.target_audience,
-    niche: input.niche,
-    problem_statement: input.problem_statement,
-    desired_outcome: input.desired_outcome,
-    tone: input.tone,
-    position: input.position,
-    selected_format: input.selected_format
+
+  // Validate required fields
+  if (!input.name || !input.brand_name || !input.target_audience || !input.niche || !input.problem_statement || !input.desired_outcome || !input.tone || !input.position) {
+    throw new Error('Missing required input fields for lead magnet generation.');
+  }
+
+  // Allow prompt modularization and customization
+  const promptSections: PromptSectionsConfig = {
+    context: `Context:\n- Creator: ${input.name} (${input.position})\n- Brand: ${input.brand_name}\n- Niche: ${input.niche}\n- Target audience: ${input.target_audience}\n- Problem: ${input.problem_statement}\n- Desired outcome: ${input.desired_outcome}\n- Tone: ${input.tone}\n- Format: ${input.selected_format}`,
+    scoring: `Step 1: Evaluate the user's output, result, and action plan. Assign a score from 1-10 based on specificity, value, and actionable insights. Justify the score.`,
+    action_plan: `Step 2: Based on the score, generate a customized action plan for improvement.`,
+    lead_magnet: `Step 3: Based on the score and action plan, generate a world-class lead magnet that is actionable, insightful, and valuable for the user's customers. Highlight unique value and practical utility.`,
+    self_assessment: `Step 4: Self-assess the lead magnet for uniqueness and value.`,
+    json_format: `Return a JSON object:\n{\n  "score": <number>,\n  "score_justification": "...",\n  "action_plan": "...",\n  "lead_magnet": "...",\n  "self_assessment": "..."\n}`
   };
-  
-  const formatSpecificPrompt = getFormatSpecificPdfPrompt(input.selected_format, campaignInput, input.outline);
-  
-  const prompt = `You are an expert content creator specializing in ${input.selected_format} lead magnets.
 
-Context:
-- Creator: ${input.name} (${input.position})
-- Brand: ${input.brand_name}
-- Niche: ${input.niche}
-- Target audience: ${input.target_audience}
-- Problem: ${input.problem_statement}
-- Desired outcome: ${input.desired_outcome}
-- Tone: ${input.tone}
-- Format: ${input.selected_format}
+  // Allow override
+  const mergedSections = { ...promptSections, ...input.custom_prompt_sections };
 
-${formatSpecificPrompt}
+  // Compose modular prompt
+  const prompt = `You are an expert content creator specializing in ${input.selected_format} lead magnets.\n\n${mergedSections.context}\n\n${mergedSections.scoring}\n\n${mergedSections.action_plan}\n\n${mergedSections.lead_magnet}\n\n${mergedSections.self_assessment}\n\n${mergedSections.json_format}`;
 
-IMPORTANT: Follow the exact JSON format specified in the format-specific prompt above. Do not override it with a different structure.`;
-
+  // Robust OpenAI API call with retries
+  const maxRetries = 3;
+  let attempt = 0;
+  let lastError: any = null;
+  while (attempt < maxRetries) {
+    try {
+      const response = await client.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert content creator who creates high-quality, actionable lead magnet content. Always return valid JSON.'
+          },
+          {
+            role: 'user',
+            content: prompt + (input.user_output ? `\n\nUser Output: ${input.user_output}` : '') + (input.user_result ? `\n\nUser Result: ${input.user_result}` : '') + (input.user_action_plan ? `\n\nUser Action Plan: ${input.user_action_plan}` : '')
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 4000
+      });
+      const content = response.choices[0]?.message?.content;
+      if (!content) throw new Error('No content received from OpenAI');
+      const cleanedContent = cleanJsonResponse(content);
+      console.log('🎯 OpenAI Lead Magnet Response (cleaned):', cleanedContent);
+      // Parse and validate JSON
+      const result = JSON.parse(cleanedContent);
+      if (typeof result.score !== 'number' || !result.action_plan || !result.lead_magnet) {
+        throw new Error('Incomplete response from OpenAI.');
+      }
+      // Return in PDFContent structure for compatibility
+      return {
+        ...result,
+        title: input.concept?.title || 'Lead Magnet',
+        introduction: result.lead_magnet,
+        structured_content: result,
+        // Optionally map other fields as needed
+      } as PDFContent;
+    } catch (error: any) {
+      lastError = error;
+      attempt++;
+      console.error(`OpenAI API error (attempt ${attempt}):`, error);
+      if (attempt >= maxRetries) {
+        throw new Error('Failed to generate content after multiple attempts: ' + (error?.message || error));
+      }
+      // Exponential backoff
+      await new Promise(res => setTimeout(res, 500 * Math.pow(2, attempt)));
+    }
+  }
+  throw lastError;
   try {
     const response = await client.chat.completions.create({
       model: 'gpt-3.5-turbo',
