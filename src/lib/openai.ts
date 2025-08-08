@@ -48,12 +48,12 @@ function cleanJsonResponse(content: string): string {
 }
 
 export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<LeadMagnetConcept[]> {
-  const format = input.selected_format;
+    const format = input.selected_format;
   const formatSpecificPrompt = getFormatSpecificPdfPrompt(format || 'pdf', input, { title: '', introduction: '', core_points: [], cta: '' } as any);
   const res = isBrowser
     ? await callOpenAIThroughProxy({
-        model: 'gpt-3.5-turbo',
-        messages: [
+      model: 'gpt-3.5-turbo',
+      messages: [
           { role: 'system', content: 'You are a lead magnet strategist. Generate 3 unique concepts for the specified format.' },
           { role: 'user', content: formatSpecificPrompt }
         ],
@@ -64,34 +64,70 @@ export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<
         model: 'gpt-3.5-turbo',
         messages: [
           { role: 'system', content: 'You are a lead magnet strategist. Generate 3 unique concepts for the specified format.' },
-          { role: 'user', content: formatSpecificPrompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 1500
-      });
-  const content = (res.choices?.[0]?.message?.content) || '"{\"concepts\":[]}"';
-  const parsed = JSON.parse(cleanJsonResponse(content));
-  return (parsed.concepts || []).map((c: any, i: number) => ({
-    id: `concept-${i + 1}`,
-    title: c.title,
-    description: c.description,
-    value_proposition: c.value_proposition,
-    target_audience: c.target_audience,
-    format: format || 'pdf'
-  }));
+        { role: 'user', content: formatSpecificPrompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 1500
+    });
+  const content = (res.choices?.[0]?.message?.content) || '';
+  const cleaned = cleanJsonResponse(content);
+  try {
+    const parsed = JSON.parse(cleaned);
+    return (parsed.concepts || []).map((c: any, i: number) => ({
+      id: `concept-${i + 1}`,
+      title: c.title,
+      description: c.description,
+      value_proposition: c.value_proposition,
+      target_audience: c.target_audience,
+      format: format || 'pdf'
+    }));
+  } catch {
+    // Fallback: parse plain text like "Concept 1: Title - Description"
+    const lines = content.split(/\r?\n/).filter(Boolean);
+    const concepts: LeadMagnetConcept[] = [];
+    const conceptRegex = /^(?:Concept\s*)?(\d+)\s*[:\-]\s*(.+)$/i;
+    for (const line of lines) {
+      const m = line.match(conceptRegex);
+      if (m) {
+        const titleAndDesc = m[2];
+        const [title, rest] = titleAndDesc.split(/\s+-\s+/, 2);
+        concepts.push({
+          id: `concept-${concepts.length + 1}`,
+          title: (title || titleAndDesc).trim(),
+          description: (rest || '').trim(),
+          value_proposition: '',
+          target_audience: input.target_audience,
+          format: (format || 'pdf') as any
+        });
+      }
+    }
+    if (concepts.length === 0) {
+      for (let i = 1; i <= 3; i++) {
+        concepts.push({
+          id: `concept-${i}`,
+          title: `${input.niche || 'Lead Magnet'} Concept ${i}`,
+          description: `High-value idea for ${input.target_audience}`,
+          value_proposition: '',
+          target_audience: input.target_audience,
+          format: (format || 'pdf') as any
+        });
+      }
+    }
+    return concepts.slice(0, 3);
+  }
 }
 
 export async function generateContentOutline(input: CampaignInput, selected: LeadMagnetConcept): Promise<ContentOutline> {
   const prompt = getFormatSpecificOutlinePrompt(selected.format, input, selected);
   const res = isBrowser
     ? await callOpenAIThroughProxy({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: 'You are a content strategist. Output strictly valid JSON as defined.' },
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: 'You are a content strategist. Output strictly valid JSON as defined.' },
           { role: 'user', content: prompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 1000
+      ],
+      temperature: 0.7,
+      max_tokens: 1000
       })
     : await getOpenAIClient().chat.completions.create({
         model: 'gpt-3.5-turbo',
@@ -110,23 +146,23 @@ export async function generateLandingPageCopy(input: CampaignInput, outline: Con
   const prompt = `You are a direct-response copywriter...`;
   const res = isBrowser
     ? await callOpenAIThroughProxy({
-        model: 'gpt-3.5-turbo',
-        messages: [
+      model: 'gpt-3.5-turbo',
+      messages: [
           { role: 'system', content: 'You are a direct-response copywriter. Output strictly valid JSON as defined.' },
           { role: 'user', content: prompt }
-        ],
-        temperature: 0.7,
+      ],
+      temperature: 0.7,
         max_tokens: 1200
       })
     : await getOpenAIClient().chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: 'You are a direct-response copywriter. Output strictly valid JSON as defined.' },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 1200
-      });
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: 'You are a direct-response copywriter. Output strictly valid JSON as defined.' },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 1200
+    });
   const content = (res.choices?.[0]?.message?.content) || '{}';
   return JSON.parse(cleanJsonResponse(content));
 }
@@ -144,14 +180,14 @@ export async function generateSocialPosts(input: CampaignInput, outline: Content
         max_tokens: 1500
       })
     : await getOpenAIClient().chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: 'You are a social media manager. Output strictly valid JSON as defined.' },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.8,
-        max_tokens: 1500
-      });
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: 'You are a social media manager. Output strictly valid JSON as defined.' },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.8,
+      max_tokens: 1500
+    });
   const content = (res.choices?.[0]?.message?.content) || '{}';
   return JSON.parse(cleanJsonResponse(content));
 }
