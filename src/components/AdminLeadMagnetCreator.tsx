@@ -6,8 +6,7 @@ import OutlineReview from './OutlineReview';
 import ResultsDisplay from './ResultsDisplay';
 import PDFGenerator from './PDFGenerator';
 import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, PDFCustomization } from '../types/index';
-// Use server-side AI through Supabase Edge Function; avoids client API key exposure
-import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from '../lib/aiService';
+import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from '../lib/openai';
 import LoadingSpinner from './LoadingSpinner';
 
 const AdminLeadMagnetCreator: React.FC = () => {
@@ -74,7 +73,7 @@ const AdminLeadMagnetCreator: React.FC = () => {
     setError(null);
 
     try {
-      const finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
+      const finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline, wizardState.customization || undefined);
       console.log('✅ Final campaign generated:', finalOutput);
       setWizardState(prev => ({
         ...prev,

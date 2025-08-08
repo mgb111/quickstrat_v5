@@ -12,8 +12,7 @@ import Auth from './components/Auth/Auth';
 import UserProfile from './components/UserProfile';
 import { useAuth } from './contexts/AuthContext';
 import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, PDFCustomization, Campaign } from './types/index';
-// IMPORTANT: Use server-side AI via Supabase function to avoid exposing API keys in browser
-import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/aiService';
+import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign, generateLandingPageCopy, generateSocialPosts } from './lib/openai';
 import LoadingSpinner from './components/LoadingSpinner';
 import { CampaignService } from './lib/campaignService';
 
@@ -241,7 +240,7 @@ function App() {
 
     try {
       // Use robust PDF content generation with retries for real case studies
-      const finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline);
+      const finalOutput = await generateFinalCampaign(wizardState.input!, finalOutline, wizardState.customization || undefined);
       console.log('✅ Final campaign generated:', finalOutput);
       // Add debug logs for campaign creation
       console.log('Attempting to create campaign...');
