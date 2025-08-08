@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 const client = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true, // Keep for now since changing to backend may break other parts
+  dangerouslyAllowBrowser: true,
 });
 
 function cleanJsonResponse(responseText) {
