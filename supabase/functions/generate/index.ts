@@ -31,6 +31,7 @@ serve(async (req) => {
       throw new Error('OpenAI API key not configured');
     }
 
+    const isQuiz = (input.selected_format || 'pdf') === 'interactive_quiz';
     const prompt = `
 
 Generate a complete lead magnet campaign with the following components:
@@ -38,7 +39,7 @@ Generate a complete lead magnet campaign with the following components:
 1. PDF Content:
     - Title page with compelling headline
     - Introduction that hooks the reader
-    - 3 key solutions or strategies
+    - ${isQuiz ? 'Include a structured_content.quiz_content payload (see format below) with EXACTLY 10 questions and scoring' : '3 key solutions or strategies'}
     - Actionable takeaways
     - Strong call-to-action
 
@@ -62,6 +63,8 @@ User inputs:
 - Target audience: ${input.target_audience}
 - Format: ${input.selected_format || 'PDF'}
 
+STRICTLY return JSON as described. For interactive_quiz, you MUST include quiz_content exactly as specified.
+
 Return JSON in this exact format:
 {
   "pdf_content": {
@@ -70,11 +73,68 @@ Return JSON in this exact format:
       "subtitle": "..."
     },
     "introduction": "...",
-    "key_solutions": {
-      "solution1": "...",
-      "solution2": "...",
-      "solution3": "..."
-    },
+    ${isQuiz ? `"structured_content": {
+      "title_page": { "title": "...", "subtitle": "10-Question Diagnostic to Identify Your Core Challenges" },
+      "quiz_content": {
+        "title": "Your Diagnostic Checklist",
+        "description": "Answer each question honestly to get your personalized diagnosis and action plan.",
+        "questions": [
+          ${Array.from({ length: 10 }).map((_, i) => `{
+            "id": ${i + 1},
+            "question": "[SPECIFIC QUESTION ${i + 1} tailored to ${input.niche}/${input.pain_point}]",
+            "options": [
+              { "id": "A", "text": "Option A", "score": { "awareness": 1, "implementation": 0, "optimization": 0, "strategy": 0 } },
+              { "id": "B", "text": "Option B", "score": { "awareness": 1, "implementation": 1, "optimization": 0, "strategy": 0 } },
+              { "id": "C", "text": "Option C", "score": { "awareness": 1, "implementation": 1, "optimization": 1, "strategy": 0 } },
+              { "id": "D", "text": "Option D", "score": { "awareness": 1, "implementation": 1, "optimization": 1, "strategy": 1 } }
+            ],
+            "explanation": "Why this question matters"
+          }`).join(',')}
+        ],
+        "results": [
+          {
+            "category": "Foundation Builder",
+            "description": "You're at the foundation stage.",
+            "score_range": { "min": 0, "max": 15 },
+            "symptoms": ["Limited understanding"],
+            "action_steps": ["Start fundamentals"],
+            "timeline": "4 weeks",
+            "success_metrics": ["Basics implemented"],
+            "recommendations": ["Use simple templates"]
+          },
+          {
+            "category": "Implementation Specialist",
+            "description": "You need consistent implementation.",
+            "score_range": { "min": 16, "max": 25 },
+            "symptoms": ["Inconsistent execution"],
+            "action_steps": ["Systematize execution"],
+            "timeline": "3-4 weeks",
+            "success_metrics": ["Consistency achieved"],
+            "recommendations": ["Frameworks and checklists"]
+          },
+          {
+            "category": "Optimization Expert",
+            "description": "You are ready to optimize.",
+            "score_range": { "min": 26, "max": 35 },
+            "symptoms": ["Ready to refine"],
+            "action_steps": ["Apply optimization"],
+            "timeline": "2-3 weeks",
+            "success_metrics": ["Improved metrics"],
+            "recommendations": ["Advanced techniques"]
+          },
+          {
+            "category": "Strategic Master",
+            "description": "You are at strategic mastery.",
+            "score_range": { "min": 36, "max": 40 },
+            "symptoms": ["Advanced skills"],
+            "action_steps": ["Lead strategically"],
+            "timeline": "2-3 weeks",
+            "success_metrics": ["Leadership position"],
+            "recommendations": ["Innovate and mentor"]
+          }
+        ]
+      }
+    },` : `"key_solutions": { "solution1": "...", "solution2": "...", "solution3": "..." },`}
     "actionable_takeaways": "...",
     "cta": "..."
   },
@@ -94,7 +154,7 @@ Return JSON in this exact format:
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${openaiApiKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({

@@ -38,10 +38,19 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
     ? JSON.parse(results.pdf_content)
     : results.pdf_content;
 
-  // For interactive quizzes, the quiz content is nested under structured_content
-  const quizContent = selectedFormat === 'interactive_quiz' 
-    ? content?.structured_content?.quiz_content 
-    : content?.quiz_content;
+  // Resolve quiz content from multiple possible shapes
+  const quizContent = (() => {
+    if (!content) return undefined;
+    if (selectedFormat === 'interactive_quiz') {
+      // Prefer structured_content.quiz_content, then interactive_content, then quiz_content
+      return (
+        content?.structured_content?.quiz_content ||
+        content?.interactive_content ||
+        content?.quiz_content
+      );
+    }
+    return content?.quiz_content || content?.interactive_content;
+  })();
 
 
   // Handle calculator input changes
@@ -53,8 +62,9 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
 
   // Quiz calculation logic
   const calculateQuizResults = () => {
-    if (Object.keys(quizAnswers).length !== 10) {
-      alert('Please answer all 10 questions to get your results.');
+    const expectedCount = Array.isArray(quizContent?.questions) ? quizContent.questions.length : 10;
+    if (Object.keys(quizAnswers).length !== expectedCount) {
+      alert(`Please answer all ${expectedCount} questions to get your results.`);
       return;
     }
     
@@ -284,7 +294,7 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
                 </div>
 
                 {/* Results Section */}
-                {Object.keys(quizAnswers).length === 10 && (
+                {Object.keys(quizAnswers).length === (Array.isArray(quizContent?.questions) ? quizContent.questions.length : 10) && (
                   <div className="mt-8 bg-green-50 rounded-lg p-6 border border-green-200">
                     <h3 className="text-xl font-semibold text-green-900 mb-4">🎉 Your Results Are Ready!</h3>
                     <button 
@@ -481,8 +491,8 @@ const InteractiveDisplay: React.FC<InteractiveDisplayProps> = ({
           </div>
         )}
 
-        {/* Success Message */}
-        {emailSubmitted && (
+        {/* Success Message (only show if this component captured the email) */}
+        {emailSubmitted && !emailAlreadySubmitted && (
           <div className="mb-8">
             <p className="text-center text-green-700 font-semibold">
               {formatInfo.successMessage}
