@@ -248,7 +248,28 @@ Return JSON in this exact format:
       throw new Error('No content received from OpenAI');
     }
 
-    const campaignOutput = JSON.parse(content);
+    // Clean JSON response to handle markdown formatting
+    function cleanJsonResponse(content: string): string {
+      const jsonRegex = /```json\n([\s\S]*?)\n```/;
+      const match = content.match(jsonRegex);
+
+      if (match && match[1]) {
+        return match[1].trim();
+      }
+
+      // Fallback for cases where the ```json prefix is missing
+      const plainJsonRegex = /{\s*"pdf_content":[\s\S]*}/;
+      const plainMatch = content.match(plainJsonRegex);
+      if (plainMatch && plainMatch[0]) {
+        return plainMatch[0].trim();
+      }
+
+      // If no JSON is found, return the original content
+      return content.trim();
+    }
+
+    const cleanedContent = cleanJsonResponse(content);
+    const campaignOutput = JSON.parse(cleanedContent);
 
     return new Response(JSON.stringify(campaignOutput), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
