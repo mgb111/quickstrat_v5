@@ -63,7 +63,7 @@ export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<
   const formatSpecificPrompt = getFormatSpecificPdfPrompt(format || 'pdf', input, { title: '', introduction: '', core_points: [], cta: '' } as any);
   const res = isBrowser
     ? await callOpenAIThroughProxy({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4',
       messages: [
           { role: 'system', content: 'You are a lead magnet strategist. Generate 3 unique concepts for the specified format.' },
           { role: 'user', content: formatSpecificPrompt }
@@ -72,7 +72,7 @@ export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<
         max_tokens: 1500
       })
     : await getOpenAIClient().chat.completions.create({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4',
         messages: [
           { role: 'system', content: 'You are a lead magnet strategist. Generate 3 unique concepts for the specified format.' },
         { role: 'user', content: formatSpecificPrompt }
@@ -141,7 +141,7 @@ export async function generateContentOutline(input: CampaignInput, selected: Lea
   const prompt = getFormatSpecificOutlinePrompt(selected.format, input, selected);
   const res = isBrowser
     ? await callOpenAIThroughProxy({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are a content strategist. Output strictly valid JSON as defined.' },
           { role: 'user', content: prompt }
@@ -150,7 +150,7 @@ export async function generateContentOutline(input: CampaignInput, selected: Lea
       max_tokens: 1000
       })
     : await getOpenAIClient().chat.completions.create({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4',
         messages: [
           { role: 'system', content: 'You are a content strategist. Output strictly valid JSON as defined.' },
           { role: 'user', content: prompt }
@@ -196,7 +196,7 @@ export async function generateLandingPageCopy(input: CampaignInput, outline: Con
   const prompt = `You are a direct-response copywriter...`;
   const res = isBrowser
     ? await callOpenAIThroughProxy({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4',
       messages: [
           { role: 'system', content: 'You are a direct-response copywriter. Output strictly valid JSON as defined.' },
           { role: 'user', content: prompt }
@@ -205,7 +205,7 @@ export async function generateLandingPageCopy(input: CampaignInput, outline: Con
         max_tokens: 1200
       })
     : await getOpenAIClient().chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are a direct-response copywriter. Output strictly valid JSON as defined.' },
         { role: 'user', content: prompt }
@@ -242,7 +242,7 @@ export async function generateSocialPosts(input: CampaignInput, outline: Content
   const prompt = `You are a social media manager...`;
   const res = isBrowser
     ? await callOpenAIThroughProxy({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4',
         messages: [
           { role: 'system', content: 'You are a social media manager. Output strictly valid JSON as defined.' },
           { role: 'user', content: prompt }
@@ -251,7 +251,7 @@ export async function generateSocialPosts(input: CampaignInput, outline: Content
         max_tokens: 1500
       })
     : await getOpenAIClient().chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are a social media manager. Output strictly valid JSON as defined.' },
         { role: 'user', content: prompt }
