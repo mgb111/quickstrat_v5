@@ -41,10 +41,31 @@ function getOpenAIClient(): OpenAI {
 
 function cleanJsonResponse(content: string): string {
   let cleaned = content.trim();
-  if (cleaned.startsWith('```json')) cleaned = cleaned.replace(/^```json\s*/, '');
-  if (cleaned.startsWith('```')) cleaned = cleaned.replace(/^```\s*/, '');
-  if (cleaned.endsWith('```')) cleaned = cleaned.replace(/\s*```$/, '');
-  return cleaned.trim();
+  
+  // Remove all markdown code fences and language specifiers
+  cleaned = cleaned.replace(/```json\s*/gi, '');  // Remove ```json
+  cleaned = cleaned.replace(/```\s*/gi, '');      // Remove any remaining ```
+  cleaned = cleaned.replace(/`\s*/gi, '');        // Remove any single backticks
+  
+  // Remove any leading/trailing whitespace and newlines
+  cleaned = cleaned.trim();
+  
+  // If the content still doesn't look like valid JSON, try to extract JSON from the middle
+  if (!cleaned.startsWith('{') && !cleaned.startsWith('[')) {
+    // Look for JSON object or array in the content
+    const jsonMatch = cleaned.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
+    if (jsonMatch) {
+      cleaned = jsonMatch[1];
+    }
+  }
+  
+  // Final cleanup
+  cleaned = cleaned.trim();
+  
+  console.log('🎯 cleanJsonResponse - Original:', content.substring(0, 100) + '...');
+  console.log('🎯 cleanJsonResponse - Cleaned:', cleaned.substring(0, 100) + '...');
+  
+  return cleaned;
 }
 
 export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<LeadMagnetConcept[]> {
@@ -71,8 +92,13 @@ export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<
     });
   const content = (res.choices?.[0]?.message?.content) || '';
   const cleaned = cleanJsonResponse(content);
+  
+  console.log('🎯 OpenAI response content length:', content.length);
+  console.log('🎯 Cleaned content length:', cleaned.length);
+  
   try {
     const parsed = JSON.parse(cleaned);
+    console.log('✅ JSON parsed successfully:', parsed);
     return (parsed.concepts || []).map((c: any, i: number) => ({
       id: `concept-${i + 1}`,
       title: c.title,
@@ -81,7 +107,11 @@ export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<
       target_audience: c.target_audience,
       format: format || 'pdf'
     }));
-  } catch {
+  } catch (parseError) {
+    console.error('❌ JSON parse error:', parseError);
+    console.error('❌ Failed to parse content:', cleaned);
+    console.error('❌ Original content:', content);
+    
     // Fallback: parse plain text like "Concept 1: Title - Description"
     const lines = content.split(/\r?\n/).filter(Boolean);
     const concepts: LeadMagnetConcept[] = [];
@@ -139,7 +169,37 @@ export async function generateContentOutline(input: CampaignInput, selected: Lea
         max_tokens: 1000
       });
   const content = (res.choices?.[0]?.message?.content) || '{}';
-  return JSON.parse(cleanJsonResponse(content));
+  const cleaned = cleanJsonResponse(content);
+  
+  console.log('🎯 generateContentOutline - content length:', content.length);
+  console.log('🎯 generateContentOutline - cleaned length:', cleaned.length);
+  
+  try {
+    const parsed = JSON.parse(cleaned);
+    console.log('✅ generateContentOutline - JSON parsed successfully');
+    return parsed;
+  } catch (parseError) {
+    console.error('❌ generateContentOutline - JSON parse error:', parseError);
+    console.error('❌ Failed to parse content:', cleaned);
+    console.error('❌ Original content:', content);
+    
+    // Return a default outline structure
+    return {
+      title: 'Default Content Outline',
+      sections: [
+        {
+          title: 'Introduction',
+          content: 'Introduction content',
+          key_points: ['Key point 1', 'Key point 2']
+        }
+      ],
+      estimated_length: '5-10 minutes',
+      target_audience: 'General audience',
+      main_value_proposition: 'Default value proposition',
+      introduction: 'Introduction content',
+      core_points: ['Point 1', 'Point 2', 'Point 3']
+    };
+  }
 }
 
 export async function generateLandingPageCopy(input: CampaignInput, outline: ContentOutline): Promise<LandingPageCopy> {
@@ -164,7 +224,28 @@ export async function generateLandingPageCopy(input: CampaignInput, outline: Con
       max_tokens: 1200
     });
   const content = (res.choices?.[0]?.message?.content) || '{}';
-  return JSON.parse(cleanJsonResponse(content));
+  const cleaned = cleanJsonResponse(content);
+  
+  console.log('🎯 generateLandingPageCopy - content length:', content.length);
+  console.log('🎯 generateLandingPageCopy - cleaned length:', cleaned.length);
+  
+  try {
+    const parsed = JSON.parse(cleaned);
+    console.log('✅ generateLandingPageCopy - JSON parsed successfully');
+    return parsed;
+  } catch (parseError) {
+    console.error('❌ generateLandingPageCopy - JSON parse error:', parseError);
+    console.error('❌ Failed to parse content:', cleaned);
+    console.error('❌ Original content:', content);
+    
+    // Return a default landing page copy
+    return {
+      headline: 'Default Headline',
+      subheadline: 'Default Subheadline',
+      benefit_bullets: ['Benefit 1', 'Benefit 2', 'Benefit 3'],
+      cta_button_text: 'Get Started'
+    };
+  }
 }
 
 export async function generateSocialPosts(input: CampaignInput, outline: ContentOutline): Promise<SocialPosts> {
@@ -189,7 +270,28 @@ export async function generateSocialPosts(input: CampaignInput, outline: Content
       max_tokens: 1500
     });
   const content = (res.choices?.[0]?.message?.content) || '{}';
-  return JSON.parse(cleanJsonResponse(content));
+  const cleaned = cleanJsonResponse(content);
+  
+  console.log('🎯 generateSocialPosts - content length:', content.length);
+  console.log('🎯 generateSocialPosts - cleaned length:', cleaned.length);
+  
+  try {
+    const parsed = JSON.parse(cleaned);
+    console.log('✅ generateSocialPosts - JSON parsed successfully');
+    return parsed;
+  } catch (parseError) {
+    console.error('❌ generateSocialPosts - JSON parse error:', parseError);
+    console.error('❌ Failed to parse content:', cleaned);
+    console.error('❌ Original content:', content);
+    
+    // Return default social posts
+    return {
+      linkedin: 'Default LinkedIn post content',
+      twitter: 'Default Twitter post content',
+      instagram: 'Default Instagram post content',
+      reddit: 'Default Reddit post content'
+    };
+  }
 }
 
 export async function generateFinalCampaign(input: CampaignInput, outline: ContentOutline, customization?: PDFCustomization): Promise<CampaignOutput> {
