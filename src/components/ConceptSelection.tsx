@@ -44,6 +44,9 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
   const [localLoading, setLocalLoading] = useState(false);
   const [customizationLoading, setCustomizationLoading] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  
+  // Add a ref to the form element for additional safety
+  const formRef = React.useRef<HTMLFormElement>(null);
 
   function isValidUrl(url: string) {
     if (!url) return true;
@@ -61,16 +64,84 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
   }
 
   const handleSubmit = (e: React.FormEvent) => {
+    console.log('🎯 handleSubmit called with event:', e);
     e.preventDefault();
     if (!isLoading && !localLoading && selectedConceptId) {
+      console.log('🎯 Setting local loading to true');
       setLocalLoading(true);
       const selectedConcept = concepts.find(c => c.id === selectedConceptId);
       if (selectedConcept) {
+        console.log('🎯 Selected concept found, showing customization');
         setShowCustomization(true);
       }
       setLocalLoading(false);
+    } else {
+      console.log('🎯 handleSubmit conditions not met:', { isLoading, localLoading, selectedConceptId });
     }
   };
+
+  // Create a stable reference to the submit handler
+  const submitHandler = React.useCallback((e: React.FormEvent) => {
+    try {
+      console.log('🎯 submitHandler callback called');
+      if (e && typeof e.preventDefault === 'function') {
+        e.preventDefault();
+      }
+      
+      // Double-check that we have all required data
+      if (!concepts || concepts.length === 0) {
+        console.error('🎯 No concepts available');
+        return;
+      }
+      
+      if (!selectedConceptId) {
+        console.error('🎯 No concept selected');
+        return;
+      }
+      
+      if (isLoading || localLoading) {
+        console.log('🎯 Already loading, ignoring submit');
+        return;
+      }
+      
+      console.log('🎯 Proceeding with concept selection');
+      setLocalLoading(true);
+      
+      const selectedConcept = concepts.find(c => c.id === selectedConceptId);
+      if (selectedConcept) {
+        console.log('🎯 Selected concept found, showing customization:', selectedConcept);
+        setShowCustomization(true);
+      } else {
+        console.error('🎯 Selected concept not found in concepts array');
+      }
+      
+      setLocalLoading(false);
+    } catch (error) {
+      console.error('🎯 Error in submitHandler:', error);
+      setLocalLoading(false);
+    }
+  }, [selectedConceptId, isLoading, localLoading, concepts]);
+
+  console.log('🎯 ConceptSelection component - handleSubmit function defined:', typeof handleSubmit);
+  console.log('🎯 ConceptSelection component - submitHandler callback defined:', typeof submitHandler);
+
+  // Ensure component is properly mounted
+  React.useEffect(() => {
+    console.log('🎯 ConceptSelection component mounted');
+    console.log('🎯 Available functions:', {
+      handleSubmit: typeof handleSubmit,
+      submitHandler: typeof submitHandler,
+      handleCustomizationSubmit: typeof handleCustomizationSubmit,
+      handleConceptSelect: typeof handleConceptSelect
+    });
+    console.log('🎯 Component state:', {
+      selectedConceptId,
+      showCustomization,
+      isLoading,
+      localLoading,
+      conceptsCount: concepts?.length
+    });
+  }, [selectedConceptId, showCustomization, isLoading, localLoading, concepts]);
 
   const handleCustomizationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -381,7 +452,14 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form 
+        ref={formRef}
+        onSubmit={submitHandler} 
+        className="space-y-6"
+        onError={(e) => {
+          console.error('🎯 Form error event:', e);
+        }}
+      >
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
           <div className="space-y-4">
             {concepts.map((concept) => (
