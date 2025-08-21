@@ -122,7 +122,15 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
       localLoading,
       conceptsCount: concepts?.length
     });
-  }, [selectedConceptId, showCustomization, isLoading, localLoading, concepts]);
+    
+    // Test if submitHandler is working
+    console.log('🎯 Testing submitHandler function:', submitHandler);
+    if (typeof submitHandler === 'function') {
+      console.log('✅ submitHandler is properly defined and accessible');
+    } else {
+      console.error('❌ submitHandler is not a function:', submitHandler);
+    }
+  }, [selectedConceptId, showCustomization, isLoading, localLoading, concepts, submitHandler]);
 
   const handleCustomizationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -431,6 +439,25 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
         <p className="text-gray-600 max-w-2xl mx-auto">
           To create a high-impact lead magnet, we need to solve one specific problem. Select ONE of the following tool-based concepts below.
         </p>
+        
+        {/* Debug: Test button */}
+        <div className="mt-4 p-4 bg-yellow-100 rounded-lg">
+          <button
+            type="button"
+            onClick={() => {
+              console.log('🎯 Test button clicked');
+              console.log('🎯 submitHandler type:', typeof submitHandler);
+              if (typeof submitHandler === 'function') {
+                console.log('✅ submitHandler is accessible');
+              } else {
+                console.error('❌ submitHandler is not accessible');
+              }
+            }}
+            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+          >
+            Test submitHandler Function
+          </button>
+        </div>
       </div>
 
       <form 
