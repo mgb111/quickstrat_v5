@@ -17,7 +17,7 @@ interface CustomizationValues {
 
 interface ConceptSelectionProps {
   concepts: LeadMagnetConcept[];
-  onConceptSelected: (concept: LeadMagnetConcept, customization?: PDFCustomization) => void;
+  onSubmit: (concept: LeadMagnetConcept, customization?: PDFCustomization) => void;
   isLoading?: boolean;
 }
 
@@ -35,7 +35,7 @@ const defaultCustomization: CustomizationValues = {
 
 const ConceptSelection: React.FC<ConceptSelectionProps> = ({ 
   concepts, 
-  onConceptSelected, 
+  onSubmit, 
   isLoading = false 
 }) => {
   const [selectedConceptId, setSelectedConceptId] = useState<string>('');
@@ -151,7 +151,7 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
       setCustomizationLoading(true);
       const selectedConcept = concepts.find(c => c.id === selectedConceptId);
       if (selectedConcept) {
-        await onConceptSelected(selectedConcept, customization);
+        await onSubmit(selectedConcept, customization);
       }
       setCustomizationLoading(false);
     }
@@ -188,7 +188,7 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
       const selectedConcept = concepts.find(c => c.id === selectedConceptId);
       if (selectedConcept) {
         // Use default customization values
-        await onConceptSelected(selectedConcept, defaultCustomization);
+        await onSubmit(selectedConcept, defaultCustomization);
       }
       setCustomizationLoading(false);
     }

@@ -12,7 +12,7 @@ import Auth from './components/Auth/Auth';
 import UserProfile from './components/UserProfile';
 import { useAuth } from './contexts/AuthContext';
 import { WizardState, CampaignInput, LeadMagnetConcept, ContentOutline, PDFCustomization, Campaign } from './types/index';
-import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign, generateLandingPageCopy, generateSocialPosts } from './lib/openai';
+import { generateLeadMagnetConcepts, generateContentOutline, generateFinalCampaign } from './lib/openai';
 import LoadingSpinner from './components/LoadingSpinner';
 import { CampaignService } from './lib/campaignService';
 
@@ -625,7 +625,7 @@ function App() {
             </div>
             <ConceptSelection 
               concepts={wizardState.concepts}
-              onConceptSelected={handleConceptSelected}
+              onSubmit={handleConceptSelected}
               isLoading={isLoading}
             />
           </div>
