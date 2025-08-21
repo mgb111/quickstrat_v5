@@ -40,26 +40,47 @@ function getOpenAIClient(): OpenAI {
 }
 
 function cleanJsonResponse(content: string): string {
-  const jsonRegex = /```json\n([\s\S]*?)\n```/;
-  const match = content.match(jsonRegex);
+  if (!content) return '{}';
 
-  if (match && match[1]) {
-    return match[1].trim();
+  let text = content.trim();
+
+  // 1) Strip fenced code blocks like ```json ... ``` or ``` ... ``` (with or without newlines)
+  // Do this globally in case the model wrapped multiple times
+  text = text.replace(/```(?:json)?\s*([\s\S]*?)\s*```/gi, '$1').trim();
+
+  // 2) If there are stray single backticks, remove them
+  text = text.replace(/`+/g, '').trim();
+
+  // 3) If it already looks like JSON, try parse directly after trimming
+  if (text.startsWith('{') || text.startsWith('[')) {
+    try {
+      JSON.parse(text);
+      return text; // valid JSON
+    } catch {
+      // fall through to extraction
+    }
   }
 
-  // Fallback for cases where the ```json prefix is missing
-  const plainJsonRegex = /{\s*"concepts":[\s\S]*}/;
-  const plainMatch = content.match(plainJsonRegex);
-  if (plainMatch && plainMatch[0]) {
-    return plainMatch[0].trim();
+  // 4) Attempt to extract the first JSON object or array anywhere in the text
+  const objMatch = text.match(/\{[\s\S]*\}/);
+  const arrMatch = text.match(/\[[\s\S]*\]/);
+  const candidate = objMatch?.[0] || arrMatch?.[0];
+  if (candidate) {
+    const trimmed = candidate.trim();
+    try {
+      JSON.parse(trimmed);
+      return trimmed;
+    } catch {
+      // continue to final fallback
+    }
   }
 
-  // If no JSON is found, return an empty object to avoid crashing
+  // 5) Final safe fallback
   return '{}';
 }
 
 export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<LeadMagnetConcept[]> {
-    const format = input.selected_format;
+  const format = input.selected_format;
   const formatSpecificPrompt = getFormatSpecificPdfPrompt(format || 'pdf', input, { title: '', introduction: '', core_points: [], cta: '' } as any);
   const res = isBrowser
     ? await callOpenAIThroughProxy({

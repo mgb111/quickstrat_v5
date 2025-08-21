@@ -7,6 +7,23 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
+// Extract the first valid JSON object/array from an LLM response that may be wrapped in
+// markdown code fences or contain extra prose.
+function extractJson(content: string): string {
+  if (!content) return '{}';
+  let text = content.trim();
+  // Remove fenced code blocks like ```json ... ``` or ``` ... ```
+  text = text.replace(/```(?:json)?\s*([\s\S]*?)\s*```/gi, '$1').trim();
+  // Remove stray single backticks
+  text = text.replace(/`+/g, '').trim();
+  // If starts with { or [, try as-is
+  if (text.startsWith('{') || text.startsWith('[')) return text;
+  // Else extract first JSON object/array
+  const obj = text.match(/\{[\s\S]*\}/);
+  const arr = text.match(/\[[\s\S]*\]/);
+  return (obj?.[0] || arr?.[0] || '{}').trim();
+}
+
 interface CampaignInput {
   niche: string;
   pain_point: string;
@@ -248,7 +265,8 @@ Return JSON in this exact format:
       throw new Error('No content received from OpenAI');
     }
 
-    const campaignOutput = JSON.parse(content);
+    const cleaned = extractJson(content);
+    const campaignOutput = JSON.parse(cleaned);
 
     return new Response(JSON.stringify(campaignOutput), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
