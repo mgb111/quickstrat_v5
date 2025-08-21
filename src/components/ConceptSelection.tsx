@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Target, ArrowRight, Loader2, ArrowLeft, Palette, Settings } from 'lucide-react';
 import { LeadMagnetConcept } from '../types';
 import { PDFCustomization } from '../types';
@@ -46,7 +46,7 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
   const [validationError, setValidationError] = useState<string | null>(null);
   
   // Add a ref to the form element for additional safety
-  const formRef = React.useRef<HTMLFormElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   function isValidUrl(url: string) {
     if (!url) return true;
@@ -81,7 +81,7 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
   };
 
   // Create a stable reference to the submit handler
-  const submitHandler = React.useCallback((e: React.FormEvent) => {
+  const submitHandler = useCallback((e: React.FormEvent) => {
     try {
       console.log('🎯 submitHandler callback called');
       if (e && typeof e.preventDefault === 'function') {
@@ -126,7 +126,7 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
   console.log('🎯 ConceptSelection component - submitHandler callback defined:', typeof submitHandler);
 
   // Ensure component is properly mounted
-  React.useEffect(() => {
+  useEffect(() => {
     console.log('🎯 ConceptSelection component mounted');
     console.log('🎯 Available functions:', {
       handleSubmit: typeof handleSubmit,
