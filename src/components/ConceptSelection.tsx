@@ -63,23 +63,6 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    console.log('🎯 handleSubmit called with event:', e);
-    e.preventDefault();
-    if (!isLoading && !localLoading && selectedConceptId) {
-      console.log('🎯 Setting local loading to true');
-      setLocalLoading(true);
-      const selectedConcept = concepts.find(c => c.id === selectedConceptId);
-      if (selectedConcept) {
-        console.log('🎯 Selected concept found, showing customization');
-        setShowCustomization(true);
-      }
-      setLocalLoading(false);
-    } else {
-      console.log('🎯 handleSubmit conditions not met:', { isLoading, localLoading, selectedConceptId });
-    }
-  };
-
   // Create a stable reference to the submit handler
   const submitHandler = useCallback((e: React.FormEvent) => {
     try {
@@ -122,14 +105,12 @@ const ConceptSelection: React.FC<ConceptSelectionProps> = ({
     }
   }, [selectedConceptId, isLoading, localLoading, concepts]);
 
-  console.log('🎯 ConceptSelection component - handleSubmit function defined:', typeof handleSubmit);
   console.log('🎯 ConceptSelection component - submitHandler callback defined:', typeof submitHandler);
 
   // Ensure component is properly mounted
   useEffect(() => {
     console.log('🎯 ConceptSelection component mounted');
     console.log('🎯 Available functions:', {
-      handleSubmit: typeof handleSubmit,
       submitHandler: typeof submitHandler,
       handleCustomizationSubmit: typeof handleCustomizationSubmit,
       handleConceptSelect: typeof handleConceptSelect
