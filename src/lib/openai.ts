@@ -40,32 +40,22 @@ function getOpenAIClient(): OpenAI {
 }
 
 function cleanJsonResponse(content: string): string {
-  let cleaned = content.trim();
-  
-  // Remove all markdown code fences and language specifiers
-  cleaned = cleaned.replace(/```json\s*/gi, '');  // Remove ```json
-  cleaned = cleaned.replace(/```\s*/gi, '');      // Remove any remaining ```
-  cleaned = cleaned.replace(/`\s*/gi, '');        // Remove any single backticks
-  
-  // Remove any leading/trailing whitespace and newlines
-  cleaned = cleaned.trim();
-  
-  // If the content still doesn't look like valid JSON, try to extract JSON from the middle
-  if (!cleaned.startsWith('{') && !cleaned.startsWith('[')) {
-    // Look for JSON object or array in the content
-    const jsonMatch = cleaned.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
-    if (jsonMatch) {
-      cleaned = jsonMatch[1];
-    }
+  const jsonRegex = /```json\n([\s\S]*?)\n```/;
+  const match = content.match(jsonRegex);
+
+  if (match && match[1]) {
+    return match[1].trim();
   }
-  
-  // Final cleanup
-  cleaned = cleaned.trim();
-  
-  console.log('🎯 cleanJsonResponse - Original:', content.substring(0, 100) + '...');
-  console.log('🎯 cleanJsonResponse - Cleaned:', cleaned.substring(0, 100) + '...');
-  
-  return cleaned;
+
+  // Fallback for cases where the ```json prefix is missing
+  const plainJsonRegex = /{\s*"concepts":[\s\S]*}/;
+  const plainMatch = content.match(plainJsonRegex);
+  if (plainMatch && plainMatch[0]) {
+    return plainMatch[0].trim();
+  }
+
+  // If no JSON is found, return an empty object to avoid crashing
+  return '{}';
 }
 
 export async function generateLeadMagnetConcepts(input: CampaignInput): Promise<LeadMagnetConcept[]> {
